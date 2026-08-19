@@ -1,0 +1,39 @@
+grid_id: public-um-3asset-quarter-starts-v1
+provider: Binance Public Data
+provider_repository: https://github.com/binance/binance-public-data
+market: futures_um
+interval: 1m
+symbols: [BTCUSDT, ETHUSDT, BNBUSDT]
+dates: ['2023-01-01', '2023-04-01', '2023-07-01', '2023-10-01']
+audit_roles:
+  2023-01-01: development_calendar_block
+  2023-04-01: development_calendar_block
+  2023-07-01: frozen_holdout_calendar_block
+  2023-10-01: frozen_holdout_calendar_block
+update:
+  edit_type: position_size
+  incumbent:
+    intensity: 1.0
+    bias: 0.0
+    position_size: 0.2
+  candidate:
+    intensity: 1.0
+    bias: 0.0
+    position_size: 0.6
+evaluation:
+  participation_rates: [0.0, 0.001, 0.005, 0.01, 0.05]
+  impact_multipliers: [0.5, 1.0, 2.0]
+  primary_participation: 0.01
+  secondary_participation: 0.05
+  primary_impact_multiplier: 1.0
+  execution:
+    spread_bps: 0.5
+    fee_bps: 4.0
+    slippage_bps: 0.5
+    partial_fill_ratio: 1.0
+    queue_depth: 1.0
+    strategy_frequency: 1m
+    simulation_frequency: 1m_observational_replay
+selection_rule: include_every_predeclared_asset_date_pair
+outcome_inspection_before_freeze: false
+causal_impact_identified: false

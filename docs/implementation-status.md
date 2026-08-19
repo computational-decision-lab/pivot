@@ -14,8 +14,9 @@ fill-only impact semantics amendment.
 | P4/P5 | acquisition baselines, PIVOT heuristic, round harness, E5 frontier, figure validation pipeline | Implemented; clean run completed |
 | P6/P7 | virtual F0/F1 replay, corrected fill-only F2 fixture, official-public-data acquisition, parser, calibration, and depth-aware execution proxy | Implemented and tested; seven-session public audit completed |
 | P8/P9 | S0/S1/S2 strategic wrapper, E7/E8/E9 scripts, closed-loop query ledger | Implemented; corrected three-run registered fixture evidence completed |
-| Registered evidence | frozen P2-E9 registries, isolated run manifests, paired aggregation, failed-run retention | Implemented; fixture-level A-F summaries generated |
+| Registered evidence | frozen P2-E9 registries, isolated run manifests, paired aggregation, failed-run retention | Implemented; fixture-level A-F summaries generated and clean-room rerun verified |
 | Public finance audit | checksum-bound BTCUSDT USD-M one-minute kline and percentage-depth sessions, paired F0/F1/F2-depth sweep | Implemented; observational external audit partial |
+| Clean-room reproduction | fresh P2/E4-E9 registries, fresh public cache, independent aggregation, seven-figure validation | Verified at commit `0ba4117`; artifact record in `clean-room-evidence-2026-08-19.md` |
 
 ## Scientific gates
 

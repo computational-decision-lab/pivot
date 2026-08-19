@@ -17,7 +17,7 @@ This matrix audits the authoritative specification in [master-goal.md](master-go
 | B1-B9 baseline matrix | master section 22; master plan P4 | Implemented | Registered matched-budget fixture table and independent intervals; external confirmation pending |
 | Twelve required ablations | master section 23; master plan ablation matrix | Planned, not run | Ablation result rows and seed intervals |
 | Statistical protocol and failed-run retention | master section 24/27; global constraints | Implemented for registered P2-E9 | Clean-room rerun, failure ledger, and independent aggregation; external review pending |
-| Seven production figures | master section 25; design section 11 | Pipeline implemented | Seven images plus source tables and hashes from complete input bundle |
+| Seven production figures | master section 25; design section 11 | Pipeline implemented and clean-room validated | Seven images plus source tables and validation hash from a fresh complete input bundle |
 | Repository and artifact structure | master sections 26-27; master plan repository contract | Implemented | Files exist and scripts reproduce outputs |
 | Analytic toy tests and full integration round | master section 28; plan P0/P9 | Implemented and tested | Unit tests and one complete round test |
 | P0-P10 implementation order | master section 29; master plan phases | P0-P9 implemented; P10 deferred | Commits and gate ledger follow order |

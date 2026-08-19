@@ -27,6 +27,7 @@ Start with:
 - `/opt/projects/research/pivot/docs/experiments/registered-protocol.md`
 - `/opt/projects/research/pivot/docs/experiments/registered-evidence-2026-08-19.md`
 - `/opt/projects/research/pivot/docs/experiments/public-finance-evidence-2026-08-19.md`
+- `/opt/projects/research/pivot/docs/experiments/clean-room-evidence-2026-08-19.md`
 
 Run the controlled first milestone with:
 
