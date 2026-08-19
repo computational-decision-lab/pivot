@@ -209,7 +209,11 @@ def run_suite(config_path: Path, output: Path) -> dict[str, Any]:
 
 
 def _paired_unpaired(payload: Mapping[str, Any], seeds: Sequence[int], records: list[dict[str, Any]]) -> dict[str, Any]:
-    world = PerformativeWorld(PerformativeConfig(**payload.get("world", {})))
+    variance_world = dict(payload.get("world", {}))
+    # Keep this ablation in a non-saturated regime so the variance contrast is
+    # attributable to common random numbers rather than reward clipping.
+    variance_world.update({"noise_scale": 0.5, "horizon": 4, "reward_bound": 100.0})
+    world = PerformativeWorld(PerformativeConfig(**variance_world))
     transition = _controlled_transition()
     rollouts = int(payload.get("paired_rollouts", 16))
     paired_values: dict[str, list[float]] = defaultdict(list)

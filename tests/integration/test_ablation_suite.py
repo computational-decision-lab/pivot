@@ -19,6 +19,8 @@ def test_ablation_suite_writes_all_required_ids_and_raw_rows(tmp_path: Path) -> 
     assert {row["ablation_id"] for row in rows} == set(REQUIRED_ABLATIONS)
     assert (output / "failed_runs.jsonl").exists()
     assert json.loads((output / "provenance.json").read_text())["hf_budget_matched"] is True
+    paired = summary["ablations"]["paired_vs_unpaired"]["variants"]
+    assert paired["paired"]["standard_error"]["estimate"] < paired["unpaired"]["standard_error"]["estimate"]
 
 
 def test_ablation_suite_refuses_nonempty_output(tmp_path: Path) -> None:
