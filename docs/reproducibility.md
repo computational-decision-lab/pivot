@@ -38,8 +38,9 @@ they do not identify counterfactual replenishment, post-trade response, hidden
 liquidity, strategic adaptation, or causal impact recovery. Every such run must
 persist `ground_truth_for_endogenous_response: false`.
 
-Exploratory update selection and confirmatory evaluation must be separated.
-The seven-session public calibration is explicitly exploratory. Any expanded
+Exploratory update selection and confirmatory evaluation must be separated. The
+seven-session single-asset calibration and the 12-session three-asset
+expansion both use the exploratory typed update. Any future confirmatory
 asset/regime evaluation must freeze its update generator, asset list, regime
 labels, participation grid, and holdout rule before inspecting outcomes.
 

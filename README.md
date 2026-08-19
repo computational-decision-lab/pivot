@@ -13,9 +13,10 @@ Working paper title: *When Better Gets Worse: Improvement Fidelity for Self-Impr
 - Research specification: frozen and documented.
 - Implementation: P0-P9 research harnesses are present; P10 LLM/EvoQuant/M3 adapters remain deferred.
 - Scientific gates A-F: fixture-level registered passes are recorded, but none
-  are promoted to final paper claims. A checksum-bound seven-session public
-  Binance execution audit is complete; causal response and external strategic
-  validity remain open.
+  are promoted to final paper claims. A checksum-bound public Binance execution
+  audit across three assets and four calendar blocks is
+  complete; it observed no depth-proxy reversal, and causal response plus
+  external strategic validity remain open.
 - Live trading or external execution: out of scope.
 
 Start with:
@@ -28,6 +29,7 @@ Start with:
 - `/opt/projects/research/pivot/docs/experiments/registered-evidence-2026-08-19.md`
 - `/opt/projects/research/pivot/docs/experiments/public-finance-evidence-2026-08-19.md`
 - `/opt/projects/research/pivot/docs/experiments/clean-room-evidence-2026-08-19.md`
+- `/opt/projects/research/pivot/docs/experiments/public-expansion-evidence-2026-08-19.md`
 
 Run the controlled first milestone with:
 
@@ -56,3 +58,15 @@ python experiments/e6_public_calibration.py \
 The acquisition command only reads the official Binance public archive and
 verifies every file against its frozen SHA-256. The resulting depth world is
 an observational execution proxy and is never labeled endogenous ground truth.
+
+Run the frozen multi-asset expansion with:
+
+```bash
+.venv/bin/python experiments/e6_public_expansion.py \
+  --config configs/finance/e6_public_expansion.yaml \
+  --output results/raw/e6-public-expansion
+```
+
+Its 12 asset/date pairs, primary holdout, and acceptance rules are frozen in
+`docs/experiments/public-expansion-protocol.md`; the observed result is in
+`docs/experiments/public-expansion-evidence-2026-08-19.md`.

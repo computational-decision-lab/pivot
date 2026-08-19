@@ -20,6 +20,7 @@
 - Gate ledger: [gates.md](experiments/gates.md)
 - Public finance evidence and F2 amendment: [public-finance-evidence-2026-08-19.md](experiments/public-finance-evidence-2026-08-19.md)
 - Clean-room reproduction evidence: [clean-room-evidence-2026-08-19.md](experiments/clean-room-evidence-2026-08-19.md)
+- Public expansion protocol/evidence: [public-expansion-protocol.md](experiments/public-expansion-protocol.md), [public-expansion-evidence-2026-08-19.md](experiments/public-expansion-evidence-2026-08-19.md)
 - Requirement coverage: [master-goal-coverage.md](master-goal-coverage.md)
 - Research question: [research_question.md](research_question.md)
 - Estimands and metrics: [estimands.md](estimands.md)

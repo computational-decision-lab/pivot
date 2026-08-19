@@ -16,15 +16,15 @@ This matrix audits the authoritative specification in [master-goal.md](master-go
 | E1-E9 strict experiment order | master section 21; master plan phase table | Harnesses and registered runs implemented | E1-E9 manifests exist; external-validity review pending |
 | B1-B9 baseline matrix | master section 22; master plan P4 | Implemented | Registered matched-budget fixture table and independent intervals; external confirmation pending |
 | Twelve required ablations | master section 23; master plan ablation matrix | Planned, not run | Ablation result rows and seed intervals |
-| Statistical protocol and failed-run retention | master section 24/27; global constraints | Implemented for registered P2-E9 | Clean-room rerun, failure ledger, and independent aggregation; external review pending |
+| Statistical protocol and failed-run retention | master section 24/27; global constraints | Implemented and clean-room verified for registered P2-E9 | Failure ledger and independent aggregation recorded; external review pending |
 | Seven production figures | master section 25; design section 11 | Pipeline implemented and clean-room validated | Seven images plus source tables and validation hash from a fresh complete input bundle |
 | Repository and artifact structure | master sections 26-27; master plan repository contract | Implemented | Files exist and scripts reproduce outputs |
 | Analytic toy tests and full integration round | master section 28; plan P0/P9 | Implemented and tested | Unit tests and one complete round test |
 | P0-P10 implementation order | master section 29; master plan phases | P0-P9 implemented; P10 deferred | Commits and gate ledger follow order |
 | First milestone | master section 30; plan P1/P2 | Implemented; registered run completed | `run_sweep.py`, 240-row Parquet/JSONL, five diagnostics |
-| Second milestone | master section 31; plan P3 | Implemented; matched-budget smoke completed | `e4_global_vs_local.py`, disjoint IDs and budget ledger |
+| Second milestone | master section 31; plan P3 | Implemented; matched-budget registered evidence completed | `e4_global_vs_local.py`, disjoint IDs and budget ledger |
 | Third milestone | master section 32; plan P4/P5 | Implemented; fixture Gate D pass | `e5_budget_frontier.py`; external-validity review required |
-| Fourth milestone | master section 33; plan P6/P7 | Fixture implemented; public execution audit partial | Confirmatory multi-asset/regime audit plus causal response validation |
+| Fourth milestone | master section 33; plan P6/P7 | Fixture and frozen 3-asset/4-block observational audit implemented | Causal response validation and confirmatory update-generation rule |
 | Fifth milestone | master section 34; plan P9 | Implemented; fixture Gate F pass | E7/E8/E9 registered strategic and closed-loop logs |
 | Gates A-F | master section 35; `experiments/gates.md` | Fixture-level passes recorded; paper promotion pending | Registered evidence record and external-validity review |
 | Non-goals and no live trading | master section 36; global constraints | Documented | Boundary audit before release |
@@ -33,8 +33,9 @@ This matrix audits the authoritative specification in [master-goal.md](master-go
 
 The documentation and implementation layers are aligned with the master
 specification. Fixture-level registered passes and a checksum-bound public
-finance audit are recorded, but none is being presented as a final submission
-claim. The public percentage-depth result is an observational execution proxy,
-not causal actor-world ground truth. P10 remains intentionally deferred; the
-next blockers are a preregistered confirmatory public-data expansion, causal
-response robustness, and external strategic validation.
+finance audit across three assets and four calendar blocks are recorded, but
+none is being presented as a final submission claim. The public percentage-depth
+result is an observational execution proxy, not causal actor-world ground truth;
+the expansion observed no reversal at any predeclared participation. P10 remains
+intentionally deferred; the next blockers are a confirmatory update-generation
+rule, causal response robustness, and external strategic validation.
