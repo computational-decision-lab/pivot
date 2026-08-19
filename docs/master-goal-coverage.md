@@ -39,4 +39,6 @@ none is being presented as a final submission claim. The public percentage-depth
 result is an observational execution proxy, not causal actor-world ground truth;
 the expansion observed no reversal at any predeclared participation. P10 remains
 intentionally deferred; the next blockers are a confirmatory update-generation
-rule, causal response robustness, and external strategic validation.
+rule, causal response robustness, external strategic validation, and the
+replication design for the footprint/budget nulls. The full audit is in
+`docs/experiments/remaining-gaps-2026-08-19.md`.

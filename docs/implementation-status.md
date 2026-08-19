@@ -54,3 +54,6 @@ The implementation does not silently promote smoke results to paper claims.
    confirmatory follow-ups for the footprint and non-monotonic budget nulls.
 4. Keep LLM/EvoQuant/M3 adapters deferred until the core claims survive those
    checks.
+
+The complete gap ledger is in
+`docs/experiments/remaining-gaps-2026-08-19.md`.
