@@ -72,6 +72,7 @@ def main() -> None:
     budgets = [int(value) for value in payload.get("query_budgets", [0, 1, 2, 3, 4])]
     records: list[dict[str, Any]] = []
     ledgers: list[dict[str, Any]] = []
+    group_metrics: list[dict[str, Any]] = []
     for budget in budgets:
         for method in METHODS:
             if method == "proxy_only" and budget != min(budgets):
@@ -83,6 +84,22 @@ def main() -> None:
                 effective_budget = min(budget, len(group))
                 result = _evaluate_method(method, group, effective_budget, model, seed=group_key[0])
                 group_results.append(result)
+                group_metrics.append(
+                    {
+                        "method": method,
+                        "budget": budget,
+                        "effective_budget": effective_budget,
+                        "group_id": _group_id(group_key),
+                        "seed": group_key[0],
+                        "response_strength": group_key[1],
+                        "optimization_strength": group_key[2],
+                        "selected": result["selected"],
+                        "selected_true": result["selected_true"],
+                        "cti": result["cti"],
+                        "isr": result["isr"],
+                        "queries": result["queries"],
+                    }
+                )
                 ledgers.append({"method": method, "budget": effective_budget, "group": group_key, "queried_ids": result["queried_ids"]})
             if group_results:
                 cti_values = [float(item["cti"]) for item in group_results]
@@ -106,6 +123,9 @@ def main() -> None:
                 )
     (args.output / "budget_frontier.json").write_text(json.dumps(records, indent=2, sort_keys=True), encoding="utf-8")
     (args.output / "query_ledger.json").write_text(json.dumps(ledgers, indent=2, sort_keys=True), encoding="utf-8")
+    (args.output / "group_metrics.jsonl").write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in group_metrics), encoding="utf-8"
+    )
     _write_csv(args.output / "budget_frontier.csv", records)
     (args.output / "provenance.json").write_text(
         json.dumps({"source_manifest": manifest.__dict__, "calibration_budget": calibration_budget, "calibration_sampling": payload.get("calibration_sampling", "stratified_round_robin"), "calibration_ids": sorted(calibration_ids), "excluded_calibration_groups": sorted(calibration_groups), "methods": METHODS, "budgets": budgets}, indent=2, sort_keys=True),
@@ -145,7 +165,19 @@ def _evaluate_method(method: str, group: list[dict[str, Any]], budget: int, mode
     selected = max(estimates, key=estimates.get)
     selected_true = true_values[selected]
     oracle = max(true_values.values())
-    return {"selected": selected, "selected_true": selected_true, "cti": selected_true, "isr": oracle - selected_true, "queries": len(queried), "queried_ids": queried}
+    return {
+        "selected": selected,
+        "selected_true": selected_true,
+        "cti": selected_true,
+        "isr": oracle - selected_true,
+        "queries": len(queried),
+        "queried_ids": queried,
+    }
+
+
+def _group_id(group_key: tuple[int, float, float]) -> str:
+    seed, response, optimization = group_key
+    return f"seed={seed}|response={response:.12g}|optimization={optimization:.12g}"
 
 
 def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:

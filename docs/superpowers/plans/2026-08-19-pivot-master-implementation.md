@@ -73,7 +73,7 @@ P10 remains intentionally deferred.
 pivot/
 ├── README.md
 ├── pyproject.toml
-├── configs/{controlled,finance,strategic,sweeps}/
+├── configs/{controlled,finance,strategic,sweeps,registered}/
 ├── src/pivot/
 │   ├── core/{policy.py,transition.py,candidate.py,world.py,result.py}
 │   ├── improvers/{perturbation.py,rl_update.py,typed_finance.py,llm_optional.py}
@@ -89,7 +89,7 @@ pivot/
 ├── experiments/e{1_reversal,2_phase_diagram,3_overoptimization,4_global_vs_local,5_budget_frontier,6_finance_actor,7_strategic_reversal,8_competition,9_closed_loop}.py
 ├── scripts/{run_sweep.py,aggregate_results.py,make_paper_figures.py}
 ├── tests/{unit,integration}/
-├── results/{raw,processed,figures,tables}/
+├── results/{raw,processed,figures,tables,registered}/
 └── docs/
 ```
 

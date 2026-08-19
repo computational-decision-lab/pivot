@@ -12,9 +12,9 @@ Working paper title: *When Better Gets Worse: Improvement Fidelity for Self-Impr
 
 - Research specification: frozen and documented.
 - Implementation: P0-P9 research harnesses are present; P10 LLM/EvoQuant/M3 adapters remain deferred.
-- Scientific gates A-F: none formally passed. The calibrated E5 smoke is
-  promising at small budgets, but Gate D still requires independent registered
-  runs and paired intervals; no smoke result is a paper claim.
+- Scientific gates A-F: fixture-level registered passes are recorded, but none
+  are promoted to final paper claims. Real-data calibration and external
+  validity review remain open.
 - Live trading or external execution: out of scope.
 
 Start with:
@@ -23,6 +23,8 @@ Start with:
 - `/opt/projects/research/pivot/docs/master-goal.md`
 - `/opt/projects/research/pivot/docs/superpowers/plans/2026-08-19-pivot-master-implementation.md`
 - `/opt/projects/research/pivot/docs/experiments/gates.md`
+- `/opt/projects/research/pivot/docs/experiments/registered-protocol.md`
+- `/opt/projects/research/pivot/docs/experiments/registered-evidence-2026-08-19.md`
 
 Run the controlled first milestone with:
 

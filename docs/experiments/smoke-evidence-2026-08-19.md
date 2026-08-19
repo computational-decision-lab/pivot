@@ -48,9 +48,11 @@ Top Proxy HF: ISR 3.37218099
 PIVOT:        ISR 0.24290896
 ```
 
-These numbers are fixture smoke diagnostics only. Formal Gates A-F remain
-`Not run` until independent registered jobs, paired intervals, and the
-finance/strategic calibration protocol are completed.
+These numbers are fixture smoke diagnostics only. Independent registered
+summaries are recorded separately in
+`registered-evidence-2026-08-19.md`; those fixture-level passes still do not
+constitute final paper claims until the finance/strategic calibration protocol
+and external-validity review are completed.
 
 ## Reproduction command
 

@@ -1,0 +1,37 @@
+"""Analysis helpers for registered PIVOT evidence runs."""
+
+from .registered import (
+    evaluate_gate_a_b,
+    evaluate_gate_c,
+    evaluate_gate_d,
+    evaluate_gate_e,
+    evaluate_gate_f,
+    paired_bootstrap_mean_ci,
+    summarize_e4_runs,
+    summarize_e5_runs,
+    summarize_e6_runs,
+    summarize_e7_runs,
+    summarize_e8_runs,
+    summarize_e9_runs,
+    summarize_p2_runs,
+)
+from .registry import load_registry, materialize_seed_config, run_registered
+
+__all__ = [
+    "evaluate_gate_a_b",
+    "evaluate_gate_c",
+    "evaluate_gate_d",
+    "evaluate_gate_e",
+    "evaluate_gate_f",
+    "load_registry",
+    "materialize_seed_config",
+    "paired_bootstrap_mean_ci",
+    "run_registered",
+    "summarize_e4_runs",
+    "summarize_e5_runs",
+    "summarize_e6_runs",
+    "summarize_e7_runs",
+    "summarize_e8_runs",
+    "summarize_e9_runs",
+    "summarize_p2_runs",
+]

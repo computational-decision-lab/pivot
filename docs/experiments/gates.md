@@ -4,12 +4,12 @@
 
 | Gate | 判定内容 | 状态 | 证据 |
 | --- | --- | --- | --- |
-| A | Controlled Improvement Reversal 在非病态 response/footprint 区域稳定出现 | Not run | P2 smoke 已生成；需独立冻结 runs/CI |
-| B | IRR 与 update footprint 和/或 environment response 有结构关系 | Not run | P2 phase table 已生成；需独立聚合/结构检验 |
-| C | Global policy fidelity 不能完全替代 local improvement fidelity | Not run | E4 matched-budget smoke 已生成；当前差异需独立聚合 |
-| D | PIVOT 在固定 HF budget 下优于 Random/Top Proxy | Not run | E5 calibrated smoke 在小预算改善；需注册 runs/paired CI |
-| E | Finance F0/F1/F2 在合理 participation 下有结构差异 | Not run | F2 fixture smoke 已生成；需公开数据校准 |
-| F | Strategic response 增加系统性 effect | Not run | E7/E8 paired sweep smoke 已生成；需正式 seed/旋钮聚合 |
+| A | Controlled Improvement Reversal 在非病态 response/footprint 区域稳定出现 | Fixture Pass; paper promotion pending | 注册 P2 `p2-r01..r03`；high-response IRR CI `[0.9722, 0.9722]` |
+| B | IRR 与 update footprint 和/或 environment response 有结构关系 | Fixture Pass; paper promotion pending | 注册 P2 response contrast CI `[0.9722, 0.9722]` |
+| C | Global policy fidelity 不能完全替代 local improvement fidelity | Fixture Pass; paper promotion pending | 注册 E4 ISC(local-global) CI `[0.1204, 0.1204]`; ISR difference tied |
+| D | PIVOT 在固定 HF budget 下优于 Random/Top Proxy | Fixture Pass; paper promotion pending | 注册 E5 budget=1 paired ISR gains: Random `4.4401..4.8694`, Top Proxy `3.1282..3.1322` |
+| E | Finance F0/F1/F2 在合理 participation 下有结构差异 | Fixture Pass; paper promotion pending | 注册 E6 zero-equivalence exact; target F2-F1 CI `[-0.0041473, -0.0041473]` |
+| F | Strategic response 增加系统性 effect | Fixture Pass; paper promotion pending | 注册 E7 SIRR `1.0`; E8 effect CI `[-0.04052, -0.04052]`; sensitivity contrast CI `[-0.10822, -0.10822]` |
 
 ## Evidence record
 
@@ -19,4 +19,4 @@
 date | gate | status | run_ids | config_hashes | seeds | hf_budget | metric_and_ci | reviewer_note
 ```
 
-`Not run` 是当前真实状态，不是实验结论。任何 gate 失败都保留失败证据，并在实施计划中记录是缩小 claim、修改环境，还是停止后续阶段。
+`Fixture Pass` 只表示注册配置下的预注册判定通过，不等于跨环境或论文最终结论。任何 gate 失败都保留失败证据，并在实施计划中记录是缩小 claim、修改环境，还是停止后续阶段。
