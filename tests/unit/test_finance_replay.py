@@ -37,3 +37,29 @@ def test_participation_changes_actor_value_and_typed_edit_is_executable() -> Non
     transition = TypedFinanceEdit("participation", 0.1).propose(policy, seed=4)
     assert transition.edit_type == "participation"
     assert transition.candidate.parameters["participation"] == pytest.approx(0.1)
+
+
+def test_actor_impact_cost_is_charged_on_fills_not_repeated_holdings() -> None:
+    policy = Policy.from_mapping({"intensity": 0.5, "position_size": 1.0})
+    finance = FinanceConfig(
+        prices=(100.0, 100.0, 100.0, 100.0),
+        spread_bps=0.0,
+        fee_bps=0.0,
+        slippage_bps=0.0,
+        partial_fill_ratio=1.0,
+        queue_depth=1.0,
+    )
+    result = InteractiveMarketWorld(
+        InteractiveMarketConfig(
+            finance=finance,
+            participation_rate=0.1,
+            impact_coefficient=0.2,
+            liquidity_recovery=0.25,
+        )
+    ).evaluate(policy, seed=5)
+
+    # One initial fill of 0.5 has terminal impact 0.1 * 0.2 * 0.5 = 0.01.
+    # Linear depth implies half terminal impact as average execution cost.
+    assert result.value == pytest.approx(-0.5 * 0.01 * 0.5)
+    assert result.metadata["impact_cost"] == pytest.approx(0.0025)
+    assert result.metadata["turnover"] == pytest.approx(0.5)

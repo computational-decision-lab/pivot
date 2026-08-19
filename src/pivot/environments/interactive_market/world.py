@@ -39,6 +39,7 @@ class InteractiveMarketWorld:
         total = 0.0
         previous_position = 0.0
         impact_stock = 0.0
+        impact_cost_total = 0.0
         turnover = 0.0
         for index, market_return in enumerate(returns):
             state = float(returns[index - 1]) if index else context.exogenous_value
@@ -46,12 +47,17 @@ class InteractiveMarketWorld:
             change = target - previous_position
             fill = min(abs(change) * self.config.finance.partial_fill_ratio, self.config.finance.queue_depth)
             executed_position = previous_position + np.sign(change) * fill
-            impact = self.config.participation_rate * self.config.impact_coefficient * abs(executed_position)
-            effective_return = float(market_return) - np.sign(executed_position) * impact
+            terminal_impact = (
+                self.config.participation_rate * self.config.impact_coefficient * fill
+            )
+            impact_cost = 0.5 * terminal_impact * fill
             cost_rate = (self.config.finance.spread_bps / 2 + self.config.finance.fee_bps + self.config.finance.slippage_bps) / 10_000
-            total += executed_position * effective_return - fill * cost_rate
+            total += executed_position * float(market_return) - fill * cost_rate - impact_cost
             turnover += fill
-            impact_stock = (1.0 - self.config.liquidity_recovery) * impact_stock + impact
+            impact_cost_total += impact_cost
+            impact_stock = (
+                (1.0 - self.config.liquidity_recovery) * impact_stock + terminal_impact
+            )
             previous_position = executed_position
         return RolloutResult(
             value=float(total),
@@ -62,9 +68,15 @@ class InteractiveMarketWorld:
                 "virtual_fills": True,
                 "participation": self.config.participation_rate,
                 "impact": impact_stock,
+                "impact_cost": impact_cost_total,
                 "liquidity_depletion": min(1.0, turnover * self.config.participation_rate),
                 "recovery": self.config.liquidity_recovery,
                 "turnover": turnover,
+                "fixture_version": self.config.finance.fixture_version,
+                "data_source": self.config.finance.data_source,
+                "data_sha256": self.config.finance.data_sha256,
+                "source_url": self.config.finance.source_url,
+                "ground_truth_for_endogenous_response": False,
             },
         )
 
