@@ -1,0 +1,24 @@
+dataset_manifest: ../data/binance_btcusdt_quarter_2023.yaml
+data_root: ../../data/public/public-expansion-v1
+execution:
+  spread_bps: 0.5
+  fee_bps: 4.0
+  slippage_bps: 0.5
+  partial_fill_ratio: 1.0
+  queue_depth: 1.0
+  strategy_frequency: 1m
+  simulation_frequency: 1m_observational_replay
+incumbent:
+  intensity: 1.0
+  bias: 0.0
+  position_size: 0.2
+candidate:
+  intensity: 1.0
+  bias: 0.0
+  position_size: 0.6
+edit_type: position_size
+participation_rates: [0.0, 0.001, 0.005, 0.01, 0.05]
+impact_multipliers: [0.5, 1.0, 2.0]
+primary_impact_multiplier: 1.0
+target_participation: 0.01
+recovery_floor: 0.001
