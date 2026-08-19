@@ -15,7 +15,7 @@ This matrix audits the authoritative specification in [master-goal.md](master-go
 | Controlled world before finance | master sections 17 and 29; plan P1-P2 | Implemented | P1/P2 harnesses and import boundary tests |
 | E1-E9 strict experiment order | master section 21; master plan phase table | Harnesses and registered runs implemented | E1-E9 manifests exist; external-validity review pending |
 | B1-B9 baseline matrix | master section 22; master plan P4 | Implemented | Registered matched-budget fixture table and independent intervals; external confirmation pending |
-| Twelve required ablations | master section 23; master plan ablation matrix | Planned, not run | Ablation result rows and seed intervals |
+| Twelve required ablations | master section 23; master plan ablation matrix | Implemented; three clean registered runs | `docs/experiments/ablation-evidence-2026-08-19.md`, raw rows, failure ledgers, and cross-run bootstrap intervals; external validity pending |
 | Statistical protocol and failed-run retention | master section 24/27; global constraints | Implemented and clean-room verified for registered P2-E9 | Failure ledger and independent aggregation recorded; external review pending |
 | Seven production figures | master section 25; design section 11 | Pipeline implemented and clean-room validated | Seven images plus source tables and validation hash from a fresh complete input bundle |
 | Repository and artifact structure | master sections 26-27; master plan repository contract | Implemented | Files exist and scripts reproduce outputs |
@@ -32,7 +32,8 @@ This matrix audits the authoritative specification in [master-goal.md](master-go
 ## Current conclusion
 
 The documentation and implementation layers are aligned with the master
-specification. Fixture-level registered passes and a checksum-bound public
+specification. Fixture-level registered passes, a complete controlled
+twelve-ablation suite, and a checksum-bound public
 finance audit across three assets and four calendar blocks are recorded, but
 none is being presented as a final submission claim. The public percentage-depth
 result is an observational execution proxy, not causal actor-world ground truth;

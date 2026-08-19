@@ -1,7 +1,8 @@
 # Implementation Status
 
 Updated 2026-08-19 after the public-data calibration audit, the F2 fill-only
-impact semantics amendment, and the clean multi-asset expansion run.
+impact semantics amendment, the clean multi-asset expansion run, and the
+registered twelve-ablation suite.
 
 ## Implemented
 
@@ -18,6 +19,7 @@ impact semantics amendment, and the clean multi-asset expansion run.
 | Public finance audit | checksum-bound BTCUSDT USD-M one-minute kline and percentage-depth sessions, paired F0/F1/F2-depth sweep | Implemented; observational external audit partial |
 | Clean-room reproduction | fresh P2/E4-E9 registries, fresh public cache, independent aggregation, seven-figure validation | Verified at commit `0ba4117`; artifact record in `clean-room-evidence-2026-08-19.md` |
 | Public expansion | frozen BTC/ETH/BNB quarterly-start grid, 12 sessions, subconfig contract validation, pooled/asset/holdout aggregation | Complete observational run; no reversal observed; causal validation open |
+| Twelve ablations | paired/unpaired, transition/global-value, footprint, acquisition, update size, response, F1/F2, competitors, response-model count, candidate count, HF budget | Complete controlled suite; three clean registered runs; external validity and null follow-up open |
 
 ## Scientific gates
 
@@ -48,7 +50,7 @@ The implementation does not silently promote smoke results to paper claims.
 2. Add a causal interactive response source or multiple intervention-model
    robustness audit. Percentage depth does not identify replenishment,
    post-trade response, hidden liquidity, or impact recovery.
-3. Validate strategic reversal outside the deterministic fixture, then run the
-   complete ablation and paper-result pipeline.
+3. Validate strategic reversal outside the deterministic fixture and design
+   confirmatory follow-ups for the footprint and non-monotonic budget nulls.
 4. Keep LLM/EvoQuant/M3 adapters deferred until the core claims survive those
    checks.
