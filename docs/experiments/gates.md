@@ -4,11 +4,12 @@
 
 | Gate | 判定内容 | 状态 | 证据 |
 | --- | --- | --- | --- |
-| A | Controlled Improvement Reversal 在非极端 response/footprint 区域稳定出现 | Not run | 等待 Tasks 1-6 |
-| B | Global Fidelity 不能完全替代 Improvement Fidelity | Not run | 等待 Task 7 |
-| C | PIVOT 在匹配 HF budget 下优于 Random HF 与 Top Proxy HF | Not run | 等待 Task 8 |
-| D | Finance participation sweep 的 actor 差异具备可辩护范围和跨 session 稳定性 | Not run | 等待 Task 10 |
-| E | Strategic reversal 具有系统性均值效应，而非只有方差增加 | Not run | 等待 Task 11 |
+| A | Controlled Improvement Reversal 在非病态 response/footprint 区域稳定出现 | Not run | 等待 P2/E1 |
+| B | IRR 与 update footprint 和/或 environment response 有结构关系 | Not run | 等待 P2/E2 |
+| C | Global Fidelity 不能完全替代 Improvement Fidelity | Not run | 等待 P3/E4 |
+| D | PIVOT 在匹配 HF budget 下优于 Random HF 与 Top Proxy HF | Not run | 等待 P4-P5/E5 |
+| E | Finance F0/F1 与 F2 在可辩护 participation 范围有结构差异 | Not run | 等待 P6-P7/E6 |
+| F | Strategic response 超出 mechanical response，产生系统性效应 | Not run | 等待 P9/E7-E8 |
 
 ## Evidence record
 

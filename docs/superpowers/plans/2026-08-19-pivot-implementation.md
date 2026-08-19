@@ -1,17 +1,19 @@
-# PIVOT Implementation Plan
+# PIVOT Implementation Plan (Superseded)
+
+> This earlier plan is retained for audit history. It is superseded by [2026-08-19-pivot-master-implementation.md](2026-08-19-pivot-master-implementation.md), which follows the authoritative `docs/master-goal.md` specification and the P0-P10/E1-E9 order.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build a reproducible research harness that measures improvement fidelity for policy updates, demonstrates Improvement Reversal in a controlled adaptive world, and implements PIVOT's budgeted paired high-fidelity validation before adding finance and strategic extensions.
 
-**Architecture:** Start with a small typed Python package. A `PolicyTransition` is the shared contract across policy operators, evaluators, environments, metrics, acquisition, and experiment logging. Evaluators expose paired deltas rather than forcing consumers to subtract independently estimated policy values. The controlled environment is the only required world for the first milestone; finance, adaptive opponents, LLM/EvoQuant, and M3 are adapters added only after explicit gates pass.
+**Architecture:** Start with a small typed Python package. A `PolicyTransition` is the shared contract across policy operators, evaluators, environments, metrics, acquisition, and experiment logging. Evaluators expose paired deltas rather than forcing consumers to subtract independently estimated policy values. The controlled environment is the only required world for the first milestone; finance, adaptive opponents, LLM/EvoQuant, and M3 are adapters added only after explicit gates pass. The authoritative acronym is PIVOT: *Paired Interventional Verification of Optimization Transitions*.
 
 **Tech Stack:** Python 3.11+, standard-library frozen dataclasses, `numpy`, `pandas`, `scipy`, `scikit-learn`, `PyYAML`, `pytest`, `ruff`, `mypy`, `matplotlib`, and JSONL/Parquet experiment artifacts.
 
 ## Global Constraints
 
 - Preserve the frozen research object: a transition `pi -> pi'`, not a standalone policy leaderboard.
-- Report `IDE`, `ISC`, `IRR`, `ISR`, and `CTI`; use a documented `tau_sign` for ties.
+- Report `IDE`, `ISC`, `IRR`, `SIRR`, `MTR` (only away from zero denominators), `ISR`, `CTI`, and high-fidelity cost; use documented `tau_sign` and `tau_mtr` thresholds.
 - Use paired rollouts with shared initial state, exogenous path, random seed, and opponent initialization whenever the environment supports them.
 - Keep the focal agent as the only self-improving agent in the first strategic implementation.
 - Do not begin LLM/EvoQuant or M3 integration until the controlled PIVOT budget gate passes.
@@ -20,7 +22,10 @@
 - Use deterministic seeds and explicit train/validation/test episode splits; never tune on the final test split.
 - Treat learned world models as alternative intervention models, never as ground truth.
 - A reported positive result must include uncertainty intervals over independent seeds and the exact high-fidelity query budget.
-- Keep the main-paper evidence to the five planned figures; exploratory plots belong under `artifacts/` or the appendix export.
+- Production code must generate seven canonical figures; select the five central figures for the nine-page main text and place diagnostics in the appendix when needed.
+- Preserve all nine experiment families `E1` through `E9`, all nine baseline families `B1` through `B9`, and the twelve required ablations from the master specification.
+- The implementation order is fixed as `P0` through `P10`; no finance, LLM, or multi-agent code may enter P0/P1.
+- Persist failed transitions and discarded-run records; never silently substitute fidelity levels, datasets, or environments.
 - Plan against the supplied ICLR 2027 deadlines: abstract 2026-09-18 AOE, full paper 2026-09-25 AOE, and a nine-page main text.
 
 ## File Map
@@ -32,49 +37,72 @@ pyproject.toml
 src/pivot/
   __init__.py
   config.py                 # YAML loading and schema defaults
-  types.py                 # Policy, PolicyTransition, rollout and evaluation contracts
+  core/
+    policy.py               # policy identity and immutable parameters
+    transition.py           # canonical PolicyTransition record
+    candidate.py            # candidate batch contracts
+    world.py                # World 0/1/2 protocol
+    result.py               # result, cost, and provenance schemas
   seeds.py                 # deterministic seed derivation and split registry
+  improvers/
+    perturbation.py        # controlled synthetic edits
+    rl_update.py            # optional performative RL update operator
+    typed_finance.py       # one-component finance edits
+    llm_optional.py        # deferred typed LLM adapter
   environments/
-    __init__.py
-    controlled.py          # known performative environment and response knobs
-    protocols.py           # environment and opponent protocols
-  operators/
-    __init__.py
-    synthetic.py           # controlled one-component update generator
-  evaluators/
-    __init__.py
-    protocols.py           # proxy, paired, and high-fidelity evaluator contracts
-    controlled.py          # W0/W2/W4 evaluators for the controlled world
-    paired.py              # common-random-number paired rollout implementation
-  metrics.py               # differential metrics and confidence intervals
-  models/
-    __init__.py
-    differential.py        # correction model g_theta and calibration
-  acquisition.py           # Random/TopProxy/Footprint/Uncertainty/PIVOT policies
-  runner.py                # round loop and artifact emission
-  validation.py            # schema, leakage, and reproducibility checks
-  plotting.py              # five canonical figure builders
+    performative/           # controlled World 0/1/2 environment
+    finance_backtest/       # F0
+    execution_replay/       # F1
+    interactive_market/     # F2
+    strategic_market/       # F4 and S0/S1/S2
+  footprint/
+    generic.py
+    finance.py
+  evaluation/
+    paired.py
+    decomposition.py
+    uncertainty.py
+  transfer/
+    global_value.py
+    differential.py
+    reversal.py
+  acquisition/
+    random.py
+    top_proxy.py
+    footprint.py
+    uncertainty.py
+    pivot.py
+  algorithms/pivot.py
+  metrics/improvement.py
+  logging/transition_store.py
+  adapters/world_model.py # deferred F3; never ground truth
 configs/
-  controlled_smoke.yaml
-  controlled_main.yaml
+  controlled/
+  finance/
+  strategic/
+  sweeps/
+experiments/
+  e1_reversal.py
+  e2_phase_diagram.py
+  e3_overoptimization.py
+  e4_global_vs_local.py
+  e5_budget_frontier.py
+  e6_finance_actor.py
+  e7_strategic_reversal.py
+  e8_competition.py
+  e9_closed_loop.py
+results/
+  raw/
+  processed/
+  figures/
+  tables/
 tests/
-  test_types.py
-  test_seeds.py
-  test_operator.py
-  test_controlled_environment.py
-  test_paired_evaluator.py
-  test_metrics.py
-  test_differential_model.py
-  test_acquisition.py
-  test_runner.py
-  test_validation.py
-  test_finance_adapters.py
-  test_strategic_response.py
-  test_deferred_adapters.py
+  unit/
+  integration/
 scripts/
-  run_controlled.py
+  run_sweep.py
   aggregate_results.py
-  make_figures.py
+  make_paper_figures.py
 ```
 
 The exact file boundaries are part of the plan. A later task may add finance adapters under `src/pivot/environments/finance/`, but it must not move the controlled contracts.

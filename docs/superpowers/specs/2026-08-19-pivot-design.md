@@ -5,7 +5,7 @@
 **Target venue:** ICLR 2027
 **Planning deadlines supplied for this freeze:** abstract 2026-09-18 AOE; full paper 2026-09-25 AOE; main text limit 9 pages
 **Working title:** *When Better Gets Worse: Improvement Fidelity for Self-Improving Agents in Adaptive Worlds*
-**Method name:** PIVOT — *Paired Interventional Validation of Optimization Transitions*
+**Method name:** PIVOT — *Paired Interventional Verification of Optimization Transitions*
 
 ## 1. Design lock
 
@@ -15,13 +15,13 @@ The paper studies whether a self-improving agent's update remains an improvement
 pi_t -> pi_{t+1}
 ```
 
-and not an isolated state, trajectory, or policy. The paper is intentionally limited to one phenomenon, one method, one theory, and two experimental levels.
+and not an isolated state, trajectory, or policy. The paper is intentionally limited to one phenomenon, one method, one theory program, and two broad evidence levels: controlled performative experiments first, then a finance testbed.
 
 | Item | Frozen choice |
 | --- | --- |
 | Core phenomenon | Improvement Reversal |
 | Core estimand | Improvement Fidelity of a policy update |
-| Core metric | Improvement Sign Consistency (ISC) |
+| Core metrics | IDE, ISC, IRR, MTR, ISR, CTI, and high-fidelity cost |
 | Core method | PIVOT: paired differential modeling plus budgeted interventional evaluation |
 | World ladder | Observer -> Actor -> Strategic |
 | Main theory | Improvement error scales with update footprint x environment sensitivity |
@@ -94,11 +94,12 @@ IDE  = E[ |Delta_V - Delta_*| ]
 ISC  = P[ sign(Delta_V) = sign(Delta_*) ]
 IRR  = P[ Delta_* < 0 | Delta_V > 0 ]
 SIRR = P[ Delta_strategic < 0 | Delta_actor > 0 ]
+MTR  = Delta_* / Delta_V, only when |Delta_V| > tau_mtr
 ISR_t = max_j Delta_{*,t,j} - Delta_{*,t,j_hat}
 CTI_T = sum_t Delta_{*,t}
 ```
 
-All sign metrics must specify a zero tolerance `tau_sign`; values in `[-tau_sign, tau_sign]` are treated as ties and reported separately.
+All sign metrics must specify a zero tolerance `tau_sign`; values in `[-tau_sign, tau_sign]` are treated as ties and reported separately. Every result must also record high-fidelity transition count, rollout count, environment-step count, simulator-call count, and compute cost when meaningful. No PIVOT result is valid without its high-fidelity budget.
 
 ### 3.3 Update footprint
 
@@ -112,11 +113,13 @@ z_Delta = [ KL(pi' || pi), occupancy shift, action shift,
 Finance-specific features are:
 
 ```text
-[ turnover, order size, participation, holding time, urgency,
-  rebalance magnitude, liquidity consumption ]
+[ turnover, position size, participation, holding time, urgency,
+  rebalance frequency, order-size distribution, aggressive/passive ratio,
+  liquidity consumption, concentration, inventory duration,
+  spread-crossing frequency ]
 ```
 
-The first implementation uses synthetic edits and one-component typed edits so footprint can be controlled and audited.
+The implementation must expose `compute_update_footprint(pi, pi_prime, evaluation_states)` and preserve component columns rather than collapsing them to one scalar. It must preserve the distinction between strategy frequency and simulation frequency. The first implementation uses synthetic edits and one-component typed edits so footprint can be controlled and audited.
 
 ## 4. Theory targets
 
@@ -209,54 +212,74 @@ The first acquisition baselines are:
 
 The initial VOI approximation is decision-centric: prioritize candidates whose high-fidelity result can change the selected update, normalized by query cost. A full Bayesian VOI implementation is out of scope for the first version.
 
-## 6. World fidelity ladder
+### 5.1 Canonical transition record
 
-| Level | World | What it captures | What it does not prove |
-| --- | --- | --- | --- |
-| W0 | Observer | Historical state transitions or backtest | Endogenous response |
-| W1 | Execution replay | Fees, fills, queue, partial fills, slippage | Counterfactual future market response |
-| W2 | Interactive actor | Focal actions alter the market or transition process | Adaptive competitor response |
-| W3 | Generative counterfactual | Alternative order-flow or state trajectories | Ground truth; it remains a model |
-| W4 | Strategic | Competitors adapt to the focal policy | Universal equilibrium correctness |
+Every candidate transition is persisted as one row (Parquet for experiment tables; YAML/JSON for configuration and provenance). The schema must include these fields, with unavailable values represented as explicit `null`:
 
-W3 adapters such as M3 are alternative intervention models and disagreement signals, not ground truth labels. The paper must not claim that a single learned simulator is the true world.
+```text
+transition_id, round_id, incumbent_policy_id, candidate_policy_id,
+candidate_index, improvement_operator, edit_type,
+proxy_world_id, high_fidelity_world_id,
+proxy_incumbent_value, proxy_candidate_value, delta_proxy,
+actor_incumbent_value, actor_candidate_value, delta_actor,
+strategic_incumbent_value, strategic_candidate_value, delta_strategic,
+mechanical_effect, competition_effect,
+improvement_reversal, strategic_improvement_reversal,
+update_footprint, footprint_components,
+response_strength, competition_strength, opponent_context,
+hf_queried, hf_query_reason, hf_query_cost,
+seed, paired_seed_ids, config_id, git_commit, timestamp
+```
+
+The record must never silently substitute one fidelity level for another. It is the source table for metrics, figures, gate evidence, and the first milestone.
+
+## 6. World hierarchy and finance ladder
+
+The generic scientific hierarchy has exactly three worlds:
+
+| World | Definition | Output |
+| --- | --- | --- |
+| World 0: Observer | `s_(t+1) ~ P_0(s_(t+1) | s_t)`; focal actions do not materially alter future dynamics | `Delta_proxy` |
+| World 1: Actor | `s_(t+1) ~ P(s_(t+1) | s_t, a_t, pi_i)`; focal policy changes subsequent dynamics | `Delta_actor` |
+| World 2: Strategic | opponents respond through fixed, reactive, or finite-step adaptive policies | `Delta_strategic` |
+
+Finance is a testbed ladder inside this hierarchy:
+
+| Level | World | Required role |
+| --- | --- | --- |
+| F0 | Historical backtest | Fixed path and standard costs; no endogenous response |
+| F1 | Historical execution replay | Spread, partial fills, queue, slippage, fees, and execution constraints |
+| F2 | Interactive actor market | Impact, liquidity depletion, recovery/reversion, and execution-state feedback |
+| F3 | Alternative generative world model | Optional disagreement/interventional proxy; never ground truth |
+| F4 | Strategic multi-agent market | Noise traders, liquidity provider, and one adaptive competitor |
+
+The strategic opponent ladder is S0 fixed opponents, S1 reactive rules, and S2 finite-step adaptive responses. Only the focal policy uses PIVOT self-improvement. A learned world model such as M3 is an alternative intervention model and disagreement signal, never a ground-truth label.
 
 ## 7. Experimental program
 
-### Level A: controlled performative environment
+Run the following experiments in strict order. The controlled environment must be complete before finance integration.
 
-Use a fully known environment with response strength `lambda_response` and controlled update footprint `d(pi, pi')`.
+| Experiment | Required evidence |
+| --- | --- |
+| E1: Improvement Reversal | `Delta_proxy` vs `Delta_true`, ISC, IRR, IDE, confidence intervals, reversal quadrant |
+| E2: Response x footprint | IRR heatmap, stratified curves, and regression over response strength and update footprint |
+| E3: Performative overoptimization | `J_V(pi_t)` and `J_*(pi_t)` over rounds; do not assume deterioration must appear |
+| E4: Global vs Improvement Fidelity | Equal HF budget; policy-value MAE/rank correlation, IDE, ISC, IRR, ISR |
+| E5: PIVOT budget frontier | Proxy Only, Random HF, Top Proxy HF, Largest Footprint HF, Uncertainty HF, PIVOT, All-HF Oracle; CTI and ISR vs budget |
+| E6: Financial mechanical reversal | F0 -> F1 -> F2; vary participation, size, urgency, turnover; compare proxy and actor deltas |
+| E7: Strategic reversal | Same transition; compare actor and strategic deltas; do not tune to force the result |
+| E8: Competition strength | Sweep opponent count, adaptation steps/rate, market-share sensitivity; report SIRR and strategic sensitivity |
+| E9: Closed-loop self-improvement | Only after E1-E8; compare final `J_H(pi_T)` and `CTI_T` under equal HF budgets |
 
-Required experiments:
-
-1. **Improvement Reversal:** scatter `Delta_proxy` against `Delta_true`; report all four sign quadrants and confidence intervals for IRR.
-2. **Performative overoptimization:** plot `J_V(pi_t)` and `J_*(pi_t)` over self-improvement rounds.
-3. **Global vs differential fidelity:** hold high-fidelity data budget fixed; compare policy-value MAE/rank metrics with IDE/ISC/IRR.
-4. **PIVOT budget frontier:** plot cumulative true improvement or update-selection regret against the number of high-fidelity queries.
-
-The first heatmap is `IRR(lambda_response, footprint)`.
-
-### Level B: finance testbed
-
-Use the same fixed transition `pi -> pi'` while varying participation rate:
-
-```text
-rho = AgentVolume / MarketVolume
-```
-
-Compare backtest, replay, interactive actor, and strategic worlds. The main response plot reports proxy, actor, and strategic deltas against participation and opponent adaptation strength.
-
-The target strategic result is:
+The mandatory finance causal knob is:
 
 ```text
-Delta_proxy > 0, Delta_actor > 0, Delta_strategic < 0
+rho = Agent Trading Volume / Market Volume
 ```
 
-If the result only appears at implausibly large participation, it fails the finance Go/No-Go gate.
+Hold `pi -> pi'` fixed, evaluate F0/F1/F2/F4, and test whether participation changes magnitude, ordering, or sign. Do not tune the simulator merely to force a zero crossing. The desired but not guaranteed strategic case is `Delta_proxy > 0`, `Delta_actor > 0`, `Delta_strategic < 0`.
 
-### Deferred extensions
-
-EvoQuant-style typed candidate generation is an operator `A`, not the paper's novelty. M3 is a `V3` world adapter, not PIVOT. LLM generation and M3 integration begin only after Level A and the PIVOT budget gate pass.
+EvoQuant-style typed candidate generation is an improvement operator, not the paper's novelty. M3 is an F3 alternative world adapter, not PIVOT. LLM generation and learned-world-model integration begin only after the controlled estimand and PIVOT budget gates pass.
 
 ## 8. Baselines and ablations
 
@@ -264,12 +287,15 @@ EvoQuant-style typed candidate generation is an operator `A`, not the paper's no
 
 | Baseline | Tests |
 | --- | --- |
-| Proxy Only | No interactive verification |
-| Random HF | Value of the high-fidelity budget itself |
-| Top Proxy HF | Original cheap-screening strategy |
-| Global Value Model | Whether policy-level fidelity is enough |
-| Policy-Aware Simulator | Strong global simulator fidelity reference |
-| PIVOT | Paired transition-level fidelity |
+| B1 Proxy Only | No interventional evaluation |
+| B2 Random HF | Value of extra high-fidelity budget |
+| B3 Top Proxy | Standard cheap-screening strategy |
+| B4 Largest Footprint | Whether a simple footprint heuristic explains gains |
+| B5 Global Value Model | Policy-value model followed by subtraction |
+| B6 Global Ranking Model | Policy-ranking fidelity rather than update fidelity |
+| B7 Uncertainty Sampling | Generic active-learning reference |
+| B8 All-HF Oracle | Expensive upper reference |
+| B9 PIVOT | Transition-level differential modeling plus active intervention |
 
 Performative policy-gradient methods are controlled-environment references, not direct PIVOT baselines.
 
@@ -280,9 +306,14 @@ paired vs unpaired rollouts
 transition model vs global value model
 footprint vs no footprint
 active vs random high-fidelity queries
-mechanical vs strategic response
-fixed vs adaptive opponents
-small vs large updates
+PIVOT acquisition vs Top Proxy
+small vs large policy updates
+weak vs strong environment response
+F1 replay vs F2 interactive environment
+fixed vs adaptive competitors
+single vs multiple response models
+candidate count
+high-fidelity budget
 ```
 
 ## 9. Claim boundary
@@ -316,7 +347,7 @@ These are pre-registration-style engineering gates, not guaranteed findings:
 
 ## 11. Main-paper page budget
 
-The ICLR 2027 main paper is planned for nine pages:
+The ICLR 2027 main paper is planned for nine pages. Production code must generate seven figures; the page budget selects the five most central figures for the main text and places the remaining diagnostic figures in the appendix if space requires.
 
 | Page | Content |
 | --- | --- |
@@ -332,19 +363,61 @@ The ICLR 2027 main paper is planned for nine pages:
 
 Appendix material cannot carry the core theorem or the main evidence.
 
-## 12. Implementation order
+The production figure set is:
 
-1. Define `PolicyTransition` and the paired evaluator.
-2. Build the controlled performative environment and reproduce reversal.
-3. Test global fidelity versus improvement fidelity.
-4. Implement PIVOT and the budget frontier.
-5. Add historical replay and execution-aware finance adapters.
-6. Add interactive impact.
-7. Add adaptive competitors.
-8. Only then evaluate EvoQuant/LLM candidate operators.
-9. Add M3 and cross-world disagreement as the final robustness extension.
+1. When Better Gets Worse: proxy versus true delta.
+2. Improvement Reversal Phase Diagram: IRR over response and footprint.
+3. Optimizing the Wrong World: proxy and adaptive-world curves.
+4. Policy Fidelity Is Not Improvement Fidelity: global value/rank versus local update quality.
+5. PIVOT Budget Frontier: HF budget versus CTI or ISR.
+6. Observer -> Actor -> Strategic: identical transition across worlds.
+7. Strategic Improvement Reversal: competition strength versus true update gain.
 
-## 13. Reference leads supplied with the design
+## 12. Strict implementation order and milestones
+
+Do not change this order without a documented scientific reason.
+
+| Phase | Deliverable | Hard boundary |
+| --- | --- | --- |
+| P0 | `PolicyTransition`, world interface, paired evaluator, metrics, transition logging | No finance, LLM, or multi-agent |
+| P1 | Controlled performative environment | No finance, LLM, or multi-agent |
+| P2 | E1 and E2: establish whether reversal exists and is structured | Stop if the effect is pathological or noise-only |
+| P3 | E4: global policy fidelity versus local improvement fidelity | Record a null result honestly if global fidelity solves it |
+| P4 | Minimal PIVOT: differential model, active querying, update selection | Match HF budgets across baselines |
+| P5 | E5 budget frontier | Gate before finance |
+| P6 | F0 -> F1 finance replay | Offline and virtual fills only |
+| P7 | F2 interactive actor market and participation sweep | Stop if only absurd footprints reverse |
+| P8 | Add F4 strategic opponents through S0/S1/S2 | One focal self-improver only |
+| P9 | Run E7/E8, then E9 closed loop after prior experiments | Do not force a zero crossing |
+| P10 | Optional LLM/EvoQuant and F3/M3 adapters | Deferred extensions only |
+
+### First milestone
+
+One command must create a transition-level dataset containing `round`, `incumbent_id`, `candidate_id`, proxy incumbent/candidate values, `delta_proxy`, true incumbent/candidate values, `delta_true`, `improvement_reversal`, `update_footprint`, `response_strength`, and `seed`; it must also produce the proxy-versus-true scatter, IRR versus response, IRR versus footprint, response-by-footprint heatmap, and confidence intervals. No finance, LLM, or multi-agent code is allowed in this milestone.
+
+### Second milestone
+
+Using the same HF budget, compare a strong policy-value evaluator with a transition-level differential evaluator and produce policy-value MAE, policy rank correlation, IDE, ISC, IRR, and ISR. If the global evaluator completely solves the update problem, record that outcome and narrow the claim.
+
+### Third milestone
+
+PIVOT must beat Random HF and Top Proxy HF at matched budgets on CTI or ISR over multiple seeds with paired evaluation where possible.
+
+### Fourth and fifth milestones
+
+Finance must show a structured F0/F1 versus F2 difference at a physically interpretable, economically plausible footprint. Strategic adaptation should add a systematic effect beyond mechanical response; if it only adds variance, keep it secondary and do not redesign the paper around it.
+
+The full 40-section master specification is archived at `docs/master-goal.md` and is authoritative for requirements not repeated in this condensed design.
+
+## 13. Engineering, testing, and non-goals
+
+The implementation targets Python 3.10+ with typed interfaces, dataclasses or Pydantic-style schemas, centralized configuration, explicit seeds, and deterministic modes where possible. Every run persists configuration, random seed, git commit, dependency versions, environment version, dataset/version ID, timestamp, and machine information where relevant. Constants must not be hidden in implementation files. Missing worlds, datasets, or failed runs must be recorded explicitly and fail loudly rather than being silently substituted or dropped.
+
+Mandatory unit coverage includes transition serialization, metric formulas, reversal detection, paired deltas, confidence intervals, footprint calculations, and improvement decomposition. Analytically solvable toy environments must make direct, mechanical, and competition effects known. At least one integration test must complete `pi_t -> candidates -> proxy -> PIVOT -> HF query -> pi_{t+1}`.
+
+Non-goals are reproducing all EvoQuant experiments, building another factor-mining or HFT system, maximizing Sharpe, training a market foundation model, reproducing M3 from scratch, solving general multi-agent equilibrium, fully co-evolving all agents, live or production trading, action authorization, abstention, EPV-style gating, KAIROS integration, or adding complexity for novelty optics.
+
+## 14. Reference leads supplied with the design
 
 The following links were supplied in the preceding research discussion. They are research leads for the implementation bibliography; each must be independently checked for version, claims, and citation details before submission.
 
