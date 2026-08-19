@@ -11,8 +11,10 @@ Working paper title: *When Better Gets Worse: Improvement Fidelity for Self-Impr
 ## Current Status
 
 - Research specification: frozen and documented.
-- Implementation: not started.
-- Scientific gates A-F: all `Not run`.
+- Implementation: P0-P9 research harnesses are present; P10 LLM/EvoQuant/M3 adapters remain deferred.
+- Scientific gates A-F: none formally passed. The calibrated E5 smoke is
+  promising at small budgets, but Gate D still requires independent registered
+  runs and paired intervals; no smoke result is a paper claim.
 - Live trading or external execution: out of scope.
 
 Start with:
@@ -22,4 +24,14 @@ Start with:
 - `/opt/projects/research/pivot/docs/superpowers/plans/2026-08-19-pivot-master-implementation.md`
 - `/opt/projects/research/pivot/docs/experiments/gates.md`
 
-The first implementation phase is P0: transition schemas, world protocol, paired evaluation, metrics, and append-only logging. No finance, LLM, world-model, or multi-agent code belongs in P0/P1.
+Run the controlled first milestone with:
+
+```bash
+python3 scripts/run_sweep.py --config configs/sweeps/p2.yaml --output results/raw/controlled-first
+```
+
+The command writes a Parquet/JSONL transition table, provenance, confidence
+intervals, CSV source tables, and PNG diagnostics. Finance and strategic
+commands are separate (`experiments/e6_finance_actor.py`, `e7`, `e8`, `e9`),
+and all fills remain virtual. See `docs/implementation-status.md` for the
+current gate-aware status and known limitations.

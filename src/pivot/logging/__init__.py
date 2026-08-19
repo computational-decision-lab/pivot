@@ -1,0 +1,1 @@
+"""Auditable transition artifact storage."""

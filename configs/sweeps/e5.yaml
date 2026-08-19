@@ -1,0 +1,16 @@
+world:
+  response_strength: 0.7
+  competition_strength: 0.0
+  noise_scale: 0.05
+  horizon: 12
+  reward_bound: 10.0
+  optimization_strength: 1.0
+  config_id: controlled-e5-v1
+seeds: [1, 2, 3, 4, 5]
+response_strengths: [0.0, 0.3, 0.7, 0.9]
+candidate_scales: [0.1, 0.2, 0.3, 0.5]
+optimization_strengths: [0.5, 1.0, 1.5]
+train_fraction: 0.5
+calibration_budget: 24
+calibration_sampling: stratified_round_robin
+query_budgets: [0, 1, 2, 3, 4]

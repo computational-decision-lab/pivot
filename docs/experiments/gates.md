@@ -4,12 +4,12 @@
 
 | Gate | 判定内容 | 状态 | 证据 |
 | --- | --- | --- | --- |
-| A | Controlled Improvement Reversal 在非病态 response/footprint 区域稳定出现 | Not run | 等待 P2/E1 |
-| B | IRR 与 update footprint 和/或 environment response 有结构关系 | Not run | 等待 P2/E2 |
-| C | Global Fidelity 不能完全替代 Improvement Fidelity | Not run | 等待 P3/E4 |
-| D | PIVOT 在匹配 HF budget 下优于 Random HF 与 Top Proxy HF | Not run | 等待 P4-P5/E5 |
-| E | Finance F0/F1 与 F2 在可辩护 participation 范围有结构差异 | Not run | 等待 P6-P7/E6 |
-| F | Strategic response 超出 mechanical response，产生系统性效应 | Not run | 等待 P9/E7-E8 |
+| A | Controlled Improvement Reversal 在非病态 response/footprint 区域稳定出现 | Not run | P2 smoke 已生成；需独立冻结 runs/CI |
+| B | IRR 与 update footprint 和/或 environment response 有结构关系 | Not run | P2 phase table 已生成；需独立聚合/结构检验 |
+| C | Global policy fidelity 不能完全替代 local improvement fidelity | Not run | E4 matched-budget smoke 已生成；当前差异需独立聚合 |
+| D | PIVOT 在固定 HF budget 下优于 Random/Top Proxy | Not run | E5 calibrated smoke 在小预算改善；需注册 runs/paired CI |
+| E | Finance F0/F1/F2 在合理 participation 下有结构差异 | Not run | F2 fixture smoke 已生成；需公开数据校准 |
+| F | Strategic response 增加系统性 effect | Not run | E7/E8 paired sweep smoke 已生成；需正式 seed/旋钮聚合 |
 
 ## Evidence record
 
