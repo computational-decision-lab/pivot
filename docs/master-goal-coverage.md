@@ -4,17 +4,17 @@ This matrix audits the authoritative specification in [master-goal.md](master-go
 
 | Master requirement | Authoritative location | Current status | Evidence required for completion |
 | --- | --- | --- | --- |
-| Policy update is the scientific object | `master-goal.md` sections 1-3; design section 2 | Implemented | Transition-level rows in Parquet; formal runs pending |
+| Policy update is the scientific object | `master-goal.md` sections 1-3; design section 2 | Implemented and exercised | Registered transition-level rows and public paired rows; external confirmation pending |
 | PIVOT acronym and method boundary | master sections 9-12; master plan P4 | Implemented | Paired correction + active HF implementation |
 | World 0/1/2 hierarchy | master section 5; design section 6 | Implemented through F4 | Separate evaluator IDs; F3 remains deferred |
 | F0-F4 finance ladder | master section 18; design section 6 | Partial | F0/F1/F2/F4 fixtures; F3 `ground_truth=false` adapter deferred |
-| S0/S1/S2 opponent ladder | master section 19; design section 6/P8 | Implemented as smoke | Fixed/reactive/adaptive opponent logs; formal sweep pending |
+| S0/S1/S2 opponent ladder | master section 19; design section 6/P8 | Implemented; registered fixture sweep completed | External strategic environment validation pending |
 | IDE/ISC/IRR/SIRR/MTR/ISR/CTI/HF cost | master section 7; master plan schemas | Implemented and tested | Metrics table with counts and registered intervals |
 | Full `PolicyTransition` schema | master section 13; master plan schemas | Implemented and tested | Every required column present, nulls explicit |
 | Generic and finance footprint components | master sections 14-15; design section 3.3 | Implemented and tested | Component-level footprint columns and tests |
 | Controlled world before finance | master sections 17 and 29; plan P1-P2 | Implemented | P1/P2 harnesses and import boundary tests |
 | E1-E9 strict experiment order | master section 21; master plan phase table | Harnesses and registered runs implemented | E1-E9 manifests exist; external-validity review pending |
-| B1-B9 baseline matrix | master section 22; master plan P4 | Implemented | Matched-budget baseline table; independent intervals pending |
+| B1-B9 baseline matrix | master section 22; master plan P4 | Implemented | Registered matched-budget fixture table and independent intervals; external confirmation pending |
 | Twelve required ablations | master section 23; master plan ablation matrix | Planned, not run | Ablation result rows and seed intervals |
 | Statistical protocol and failed-run retention | master section 24/27; global constraints | Implemented for registered P2-E9 | Clean-room rerun, failure ledger, and independent aggregation; external review pending |
 | Seven production figures | master section 25; design section 11 | Pipeline implemented | Seven images plus source tables and hashes from complete input bundle |
@@ -24,7 +24,7 @@ This matrix audits the authoritative specification in [master-goal.md](master-go
 | First milestone | master section 30; plan P1/P2 | Implemented; registered run completed | `run_sweep.py`, 240-row Parquet/JSONL, five diagnostics |
 | Second milestone | master section 31; plan P3 | Implemented; matched-budget smoke completed | `e4_global_vs_local.py`, disjoint IDs and budget ledger |
 | Third milestone | master section 32; plan P4/P5 | Implemented; fixture Gate D pass | `e5_budget_frontier.py`; external-validity review required |
-| Fourth milestone | master section 33; plan P6/P7 | Implemented as virtual fixture; calibration pending | F0/F1/F2 participation sweep |
+| Fourth milestone | master section 33; plan P6/P7 | Fixture implemented; public execution audit partial | Confirmatory multi-asset/regime audit plus causal response validation |
 | Fifth milestone | master section 34; plan P9 | Implemented; fixture Gate F pass | E7/E8/E9 registered strategic and closed-loop logs |
 | Gates A-F | master section 35; `experiments/gates.md` | Fixture-level passes recorded; paper promotion pending | Registered evidence record and external-validity review |
 | Non-goals and no live trading | master section 36; global constraints | Documented | Boundary audit before release |
@@ -32,7 +32,9 @@ This matrix audits the authoritative specification in [master-goal.md](master-go
 ## Current conclusion
 
 The documentation and implementation layers are aligned with the master
-specification. Fixture-level registered passes are recorded, but none is being
-presented as a final submission claim. P10 remains intentionally deferred; the
-next research blocker is external-validity review and calibration of the
-PIVOT/finance/strategic fixtures.
+specification. Fixture-level registered passes and a checksum-bound public
+finance audit are recorded, but none is being presented as a final submission
+claim. The public percentage-depth result is an observational execution proxy,
+not causal actor-world ground truth. P10 remains intentionally deferred; the
+next blockers are a preregistered confirmatory public-data expansion, causal
+response robustness, and external strategic validation.

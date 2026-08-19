@@ -1,7 +1,8 @@
 # PIVOT 项目文档
 
 本目录记录已经冻结的 ICLR 2027 研究方向、实施路线和当前实现状态。P0-P9
-研究 harness 已落盘并通过本地验证；注册 fixture gate 结果已单独记录，但不等于论文级结论。完整主规格保存在
+研究 harness 已落盘并通过本地验证；注册 fixture gate 和七个公开市场 session
+的观察性执行审计已单独记录，但不等于论文级结论。完整主规格保存在
 `master-goal.md`，它优先于较早的讨论稿。
 
 核心冻结项：
@@ -17,6 +18,7 @@
 - Master implementation plan: [2026-08-19-pivot-master-implementation.md](superpowers/plans/2026-08-19-pivot-master-implementation.md)
 - Superseded planning draft: [2026-08-19-pivot-implementation.md](superpowers/plans/2026-08-19-pivot-implementation.md)
 - Gate ledger: [gates.md](experiments/gates.md)
+- Public finance evidence and F2 amendment: [public-finance-evidence-2026-08-19.md](experiments/public-finance-evidence-2026-08-19.md)
 - Requirement coverage: [master-goal-coverage.md](master-goal-coverage.md)
 - Research question: [research_question.md](research_question.md)
 - Estimands and metrics: [estimands.md](estimands.md)
@@ -26,4 +28,4 @@
 - Reproducibility contract: [reproducibility.md](reproducibility.md)
 - ICLR execution schedule: [iclr2027-execution-schedule.md](iclr2027-execution-schedule.md)
 
-项目范围锁定为一个核心现象、一个统计对象、一个方法和一条环境阶梯；M3 与 LLM/EvoQuant 只作为后置扩展。任何实验结果都必须先进入 transition-level artifact 和 gate ledger，才能进入论文叙事。
+项目范围锁定为一个核心现象、一个统计对象、一个方法和一条环境阶梯；M3 与 LLM/EvoQuant 只作为后置扩展。任何实验结果都必须先进入 transition-level artifact 和 gate ledger，才能进入论文叙事。当前公开 percentage-depth 结果只支持 execution-proxy 审计，不支持 causal endogenous-response claim。

@@ -8,11 +8,14 @@
 
 **Tech Stack:** Python 3.10+, typed dataclasses or Pydantic-style schemas, NumPy/Pandas/SciPy/scikit-learn, PyYAML, pytest, Ruff, mypy, Matplotlib, Parquet, JSON/YAML provenance, and SHA-256 manifests.
 
-**Live implementation note (2026-08-19):** P0-P9 harnesses and smoke
-verification are now present in the checkout. The checkboxes below remain the
-original execution contract; current implementation and gate status are
-tracked in `docs/implementation-status.md` and `docs/experiments/gates.md`.
-P10 remains intentionally deferred.
+**Live implementation note (2026-08-19):** P0-P9 harnesses, registered fixture
+runs, and a seven-session public finance execution audit are present in the
+checkout. The checkboxes below remain the original execution contract rather
+than a live completion ledger; current implementation and gate status are
+tracked in `docs/implementation-status.md`, `docs/experiments/gates.md`, and
+`docs/experiments/public-finance-evidence-2026-08-19.md`. The public depth audit
+is observational, not causal actor-world validation. P10 remains intentionally
+deferred.
 
 ## Global Constraints
 

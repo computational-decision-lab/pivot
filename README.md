@@ -13,8 +13,9 @@ Working paper title: *When Better Gets Worse: Improvement Fidelity for Self-Impr
 - Research specification: frozen and documented.
 - Implementation: P0-P9 research harnesses are present; P10 LLM/EvoQuant/M3 adapters remain deferred.
 - Scientific gates A-F: fixture-level registered passes are recorded, but none
-  are promoted to final paper claims. Real-data calibration and external
-  validity review remain open.
+  are promoted to final paper claims. A checksum-bound seven-session public
+  Binance execution audit is complete; causal response and external strategic
+  validity remain open.
 - Live trading or external execution: out of scope.
 
 Start with:
@@ -25,6 +26,7 @@ Start with:
 - `/opt/projects/research/pivot/docs/experiments/gates.md`
 - `/opt/projects/research/pivot/docs/experiments/registered-protocol.md`
 - `/opt/projects/research/pivot/docs/experiments/registered-evidence-2026-08-19.md`
+- `/opt/projects/research/pivot/docs/experiments/public-finance-evidence-2026-08-19.md`
 
 Run the controlled first milestone with:
 
@@ -37,3 +39,19 @@ intervals, CSV source tables, and PNG diagnostics. Finance and strategic
 commands are separate (`experiments/e6_finance_actor.py`, `e7`, `e8`, `e9`),
 and all fills remain virtual. See `docs/implementation-status.md` for the
 current gate-aware status and known limitations.
+
+Acquire and run the frozen public finance audit with:
+
+```bash
+python scripts/fetch_public_finance.py \
+  --manifest configs/data/binance_btcusdt_um_2023-01-01_07.yaml \
+  --output-root data/public
+
+python experiments/e6_public_calibration.py \
+  --config configs/finance/e6_public_calibration.yaml \
+  --output results/raw/e6-public-calibration
+```
+
+The acquisition command only reads the official Binance public archive and
+verifies every file against its frozen SHA-256. The resulting depth world is
+an observational execution proxy and is never labeled endogenous ground truth.

@@ -69,3 +69,25 @@ python scripts/aggregate_registered.py --experiment e9 \
 The resulting JSON is evidence for the gate ledger, not an automatic paper
 claim. Fixture-level passes still require external review of environment
 plausibility and the registered configuration before being promoted.
+
+## Public finance audit
+
+The public execution audit is a separate exploratory layer; its seven market
+sessions are observational units, not registered seed replicates. It cannot by
+itself promote Gate E.
+
+```bash
+python scripts/fetch_public_finance.py \
+  --manifest configs/data/binance_btcusdt_um_2023-01-01_07.yaml \
+  --output-root data/public
+
+python experiments/e6_public_calibration.py \
+  --config configs/finance/e6_public_calibration.yaml \
+  --output results/raw/e6-public-calibration
+```
+
+The manifest freezes source URLs and SHA-256 values. The experiment stores the
+typed transition, execution assumptions, aligned session coverage, calibration
+summary, raw rows, provenance, and output hashes. The public update was chosen
+during exploratory protocol refinement; a confirmatory expansion must freeze
+the update-generation and holdout-selection rules before outcome inspection.

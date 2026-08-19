@@ -1,5 +1,10 @@
 # Smoke Verification Record
 
+> Historical semantics notice: this record predates commit `4c1677c`. Its E6
+> and downstream strategic diagnostics used the superseded repeated-holding
+> impact implementation. Use `public-finance-evidence-2026-08-19.md` and
+> `registered-evidence-2026-08-19.md` for current E6--E9 values.
+
 This record documents implementation verification only. It is not a scientific
 gate pass and must not be quoted as an independent paper result.
 
@@ -34,7 +39,7 @@ configs/sweeps/e9.yaml                 2fbebccf7b9833c32e1277fe3f32f74ff33ed98bb
 | E3 overoptimization | 12 rounds persisted |
 | E4 matched-budget transfer | 24 HF transitions; disjoint train/test IDs; global/local/boosted ISR emitted |
 | E5 budget frontier | 27 records, 48 held-out groups, all seven baseline labels present |
-| E6 F0/F1/F2 | 15 paired rows; F2 equals F1 at participation `0.0` and crosses below zero by `0.05` in the fixture |
+| E6 F0/F1/F2 | Historical smoke only; 15 paired rows under superseded F2 semantics |
 | E7 strategic reversal | 3/3 paired rows satisfy `delta_proxy > 0`, `delta_actor > 0`, `delta_strategic < 0` |
 | E8 competition sweep | 90 rows covering fixed/reactive/adaptive modes, opponent counts, steps, rates, and sensitivities |
 | E9 closed loop | 8 rounds, 24 transition rows, 8 HF query rows |
@@ -51,8 +56,8 @@ PIVOT:        ISR 0.24290896
 These numbers are fixture smoke diagnostics only. Independent registered
 summaries are recorded separately in
 `registered-evidence-2026-08-19.md`; those fixture-level passes still do not
-constitute final paper claims until the finance/strategic calibration protocol
-and external-validity review are completed.
+constitute final paper claims until confirmatory finance calibration and
+external strategic-validity reviews are completed.
 
 ## Reproduction command
 

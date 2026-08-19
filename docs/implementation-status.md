@@ -1,6 +1,7 @@
 # Implementation Status
 
-Updated 2026-08-19 after the registered-run and independent aggregation pass.
+Updated 2026-08-19 after the public-data calibration audit and the F2
+fill-only impact semantics amendment.
 
 ## Implemented
 
@@ -11,10 +12,10 @@ Updated 2026-08-19 after the registered-run and independent aggregation pass.
 | P2 | registered response x footprint x optimization x seed sweep; E1/E2/E3 commands; five first-milestone artifacts | Implemented; smoke/registered run completed |
 | P3 | matched-budget global value vs differential transfer models and E4 ledger | Implemented; clean run completed |
 | P4/P5 | acquisition baselines, PIVOT heuristic, round harness, E5 frontier, figure validation pipeline | Implemented; clean run completed |
-| P6/P7 | virtual F0/F1 replay and F2 interactive participation fixture | Implemented and tested |
-| P8/P9 | S0/S1/S2 strategic wrapper, E7/E8/E9 scripts, closed-loop query ledger | Implemented; only smoke evidence so far |
-| Registered evidence | frozen P2/E4/E5 registries, isolated run manifests, paired aggregation, failed-run retention | Implemented; fixture-level A-D summaries generated |
-| E6-E9 registered evidence | finance/strategic/closed-loop registries, paired E/F summaries, sensitivity contrast | Implemented; fixture-level E/F summaries generated |
+| P6/P7 | virtual F0/F1 replay, corrected fill-only F2 fixture, official-public-data acquisition, parser, calibration, and depth-aware execution proxy | Implemented and tested; seven-session public audit completed |
+| P8/P9 | S0/S1/S2 strategic wrapper, E7/E8/E9 scripts, closed-loop query ledger | Implemented; corrected three-run registered fixture evidence completed |
+| Registered evidence | frozen P2-E9 registries, isolated run manifests, paired aggregation, failed-run retention | Implemented; fixture-level A-F summaries generated |
+| Public finance audit | checksum-bound BTCUSDT USD-M one-minute kline and percentage-depth sessions, paired F0/F1/F2-depth sweep | Implemented; observational external audit partial |
 
 ## Scientific gates
 
@@ -28,18 +29,27 @@ The implementation does not silently promote smoke results to paper claims.
 - Gate D: the registered E5 summary passes at budget 1 on paired ISR against
   Random and Top Proxy; this remains a controlled-fixture result, not a broad
   superiority claim.
-- Gate E: F2 changes delta at plausible fixture participation values and equals
-  F1 at zero participation; the registered fixture-level E result passes, while
-  calibration against a real execution source is still required.
-- Gate F: the registered E7/E8 fixture summary passes using E7 SIRR plus E8
-  competition-effect sensitivity; external strategic validation is still
-  required.
+- Gate E: corrected F2 equals F1 at zero participation and changes delta in the
+  registered fixture. The public seven-session depth proxy also equals F1 at
+  zero participation, has `0/5` reversals at 1 percent participation, and has
+  `1/5` at 5 percent. This is observational execution evidence, not identified
+  endogenous response, so paper promotion remains pending.
+- Gate F: the corrected registered E7/E8 fixture summary has positive E8 actor
+  improvement before adaptation and E7/E8 SIRR of `1.0`. External strategic
+  validation is still required.
 
 ## Remaining before a submission-grade result
 
-1. Review the fixture-level A-F outputs and decide which claims survive a
-   stronger environment audit before promoting any gate in the paper.
-2. Replace the synthetic finance fixture with versioned public-data execution
-   replay and calibrate F2 impact/recovery.
-3. Run the full strategic sweep, then freeze Gate F evidence.
-4. Keep LLM/EvoQuant/M3 adapters deferred until these gates are recorded.
+1. Freeze a confirmatory update-generation and holdout-selection rule before
+   inspecting expanded assets or regimes; the current public update is
+   exploratory.
+2. Expand the checksum-bound public audit across assets and predeclared
+   volatility/liquidity regimes. Seven consecutive BTCUSDT sessions do not
+   establish external validity.
+3. Add a causal interactive response source or multiple intervention-model
+   robustness audit. Percentage depth does not identify replenishment,
+   post-trade response, hidden liquidity, or impact recovery.
+4. Validate strategic reversal outside the deterministic fixture, then run the
+   complete ablation, clean-room figure, and paper-result pipeline.
+5. Keep LLM/EvoQuant/M3 adapters deferred until the core claims survive those
+   checks.

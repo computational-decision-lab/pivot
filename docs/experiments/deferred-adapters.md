@@ -1,7 +1,9 @@
 # Deferred P10 Adapters
 
 LLM/EvoQuant candidate generation and learned market world models remain
-intentionally unimplemented while Gates C--F are open.
+intentionally unimplemented while Gates C--F lack submission-grade external
+evidence. Fixture-level passes and the observational public-depth audit do not
+remove this stop condition.
 
 When enabled later, the contracts are:
 
@@ -12,7 +14,7 @@ When enabled later, the contracts are:
 - A learned F3 world adapter reads a local result file and always emits
   `ground_truth: false`; it is an alternative interventional proxy.
 - No adapter may support a core claim until the controlled, finance, and
-  strategic gates have registered evidence.
+  strategic gates survive their required external and confirmatory checks.
 
 This file is the explicit P10 stop marker. Absence of adapter code is a gate
 decision, not an accidental implementation gap.
