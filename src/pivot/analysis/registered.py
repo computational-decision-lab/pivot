@@ -210,6 +210,44 @@ def summarize_e5_runs(run_dirs: Sequence[Path], *, target_budget: int) -> dict[s
     }
 
 
+def summarize_ablation_runs(run_dirs: Sequence[Path]) -> dict[str, Any]:
+    """Aggregate the twelve-ablation summaries over independent runs."""
+
+    payloads = [_read_json(Path(run) / "ablation_summary.json") for run in run_dirs]
+    valid = [payload for payload in payloads if payload.get("ablation_count") == 12]
+    by_ablation: dict[str, dict[str, dict[str, list[float]]]] = defaultdict(
+        lambda: defaultdict(lambda: defaultdict(list))
+    )
+    for payload in valid:
+        for ablation_id, ablation in payload.get("ablations", {}).items():
+            for variant, metrics in ablation.get("variants", {}).items():
+                for metric, summary in metrics.items():
+                    if isinstance(summary, Mapping) and summary.get("estimate") is not None:
+                        by_ablation[ablation_id][variant][metric].append(float(summary["estimate"]))
+    aggregate: dict[str, Any] = {}
+    for ablation_id, variants in sorted(by_ablation.items()):
+        aggregate[ablation_id] = {
+            variant: {
+                metric: _bootstrap(values, seed=20260900 + index)
+                for index, (metric, values) in enumerate(sorted(metrics.items()))
+            }
+            for variant, metrics in sorted(variants.items())
+        }
+    return {
+        "run_count": len(run_dirs),
+        "valid_run_count": len(valid),
+        "ablation_count": len(aggregate),
+        "run_ids": [str(_provenance(Path(run)).get("run_id", Path(run).name)) for run in run_dirs],
+        "config_hashes": sorted(
+            str(value)
+            for run in run_dirs
+            for value in [_provenance(Path(run)).get("config_sha256")]
+            if value is not None
+        ),
+        "ablations": aggregate,
+    }
+
+
 def summarize_e6_runs(
     run_dirs: Sequence[Path], *, target_participation: float = 0.05, tolerance: float = 1e-12
 ) -> dict[str, Any]:

@@ -19,7 +19,11 @@ def _row_value(row: Mapping[str, Any] | PolicyTransition, key: str, default: flo
     return default if value is None else float(value)
 
 
-def transition_feature_vector(row: Mapping[str, Any] | PolicyTransition) -> FloatArray:
+def transition_feature_vector(
+    row: Mapping[str, Any] | PolicyTransition,
+    *,
+    include_footprint: bool = True,
+) -> FloatArray:
     """Return the fixed first-version feature vector for a policy transition.
 
     The vector intentionally exposes only information available before an HF
@@ -33,17 +37,26 @@ def transition_feature_vector(row: Mapping[str, Any] | PolicyTransition) -> Floa
     else:
         value = row.get("footprint_components", {})
         footprint_components = value if isinstance(value, Mapping) else {}
+    footprint_values = (
+        _row_value(row, "update_footprint"),
+        float(footprint_components.get("mean_kl", 0.0) or 0.0),
+        float(footprint_components.get("action_shift", 0.0) or 0.0),
+        float(footprint_components.get("entropy_change", 0.0) or 0.0),
+        float(footprint_components.get("support_expansion", 0.0) or 0.0),
+    )
+    if not include_footprint:
+        footprint_values = (0.0, 0.0, 0.0, 0.0, 0.0)
     return np.asarray(
         [
             _row_value(row, "delta_proxy"),
-            _row_value(row, "update_footprint"),
+            footprint_values[0],
             _row_value(row, "response_strength"),
             _row_value(row, "competition_strength"),
             _row_value(row, "candidate_index"),
-            float(footprint_components.get("mean_kl", 0.0) or 0.0),
-            float(footprint_components.get("action_shift", 0.0) or 0.0),
-            float(footprint_components.get("entropy_change", 0.0) or 0.0),
-            float(footprint_components.get("support_expansion", 0.0) or 0.0),
+            footprint_values[1],
+            footprint_values[2],
+            footprint_values[3],
+            footprint_values[4],
         ],
         dtype=np.float64,
     )

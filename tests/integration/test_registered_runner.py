@@ -50,3 +50,23 @@ seed_sets:
         assert (run / "transitions.jsonl").exists()
     with pytest.raises(FileExistsError, match="refusing to overwrite"):
         run_registered(registry, output, project_root=Path.cwd())
+
+
+def test_registered_runner_accepts_ablation_suite(tmp_path: Path) -> None:
+    registry = tmp_path / "ablations.yaml"
+    registry.write_text(
+        """experiment: ablations
+base_config: configs/sweeps/ablations.yaml
+seed_sets:
+  - run_id: a01
+    seeds: [41, 42, 43, 44]
+  - run_id: a02
+    seeds: [51, 52, 53, 54]
+""",
+        encoding="utf-8",
+    )
+    output = tmp_path / "runs"
+    result = run_registered(registry, output, project_root=Path.cwd())
+    assert result["experiment"] == "ablations"
+    assert result["n_ok"] == 2
+    assert (output / "a01" / "ablation_summary.json").exists()

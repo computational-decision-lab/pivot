@@ -23,8 +23,8 @@ def load_registry(path: Path) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise TypeError("registry must be a mapping")
     experiment = payload.get("experiment")
-    if experiment not in {"p2", "e4", "e5", "e6", "e7", "e8", "e9"}:
-        raise ValueError("registry experiment must be one of p2, e4, e5, e6, e7, e8, e9")
+    if experiment not in {"p2", "e4", "e5", "e6", "e7", "e8", "e9", "ablations"}:
+        raise ValueError("registry experiment must be one of p2, e4, e5, e6, e7, e8, e9, ablations")
     seed_sets = payload.get("seed_sets")
     if not isinstance(seed_sets, list) or not seed_sets:
         raise ValueError("registry seed_sets must not be empty")
@@ -89,6 +89,7 @@ def run_registered(
         "e7": "experiments/e7_strategic_reversal.py",
         "e8": "experiments/e8_competition.py",
         "e9": "experiments/e9_closed_loop.py",
+        "ablations": "experiments/ablation_suite.py",
     }[str(registry["experiment"])]
     results: list[dict[str, Any]] = []
     for item in registry["seed_sets"]:

@@ -15,6 +15,7 @@ from pivot.analysis.registered import (
     evaluate_gate_d,
     evaluate_gate_e,
     evaluate_gate_f,
+    summarize_ablation_runs,
     summarize_e4_runs,
     summarize_e5_runs,
     summarize_e6_runs,
@@ -28,7 +29,7 @@ from pivot.analysis.registered import (
 def main() -> None:
     parser = argparse.ArgumentParser(description="Aggregate registered PIVOT evidence")
     parser.add_argument(
-        "--experiment", choices=("p2", "e4", "e5", "e6", "e7", "e8", "e9", "f"), required=True
+        "--experiment", choices=("p2", "e4", "e5", "e6", "e7", "e8", "e9", "ablations", "f"), required=True
     )
     parser.add_argument("--inputs", nargs="+", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -46,6 +47,9 @@ def main() -> None:
     elif args.experiment == "e5":
         summary = summarize_e5_runs(args.inputs, target_budget=args.target_budget)
         gates = evaluate_gate_d(summary)
+    elif args.experiment == "ablations":
+        summary = summarize_ablation_runs(args.inputs)
+        gates = {"status": "coverage-summary", "ablation_count": summary["ablation_count"]}
     elif args.experiment == "e6":
         summary = summarize_e6_runs(args.inputs, target_participation=args.target_participation)
         gates = evaluate_gate_e(summary)

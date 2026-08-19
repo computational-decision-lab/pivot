@@ -25,6 +25,7 @@ class DifferentialModel:
     """Ridge model for the paired correction `Delta_H - Delta_proxy`."""
 
     alpha: float = 1e-3
+    include_footprint: bool = True
     coefficients: FloatArray | None = None
     intercept: float = 0.0
     residual_std: float = 0.0
@@ -39,7 +40,7 @@ class DifferentialModel:
     ) -> None:
         if len(transition_features) != len(high_fidelity_corrections) or not high_fidelity_corrections:
             raise ValueError("features and corrections must have equal non-zero length")
-        matrix = _coerce_matrix(transition_features)
+        matrix = _coerce_matrix(transition_features, include_footprint=self.include_footprint)
         target = np.asarray(high_fidelity_corrections, dtype=np.float64)
         if not np.all(np.isfinite(target)):
             raise ValueError("corrections must be finite")
@@ -57,7 +58,7 @@ class DifferentialModel:
     def predict_correction(self, transition: Mapping[str, Any] | Any) -> CorrectionPrediction:
         if self.coefficients is None:
             raise RuntimeError("DifferentialModel must be fitted before prediction")
-        vector = transition_feature_vector(transition)
+        vector = transition_feature_vector(transition, include_footprint=self.include_footprint)
         correction = float(self.intercept + vector @ self.coefficients)
         delta_proxy = float(transition.get("delta_proxy", 0.0)) if isinstance(transition, Mapping) else float(getattr(transition, "delta_proxy", 0.0) or 0.0)
         predicted_delta = delta_proxy + correction
@@ -162,13 +163,17 @@ def _fit_stump(matrix: FloatArray, residual: FloatArray) -> _RegressionStump | N
     return None if best is None else best[1]
 
 
-def _coerce_matrix(features: Sequence[Any]) -> FloatArray:
+def _coerce_matrix(
+    features: Sequence[Any], *, include_footprint: bool = True
+) -> FloatArray:
     vectors: list[FloatArray] = []
     for feature in features:
         if _is_numeric_vector(feature):
             vectors.append(np.asarray(feature, dtype=np.float64))
         else:
-            vectors.append(transition_feature_vector(feature))
+            vectors.append(
+                transition_feature_vector(feature, include_footprint=include_footprint)
+            )
     matrix = np.asarray(vectors, dtype=np.float64)
     if matrix.ndim != 2:
         raise ValueError("transition features must form a two-dimensional matrix")
