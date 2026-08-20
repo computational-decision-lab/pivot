@@ -160,8 +160,9 @@ def _parse_fonts(text: str) -> list[dict[str, Any]]:
         fields = line.split()
         if len(fields) < 7:
             continue
-        # pdffonts columns are: name, type, encoding, emb, sub, uni, ...
-        fonts.append({"name": fields[0], "type": fields[1], "embedded": fields[4] == "yes"})
+        # The type column can itself contain spaces (for example, ``Type 1``).
+        # The five trailing fields are always emb, sub, uni, object, and ID.
+        fonts.append({"name": fields[0], "type": fields[1], "embedded": fields[-5] == "yes"})
     return fonts
 
 
