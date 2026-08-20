@@ -261,6 +261,27 @@ def test_multiround_comparison_is_byte_deterministic(tmp_path: Path) -> None:
     assert (first / "manifest.json").read_bytes() == (second / "manifest.json").read_bytes()
 
 
+def test_multiround_comparison_manifest_covers_every_result_file(tmp_path: Path) -> None:
+    output = tmp_path / "comparison"
+    command = [
+        sys.executable,
+        "scripts/run_improve_x_comparison.py",
+        "--config",
+        "configs/improve_x/comparison.yaml",
+        "--benchmark",
+        "benchmarks/improvementbench/v2",
+        "--output",
+        str(output),
+    ]
+    subprocess.run(command, cwd=PROJECT_ROOT, check=True, capture_output=True, text=True)
+    manifest = json.loads((output / "manifest.json").read_text(encoding="utf-8"))
+
+    assert manifest["row_count"] == 108
+    assert manifest["benchmark_manifest_sha256"]
+    for name, digest in manifest["files"].items():
+        assert hashlib.sha256((output / name).read_bytes()).hexdigest() == digest
+
+
 def test_trajectory_runner_retains_candidates_and_multiple_rounds(tmp_path: Path) -> None:
     output = tmp_path / "trajectory"
     run_script("scripts/run_improvement_trajectory.py", "configs/improve_x/trajectory.yaml", output)

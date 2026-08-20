@@ -77,6 +77,18 @@ Its actor-oracle collection promotion is explicitly metadata, not a claim
 that PIVOT-X has won a held-out comparison. See
 `benchmarks/improvementbench/v2/README.md`.
 
+The matched-budget trajectory diagnostic is reproducible with:
+
+```bash
+.venv/bin/python scripts/run_improve_x_comparison.py \
+  --config configs/improve_x/comparison.yaml \
+  --benchmark benchmarks/improvementbench/v2 \
+  --output /tmp/improve-x-comparison
+```
+
+Its checked-in result is a controlled diagnostic with a hash-bound query
+ledger, not a general superiority claim.
+
 Start with:
 
 - `/opt/projects/research/pivot/docs/pivot.md`

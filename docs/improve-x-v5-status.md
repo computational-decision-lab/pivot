@@ -16,6 +16,10 @@ not a claim that the ICLR submission has been uploaded.
 - `ImprovementBench v2` adds three seeded operators, three sequential rounds,
   and frozen train/validation/test splits in a separate 243-row release. Its
   ranking task pools candidates across operators within one trajectory round.
+- A held-out comparison runner evaluates `proxy_only`, `random_hf`,
+  `top_proxy_hf`, and `pivot_x` under a matched two-query-per-round budget.
+  The frozen test diagnostic contains 108 candidate records and a
+  hash-bound query ledger; it is not yet a paper-level superiority claim.
 - Sign, candidate-ranking, and failure-explanation task evaluators are
   available in `src/improve_x/benchmark/tasks.py`.
 - Failure labels distinguish observer, environment-response, strategic, and
@@ -66,6 +70,19 @@ This emits 243 rows (three splits x three rounds x three operators x three
 scales x three worlds). The actor-oracle promotion is recorded only as a
 collection policy; it is not a PIVOT-X superiority result.
 
+Run the held-out comparison with:
+
+```bash
+.venv/bin/python scripts/run_improve_x_comparison.py \
+  --config configs/improve_x/comparison.yaml \
+  --benchmark benchmarks/improvementbench/v2 \
+  --output /tmp/improve-x-comparison
+```
+
+The checked-in comparison artifact is under
+`benchmarks/improvementbench/v2/comparison/`; its `manifest.json` binds the
+result files to both the benchmark manifest and source commit.
+
 ## Evidence boundary
 
 The controlled runner demonstrates that the platform can represent and audit
@@ -85,6 +102,8 @@ At the 2026-08-20 checkpoint:
 - ImprovementBench v1: **12 rows**, manifest validation **true**;
 - ImprovementBench v2: **243 rows**, three frozen splits, manifest validation
   **true**, and nine cross-operator ranking groups per split;
+- held-out comparison: **108 rows**, four methods, three rounds, and matched
+  query ledgers with manifest validation **true**;
 - trajectory smoke: **4 rounds / 12 retained rows**. The controlled run ended
   with proxy `2.5269201087`, actor `-3.0549010603`, and strategic
   `-5.1170298273`. These values are fixture diagnostics only;
@@ -94,8 +113,8 @@ At the 2026-08-20 checkpoint:
 
 ## Remaining V5 work
 
-1. Add a held-out proxy-only versus PIVOT-X multi-round comparison before
-   promoting ImprovementBench numbers into the paper.
+1. Repeat the held-out comparison over additional frozen seeds and confirm the
+   update rule before promoting any method-level number into the paper.
 2. Add independently calibrated interactive and strategic response worlds;
    observational depth data cannot identify those responses.
 3. Evaluate PIVOT-X against the existing matched-budget baselines on held-out
