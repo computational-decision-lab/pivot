@@ -1,0 +1,18 @@
+world:
+  response_strength: 0.7
+  competition_strength: 0.5
+  noise_scale: 0.0
+  horizon: 12
+  reward_bound: 10.0
+  config_id: improve-x-comparison-v1
+calibration_split: train
+evaluation_split: test
+rounds: 3
+candidate_scales: [0.04, 0.10, 0.20]
+initial_policy:
+  intensity: 0.15
+contexts_per_transition: 2
+final_contexts: 4
+hf_queries_per_round: 2
+target_world: strategic
+methods: [proxy_only, random_hf, top_proxy_hf, pivot_x]

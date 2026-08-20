@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import json
 import hashlib
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -195,6 +195,70 @@ def test_improvementbench_evaluator_filters_a_frozen_split(tmp_path: Path) -> No
     metrics = json.loads((metrics_output / "metrics.json").read_text(encoding="utf-8"))
     assert metrics["requested_split"] == "test"
     assert metrics["row_count"] == 81
+
+
+def test_multiround_comparison_reports_matched_hf_budget_and_true_curves(tmp_path: Path) -> None:
+    output = tmp_path / "comparison"
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_improve_x_comparison.py",
+            "--config",
+            "configs/improve_x/comparison.yaml",
+            "--benchmark",
+            "benchmarks/improvementbench/v2",
+            "--output",
+            str(output),
+        ],
+        cwd=PROJECT_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "methods" in result.stdout
+    summary = json.loads((output / "comparison.json").read_text(encoding="utf-8"))
+    rounds = [
+        json.loads(line)
+        for line in (output / "rounds.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    methods = set(summary["methods"])
+    assert methods == {"proxy_only", "random_hf", "top_proxy_hf", "pivot_x"}
+    assert summary["evaluation_split"] == "test"
+    assert summary["calibration_split"] == "train"
+    assert summary["rounds"] == 3
+    assert summary["hf_queries_per_round"] == 2
+    assert (output / "manifest.json").is_file()
+    assert {row["method"] for row in rounds} == methods
+    assert len(rounds) == 4 * 3 * 9
+    for method in methods:
+        method_rows = [row for row in rounds if row["method"] == method]
+        assert sum(bool(row["selected"]) for row in method_rows) == 3
+        queried = {row["transition_id"] for row in method_rows if row["hf_queried"]}
+        expected_queries = 0 if method == "proxy_only" else 6
+        assert len(queried) == expected_queries
+        assert len({row["round_id"] for row in method_rows}) == 3
+        assert len(summary["results"][method]["true_curve"]) == 4
+        assert "final_true_performance" in summary["results"][method]
+
+
+def test_multiround_comparison_is_byte_deterministic(tmp_path: Path) -> None:
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    command = [
+        sys.executable,
+        "scripts/run_improve_x_comparison.py",
+        "--config",
+        "configs/improve_x/comparison.yaml",
+        "--benchmark",
+        "benchmarks/improvementbench/v2",
+    ]
+    subprocess.run([*command, "--output", str(first)], cwd=PROJECT_ROOT, check=True)
+    subprocess.run([*command, "--output", str(second)], cwd=PROJECT_ROOT, check=True)
+
+    assert (first / "comparison.json").read_bytes() == (second / "comparison.json").read_bytes()
+    assert (first / "rounds.jsonl").read_bytes() == (second / "rounds.jsonl").read_bytes()
+    assert (first / "manifest.json").read_bytes() == (second / "manifest.json").read_bytes()
 
 
 def test_trajectory_runner_retains_candidates_and_multiple_rounds(tmp_path: Path) -> None:
