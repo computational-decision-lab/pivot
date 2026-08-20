@@ -54,13 +54,21 @@ def _strategic_rows(dataset: ImprovementBenchDataset, split: str) -> list[Improv
 
 def _fit_differential_model(rows: Sequence[ImprovementBenchRow]) -> DifferentialModel:
     model = DifferentialModel()
-    records = [row.to_record() for row in rows]
+    usable = [row for row in rows if row.deployment_delta is not None and row.proxy_delta is not None]
     model.fit(
-        records,
-        [float(row.deployment_delta) - float(row.proxy_delta) for row in rows if row.proxy_delta is not None],
-        [_source_id(row) for row in rows],
+        [row.to_record() for row in usable],
+        [_correction_target(row) for row in usable],
+        [_source_id(row) for row in usable],
     )
     return model
+
+
+def _correction_target(row: ImprovementBenchRow) -> float:
+    deployment = row.deployment_delta
+    proxy = row.proxy_delta
+    if deployment is None or proxy is None:
+        raise ValueError("differential calibration requires proxy and deployment deltas")
+    return float(deployment - proxy)
 
 
 def _query_ids(
@@ -254,7 +262,10 @@ def run_comparison(
     evaluation_rows = _strategic_rows(dataset, evaluation_split)
     if not calibration_rows or not evaluation_rows:
         raise ValueError("calibration and evaluation splits must contain strategic rows")
-    raw_split_seeds = dataset.metadata.get("splits", {}).get(evaluation_split, [])
+    raw_splits = dataset.metadata.get("splits", {})
+    if not isinstance(raw_splits, Mapping):
+        raise TypeError("benchmark metadata must expose a split mapping")
+    raw_split_seeds = raw_splits.get(evaluation_split, [])
     if not isinstance(raw_split_seeds, Sequence) or isinstance(raw_split_seeds, (str, bytes)):
         raise TypeError("benchmark metadata must expose split seed lists")
     seeds = tuple(sorted(int(seed) for seed in raw_split_seeds))

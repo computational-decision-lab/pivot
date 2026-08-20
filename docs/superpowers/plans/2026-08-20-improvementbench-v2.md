@@ -92,11 +92,12 @@ Run: `.venv/bin/pytest -q tests/unit/test_improvementbench.py tests/integration/
   `proxy_only`, `random_hf`, `top_proxy_hf`, and `pivot_x`; retain its
   108-row ledger and source/benchmark hashes.
 
-- [ ] **Step 3: Include the hash-bound v2 release and comparison artifact in
+- [x] **Step 3: Include the hash-bound v2 release and comparison artifact in
   the anonymous supplement without bundling generated temporary outputs.**
 
-- [ ] **Step 4: Run** `.venv/bin/pytest -q`, `.venv/bin/ruff check .`, `.venv/bin/mypy src scripts`, v1/v2 builder and evaluator commands, supplement auditor, and PDF verifier.
+- [x] **Step 4: Run** `.venv/bin/pytest -q`, `.venv/bin/ruff check .`, `.venv/bin/mypy src scripts`, v1/v2 builder and evaluator commands, supplement auditor, and PDF verifier.
 
-- [ ] **Step 5: Inspect** row counts, manifests, split metrics, package contents, PDF page count, and git diff.
+- [x] **Step 5: Inspect** row counts, manifests, split metrics, package contents, PDF page count, and git diff.
 
-- [ ] **Step 6: Commit** the documentation and package refresh.
+- [x] **Step 6: Commit** the documentation and package refresh as the final
+  local V5 checkpoint.

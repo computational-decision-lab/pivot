@@ -96,7 +96,7 @@ the open scientific gates in the ICLR checklist.
 
 At the 2026-08-20 checkpoint:
 
-- `.venv/bin/pytest -q`: **114 passed**;
+- `.venv/bin/pytest -q`: **123 passed**;
 - `.venv/bin/ruff check .`: **clean**;
 - `.venv/bin/mypy src scripts`: **clean**;
 - ImprovementBench v1: **12 rows**, manifest validation **true**;
@@ -109,7 +109,7 @@ At the 2026-08-20 checkpoint:
   `-5.1170298273`. These values are fixture diagnostics only;
 - anonymous ICLR PDF: **9 main pages / 10 total**, local decision
   **CONDITIONAL GO**. PDF SHA-256:
-  `ab0db0c44228df22a5bea6d7f1897d57ac7ada632ad5b4d6d45f9dc1bbd973af`.
+  `02d1df0526623654d5a1b00e62e64780713ce222241b1263ec99d90b0c61207c`.
 
 ## Remaining V5 work
 
@@ -117,7 +117,7 @@ At the 2026-08-20 checkpoint:
    update rule before promoting any method-level number into the paper.
 2. Add independently calibrated interactive and strategic response worlds;
    observational depth data cannot identify those responses.
-3. Evaluate PIVOT-X against the existing matched-budget baselines on held-out
-   ImprovementBench rounds; implementation alone is not a superiority claim.
-4. Rebuild the anonymous PDF only after the new claims and tables are backed by
-   regenerated artifacts.
+3. Repeat the matched-budget comparison over additional held-out seeds and
+   operators; the single controlled diagnostic is not a superiority claim.
+4. Promote any new numerical claim only after the update rule and tables are
+   regenerated from a confirmatory artifact.
