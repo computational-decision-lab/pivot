@@ -5,6 +5,10 @@ paper_root="$(cd "$(dirname "$0")" && pwd)"
 project_root="$(cd "$paper_root/../.." && pwd)"
 cd "$paper_root"
 
+# Keep the submission PDF byte-stable across clean rebuilds. Callers may
+# override the epoch when producing a deliberately versioned release.
+export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-1787227200}"
+
 python3 "$project_root/scripts/build_paper_tables.py" \
   --snapshot ../snapshot \
   --output ../tables

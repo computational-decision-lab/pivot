@@ -115,13 +115,15 @@ At the 2026-08-20 checkpoint:
   `-5.1170298273`. These values are fixture diagnostics only;
 - anonymous ICLR PDF: **9 main pages / 11 total**, local decision
   **CONDITIONAL GO**. PDF SHA-256:
-  `1039318ed70c551488648e5d77d8d9d660872c89b8246b6465eae0c4fc9a75d7`.
+  `5f8594e7602cc6dcedf3b2c9cb3678c4a9977a56b59579b6808cf7b0718f40fe`.
 - anonymous supplementary archive: **239 members**, SHA-256:
-  `346d2aab14cdc996e318e4a8f462c990d9ede2dc5325c44a6529d80b01104c25`;
+  `9454b670b15643ae406717dd34a8329f90aed4255ef3fae1ce66f052025c20e9`;
   machine checks and archive integrity pass.
 - frozen paper snapshot: **29 files**, manifest SHA-256:
-  `a29dd34267a4f4dcf6e375d4033b9b881b91f1e339cd0688f5a7ccb0d88a9dfd`;
+  `b6319ae7c25bbb7f8561ff0850b2c68b8e1cf7a053ac3b1095f8b52b41a6df98`;
   source paths are sanitized to portable labels.
+- `paper/iclr2027/build.sh` pins `SOURCE_DATE_EPOCH=1787227200` by default;
+  two forced clean PDF builds reproduced the same SHA.
 
 ## Remaining V5 work
 
