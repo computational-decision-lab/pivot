@@ -50,6 +50,21 @@ data. No live orders, credentials, raw vendor L2, or LLM calls are required.
 The existing PIVOT paper remains `CONDITIONAL GO` pending author checks and
 the open scientific gates in the ICLR checklist.
 
+## Verification checkpoint
+
+At the 2026-08-20 checkpoint:
+
+- `.venv/bin/pytest -q`: **114 passed**;
+- `.venv/bin/ruff check .`: **clean**;
+- `.venv/bin/mypy src scripts`: **clean**;
+- ImprovementBench v1: **12 rows**, manifest validation **true**;
+- trajectory smoke: **4 rounds / 12 retained rows**. The controlled run ended
+  with proxy `2.5269201087`, actor `-3.0549010603`, and strategic
+  `-5.1170298273`. These values are fixture diagnostics only;
+- anonymous ICLR PDF: **9 main pages / 10 total**, local decision
+  **CONDITIONAL GO**. PDF SHA-256:
+  `ab0db0c44228df22a5bea6d7f1897d57ac7ada632ad5b4d6d45f9dc1bbd973af`.
+
 ## Remaining V5 work
 
 1. Add confirmatory multi-round operator comparisons and held-out seeds before

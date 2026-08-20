@@ -103,6 +103,6 @@
 - Modify: `paper/iclr2027/submission_checklist.md`
 
 - [x] **Step 1: Document** the new platform commands, schema, and explicit boundary that no V5 benchmark result is a paper claim yet.
-- [ ] **Step 2: Run** `.venv/bin/pytest -q`, `.venv/bin/ruff check .`, `.venv/bin/mypy src scripts`, both commands, paper verifier, and supplementary auditor.
-- [ ] **Step 3: Inspect** benchmark manifest, trajectory JSON, PDF verification, and git diff.
-- [ ] **Step 4: Commit** `docs: record improve-x v5 platform status`.
+- [x] **Step 2: Run** `.venv/bin/pytest -q`, `.venv/bin/ruff check .`, `.venv/bin/mypy src scripts`, both commands, paper verifier, and supplementary auditor.
+- [x] **Step 3: Inspect** benchmark manifest, trajectory JSON, PDF verification, and git diff.
+- [x] **Step 4: Commit** `docs: record improve-x v5 platform status`.
