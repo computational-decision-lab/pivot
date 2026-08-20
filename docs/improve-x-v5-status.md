@@ -120,18 +120,19 @@ At the 2026-08-20 checkpoint (after the OpenTikZ architecture integration):
   `-5.1170298273`. These values are fixture diagnostics only;
 - anonymous ICLR PDF: **9 main pages / 11 total**, local decision
   **CONDITIONAL GO**. PDF SHA-256:
-  `1125b8896754450b77466f7f3d381e0b888ef66b7cae1cb22eef7bca84bdeb21`.
+  `b60c4a255d7329a3d0dcd241bdc5bb635df623387c62910b2c9672cf9b6c24ec`.
 - anonymous supplementary archive: **247 members**, SHA-256:
-  `db391ee57d9970488f14f477af6ea7a1e561439578bc0917056aa5496362c39b`;
+  `8a1f73857b2f46ee0218745c9335ee0759d84b41d9b82fdbd8a39f080c409767`;
   machine checks and archive integrity pass.
 - frozen paper snapshot: **33 files**, manifest SHA-256:
-  `4dddd65f289c0bf9ccbb3dc3ca9ca2bd32e10cd848567c51b90c93ca1108d37c`;
+  `e485dba1ef28fd8eefa9f5a217086bde4a416bb9646d6212306b516020b6d15e`;
   source paths are sanitized to portable labels.
 - OpenTikZ architecture PDF SHA-256:
-  `b5fdb18241229b68e4fa48816afd11ca2c573206e37eb6924c418ca6c7eb4725`;
+  `83d7d965b33a644f734ff746cefb6e08ce64c6b172f9041701cced65d98f1034`;
   standalone compile, SVG preview generation, and high-resolution visual
   inspection pass. Feedback is routed through an outer channel, and no edge
-  labels are placed on top of nodes or other connectors.
+  labels are placed on top of nodes or other connectors. W0 is inside the
+  world panel, and both lower panel titles are anchored inside their panels.
 - `paper/iclr2027/build.sh` pins `SOURCE_DATE_EPOCH=1787227200` by default;
   two forced clean PDF builds reproduced the same SHA.
 

@@ -109,8 +109,12 @@ def test_architecture_source_preserves_opentikz_contract() -> None:
     assert "decision-change" in source
     assert "same state, seed, opponents" in source
     assert "\\draw[arrow] (correction.east) -- (promote.west)" in source
-    assert "\\draw[dashedarrow] (promote.east) -- (16.15,3.95)" in source
+    assert "\\draw[dashedarrow] (promote.east) -- (15.55,3.95)" in source
     assert "node[edgeLabel" not in source
+    assert "(world0) at (1.75,1.05)" in source
+    assert "(promote.east) -- (15.55,3.95)" in source
+    assert "paneltitle, anchor=north west] at (0.45,1.96)" in source
+    assert "paneltitle, anchor=north west] at (0.45,-0.42)" in source
     assert "REPORTING OBJECTS AND CLAIM BOUNDARY" in source
 
 

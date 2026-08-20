@@ -12,18 +12,18 @@ GO** with 9 main pages and 11 total pages:
 - Supplement: `paper/iclr2027/pivot_iclr2027_supplementary.zip`
 - Snapshot: `paper/snapshot/manifest.json` (33 hash-indexed files)
 - Architecture: `paper/snapshot/figures/fig3_pivot_architecture.pdf`
-- PDF SHA-256: `1125b8896754450b77466f7f3d381e0b888ef66b7cae1cb22eef7bca84bdeb21`
-- Supplement SHA-256: `db391ee57d9970488f14f477af6ea7a1e561439578bc0917056aa5496362c39b`
-- Snapshot manifest SHA-256: `4dddd65f289c0bf9ccbb3dc3ca9ca2bd32e10cd848567c51b90c93ca1108d37c`
+- PDF SHA-256: `b60c4a255d7329a3d0dcd241bdc5bb635df623387c62910b2c9672cf9b6c24ec`
+- Supplement SHA-256: `8a1f73857b2f46ee0218745c9335ee0759d84b41d9b82fdbd8a39f080c409767`
+- Snapshot manifest SHA-256: `e485dba1ef28fd8eefa9f5a217086bde4a416bb9646d6212306b516020b6d15e`
 
 OpenTikZ is installed through the lock-bound bootstrap at commit
 `359befbf8e8af7ce08e7e387b2c2a198e0ca735d`; the adapted source is included
 in the snapshot with its editable metadata and SVG preview.
 The current architecture PDF SHA-256 is
-`b5fdb18241229b68e4fa48816afd11ca2c573206e37eb6924c418ca6c7eb4725`.
-Its feedback loop uses a dedicated outer routing channel, and visual review
-confirmed that the `execution fidelity` label and all report containers are
-clear of connector and container overlap.
+`83d7d965b33a644f734ff746cefb6e08ce64c6b172f9041701cced65d98f1034`.
+Its feedback loop stays inside the PIVOT panel, W0 stays inside the adaptive
+world panel, and visual review confirmed that the `execution fidelity` label,
+panel titles, and report containers are clear of connector and boundary overlap.
 
 The remaining blockers are author-side OpenReview gates and independent
 interactive/strategic scientific validation. They are intentionally not

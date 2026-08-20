@@ -91,10 +91,10 @@
   \draw[dashedarrow] (decomposition.north) -- (correction.south);
 
   % --- layer 3: observer-to-strategic world ladder -----------------------
-  \node[world, external] (world0) at (1.55,1.05) {\worldzerolabel};
-  \node[world, external] (world1) at (5.00,1.05) {\worldonelabel};
-  \node[world, intervention] (world2) at (8.45,1.05) {\worldtwolabel};
-  \node[world, promotion] (world3) at (11.90,1.05) {\worldthreelabel};
+  \node[world, external] (world0) at (1.75,1.05) {\worldzerolabel};
+  \node[world, external] (world1) at (5.20,1.05) {\worldonelabel};
+  \node[world, intervention] (world2) at (8.65,1.05) {\worldtwolabel};
+  \node[world, promotion] (world3) at (12.10,1.05) {\worldthreelabel};
 
   \draw[arrow] (world0) -- (world1);
   \draw[hfarrow] (world1) -- (world2);
@@ -113,8 +113,8 @@
   };
 
   % --- feedback to the next self-improvement round -----------------------
-  \draw[dashedarrow] (promote.east) -- (16.15,3.95) -- (16.15,9.18)
-    -- (0.30,9.18) -- (0.30,8.45) -- (1.55,8.45)
+  \draw[dashedarrow] (promote.east) -- (15.55,3.95) -- (15.55,8.42)
+    -- (0.65,8.42) -- (0.65,8.02) -- (1.55,8.02)
     -- (1.55,7.82) -- (incumbent.north);
 
   % --- fixed panel boundaries prevent title/node collisions --------------
@@ -125,9 +125,9 @@
   \end{scope}
   \node[paneltitle, anchor=south west] at (0.45,8.84)
     {PIVOT: TRANSITION-LEVEL DECISION PRESERVATION};
-  \node[paneltitle, anchor=south west] at (0.45,2.18)
+  \node[paneltitle, anchor=north west] at (0.45,1.96)
     {ADAPTIVE WORLD FIDELITY LADDER};
-  \node[paneltitle, anchor=south west] at (0.45,-0.20)
+  \node[paneltitle, anchor=north west] at (0.45,-0.42)
     {REPORTING OBJECTS AND CLAIM BOUNDARY};
 
 \end{tikzpicture}%
