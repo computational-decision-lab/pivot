@@ -23,3 +23,15 @@ cd ../..
 The current decision is `CONDITIONAL GO`: local formatting and artifact gates
 pass, but author-side OpenReview gates and external causal/strategic validity
 remain open. No submission was uploaded.
+
+The controlled E4 spotlight diagnostic is reproducible with:
+
+```bash
+.venv/bin/python experiments/e4_value_vs_improvement.py \
+  --config configs/sweeps/e4_value_vs_improvement.yaml \
+  --output /tmp/pivot-e4-value-vs-improvement
+```
+
+It compares an evaluator with slightly better isolated policy-value accuracy
+against one with exact paired deltas. The result is intentionally labelled a
+controlled estimand diagnostic, not a universal method claim.

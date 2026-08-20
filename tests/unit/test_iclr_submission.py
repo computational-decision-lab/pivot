@@ -94,3 +94,26 @@ def test_audit_style_hashes_detects_modified_official_file(tmp_path: Path) -> No
     assert audit_style_hashes(style, manifest)
     source.write_text("modified", encoding="utf-8")
     assert not audit_style_hashes(style, manifest)
+
+
+def test_spotlight_upgrade_source_contains_transition_first_narrative() -> None:
+    source = Path("paper/iclr2027/main.tex").read_text(encoding="utf-8")
+    required = (
+        "replacement operation",
+        "rank policies correctly while ranking improvements incorrectly",
+        "Contribution 1",
+        "Contribution 2",
+        "Contribution 3",
+        "Contribution 4",
+        "Decision Preservation Under Differential Error",
+        "Why Transition Validation Differs from Active Learning",
+        "Stress Tests Beyond Controlled Environments",
+        "Value Fidelity versus Improvement Fidelity",
+        "zero-to-positive reversal boundary",
+        "false improvement (improvement reversal)",
+        "CTI",
+        "0/7",
+        "0/5",
+    )
+    missing = [token for token in required if token not in source]
+    assert not missing, f"missing spotlight narrative tokens: {missing}"

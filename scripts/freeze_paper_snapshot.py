@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -41,6 +42,17 @@ SUMMARY_FILES = (
     "figures/figure_validation.json",
 )
 
+_PRIVATE_PATH_RE = re.compile(
+    r"/opt/projects(?:/[A-Za-z0-9_.-]+)+|/home/ubuntu(?:/[A-Za-z0-9_.-]+)*|/tmp/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*"
+)
+
+CONTRAST_FILES = (
+    "comparison.json",
+    "value_fidelity_rows.csv",
+    "transition_fidelity_rows.csv",
+    "provenance.json",
+)
+
 
 def freeze_snapshot(
     source_root: Path,
@@ -49,6 +61,7 @@ def freeze_snapshot(
     output: Path,
     *,
     project_root: Path | None = None,
+    contrast_root: Path | None = None,
 ) -> dict[str, Any]:
     """Copy declared artifacts and write a deterministic manifest."""
 
@@ -88,6 +101,16 @@ def freeze_snapshot(
         "public-expansion",
         files,
     )
+    if contrast_root is not None:
+        contrast_root = Path(contrast_root).resolve()
+        for relative in CONTRAST_FILES:
+            _copy_record(
+                contrast_root / relative,
+                output / f"summaries/e4-contrast-{relative}",
+                relative,
+                "e4-value-vs-improvement",
+                files,
+            )
     validation = json.loads(
         (output / "summaries/figures__figure_validation.json").read_text(encoding="utf-8")
     )
@@ -96,9 +119,10 @@ def freeze_snapshot(
     manifest = {
         "snapshot_version": "pivot-paper-snapshot-v1",
         "source_roots": {
-            "controlled": str(source_root),
-            "ablations": str(ablation_root),
-            "public_expansion": str(public_root),
+            "controlled": "<clean-room>",
+            "ablations": "<clean-room>",
+            "public_expansion": "<public-data-audit>",
+            "e4_contrast": "<clean-room>" if contrast_root is not None else None,
         },
         "source_commits": {
             "project": _git_commit(project_root or Path.cwd()),
@@ -112,6 +136,7 @@ def freeze_snapshot(
             "public_live_orders": False,
             "e3_overoptimization_claim": False,
             "llm_evoquant_m3_used": False,
+            "e4_contrast_is_controlled_diagnostic": True,
         },
     }
     (output / "manifest.json").write_text(
@@ -130,7 +155,11 @@ def _copy_record(
     if not source.is_file():
         raise FileNotFoundError(f"required paper artifact is missing: {source}")
     target.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(source, target)
+    if source.suffix.casefold() in {".json", ".md", ".txt", ".yaml", ".yml", ".csv"}:
+        text = source.read_text(encoding="utf-8", errors="replace")
+        target.write_text(_sanitize_local_paths(text), encoding="utf-8")
+    else:
+        shutil.copy2(source, target)
     files[str(target.relative_to(target.parents[1]))] = {
         "source_kind": source_kind,
         "source_relative": source_relative,
@@ -145,6 +174,12 @@ def _sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def _sanitize_local_paths(text: str) -> str:
+    """Keep reproducibility evidence while removing machine-local paths."""
+
+    return _PRIVATE_PATH_RE.sub("<local-root>", text)
 
 
 def _read_commit(root: Path) -> str | None:
@@ -174,6 +209,7 @@ def main() -> None:
     parser.add_argument("--public-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--project-root", type=Path, default=Path.cwd())
+    parser.add_argument("--contrast-root", type=Path)
     args = parser.parse_args()
     manifest = freeze_snapshot(
         args.source_root,
@@ -181,6 +217,7 @@ def main() -> None:
         args.public_root,
         args.output,
         project_root=args.project_root,
+        contrast_root=args.contrast_root,
     )
     print(json.dumps({"files": len(manifest["files"]), "snapshot": str(args.output)}))
 

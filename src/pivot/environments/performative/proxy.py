@@ -11,6 +11,7 @@ from collections import defaultdict
 from collections.abc import Iterable, Sequence
 from dataclasses import replace
 from datetime import datetime, timezone
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -336,13 +337,37 @@ def _write_plots(
     axis.axhline(0, color="black", linewidth=0.8)
     axis.axvline(0, color="black", linewidth=0.8)
     axis.scatter(
-        [row["delta_proxy"] for row in scatter],
-        [row["delta_true"] for row in scatter],
-        c=[row["response_strength"] for row in scatter],
+        [row["delta_proxy"] for row in scatter if not row["reversal"]],
+        [row["delta_true"] for row in scatter if not row["reversal"]],
+        c=[row["response_strength"] for row in scatter if not row["reversal"]],
         cmap="viridis",
-        alpha=0.85,
+        alpha=0.72,
+        label="other transitions",
     )
+    axis.scatter(
+        [row["delta_proxy"] for row in scatter if row["reversal"]],
+        [row["delta_true"] for row in scatter if row["reversal"]],
+        color="#c43d3d",
+        edgecolor="white",
+        linewidth=0.45,
+        alpha=0.95,
+        label="improvement reversal",
+    )
+    axis.axvspan(0.0, axis.get_xlim()[1], color="#eaf4ea", alpha=0.35, zorder=-2)
+    axis.axhspan(axis.get_ylim()[0], 0.0, color="#fff0f0", alpha=0.35, zorder=-2)
+    axis.text(0.03, 0.96, "hidden gain", transform=axis.transAxes, fontsize=8, va="top")
+    axis.text(0.62, 0.96, "correct improvement", transform=axis.transAxes, fontsize=8, va="top")
+    axis.text(
+        0.62,
+        0.06,
+        "false improvement\n(improvement reversal)",
+        transform=axis.transAxes,
+        fontsize=7.5,
+        va="bottom",
+    )
+    axis.text(0.03, 0.06, "correct failure", transform=axis.transAxes, fontsize=8, va="bottom")
     axis.set(xlabel="Proxy improvement", ylabel="Actor improvement", title="When better gets worse")
+    axis.legend(loc="best", fontsize=8, frameon=True)
     figure.tight_layout()
     figure.savefig(output_dir / "proxy_vs_true_scatter.png", dpi=160)
     plt.close(figure)
@@ -355,14 +380,47 @@ def _write_plots(
     lookup = {(float(row["response_strength"]), float(row["update_footprint"])): float(row["irr"]) for row in heatmap}
     matrix = [[lookup.get((response, footprint), float("nan")) for footprint in footprints] for response in responses]
     figure, axis = plt.subplots(figsize=(6, 4))
-    image = axis.imshow(matrix, aspect="auto", origin="lower", vmin=0.0, vmax=1.0, cmap="magma")
-    axis.set_xticks(range(len(footprints)), [f"{value:.3f}" for value in footprints], rotation=45, ha="right")
-    axis.set_yticks(range(len(responses)), [f"{value:.2f}" for value in responses])
+    x_edges = _edges(footprints)
+    y_edges = _edges(responses)
+    image = axis.imshow(
+        matrix,
+        origin="lower",
+        aspect="auto",
+        extent=(x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]),
+        interpolation="bilinear",
+        vmin=0.0,
+        vmax=1.0,
+        cmap="viridis",
+    )
+    if len(responses) > 1 and len(footprints) > 1:
+        axis.contour(footprints, responses, matrix, levels=[0.5], colors="#f5f5f5", linewidths=1.2)
+    axis.set_xticks(footprints, [f"{value:.3f}" for value in footprints], rotation=45, ha="right")
+    axis.set_yticks(responses, [f"{value:.2f}" for value in responses])
     axis.set(xlabel="Update footprint", ylabel="Response strength", title="Response x footprint")
-    figure.colorbar(image, ax=axis, label="IRR")
+    axis.text(
+        0.02,
+        0.02,
+        "bilinear display; light contour: zero-to-positive boundary",
+        transform=axis.transAxes,
+        fontsize=7,
+        color="white",
+    )
+    figure.colorbar(image, ax=axis, label="IRR (continuous scale)")
     figure.tight_layout()
     figure.savefig(output_dir / "response_footprint_heatmap.png", dpi=160)
     plt.close(figure)
+
+
+def _edges(values: Sequence[float]) -> list[float]:
+    """Return cell edges for an ordered numeric grid."""
+
+    if not values:
+        return [0.0, 1.0]
+    if len(values) == 1:
+        width = max(0.05, abs(values[0]) * 0.25)
+        return [values[0] - width, values[0] + width]
+    interior = [(left + right) / 2.0 for left, right in pairwise(values)]
+    return [values[0] - (interior[0] - values[0]), *interior, values[-1] + (values[-1] - interior[-1])]
 
 
 def _line_plot(path: Path, rows: Sequence[dict[str, Any]], x_key: str, y_key: str, title: str) -> None:

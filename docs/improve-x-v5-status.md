@@ -20,6 +20,12 @@ not a claim that the ICLR submission has been uploaded.
   `top_proxy_hf`, and `pivot_x` under a matched two-query-per-round budget.
   The frozen test diagnostic contains 108 candidate records and a
   hash-bound query ledger; it is not yet a paper-level superiority claim.
+- The ICLR spotlight upgrade adds a deterministic E4 evaluator contrast:
+  `value_fidelity` has lower isolated-value MAE (`0.5489`) but worse
+  transition IDE/ISC/IRR/ISR and CTI (`-61.0081` versus `-45.7229`), while
+  `transition_fidelity` has a policy-independent value offset and exact paired
+  deltas. The 216-row held-out diagnostic is frozen in the paper snapshot as a
+  controlled contrast, not a learned-model superiority claim.
 - Sign, candidate-ranking, and failure-explanation task evaluators are
   available in `src/improve_x/benchmark/tasks.py`.
 - Failure labels distinguish observer, environment-response, strategic, and
@@ -96,7 +102,7 @@ the open scientific gates in the ICLR checklist.
 
 At the 2026-08-20 checkpoint:
 
-- `.venv/bin/pytest -q`: **123 passed**;
+- `.venv/bin/pytest -q`: **129 passed**;
 - `.venv/bin/ruff check .`: **clean**;
 - `.venv/bin/mypy src scripts`: **clean**;
 - ImprovementBench v1: **12 rows**, manifest validation **true**;
@@ -107,9 +113,15 @@ At the 2026-08-20 checkpoint:
 - trajectory smoke: **4 rounds / 12 retained rows**. The controlled run ended
   with proxy `2.5269201087`, actor `-3.0549010603`, and strategic
   `-5.1170298273`. These values are fixture diagnostics only;
-- anonymous ICLR PDF: **9 main pages / 10 total**, local decision
+- anonymous ICLR PDF: **9 main pages / 11 total**, local decision
   **CONDITIONAL GO**. PDF SHA-256:
-  `02d1df0526623654d5a1b00e62e64780713ce222241b1263ec99d90b0c61207c`.
+  `1039318ed70c551488648e5d77d8d9d660872c89b8246b6465eae0c4fc9a75d7`.
+- anonymous supplementary archive: **239 members**, SHA-256:
+  `346d2aab14cdc996e318e4a8f462c990d9ede2dc5325c44a6529d80b01104c25`;
+  machine checks and archive integrity pass.
+- frozen paper snapshot: **29 files**, manifest SHA-256:
+  `a29dd34267a4f4dcf6e375d4033b9b881b91f1e339cd0688f5a7ccb0d88a9dfd`;
+  source paths are sanitized to portable labels.
 
 ## Remaining V5 work
 
@@ -121,3 +133,10 @@ At the 2026-08-20 checkpoint:
    operators; the single controlled diagnostic is not a superiority claim.
 4. Promote any new numerical claim only after the update rule and tables are
    regenerated from a confirmatory artifact.
+
+The spotlight-level narrative upgrade is now implemented locally: the source
+contains the transition-first opening, four ordered contributions, the
+decision-preservation proposition, the active-learning distinction, the
+controlled value-versus-improvement diagnostic, and the renamed stress-test
+section. The remaining blockers are still the scientific/manual gates above,
+not missing local paper machinery.

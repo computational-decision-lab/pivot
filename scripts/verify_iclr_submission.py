@@ -48,7 +48,15 @@ def audit_source_text(source: str) -> dict[str, bool]:
         "no_final_copy": r"\iclrfinalcopy" not in source,
         "no_identity_leak": not identity_leak,
         "no_private_path": not private_leak,
-        "paper_topic_tokens": all(token in lowered for token in ("improvement fidelity", "pivot")),
+        "paper_topic_tokens": all(
+            token in lowered
+            for token in (
+                "improvement fidelity",
+                "pivot",
+                "replacement operation",
+                "decision preservation under differential error",
+            )
+        ),
     }
 
 

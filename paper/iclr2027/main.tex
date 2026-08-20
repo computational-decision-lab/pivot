@@ -39,38 +39,53 @@
 \maketitle
 
 \begin{abstract}
-Self-improving agents repeatedly replace an incumbent policy with a candidate
-that appears better under a verifier or world model. Existing evaluation
-usually measures value or ranking of isolated policies. We argue that the
-statistical object that must transfer is the update itself, $\pi\!\to\!\pi'$.
-We define \emph{improvement fidelity}, the agreement between proxy and
-deployment-induced improvement, and call $\dproxy>0$ with $\dtrue<0$
-\emph{improvement reversal}. We introduce PIVOT (Paired Interventional
-Validation of Optimization Transitions), which models paired differential
-corrections and allocates expensive intervention queries to updates likely to
-change the selection decision. Two elementary propositions show that global
-value accuracy is sufficient but stronger than needed, while update error is
-controlled by response sensitivity times update footprint under a Lipschitz
-response assumption. In a controlled performative environment, three
-registered runs reproduce high-response reversal (IRR $0.9722$) and PIVOT
-reduces one-query selection regret relative to random and top-proxy querying.
-Adaptive opponents produce strategic reversal in the fixture (SIRR $1.0$).
-An observational Binance futures audit across 12 asset/date sessions finds a
-negative depth-based mechanical effect but no reversal (0/7 primary, 0/5
-holdout), so it is not treated as causal evidence. The result is a scoped
-evaluation framework and a reproducible boundary between controlled mechanism
-evidence and external validity, rather than a claim that every learned world
-or market simulator is faithful.
+Self-improvement systems repeatedly replace an incumbent policy with a
+candidate that a verifier says is better. The hidden assumption is that this
+verifier-approved improvement transfers after deployment, even when the
+deployment changes the world. This implication can fail even when the
+verifier correctly evaluates every individual policy.
+
+We therefore define \emph{Improvement Fidelity} over the update transition
+$\tau=(\pi_t,\pi_{t+1})$, rather than over isolated policy values. The proxy
+improvement is $\dproxy=J_V(\pi')-J_V(\pi)$ and the deployment-induced
+improvement is $\dtrue=\J(\pi')-\J(\pi)$. An \emph{improvement reversal} is
+$\dproxy>0$ with $\dtrue<0$: a verifier-approved replacement that becomes
+worse after the world responds.
+
+PIVOT (Paired Interventional Validation of Optimization Transitions) is a
+budgeted intervention mechanism that preserves update decisions. It uses
+paired rollouts and a differential correction $\Delta_* - \Delta_V$, then
+queries transitions whose high-fidelity result is most likely to change the
+selected update. It is not generic active learning and does not target global
+world-model error.
+
+Across controlled mechanism and strategic fixture evidence, PIVOT exposes the
+transition-level failure while keeping the external stress test explicitly
+observational: the Binance audit finds no reversal (0/7 primary, 0/5
+holdout). We do not claim causal market reversal, simulator ground truth,
+universal failure, or general multi-agent equilibrium; the contribution is a
+falsifiable evaluation criterion and a first budgeted implementation.
 \end{abstract}
 
 \section{Introduction}
 Self-improvement is often described as a loop: generate a candidate, evaluate
-it, promote it, and repeat. The loop hides a subtle change of estimand. A
-verifier may correctly evaluate the world it implements while omitting the
-consequences caused by deploying the candidate. A policy can therefore improve
-on the verifier's world and deteriorate in the world its deployment induces.
+it, promote it, and repeat. But the central object optimized by the loop is
+not a policy in isolation; it is a \emph{replacement operation}. A verifier
+may rank policies correctly while ranking improvements incorrectly, because
+deployment can change the transition and reward dynamics that define the next
+evaluation. The hidden implication is
+\begin{equation}
+  \text{verifier says candidate is better}
+  \quad\Longrightarrow\quad
+  \text{deployment policy is better},
+\end{equation}
+and this implication need not hold even for a fixed, external, correctly
+implemented verifier.
+
 This failure is distinct from self-authored verification, ordinary dataset
-overfitting, or an incorrect evaluation program.
+overfitting, or an incorrect evaluation program. It is a transfer failure for
+the learning update itself: the proxy world evaluates an object that changes
+when the candidate is deployed.
 
 We study the local transition
 \begin{equation}
@@ -88,20 +103,24 @@ This definition makes no assumption about whether the proxy is learned,
 hand-coded, or externally audited. It asks whether the object consumed by the
 self-improvement loop transfers.
 
-Our contributions are deliberately limited to three points:
+Our contributions are deliberately limited to four points:
 \begin{enumerate}
-  \item We formalize \textbf{improvement fidelity} and report differential
-  metrics for local update decisions: improvement differential error (IDE),
-  sign consistency (ISC), reversal rate (IRR), strategic reversal rate (SIRR),
-  update-selection regret (ISR), and cumulative true improvement (CTI). The
-  accompanying IMPROVE-X contract stores each policy transition and preserves
-  unavailable world layers as explicit nulls.
-  \item We introduce \textbf{PIVOT}, a paired correction model plus active
-  high-fidelity querying rule. It spends intervention budget where a query is
-  most likely to change the update ordering or sign.
-  \item We provide a controlled performative evaluation, a strategic fixture,
-  and a checksum-bound observational finance audit. We preserve nulls and
-  explicitly separate fixture evidence from causal and external claims.
+  \item \textbf{Contribution 1 --- Failure mode.} We identify and formalize
+  \emph{improvement reversal}: a verifier-approved update can reduce deployed
+  performance because deployment induces environmental response.
+  \item \textbf{Contribution 2 --- Evaluation criterion.} We introduce
+  \emph{Improvement Fidelity} as the transfer criterion for self-improvement
+  transitions and report IDE, ISC, IRR, SIRR, ISR, and CTI. The IMPROVE-X
+  contract stores each transition and preserves unavailable world layers as
+  explicit nulls.
+  \item \textbf{Contribution 3 --- Method.} We introduce \textbf{PIVOT}, a
+  paired differential evaluator and budgeted intervention rule that allocates
+  queries to preserve update-selection decisions, not to minimize global
+  prediction error.
+  \item \textbf{Contribution 4 --- Evidence.} We provide controlled
+  mechanism evidence, a strategic response fixture, and an external stress
+  test with a checksum-bound observational finance audit. Nulls and open
+  scientific gates remain explicit.
 \end{enumerate}
 
 \section{Related Work}
@@ -110,10 +129,18 @@ the data-generating process~\cite{perdomo2020performative}. Performative RL
 and recent policy-gradient analyses extend this idea to policy-dependent
 transition and reward dynamics~\cite{performativepg2025}; our focus is the
 local validity of a proposed update rather than optimization of a
-performatively stable policy. WorldGym and policy-aware simulator learning
-study whether policy values and rankings transfer from a learned world to a
-target environment~\cite{worldgym2025,policyaware2026}. We instead treat the
-paired difference between an incumbent and a candidate as the estimand.
+performatively stable policy. Policy-evaluation and world-model studies ask
+whether isolated values or rankings transfer from a learned world to a target
+environment~\cite{worldgym2025,policyaware2026}. We instead ask whether
+replacing one policy with another remains an improvement after deployment.
+This distinction matters because a simulator can rank policies well while
+misordering their local replacements.
+
+Active learning typically selects labels to reduce global prediction error for
+a target $y$. PIVOT selects interventional rollouts to reduce the probability
+of a wrong update decision by estimating the paired difference
+$\Delta_* - \Delta_V$. It is therefore a decision-preservation procedure,
+not an unconditional value-model or generic uncertainty-sampling objective.
 
 Self-evolving strategy systems and policy-evolution benchmarks make iterative
 improvement executable~\cite{evoquant2026,evopolicygym2026}, while
@@ -155,7 +182,8 @@ For a candidate set $C_t$, the update-selection regret is
  \mathrm{ISR}_t=\max_{j\in C_t}(\dtrue)_{t,j}-(\dtrue)_{t,\hat j},
 \end{equation}
 where $\hat j$ is selected by the proxy or corrected estimate. CTI sums the
-true improvements of promoted updates over a trajectory. All estimates below
+true improvements of promoted updates over a trajectory. We call this metric
+the cumulative true improvement (CTI). All estimates below
 retain query counts, seeds, and confidence intervals in the artifact snapshot.
 
 \section{PIVOT}
@@ -188,17 +216,31 @@ current best candidate, and $c_j$ is high-fidelity cost. The rule is a
 decision-change heuristic, not a Bayesian optimality claim. Queried values
 replace predictions; unqueried candidates retain proxy/model estimates.
 
+\paragraph{Why Transition Validation Differs from Active Learning.}
+Traditional active learning asks which label will reduce a global prediction
+loss for $y$. PIVOT asks which paired intervention can change the ordering or
+sign of an update. Its target is the differential correction
+$\Delta_* - \Delta_V$, and its loss is update-selection regret rather than
+global world-model error. In short, \textbf{PIVOT is not designed to minimize
+global world-model error; it targets the smallest intervention budget required
+to preserve optimization decisions.} This distinction is operational: an
+uncertain transition whose high-fidelity value cannot change the selected
+candidate has lower priority than an otherwise similar transition near the
+selection margin.
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{fig1_when_better_gets_worse.png}
-  \caption{Controlled proxy versus deployment improvement. The lower-right
-  quadrant is improvement reversal. Each point is a transition in the frozen
-  response--footprint grid.}
+  \caption{Controlled proxy versus deployment improvement. The upper-right
+  region is correct improvement, the upper-left region is a hidden gain, the
+  lower-left region is correct failure, and the lower-right region is the
+  highlighted false improvement (improvement reversal). Each point is a
+  transition in the frozen response--footprint grid.}
   \label{fig:reversal}
 \end{figure}
 
 \section{Theory}
-We state two modest results that motivate the differential estimand. They are
+We state three modest results that motivate the differential estimand. They are
 not claims about a particular simulator architecture.
 
 \begin{proposition}[Global fidelity is sufficient]
@@ -231,11 +273,30 @@ $L_JD(\M[\pip],\M[\pii])\leq L_JL_Md(\pii,\pip)$. The result is local; it does
 not assert that strategic best responses are globally Lipschitz.
 \end{proof}
 
+\begin{proposition}[Decision Preservation Under Differential Error]
+Consider two candidates $i$ and $j$ evaluated from the same incumbent, and
+suppose the true improvement margin is
+$m=\Delta_{*,i}-\Delta_{*,j}>0$. If estimates satisfy
+$|\widehat\Delta_i-\Delta_{*,i}|<m/2$ and
+$|\widehat\Delta_j-\Delta_{*,j}|<m/2$, then
+$\widehat\Delta_i>\widehat\Delta_j$ and the selected update is unchanged.
+\end{proposition}
+\begin{proof}
+The estimated margin obeys
+$\widehat\Delta_i-\widehat\Delta_j
+=m+(\widehat\Delta_i-\Delta_{*,i})-(\widehat\Delta_j-\Delta_{*,j})$.
+The two error terms have absolute sum strictly less than $m$, so the
+estimated margin remains positive. This is a local decision guarantee; it
+does not claim that PIVOT is globally optimal or that all candidates satisfy
+the margin condition.
+\end{proof}
+
 The first proposition explains why global value accuracy is sufficient but
 unnecessarily strong: a policy-independent offset can be arbitrarily large
 without changing any improvement difference. The second motivates targeted
 fidelity: high footprint and high response sensitivity are the transitions most
-likely to change a decision. In strategic environments, small policy changes
+likely to change a decision. The third connects differential error to the
+selection decision that PIVOT must preserve. In strategic environments, small policy changes
 can still cause large competitor responses, so the bound should be treated as a
 diagnostic hypothesis rather than a universal smoothness assumption.
 
@@ -252,8 +313,10 @@ paired high-fidelity transitions.
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{fig2_reversal_phase_diagram.png}
-  \caption{Reversal rate over response strength and update footprint. The
-  structure is a controlled mechanism result, not a universal market law.}
+  \caption{Continuous reversal-rate heatmap over response strength and update
+  footprint. Bilinear display interpolation makes the registered grid's
+  zero-to-positive reversal boundary visible; the structure is a controlled
+  mechanism result, not a universal market law.}
   \label{fig:phase}
 \end{figure}
 
@@ -270,6 +333,18 @@ differential model on the same number of high-fidelity transition queries.
 Local-minus-global ISC is $0.1204$; local-minus-global IDE is $-1.7536$.
 Update-selection regret is tied in this particular fixture, so we do not claim
 that a differential model dominates every policy-value baseline.
+
+\paragraph{Value Fidelity versus Improvement Fidelity.}
+We add a controlled evaluator contrast to isolate the estimand. Evaluator A
+has slightly lower isolated policy-value MAE ($0.5489$ versus $0.6000$) and
+near-perfect policy ranking ($0.9781$ versus $1.0000$), but its candidate-side
+bias grows with response and footprint. Evaluator B has a policy-independent
+value offset that is worse for isolated values but cancels in paired deltas.
+On the same 216 held-out transitions, A has IDE $1.0978$, ISC $0.9444$, IRR
+$0.1714$, and ISR $0.2548$, whereas B has IDE $0$, ISC $1$, IRR $0$, ISR $0$,
+and CTI $-45.7229$. A's CTI is $-61.0081$ (higher is better). This is a
+constructive controlled contrast, not a learned-model claim: similar
+policy-value accuracy does not determine local transition fidelity.
 
 \begin{figure}[t]
   \centering
@@ -302,7 +377,7 @@ negative stress test of the current fixture, not as evidence for
 can otherwise manufacture its central phenomenon by selecting a pathological
 environment after observing results.
 
-\section{Strategic and Finance Testbeds}
+\section{Stress Tests Beyond Controlled Environments}
 \paragraph{Strategic response.}
 Only the focal policy self-improves. Competitors are fixed, reactive, or finite-
 step adaptive. In the registered fixture, actor improvement is positive before
@@ -317,13 +392,7 @@ $-0.1082$.
   \label{fig:layers}
 \end{figure}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{fig7_strategic_reversal.png}
-  \caption{Strategic response effect across opponent modes and sensitivities.}
-  \label{fig:strategic}
-\end{figure}
-
+The opponent-mode sweep is reported in Appendix Figure~\ref{fig:strategic}.
 These results are mechanism evidence for the strategic layer, not a claim of
 general equilibrium or realistic market ecology. External strategic
 validation remains open.
@@ -384,11 +453,11 @@ audit. We do not certify actions, solve general multi-agent equilibrium, or
 claim that a learned simulator is ground truth.
 
 \section{Reproducibility and Conclusion}
-The paper snapshot contains 25 hash-indexed artifacts, seven figure/source-table
-pairs, controlled gate summaries, the public expansion summary, and the full
-twelve-ablation aggregate. Three disjoint ablation runs reproduce with zero
-failed runs. The repository's full test suite reports 114 passing tests; Ruff
-and mypy are clean. The IMPROVE-X transition contracts and controlled
+The paper snapshot contains 29 hash-indexed artifacts, seven figure/source-table
+pairs, the controlled evaluator-contrast rows, controlled gate summaries, the
+public expansion summary, and the full twelve-ablation aggregate. Three
+disjoint ablation runs reproduce with zero failed runs. The repository's full
+test suite and static checks are recorded in the release manifest. The IMPROVE-X transition contracts and controlled
 ImprovementBench smoke artifact are separately hash-bound in the repository.
 The build records the source commit and PDF verification metadata. No
 credentials or raw vendor archives enter the paper package.
@@ -453,6 +522,15 @@ required before changing any result table.
   reward bound. The current closed-loop fixture therefore does not establish
   performative overoptimization.}
   \label{fig:e3-null}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.92\linewidth]{fig7_strategic_reversal.png}
+  \caption{Strategic response effect across opponent modes and sensitivities.
+  This appendix diagnostic is fixture evidence, not a general-equilibrium
+  claim.}
+  \label{fig:strategic}
 \end{figure}
 
 \end{document}

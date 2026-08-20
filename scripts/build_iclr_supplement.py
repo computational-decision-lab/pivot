@@ -94,6 +94,17 @@ repository root, install the project in editable mode and run:
 The public finance audit uses virtual fills and observational depth
 proxies. No credentials, private data, raw vendor archives, live
 orders, or author identity metadata are included.
+
+The controlled value-versus-improvement diagnostic can be regenerated with:
+
+```bash
+.venv/bin/python experiments/e4_value_vs_improvement.py \\
+  --config configs/sweeps/e4_value_vs_improvement.yaml \\
+  --output /tmp/pivot-e4-value-vs-improvement
+```
+
+This is a controlled estimand diagnostic, not a universal method or market
+performance claim.
 """,
         encoding="utf-8",
     )

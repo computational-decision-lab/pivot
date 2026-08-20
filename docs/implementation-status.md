@@ -5,8 +5,9 @@ impact semantics amendment, the clean multi-asset expansion run, and the
 registered twelve-ablation suite. The IMPROVE-X V5 platform vertical slice is
 also tracked in `docs/improve-x-v5-status.md`.
 
-Paper delivery update 2026-08-20: an anonymous six-page working-paper PDF,
-hash-indexed snapshot, table generator, and PDF verification report are now
+Paper delivery update 2026-08-20: an anonymous ICLR-format PDF with nine main
+pages and eleven pages total, a hash-indexed snapshot, table generator, and PDF
+verification report are now
 tracked under `paper/`. This is a reproducible working-paper milestone; the
 external-validity gaps below remain open.
 
@@ -27,6 +28,7 @@ external-validity gaps below remain open.
 | Public expansion | frozen BTC/ETH/BNB quarterly-start grid, 12 sessions, subconfig contract validation, pooled/asset/holdout aggregation | Complete observational run; no reversal observed; causal validation open |
 | Twelve ablations | paired/unpaired, transition/global-value, footprint, acquisition, update size, response, F1/F2, competitors, response-model count, candidate count, HF budget | Complete controlled suite; three clean registered runs; external validity and null follow-up open |
 | IMPROVE-X V5 platform | operator batches, multi-round trajectories, ImprovementBench v1, three-world rows, failure taxonomy, sign/ranking/explanation tasks, seeded evolutionary operator, PIVOT-X query scores | Implemented and locally tested; confirmatory benchmark and external response validation remain open |
+| ICLR spotlight narrative upgrade | transition-first abstract/introduction, four contribution framing, decision-preservation proposition, active-learning distinction, controlled value-vs-improvement E4 contrast, semantic Figure 1/2/4, portable snapshot paths | Implemented; local PDF/supplement gates pass, scientific/manual gates remain open |
 
 ## Scientific gates
 

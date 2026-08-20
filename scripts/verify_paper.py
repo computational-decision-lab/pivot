@@ -90,6 +90,15 @@ def verify_paper(
         "pivot",
         "cumulative true improvement",
         "finance audit",
+        "replacement operation",
+        "rank policies correctly while ranking improvements incorrectly",
+        "contribution 1",
+        "contribution 2",
+        "contribution 3",
+        "contribution 4",
+        "decision preservation under differential error",
+        "why transition validation differs from active learning",
+        "stress tests beyond controlled environments",
     ]
     source_lower = source_text.casefold()
     missing_tokens = [token for token in required_tokens if token not in source_lower]
