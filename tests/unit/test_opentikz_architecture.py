@@ -115,6 +115,7 @@ def test_architecture_source_preserves_opentikz_contract() -> None:
     assert "(promote.east) -- (15.55,3.95)" in source
     assert "paneltitle, anchor=north west] at (0.45,1.96)" in source
     assert "paneltitle, anchor=north west] at (0.45,-0.42)" in source
+    assert "(decomposition) at (11.65,2.85)" in source
     assert "REPORTING OBJECTS AND CLAIM BOUNDARY" in source
 
 

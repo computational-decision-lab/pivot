@@ -6,11 +6,29 @@ from pathlib import Path
 
 from scripts.build_iclr_supplement import ALLOWLIST
 from scripts.verify_iclr_submission import (
+    _aux_path,
+    _portable_path,
     audit_archive_members,
     audit_source_text,
     audit_style_hashes,
     build_decision,
 )
+
+
+def test_aux_path_falls_back_to_build_sidecar_for_copied_submission(tmp_path: Path) -> None:
+    submission = tmp_path / "paper" / "pivot_submission.pdf"
+    submission.parent.mkdir(parents=True)
+    build_aux = submission.parent / "build" / "main.aux"
+    build_aux.parent.mkdir()
+    build_aux.write_text(r"\\newlabel{refs:start}{{}{10}}", encoding="utf-8")
+
+    assert _aux_path(submission) == build_aux
+
+
+def test_portable_path_avoids_machine_absolute_prefix() -> None:
+    rendered = _portable_path(Path.cwd() / "paper" / "iclr2027" / "main.tex")
+    assert rendered == "paper/iclr2027/main.tex"
+    assert "/opt/projects/" not in rendered
 
 
 def test_supplement_allowlist_contains_improvementbench_v2() -> None:

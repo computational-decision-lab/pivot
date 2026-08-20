@@ -123,6 +123,16 @@ def _pdf_text(pdf: Path) -> str:
     return _command(["pdftotext", "-layout", str(pdf), "-"])
 
 
+def _portable_path(path: Path) -> str:
+    """Render a report path without leaking the local checkout prefix."""
+
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(Path.cwd().resolve()).as_posix()
+    except ValueError:
+        return resolved.name
+
+
 def _compact_pdf_text(text: str) -> str:
     """Normalize style small-caps spacing for robust phrase checks."""
 
@@ -137,12 +147,39 @@ def _pdf_pages(pdf: Path) -> int:
     return int(match.group(1))
 
 
-def _appendix_page(pdf: Path) -> int:
-    aux = pdf.with_suffix(".aux")
-    text = aux.read_text(encoding="utf-8", errors="replace")
+def _aux_path(pdf: Path, aux: Path | None = None) -> Path:
+    """Resolve the LaTeX sidecar for a copied submission PDF.
+
+    The release PDF is intentionally copied without build intermediates. When
+    no explicit sidecar is supplied, look next to the PDF first and then in
+    the conventional ``build/main.aux`` location used by ``paper/iclr2027``.
+    """
+
+    candidates = [aux] if aux is not None else [pdf.with_suffix(".aux"), pdf.parent / "build" / "main.aux"]
+    for candidate in candidates:
+        if candidate is not None and candidate.is_file():
+            return candidate.resolve()
+    searched = ", ".join(str(candidate) for candidate in candidates)
+    raise FileNotFoundError(f"LaTeX aux sidecar is missing; searched: {searched}")
+
+
+def _appendix_page(pdf: Path, aux: Path | None = None) -> int:
+    aux_file = _aux_path(pdf, aux)
+    text = aux_file.read_text(encoding="utf-8", errors="replace")
     match = re.search(r"\\newlabel\{app:artifact\}\{\{[^{}]*\}\{(\d+)\}", text)
     if match is None:
         raise ValueError("appendix label app:artifact is missing from LaTeX aux")
+    return int(match.group(1))
+
+
+def _references_page(pdf: Path, aux: Path | None = None) -> int:
+    """Read the bibliography boundary excluded by the ICLR page limit."""
+
+    aux_file = _aux_path(pdf, aux)
+    text = aux_file.read_text(encoding="utf-8", errors="replace")
+    match = re.search(r"\\newlabel\{refs:start\}\{\{[^{}]*\}\{(\d+)\}", text)
+    if match is None:
+        raise ValueError("references label refs:start is missing from LaTeX aux")
     return int(match.group(1))
 
 
@@ -153,6 +190,7 @@ def audit_submission(
     supplement: Path,
     style_dir: Path,
     output: Path,
+    aux: Path | None = None,
     max_main_pages: int = 9,
 ) -> dict[str, Any]:
     """Run local checks and write a JSON decision report."""
@@ -166,14 +204,17 @@ def audit_submission(
         members = archive.namelist()
     archive_checks = audit_archive_members(members)
     page_count = _pdf_pages(pdf)
-    appendix_page = _appendix_page(pdf)
-    main_pages = appendix_page - 1
+    aux_path = _aux_path(pdf, aux)
+    references_page = _references_page(pdf, aux_path)
+    appendix_page = _appendix_page(pdf, aux_path)
+    main_pages = references_page - 1
     style_manifest = style_dir.parent / "style_manifest.json"
     machine_checks = {
         "pdf_exists": pdf.is_file() and pdf.stat().st_size > 0,
         "pdf_text_nonempty": len(pdf_text.strip()) > 500,
         "pdf_page_count_present": page_count >= 1,
         "main_text_within_nine_pages": main_pages <= max_main_pages,
+        "references_before_appendix": references_page < appendix_page,
         "pdf_ai_use_statement": "aiusestatement" in pdf_compact,
         "pdf_reproducibility_statement": "reproducibilitystatement" in pdf_compact,
         "pdf_anonymous": "anonymous authors" in pdf_lower and "paper under double-blind review" in pdf_lower,
@@ -193,11 +234,13 @@ def audit_submission(
     )
     report: dict[str, Any] = {
         "package": "PIVOT ICLR 2027 anonymous submission package",
-        "pdf": str(pdf.resolve()),
-        "source": str(source.resolve()),
-        "supplement": str(supplement.resolve()),
+        "pdf": _portable_path(pdf),
+        "source": _portable_path(source),
+        "supplement": _portable_path(supplement),
+        "aux": _portable_path(aux_path),
         "pdf_pages": page_count,
         "appendix_start_page": appendix_page,
+        "references_start_page": references_page,
         "main_pages": main_pages,
         "machine_checks": machine_checks,
         "manual_gates": {
@@ -225,6 +268,7 @@ def main() -> None:
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--supplement", type=Path, required=True)
     parser.add_argument("--style-dir", type=Path, required=True)
+    parser.add_argument("--aux", type=Path, help="LaTeX aux sidecar when the PDF was copied from the build")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     report = audit_submission(
@@ -233,6 +277,7 @@ def main() -> None:
         supplement=args.supplement,
         style_dir=args.style_dir,
         output=args.output,
+        aux=args.aux,
     )
     print(json.dumps({"decision": report["decision"], "blocking_gates": report["blocking_gates"]}))
 

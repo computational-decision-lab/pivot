@@ -1,15 +1,16 @@
 # Implementation Status
 
-Updated 2026-08-20 after the public-data calibration audit, the F2 fill-only
+Updated 2026-08-21 after the public-data calibration audit, the F2 fill-only
 impact semantics amendment, the clean multi-asset expansion run, and the
 registered twelve-ablation suite. The IMPROVE-X V5 platform vertical slice is
 also tracked in `docs/improve-x-v5-status.md`.
 
-Paper delivery update 2026-08-20: an anonymous ICLR-format PDF with nine main
-pages and eleven pages total, a hash-indexed snapshot, table generator, and PDF
-verification report are now
-tracked under `paper/`. This is a reproducible working-paper milestone; the
-external-validity gaps below remain open.
+Paper delivery update 2026-08-21: the anonymous ICLR package now has nine
+main-text pages and fourteen total pages, with the bibliography explicitly
+excluded from the main-text limit at `refs:start`. The styled hash-indexed
+snapshot, supplementary archive, table generator, and portable PDF reports are
+tracked under `paper/`. Local machine checks pass; the external-validity and
+author-side gates below remain open.
 
 ## Implemented
 

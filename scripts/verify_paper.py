@@ -3,8 +3,9 @@
 
 The verifier intentionally checks the rendered artifact rather than trusting a
 successful LaTeX exit code.  In particular, the nine-page ICLR main-text gate
-is read from the appendix label in the generated ``.aux`` file, while the
-complete PDF may contain an appendix after that boundary.
+is read from the references and appendix labels in the generated ``.aux``
+file, while the complete PDF may contain a bibliography and appendix after
+that boundary.
 """
 
 from __future__ import annotations
@@ -30,6 +31,25 @@ def parse_appendix_start_page(aux_text: str) -> int:
     if match is None:
         raise ValueError("appendix label app:artifact is missing from LaTeX aux")
     return int(match.group(1))
+
+
+def parse_references_start_page(aux_text: str) -> int:
+    """Return the first bibliography page used for the ICLR page gate."""
+
+    match = re.search(r"\\newlabel\{refs:start\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
+    if match is None:
+        raise ValueError("references label refs:start is missing from LaTeX aux")
+    return int(match.group(1))
+
+
+def _portable_path(path: Path) -> str:
+    """Render a report path without leaking the local checkout prefix."""
+
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(Path.cwd().resolve()).as_posix()
+    except ValueError:
+        return resolved.name
 
 
 def scan_log(log_text: str) -> dict[str, Any]:
@@ -78,8 +98,10 @@ def verify_paper(
     aux = pdf.with_suffix(".aux")
     if not aux.is_file():
         raise FileNotFoundError(f"expected LaTeX aux next to PDF: {aux}")
-    appendix_page = parse_appendix_start_page(aux.read_text(encoding="utf-8", errors="replace"))
-    main_pages = appendix_page - 1
+    aux_text = aux.read_text(encoding="utf-8", errors="replace")
+    references_page = parse_references_start_page(aux_text)
+    appendix_page = parse_appendix_start_page(aux_text)
+    main_pages = references_page - 1
 
     log = pdf.with_suffix(".log")
     log_scan = scan_log(log.read_text(encoding="utf-8", errors="replace")) if log.is_file() else {}
@@ -110,7 +132,8 @@ def verify_paper(
         "pdf_exists": pdf.stat().st_size > 0,
         "text_nonempty": len(text.strip()) > 500,
         "main_pages_within_limit": main_pages <= max_main_pages,
-        "appendix_after_main": appendix_page > 1,
+        "references_before_appendix": references_page < appendix_page,
+        "appendix_after_main": appendix_page > references_page,
         "anonymous_author": author in {"", "-", "Anonymous", "Anonymous Authors"},
         "embedded_fonts": bool(fonts) and all(font["embedded"] for font in fonts),
         "required_source_tokens": not missing_tokens,
@@ -119,18 +142,19 @@ def verify_paper(
         "preview_nonempty": preview_path is None or preview_path.stat().st_size > 1000,
     }
     report: dict[str, Any] = {
-        "pdf": str(pdf),
-        "source": str(source),
+        "pdf": _portable_path(pdf),
+        "source": _portable_path(source),
         "bytes": pdf.stat().st_size,
         "pages": pages,
         "main_pages": main_pages,
+        "references_start_page": references_page,
         "appendix_start_page": appendix_page,
         "title": title,
         "author": author,
         "fonts": fonts,
         "log": log_scan,
         "missing_source_tokens": missing_tokens,
-        "preview": str(preview_path) if preview_path else None,
+        "preview": _portable_path(preview_path) if preview_path else None,
         "checks": checks,
         "valid": all(checks.values()) and pages >= appendix_page,
     }

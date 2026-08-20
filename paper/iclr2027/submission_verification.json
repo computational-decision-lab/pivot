@@ -1,5 +1,5 @@
 {
-  "appendix_start_page": 10,
+  "appendix_start_page": 13,
   "archive_members": [
     "README.md",
     "benchmarks/improvementbench/v1/README.md",
@@ -52,6 +52,7 @@
     "configs/sweeps/e8.yaml",
     "configs/sweeps/e9.yaml",
     "configs/sweeps/p2.yaml",
+    "configs/tooling/figure_tools.json",
     "configs/tooling/opentikz.json",
     "experiments/__init__.py",
     "experiments/ablation_suite.py",
@@ -70,6 +71,7 @@
     "scripts/__init__.py",
     "scripts/aggregate_registered.py",
     "scripts/aggregate_results.py",
+    "scripts/bootstrap_figure_tools.py",
     "scripts/bootstrap_opentikz.py",
     "scripts/build_iclr_supplement.py",
     "scripts/build_improvementbench.py",
@@ -77,6 +79,7 @@
     "scripts/build_paper_tables.py",
     "scripts/evaluate_improvementbench.py",
     "scripts/fetch_public_finance.py",
+    "scripts/figure_style.py",
     "scripts/freeze_paper_snapshot.py",
     "scripts/make_paper_figures.py",
     "scripts/run_improve_x_comparison.py",
@@ -219,9 +222,11 @@
     "tests/integration/test_registered_runner.py",
     "tests/integration/test_strategic_experiments.py",
     "tests/unit/test_acquisition.py",
+    "tests/unit/test_bootstrap_figure_tools.py",
     "tests/unit/test_decomposition.py",
     "tests/unit/test_differential_features.py",
     "tests/unit/test_evaluator_contrast.py",
+    "tests/unit/test_figure_style.py",
     "tests/unit/test_finance_replay.py",
     "tests/unit/test_generic_footprint.py",
     "tests/unit/test_iclr_submission.py",
@@ -249,6 +254,7 @@
     "tests/unit/test_validation.py",
     "tests/unit/test_verify_paper.py"
   ],
+  "aux": "paper/iclr2027/build/main.aux",
   "blocking_gates": [
     "manual_gates.openreview_profile",
     "manual_gates.author_quota_and_reciprocal_review",
@@ -271,6 +277,7 @@
     "pdf_page_count_present": true,
     "pdf_reproducibility_statement": true,
     "pdf_text_nonempty": true,
+    "references_before_appendix": true,
     "source_ai_use_statement": true,
     "source_no_final_copy": true,
     "source_no_identity_leak": true,
@@ -291,14 +298,15 @@
     "openreview_profile": "pending"
   },
   "package": "PIVOT ICLR 2027 anonymous submission package",
-  "pdf": "/opt/projects/research/pivot/paper/iclr2027/build/main.pdf",
-  "pdf_pages": 11,
+  "pdf": "paper/iclr2027/pivot_iclr2027_submission.pdf",
+  "pdf_pages": 14,
+  "references_start_page": 10,
   "scientific_gates": {
     "confirmatory_update_rule_and_holdout": "open",
     "external_interactive_response": "open",
     "external_strategic_validation": "open"
   },
-  "source": "/opt/projects/research/pivot/paper/iclr2027/main.tex",
+  "source": "paper/iclr2027/main.tex",
   "submission_ready": false,
-  "supplement": "/opt/projects/research/pivot/paper/iclr2027/pivot_iclr2027_supplementary.zip"
+  "supplement": "paper/iclr2027/pivot_iclr2027_supplementary.zip"
 }

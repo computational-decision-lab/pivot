@@ -1,6 +1,6 @@
 # IMPROVE-X V5 Status
 
-Updated 2026-08-20. This page records the implementation state of the
+Updated 2026-08-21. This page records the implementation state of the
 user-provided CODEX MASTER GOAL V5. It is an engineering and evidence ledger,
 not a claim that the ICLR submission has been uploaded.
 
@@ -40,6 +40,17 @@ not a claim that the ICLR submission has been uploaded.
   `system-block-diagram` source, metadata, PDF, and SVG are hash-bound in the
   paper snapshot. The checkout is installed under `.tools/opentikz` and is
   intentionally ignored by Git.
+- Figure production is reproducibly styled through `scripts/figure_style.py`.
+  The external style references are lock-bound in
+  `configs/tooling/figure_tools.json`: `academic-figure-skills` at commit
+  `bbf842a8b5a6edd3619facfeb7a9b8a4605d5ac0` (MIT) and `figures4papers` at
+  commit `6790a93af3552539d955d77181c818916e1700b7` (style reference only;
+  no repository license declaration). Neither checkout is vendored into the
+  public tree.
+- The bibliography contains 50 entries, including 19 verified 2025--2026
+  papers and ICLR 2024 / NeurIPS 2022 benchmark references. The arXiv IDs,
+  titles, and authors were audited against primary metadata; the audit is
+  recorded in `docs/reference-audit-2026-08-21.md`.
 
 ## Reproducible commands
 
@@ -153,3 +164,20 @@ decision-preservation proposition, the active-learning distinction, the
 controlled value-versus-improvement diagnostic, and the renamed stress-test
 section. The remaining blockers are still the scientific/manual gates above,
 not missing local paper machinery.
+
+## Final 2026-08-21 freeze
+
+The current release supersedes the historical checkpoint above. The final
+ICLR PDF has **9 main-text pages and 14 total pages**; the bibliography starts
+on page 10 and is excluded from the ICLR main-text limit according to
+`configs/iclr2027/official_rules.json`. The machine-readable `refs:start` label
+is consumed by both paper verifiers, and the appendix begins after the full
+bibliography. The final supplement contains **252 files** and passes archive
+integrity checks.
+
+The AI Use Statement is intentionally light and venue-appropriate: it records
+limited assistance with language editing and code/figure formatting, while
+assigning verification and responsibility to the authors. The submission PDF,
+supplement, snapshot, and architecture source were regenerated after the
+reference and figure-style freeze; their current hashes are recorded in the
+delivery record and can be reproduced with the commands there.

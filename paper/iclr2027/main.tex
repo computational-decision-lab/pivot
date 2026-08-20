@@ -126,32 +126,51 @@ Our contributions are deliberately limited to four points:
 \end{enumerate}
 
 \section{Related Work}
-Performative prediction formalizes the feedback from a deployed predictor to
-the data-generating process~\cite{perdomo2020performative}. Performative RL
-and recent policy-gradient analyses extend this idea to policy-dependent
-transition and reward dynamics~\cite{performativepg2025}; our focus is the
-local validity of a proposed update rather than optimization of a
-performatively stable policy. Policy-evaluation and world-model studies ask
-whether isolated values or rankings transfer from a learned world to a target
-environment~\cite{worldgym2025,policyaware2026}. We instead ask whether
-replacing one policy with another remains an improvement after deployment.
-This distinction matters because a simulator can rank policies well while
-misordering their local replacements.
+\paragraph{Performative and strategic response.}
+Performative prediction makes deployment part of the data-generating process
+\cite{perdomo2020performative,mandal2022performative}, and recent work derives
+policy gradients or learning dynamics for performative RL and performative
+Markov games~\cite{performativepg2025,performativempg2025,map2025,multiagentperformative2022}.
+These papers study stable policies, equilibria, or convergence. They do not
+ask whether a particular replacement $\pi\!\to\!\pi'$ is still an improvement
+after the response is realized. \textbf{Gap:} PIVOT treats the update, not
+the fixed point, as the estimand.
 
-Active learning typically selects labels to reduce global prediction error for
-a target $y$. PIVOT selects interventional rollouts to reduce the probability
-of a wrong update decision by estimating the paired difference
-$\Delta_* - \Delta_V$. It is therefore a decision-preservation procedure,
-not an unconditional value-model or generic uncertainty-sampling objective.
+\paragraph{World-model and simulator fidelity.}
+WorldGym and policy-aware simulator learning evaluate policy values, rankings,
+or simulator objectives~\cite{worldgym2025,policyaware2026,tdmpc22024}. Recent market
+simulators improve the realism of endogenous order flow and liquidity through
+interactive LOB feedback or generative state--event models
+\cite{lobreality2026,m3market2026,tradefm2026}. These advances still report
+policy-level fidelity or trajectory realism. \textbf{Gap:} they do not measure
+the sign or magnitude of the differential
+$J(\pi')-J(\pi)$ under a policy-induced world, so good global ranking can
+coexist with wrong local update ordering.
 
-Self-evolving strategy systems and policy-evolution benchmarks make iterative
-improvement executable~\cite{evoquant2026,evopolicygym2026}, while
-self-authored verification work exposes failures when an agent controls its
-own tests~\cite{selfauthored2026}. PIVOT addresses a distinct failure mode:
-even a fixed external verifier can approve an update that is harmful after
-deployment-induced response. Multi-agent performative prediction and
-endogenous market simulators motivate the strategic layer~\cite{map2025,abidesmarl2025};
-they are testbeds here, not the paper's primary novelty.
+\paragraph{Self-improvement and verification.}
+EVOQUANT, EvoPolicyGym, Darwin Godel Machine, and Evo-Harness make iterative
+policy or harness evolution executable~\cite{evoquant2026,evopolicygym2026,dgm2025,evoharness2026};
+FinEvo-Bench extends evaluation to longitudinal financial workflows
+\cite{finevobench2026}. ICLR benchmarks such as AgentBench, WebArena, and
+SWE-bench make agent evaluation executable across interactive tasks
+\cite{agentbench2024,webarena2024,swebench2024}. SEAL identifies the
+verifier--deployment gap when an agent authors its own tests, while recent stress tests expose variance,
+task-order, and execution-interface failures~\cite{selfauthored2026,fragility2026,auditingfinagents2026,sbco2026}.
+Those works either protect acceptance with a sealed oracle or benchmark the
+resulting agent. \textbf{Gap:} even a fixed external verifier can be correct
+about the wrong world; PIVOT validates transfer of the proposed update itself.
+
+\paragraph{Decision-preserving queries and finance testbeds.}
+Active learning and value-of-information provide the ancestry for allocating
+expensive queries~\cite{settles2009active,lindley1956information}; paired
+rollouts additionally exploit shared exogenous randomness. PIVOT changes the
+target from global prediction error to update-selection regret. ABIDES-MARL,
+FinEvo, and the NeurIPS FinRL-Meta benchmark, together with recent execution
+and market-impact simulators, supply increasingly endogenous finance testbeds
+~\cite{abidesmarl2025,finevo2026,finrlmeta2022,byrd2019abides,cont2010price,nevmyvaka2006execution}.
+\textbf{Gap:} these environments can reveal response mechanisms, but none
+defines improvement consistency or a budgeted transition-level validator that
+separates observer, actor, and strategic reversals.
 
 \section{Problem Formulation}
 \paragraph{Policy-induced worlds.}
@@ -487,11 +506,9 @@ evidence supports the need for that estimand; the external audits state exactly
 where evidence is still missing.
 
 \section*{AI Use Statement}
-Generative AI tools were used by the authors during literature discovery,
-method and experiment design, implementation, mathematical drafting, prose
-editing, and figure-production support. The authors reviewed and tested all
-generated material, verified the reported computations, and take full
-responsibility for the paper, its claims, and its supplementary artifacts.
+AI tools provided limited assistance with language editing and code/figure
+formatting. The authors verified all claims, computations, and artifacts and
+take full responsibility for the final submission.
 
 \section*{Reproducibility Statement}
 The anonymous supplement contains the source package, deterministic
@@ -505,6 +522,10 @@ This work uses public market data and controlled virtual environments. It does
 not involve human subjects, personal data, live trading, or authorization of
 external actions.
 
+% ICLR excludes the bibliography from the main-text page limit.  Keep it on
+% a fresh page and expose a machine-readable boundary for the release checks.
+\clearpage
+\phantomsection\label{refs:start}
 \bibliographystyle{iclr2027_conference}
 \bibliography{references}
 

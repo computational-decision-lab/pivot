@@ -14,6 +14,25 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from pivot.validation import validate_figure_bundle
 
+try:
+    from scripts.figure_style import (
+        DEFAULT_COLORS,
+        PALETTE,
+        FigureStyle,
+        apply_publication_style,
+        finalize_figure,
+        reversal_cmap,
+    )
+except ModuleNotFoundError:  # Direct ``python scripts/make_paper_figures.py`` entry.
+    from figure_style import (  # type: ignore[no-redef]
+        DEFAULT_COLORS,
+        PALETTE,
+        FigureStyle,
+        apply_publication_style,
+        finalize_figure,
+        reversal_cmap,
+    )
+
 STEMS = (
     "fig1_when_better_gets_worse",
     "fig2_reversal_phase_diagram",
@@ -36,6 +55,7 @@ def main() -> None:
     )
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
+    apply_publication_style(FigureStyle(font_size=10, axes_linewidth=1.2))
     _build_scatter_figure(args.input, args.output)
     _build_heatmap_figure(args.input, args.output)
     _build_overoptimization(args.input, args.output)
@@ -164,7 +184,7 @@ def _build_contrast_figure(contrast: Path, output_dir: Path, stem: str) -> None:
         _fallback_png(output_dir / f"{stem}.png")
         return
     labels = ["value fidelity\n(A)", "transition fidelity\n(B)"]
-    colors = ["#c43d3d", "#276fbf"]
+    colors = [PALETTE["red_strong"], PALETTE["blue_main"]]
     metrics_to_plot = (
         ("policy_value_mae", "Policy value MAE", "lower is better"),
         ("policy_rank_correlation", "Policy rank", "higher is better"),
@@ -184,8 +204,7 @@ def _build_contrast_figure(contrast: Path, output_dir: Path, stem: str) -> None:
         axis.tick_params(axis="x", labelsize=7)
     figure.suptitle("Value fidelity is not improvement fidelity", fontsize=11, y=1.01)
     figure.tight_layout()
-    figure.savefig(output_dir / f"{stem}.png", dpi=180, bbox_inches="tight")
-    plt.close(figure)
+    finalize_figure(figure, output_dir / stem, formats=("png",), dpi=300)
 
 
 def _semantic_scatter_png(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -203,8 +222,7 @@ def _semantic_scatter_png(path: Path, rows: list[dict[str, Any]]) -> None:
         axis.scatter(
             [float(row["delta_proxy"]) for row in positive],
             [float(row["delta_true"]) for row in positive],
-            c=[float(row.get("response_strength", 0.0)) for row in positive],
-            cmap="viridis",
+            color=PALETTE["blue_secondary"],
             alpha=0.72,
             label="other transitions",
         )
@@ -212,7 +230,7 @@ def _semantic_scatter_png(path: Path, rows: list[dict[str, Any]]) -> None:
         axis.scatter(
             [float(row["delta_proxy"]) for row in reversal],
             [float(row["delta_true"]) for row in reversal],
-            color="#c43d3d",
+            color=PALETTE["red_strong"],
             edgecolor="white",
             linewidth=0.45,
             alpha=0.95,
@@ -234,10 +252,9 @@ def _semantic_scatter_png(path: Path, rows: list[dict[str, Any]]) -> None:
     )
     axis.text(0.03, 0.06, "correct failure", transform=axis.transAxes, fontsize=8, va="bottom")
     axis.set(xlabel="Proxy improvement", ylabel="Deployment improvement", title="When better gets worse")
-    axis.legend(loc="best", fontsize=8, frameon=True)
+    axis.legend(loc="best", fontsize=8, frameon=False)
     figure.tight_layout()
-    figure.savefig(path, dpi=180)
-    plt.close(figure)
+    finalize_figure(figure, path, formats=("png",), dpi=300)
 
 
 def _semantic_heatmap_png(path: Path, rows: list[dict[str, Any]]) -> None:
@@ -267,7 +284,7 @@ def _semantic_heatmap_png(path: Path, rows: list[dict[str, Any]]) -> None:
         interpolation="bilinear",
         vmin=0.0,
         vmax=1.0,
-        cmap="viridis",
+        cmap=reversal_cmap(),
     )
     if len(responses) > 1 and len(footprints) > 1:
         axis.contour(footprints, responses, matrix, levels=[0.5], colors="#f5f5f5", linewidths=1.2)
@@ -288,8 +305,7 @@ def _semantic_heatmap_png(path: Path, rows: list[dict[str, Any]]) -> None:
     )
     figure.colorbar(image, ax=axis, label="IRR (continuous scale)")
     figure.tight_layout()
-    figure.savefig(path, dpi=180)
-    plt.close(figure)
+    finalize_figure(figure, path, formats=("png",), dpi=300)
 
 
 def _grid_edges(values: list[float]) -> list[float]:
@@ -412,8 +428,7 @@ def _line_png(path: Path, rows: list[dict[str, Any]]) -> None:
     axis.set(xlabel="round", ylabel="value", title="Optimizing the wrong world")
     axis.legend()
     figure.tight_layout()
-    figure.savefig(path, dpi=160)
-    plt.close(figure)
+    finalize_figure(figure, path, formats=("png",), dpi=300)
 
 
 def _scatter_png(
@@ -431,14 +446,19 @@ def _scatter_png(
         return
     figure, axis = plt.subplots(figsize=(6, 4))
     x = [float(row[x_key]) for row in rows]
-    for key in y_keys:
-        axis.scatter(x, [float(row[key]) for row in rows], label=key, alpha=0.75)
-    axis.axhline(0.0, color="black", linewidth=0.7)
+    for index, key in enumerate(y_keys):
+        axis.scatter(
+            x,
+            [float(row[key]) for row in rows],
+            label=key,
+            alpha=0.75,
+            color=DEFAULT_COLORS[index % len(DEFAULT_COLORS)],
+        )
+    axis.axhline(0.0, color=PALETTE["text"], linewidth=0.7)
     axis.set(xlabel=x_key, ylabel="value", title=title)
     axis.legend()
     figure.tight_layout()
-    figure.savefig(path, dpi=160)
-    plt.close(figure)
+    finalize_figure(figure, path, formats=("png",), dpi=300)
 
 
 def _grouped_line_png(
@@ -459,19 +479,19 @@ def _grouped_line_png(
     groups: dict[str, list[dict[str, Any]]] = {}
     for row in rows:
         groups.setdefault(str(row[group_key]), []).append(row)
-    for name, group in sorted(groups.items()):
+    for index, (name, group) in enumerate(sorted(groups.items())):
         ordered = sorted(group, key=lambda row: float(row[x_key]))
         axis.plot(
             [float(row[x_key]) for row in ordered],
             [float(row[y_key]) for row in ordered],
             marker="o",
             label=name,
+            color=DEFAULT_COLORS[index % len(DEFAULT_COLORS)],
         )
     axis.set(xlabel=x_key, ylabel=y_key, title=title)
     axis.legend(fontsize=8)
     figure.tight_layout()
-    figure.savefig(path, dpi=160)
-    plt.close(figure)
+    finalize_figure(figure, path, formats=("png",), dpi=300)
 
 
 def _fallback_png(path: Path) -> None:
