@@ -90,4 +90,4 @@
 
 - [x] Run `pytest`, Ruff, mypy, standalone TikZ compile, forced deterministic PDF rebuild, archive integrity, secret scan, and private-path scan.
 - [x] Record final PDF, supplement, and snapshot hashes without changing `CONDITIONAL GO` gates.
-- [ ] Commit only `research/pivot`, create a subtree split, push non-force to the PIVOT GitHub repository, and verify remote hashes/tree.
+- [x] Commit only `research/pivot`, create a subtree split, push non-force to the PIVOT GitHub repository, and verify remote hashes/tree.
