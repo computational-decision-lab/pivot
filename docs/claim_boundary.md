@@ -34,6 +34,12 @@ EvoQuant/LLM systems are improvement operators. Learned market models are altern
 
 PIVOT must never become an abstention, authorization, safety-permission, or route-certification method.
 
+The V5 ranking claim is deliberately scoped: finite or distribution-shifted
+policy ranking quality does not guarantee update sign consistency. Exact
+pairwise ranking over the same complete deployment policy set would imply
+pairwise sign agreement and is not claimed to be insufficient. See
+`docs/improve-x-v5-theory.md`.
+
 ## Non-Goals
 
 No factor-mining agent, HFT architecture, new trading RL algorithm, Sharpe maximization, market foundation-model training, M3 reproduction, general equilibrium solver, full multi-agent co-evolution, live trading, production trading infrastructure, KAIROS integration, or complexity for novelty optics.

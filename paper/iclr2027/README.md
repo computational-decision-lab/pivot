@@ -1,7 +1,7 @@
 # PIVOT ICLR 2027 Submission Package
 
 This directory is the anonymous ICLR 2027 submission candidate for
-*When Better Gets Worse: Improvement Fidelity for Self-Improving Agents in
+*When Better Gets Worse: Improvement Fidelity of Self-Improvement Operators in
 Adaptive Worlds*.
 
 ## Build and audit

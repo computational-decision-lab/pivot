@@ -8,6 +8,7 @@
 核心冻结项：
 
 - 研究问题：自我改进 agent 的更新 `pi -> pi'` 在环境因自身部署而改变后，是否仍然是进步。
+- 论文标题：*When Better Gets Worse: Improvement Fidelity of Self-Improvement Operators in Adaptive Worlds*。
 - 核心现象：Improvement Reversal，即 `Delta_V > 0` 但 `Delta_* < 0`。
 - 方法：PIVOT（Paired Interventional Validation of Optimization Transitions）。
 - 环境阶梯：World 0 Observer -> World 1 Actor -> World 2 Strategic；金融内部为 F0 -> F1 -> F2 -> F3/F4。
@@ -15,6 +16,8 @@
 - 时间约束：按本轮记录的 ICLR 2027 目标，摘要截止 2026-09-18 AOE，全文截止 2026-09-25 AOE，主文最多 9 页。
 
 - Design/specification: [2026-08-19-pivot-design.md](superpowers/specs/2026-08-19-pivot-design.md)
+- IMPROVE-X V5 status: [improve-x-v5-status.md](improve-x-v5-status.md)
+- IMPROVE-X V5 theory boundary: [improve-x-v5-theory.md](improve-x-v5-theory.md)
 - Master implementation plan: [2026-08-19-pivot-master-implementation.md](superpowers/plans/2026-08-19-pivot-master-implementation.md)
 - Superseded planning draft: [2026-08-19-pivot-implementation.md](superpowers/plans/2026-08-19-pivot-implementation.md)
 - Gate ledger: [gates.md](experiments/gates.md)

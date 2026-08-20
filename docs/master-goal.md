@@ -6,7 +6,7 @@
 
 ### Target Paper
 
-**When Better Gets Worse: Improvement Fidelity for Self-Improving Agents in Adaptive Worlds**
+**When Better Gets Worse: Improvement Fidelity of Self-Improvement Operators in Adaptive Worlds**
 
 ---
 

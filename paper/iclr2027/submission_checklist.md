@@ -15,6 +15,10 @@ that cannot be closed inside the repository.
 - PASS: no author identity, private paths, credentials, raw vendor archives, or
   live-order artifacts in the submission package.
 - PASS: repository tests, Ruff, and mypy are clean at the delivery snapshot.
+- PASS (platform extension): IMPROVE-X contracts and controlled
+  ImprovementBench/trajectory smoke tests are tracked separately from the
+  frozen submission snapshot; they are not silently promoted into paper
+  results.
 
 ## Manual author gates
 
@@ -32,6 +36,9 @@ that cannot be closed inside the repository.
 - OPEN: external strategic validation beyond the deterministic opponent fixture.
 - OPEN: confirmatory update-generation rule, volatility/liquidity labels, and
   frozen holdout for any stronger external claim.
+- OPEN: integrate the IMPROVE-X V5 platform artifact and rebuild all paper
+  tables/figures from a fresh, hash-bound run before changing the submitted
+  PDF.
 
 ## Decision
 

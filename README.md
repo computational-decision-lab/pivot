@@ -1,23 +1,54 @@
-# PIVOT
+# IMPROVE-X / PIVOT
 
-PIVOT studies **Improvement Fidelity**: whether a policy update that looks beneficial in a cheap or fixed proxy world remains beneficial after deployment changes the environment and, later, after other agents adapt.
+IMPROVE-X is the reusable research platform for **Improvement Fidelity**:
+whether a self-improvement update that looks beneficial in a cheap or fixed
+proxy world remains beneficial after deployment changes the environment and,
+later, after other agents adapt. PIVOT is the paired, budgeted validation
+method implemented on top of the platform.
 
 ```text
 PIVOT = Paired Interventional Validation of Optimization Transitions
 ```
 
-Working paper title: *When Better Gets Worse: Improvement Fidelity for Self-Improving Agents in Adaptive Worlds*.
+Working paper title: *When Better Gets Worse: Improvement Fidelity of Self-Improvement Operators in Adaptive Worlds*.
 
 ## Current Status
 
 - Research specification: frozen and documented.
-- Implementation: P0-P9 research harnesses are present; P10 LLM/EvoQuant/M3 adapters remain deferred.
+- Implementation: the original P0-P9 PIVOT harnesses are present, and the
+  IMPROVE-X vertical slice provides operator batches, multi-round trajectories,
+  ImprovementBench v1, world-layer fidelity metrics, and failure taxonomy.
+  LLM/EvoQuant/M3 adapters remain deferred.
 - Scientific gates A-F: fixture-level registered passes are recorded, but none
   are promoted to final paper claims. A checksum-bound public Binance execution
   audit across three assets and four calendar blocks is
   complete; it observed no depth-proxy reversal, and causal response plus
   external strategic validity remain open.
 - Live trading or external execution: out of scope.
+
+## IMPROVE-X quick start
+
+Build the deterministic controlled benchmark:
+
+```bash
+.venv/bin/python scripts/build_improvementbench.py \
+  --config configs/improve_x/benchmark.yaml \
+  --output /tmp/improvementbench-v1
+```
+
+Run a four-round trajectory while retaining every candidate:
+
+```bash
+.venv/bin/python scripts/run_improvement_trajectory.py \
+  --config configs/improve_x/trajectory.yaml \
+  --output /tmp/improve-x-trajectory
+```
+
+The stable platform contracts live under
+`src/improve_x/`. `ImprovementBench` rows are transition-level records, not
+causal claims about real markets; see
+`docs/improve-x-v5-status.md` and
+`benchmarks/improvementbench/v1/README.md`.
 
 Start with:
 

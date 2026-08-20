@@ -1,8 +1,9 @@
 # Implementation Status
 
-Updated 2026-08-19 after the public-data calibration audit, the F2 fill-only
+Updated 2026-08-20 after the public-data calibration audit, the F2 fill-only
 impact semantics amendment, the clean multi-asset expansion run, and the
-registered twelve-ablation suite.
+registered twelve-ablation suite. The IMPROVE-X V5 platform vertical slice is
+also tracked in `docs/improve-x-v5-status.md`.
 
 Paper delivery update 2026-08-20: an anonymous six-page working-paper PDF,
 hash-indexed snapshot, table generator, and PDF verification report are now
@@ -25,6 +26,7 @@ external-validity gaps below remain open.
 | Clean-room reproduction | fresh P2/E4-E9 registries, fresh public cache, independent aggregation, seven-figure validation | Verified at commit `0ba4117`; artifact record in `clean-room-evidence-2026-08-19.md` |
 | Public expansion | frozen BTC/ETH/BNB quarterly-start grid, 12 sessions, subconfig contract validation, pooled/asset/holdout aggregation | Complete observational run; no reversal observed; causal validation open |
 | Twelve ablations | paired/unpaired, transition/global-value, footprint, acquisition, update size, response, F1/F2, competitors, response-model count, candidate count, HF budget | Complete controlled suite; three clean registered runs; external validity and null follow-up open |
+| IMPROVE-X V5 platform | operator batches, multi-round trajectories, ImprovementBench v1, three-world rows, failure taxonomy, sign/ranking/explanation tasks, seeded evolutionary operator, PIVOT-X query scores | Implemented and locally tested; confirmatory benchmark and external response validation remain open |
 
 ## Scientific gates
 
@@ -59,6 +61,8 @@ The implementation does not silently promote smoke results to paper claims.
    confirmatory follow-ups for the footprint and non-monotonic budget nulls.
 4. Keep LLM/EvoQuant/M3 adapters deferred until the core claims survive those
    checks.
+5. Re-run the IMPROVE-X benchmark and trajectory commands from a clean
+   environment before treating their outputs as release artifacts.
 
 The complete gap ledger is in
 `docs/experiments/remaining-gaps-2026-08-19.md`.
