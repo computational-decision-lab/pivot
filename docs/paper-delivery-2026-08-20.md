@@ -2,6 +2,35 @@
 
 Date: 2026-08-20 (Asia/Shanghai)
 
+## Current ICLR 2027 package
+
+The current anonymous ICLR package is the `paper/iclr2027/` tree, not the
+historical working-paper build below. It is locally verified as **CONDITIONAL
+GO** with 9 main pages and 11 total pages:
+
+- PDF: `paper/iclr2027/pivot_iclr2027_submission.pdf`
+- Supplement: `paper/iclr2027/pivot_iclr2027_supplementary.zip`
+- Snapshot: `paper/snapshot/manifest.json` (33 hash-indexed files)
+- Architecture: `paper/snapshot/figures/fig3_pivot_architecture.pdf`
+- PDF SHA-256: `1125b8896754450b77466f7f3d381e0b888ef66b7cae1cb22eef7bca84bdeb21`
+- Supplement SHA-256: `db391ee57d9970488f14f477af6ea7a1e561439578bc0917056aa5496362c39b`
+- Snapshot manifest SHA-256: `4dddd65f289c0bf9ccbb3dc3ca9ca2bd32e10cd848567c51b90c93ca1108d37c`
+
+OpenTikZ is installed through the lock-bound bootstrap at commit
+`359befbf8e8af7ce08e7e387b2c2a198e0ca735d`; the adapted source is included
+in the snapshot with its editable metadata and SVG preview.
+The current architecture PDF SHA-256 is
+`b5fdb18241229b68e4fa48816afd11ca2c573206e37eb6924c418ca6c7eb4725`.
+Its feedback loop uses a dedicated outer routing channel, and visual review
+confirmed that the `execution fidelity` label and all report containers are
+clear of connector and container overlap.
+
+The remaining blockers are author-side OpenReview gates and independent
+interactive/strategic scientific validation. They are intentionally not
+represented as passed by the local build.
+
+## Historical working-paper record
+
 ## Delivered
 
 The anonymous working paper is built from the tracked snapshot at

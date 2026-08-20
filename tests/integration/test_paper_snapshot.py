@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from scripts.freeze_paper_snapshot import (
+    ARCHITECTURE_FILES,
     CONTRAST_FILES,
     FIGURE_FILES,
     SUMMARY_FILES,
@@ -25,6 +26,13 @@ def _make_source(root: Path) -> None:
             path.write_text(json.dumps({"valid": True, "checked": list(range(7))}), encoding="utf-8")
         else:
             path.write_text("{}" if relative.endswith(".json") else "x", encoding="utf-8")
+
+
+def _make_architecture(root: Path) -> None:
+    root.mkdir(parents=True, exist_ok=True)
+    for relative in ARCHITECTURE_FILES:
+        path = root / relative
+        path.write_text("{}" if relative.endswith(".json") else "x", encoding="utf-8")
 
 
 def test_freeze_snapshot_copies_hash_indexed_artifacts(tmp_path: Path) -> None:
@@ -80,6 +88,29 @@ def test_freeze_snapshot_binds_optional_e4_contrast(tmp_path: Path) -> None:
     manifest = freeze_snapshot(source, ablations, public, tmp_path / "snapshot", contrast_root=contrast)
     assert "summaries/e4-contrast-comparison.json" in manifest["files"]
     assert manifest["claim_boundary"]["e4_contrast_is_controlled_diagnostic"] is True
+
+
+def test_freeze_snapshot_binds_pinned_opentikz_architecture(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    _make_source(source)
+    ablations = tmp_path / "ablations"
+    ablations.mkdir()
+    (ablations / "ablation-aggregate.json").write_text("{}", encoding="utf-8")
+    public = tmp_path / "public"
+    public.mkdir()
+    (public / "summary.json").write_text("{}", encoding="utf-8")
+    (public / "provenance.json").write_text("{}", encoding="utf-8")
+    architecture = tmp_path / "architecture"
+    _make_architecture(architecture)
+    manifest = freeze_snapshot(
+        source,
+        ablations,
+        public,
+        tmp_path / "snapshot",
+        architecture_root=architecture,
+    )
+    assert manifest["claim_boundary"]["opentikz_architecture_pinned"] is True
+    assert manifest["files"]["figures/fig3_pivot_architecture.tex"]["source_kind"] == "opentikz-pinned"
 
 
 def test_freeze_snapshot_sanitizes_machine_local_paths(tmp_path: Path) -> None:

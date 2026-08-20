@@ -1,0 +1,135 @@
+\documentclass[border=8pt]{standalone}
+
+% Adapted in OpenTikZ Mode A from the system-block-diagram template.
+% The source is standalone so it can be edited and audited independently.
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric, fit, backgrounds, calc}
+
+% --- OpenTikZ palette (light / default, color-blind-friendly Okabe-Ito) ---
+\definecolor{otblue}{HTML}{0072B2}
+\definecolor{otorange}{HTML}{E69F00}
+\definecolor{otteal}{HTML}{009E73}
+\definecolor{otpurple}{HTML}{CC79A7}
+\definecolor{otgray}{HTML}{5A5A5A}
+
+\begin{document}
+% ==== parameters (edit these) ============================================
+\def\rowsep{1.45}        % vertical spacing reference (cm)
+\def\colsep{1.10}        % horizontal spacing reference (cm)
+\def\boxminw{2.15}       % base stage width (cm)
+\def\boxminh{0.78}       % base stage height (cm)
+\def\figurewidth{15.8cm} % render width before venue scaling
+% semantic labels
+\def\incumbentlabel{$\pi_t$\\incumbent}
+\def\operatorlabel{Self-improvement\\operator $\mathcal{A}$}
+\def\candidateslabel{Candidate batch\\$\{\tau_{t,j}\}_{j=1}^{K}$}
+\def\proxylabel{Observer verifier\\$\Delta_V,\ z_\Delta$}
+\def\footprintlabel{Update footprint\\$d(\pi_t,\pi'_{t,j})$}
+\def\scorelabel{decision-change\\score $q_j$}
+\def\pairedlabel{Paired HF rollouts\\same state, seed, opponents}
+\def\correctionlabel{Differential transfer\\$\widehat\Delta_* = \Delta_V + g_\theta$}
+\def\promotelabel{Corrected selection\\promote $\pi_{t+1}$}
+\def\decompositionlabel{Response decomposition\\$\Delta_{\mathrm{direct}},\ \Delta_{\mathrm{actor}},\ \Delta_{\mathrm{strategic}}$}
+\def\worldzerolabel{W0 Observer\\historical path\\$P(s'\mid s)$}
+\def\worldonelabel{W1 Replay\\fill, fee, queue\\execution fidelity}
+\def\worldtwolabel{W2 Actor\\$a_t\!\to\!s_{t+1}$\\mechanical footprint}
+\def\worldthreelabel{W3 Strategic\\competitor response\\$BR_{-i}(\pi_i)$}
+% =========================================================================
+
+\resizebox{\figurewidth}{!}{%
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    >={Stealth[length=2.0mm]},
+    base/.style={
+      rounded corners=3pt, line width=0.7pt, align=center,
+      font=\sffamily\footnotesize, inner sep=3pt,
+    },
+    stage/.style={base, minimum width=\boxminw cm, minimum height=\boxminh cm},
+    external/.style={stage, draw=otgray!70, fill=otgray!10, dashed},
+    process/.style={stage, draw=otblue!75!otgray, fill=otblue!14},
+    query/.style={stage, draw=otorange!80!otgray, fill=otorange!18},
+    intervention/.style={stage, draw=otteal!75!otgray, fill=otteal!14},
+    promotion/.style={stage, draw=otpurple!80!otgray, fill=otpurple!16},
+    world/.style={base, text width=2.65cm, minimum height=0.90cm},
+    decomposition/.style={base, text width=3.35cm, minimum height=0.70cm, draw=otteal!65!otgray, fill=otteal!7, font=\sffamily\scriptsize},
+    metric/.style={base, text width=5.9cm, minimum height=0.78cm, draw=otblue!65!otgray, fill=otblue!7, font=\sffamily\scriptsize},
+    evidence/.style={base, text width=6.1cm, minimum height=0.78cm, draw=otpurple!65!otgray, fill=otpurple!7, font=\sffamily\scriptsize},
+    arrow/.style={draw=otgray!85, line width=0.85pt, ->},
+    dashedarrow/.style={draw=otorange!85!otgray, line width=0.8pt, dashed, ->},
+    hfarrow/.style={draw=otteal!85!otgray, line width=0.85pt, ->},
+    edgeLabel/.style={font=\sffamily\scriptsize, text=otgray, fill=otgray!0, inner sep=1pt, align=center},
+    panel/.style={draw=otgray!55, dashed, rounded corners=5pt, line width=0.75pt, fill=otgray!3},
+    paneltitle/.style={font=\sffamily\scriptsize\bfseries, text=otgray, fill=otgray!0, inner sep=1pt},
+  ]
+
+  % --- layer 1: candidate generation and cheap verification -------------
+  \node[external, text width=1.85cm] (incumbent) at (1.55,7.35) {\incumbentlabel};
+  \node[process, text width=2.30cm] (operator) at (4.75,7.35) {\operatorlabel};
+  \node[process, text width=2.55cm] (candidates) at (8.15,7.35) {\candidateslabel};
+  \node[process, text width=2.35cm] (proxy) at (11.65,7.35) {\proxylabel};
+
+  \draw[arrow] (incumbent) -- (operator);
+  \draw[arrow] (operator) -- (candidates);
+  \draw[arrow] (candidates) -- (proxy);
+
+  % --- layer 2: PIVOT decision-preservation mechanism --------------------
+  \node[process, text width=2.55cm] (footprint) at (8.15,5.15) {\footprintlabel};
+  \node[query, text width=2.35cm] (score) at (11.65,5.15) {\scorelabel};
+  \node[intervention, text width=2.65cm] (paired) at (8.15,3.95) {\pairedlabel};
+  \node[process, text width=2.70cm] (correction) at (11.65,3.95) {\correctionlabel};
+  \node[promotion, text width=2.20cm] (promote) at (14.45,3.95) {\promotelabel};
+  \node[decomposition, text width=3.00cm] (decomposition) at (11.65,2.65) {\decompositionlabel};
+
+  % Explicit arrows carry the semantics; long explanations live in nodes.
+  \draw[dashedarrow] (candidates.south) -- (footprint.north);
+  \draw[arrow] (proxy.south) -- (score.north);
+  \draw[arrow] (footprint) -- (score);
+  \draw[arrow] (score.south west) to[out=210, in=20] (paired.east);
+  \draw[hfarrow] (paired) -- (correction);
+  \draw[arrow] (correction.east) -- (promote.west);
+  \draw[dashedarrow] (decomposition.north) -- (correction.south);
+
+  % --- layer 3: observer-to-strategic world ladder -----------------------
+  \node[world, external] (world0) at (1.55,1.05) {\worldzerolabel};
+  \node[world, external] (world1) at (5.00,1.05) {\worldonelabel};
+  \node[world, intervention] (world2) at (8.45,1.05) {\worldtwolabel};
+  \node[world, promotion] (world3) at (11.90,1.05) {\worldthreelabel};
+
+  \draw[arrow] (world0) -- (world1);
+  \draw[hfarrow] (world1) -- (world2);
+  \draw[dashedarrow] (world2) -- (world3);
+  \draw[hfarrow] (paired.south) -- (world2.north);
+  \draw[dashedarrow] (world3.north) -- (decomposition.south);
+
+  % --- reporting objects --------------------------------------------------
+  \node[metric] (metrics) at (4.35,-1.55) {
+    \textbf{Improvement Fidelity:}\quad IDE, ISC, IRR, SIRR, ISR, CTI\\[-1pt]
+    $\Delta_V$ versus $\Delta_*$ at the transition level
+  };
+  \node[evidence] (evidence) at (11.80,-1.55) {
+    \textbf{Evidence:}\quad controlled mechanism | E4 | budget\\[-1pt]
+    strategic fixture | finance audit | no causal claim
+  };
+
+  % --- feedback to the next self-improvement round -----------------------
+  \draw[dashedarrow] (promote.east) -- (16.15,3.95) -- (16.15,9.18)
+    -- (0.30,9.18) -- (0.30,8.45) -- (1.55,8.45)
+    -- (1.55,7.82) -- (incumbent.north);
+
+  % --- fixed panel boundaries prevent title/node collisions --------------
+  \begin{scope}[on background layer]
+    \path[panel] (0.25,2.35) rectangle (15.85,8.72);
+    \path[panel] (0.25,-0.05) rectangle (15.85,2.05);
+    \path[panel] (0.25,-2.28) rectangle (15.85,-0.32);
+  \end{scope}
+  \node[paneltitle, anchor=south west] at (0.45,8.84)
+    {PIVOT: TRANSITION-LEVEL DECISION PRESERVATION};
+  \node[paneltitle, anchor=south west] at (0.45,2.18)
+    {ADAPTIVE WORLD FIDELITY LADDER};
+  \node[paneltitle, anchor=south west] at (0.45,-0.20)
+    {REPORTING OBJECTS AND CLAIM BOUNDARY};
+
+\end{tikzpicture}%
+}
+\end{document}

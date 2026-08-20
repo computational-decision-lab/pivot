@@ -35,3 +35,17 @@ The controlled E4 spotlight diagnostic is reproducible with:
 It compares an evaluator with slightly better isolated policy-value accuracy
 against one with exact paired deltas. The result is intentionally labelled a
 controlled estimand diagnostic, not a universal method claim.
+
+The architecture figure is generated from the pinned OpenTikZ
+`system-block-diagram` template (commit
+`359befbf8e8af7ce08e7e387b2c2a198e0ca735d`). The checkout is installed and
+verified without modifying the upstream repository:
+
+```bash
+.venv/bin/python scripts/bootstrap_opentikz.py
+.venv/bin/python scripts/build_opentikz_architecture.py
+```
+
+The lock file records the template and reference-file SHA-256 values. OpenTikZ
+code is MIT-licensed and its template content is CC0-1.0; the adapted source
+and metadata remain in the paper snapshot for anonymous reproducibility.

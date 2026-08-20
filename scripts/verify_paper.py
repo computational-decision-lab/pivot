@@ -98,6 +98,8 @@ def verify_paper(
         "contribution 4",
         "decision preservation under differential error",
         "why transition validation differs from active learning",
+        "fig3_pivot_architecture",
+        "decision-preserving data flow",
         "stress tests beyond controlled environments",
     ]
     source_lower = source_text.casefold()

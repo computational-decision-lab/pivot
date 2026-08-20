@@ -105,6 +105,11 @@ The controlled value-versus-improvement diagnostic can be regenerated with:
 
 This is a controlled estimand diagnostic, not a universal method or market
 performance claim.
+
+The editable architecture source is adapted from the pinned OpenTikZ
+`system-block-diagram` template. Rebuild it after installing the lock-bound
+checkout with `scripts/bootstrap_opentikz.py` and
+`scripts/build_opentikz_architecture.py`.
 """,
         encoding="utf-8",
     )

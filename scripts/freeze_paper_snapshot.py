@@ -53,6 +53,13 @@ CONTRAST_FILES = (
     "provenance.json",
 )
 
+ARCHITECTURE_FILES = (
+    "fig3_pivot_architecture.tex",
+    "fig3_pivot_architecture.meta.json",
+    "fig3_pivot_architecture.pdf",
+    "fig3_pivot_architecture.svg",
+)
+
 
 def freeze_snapshot(
     source_root: Path,
@@ -62,6 +69,7 @@ def freeze_snapshot(
     *,
     project_root: Path | None = None,
     contrast_root: Path | None = None,
+    architecture_root: Path | None = None,
 ) -> dict[str, Any]:
     """Copy declared artifacts and write a deterministic manifest."""
 
@@ -111,19 +119,32 @@ def freeze_snapshot(
                 "e4-value-vs-improvement",
                 files,
             )
+    if architecture_root is not None:
+        architecture_root = Path(architecture_root).resolve()
+        for relative in ARCHITECTURE_FILES:
+            _copy_record(
+                architecture_root / relative,
+                output / f"figures/{relative}",
+                relative,
+                "opentikz-pinned",
+                files,
+            )
     validation = json.loads(
         (output / "summaries/figures__figure_validation.json").read_text(encoding="utf-8")
     )
     if validation.get("valid") is not True or len(validation.get("checked", [])) != 7:
         raise ValueError("paper snapshot requires seven validated figures")
+    source_roots: dict[str, str | None] = {
+        "controlled": "<clean-room>",
+        "ablations": "<clean-room>",
+        "public_expansion": "<public-data-audit>",
+        "e4_contrast": "<clean-room>" if contrast_root is not None else None,
+    }
+    if architecture_root is not None:
+        source_roots["architecture"] = "<opentikz-pinned>"
     manifest = {
         "snapshot_version": "pivot-paper-snapshot-v1",
-        "source_roots": {
-            "controlled": "<clean-room>",
-            "ablations": "<clean-room>",
-            "public_expansion": "<public-data-audit>",
-            "e4_contrast": "<clean-room>" if contrast_root is not None else None,
-        },
+        "source_roots": source_roots,
         "source_commits": {
             "project": _git_commit(project_root or Path.cwd()),
             "controlled": _read_commit(source_root),
@@ -137,6 +158,7 @@ def freeze_snapshot(
             "e3_overoptimization_claim": False,
             "llm_evoquant_m3_used": False,
             "e4_contrast_is_controlled_diagnostic": True,
+            "opentikz_architecture_pinned": architecture_root is not None,
         },
     }
     (output / "manifest.json").write_text(
@@ -210,6 +232,7 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--project-root", type=Path, default=Path.cwd())
     parser.add_argument("--contrast-root", type=Path)
+    parser.add_argument("--architecture-root", type=Path)
     args = parser.parse_args()
     manifest = freeze_snapshot(
         args.source_root,
@@ -218,6 +241,7 @@ def main() -> None:
         args.output,
         project_root=args.project_root,
         contrast_root=args.contrast_root,
+        architecture_root=args.architecture_root,
     )
     print(json.dumps({"files": len(manifest["files"]), "snapshot": str(args.output)}))
 

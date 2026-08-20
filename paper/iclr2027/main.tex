@@ -8,7 +8,9 @@
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usepackage{url}
+\usepackage{csquotes}
 \usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
 
 \graphicspath{{../snapshot/figures/}}
 
@@ -320,10 +322,28 @@ paired high-fidelity transitions.
   \label{fig:phase}
 \end{figure}
 
+The resulting decision-preserving data flow is summarized in
+\cref{fig:pivot-architecture}. The diagram treats a policy replacement as the
+unit of validation: cheap proxy scores screen the candidate set, while paired
+high-fidelity interventions are reserved for transitions that can change the
+selection decision.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig3_pivot_architecture.pdf}
+  \caption{PIVOT validates the replacement operation rather than isolated
+  policy values. A cheap verifier produces proxy improvements and update
+  footprints; a decision-change score selects paired high-fidelity
+  interventions under common state, seed, and opponent conditions. The
+  differential correction ranks candidates for promotion and feeds the next
+  self-improvement round.}
+  \label{fig:pivot-architecture}
+\end{figure}
+
 \paragraph{Improvement reversal.}
 Across 240 transitions per registered run, overall IRR is $0.7292$ and the
 high-response IRR is $0.9722$; low-response IRR is zero. The phase diagram in
-Figure~\ref{fig:phase} shows the intended response--footprint interaction.
+\cref{fig:phase} shows the intended response--footprint interaction.
 These results establish that a correct observer verifier can approve harmful
 updates in a world with policy-induced response.
 
@@ -356,7 +376,7 @@ policy-value accuracy does not determine local transition fidelity.
 
 \paragraph{Budget frontier.}
 At one high-fidelity query, PIVOT reduces ISR relative to Random by $4.7245$
-and relative to Top Proxy by $3.1301$ in the registered fixture. Figure~\ref{fig:budget}
+and relative to Top Proxy by $3.1301$ in the registered fixture. \cref{fig:budget}
 shows the full frontier. The twelve-ablation suite retains a non-monotonic
 PIVOT curve across budgets; this is a robustness boundary, not a claim of
 monotonic benefit.
@@ -373,7 +393,7 @@ monotonic benefit.
 The E3 closed-loop fixture does not show proxy/true divergence: both curves
 increase together and reach the reward bound. We therefore report E3 as a
 negative stress test of the current fixture, not as evidence for
-``optimizing the wrong world.'' This distinction is important because a paper
+\enquote{optimizing the wrong world}. This distinction is important because a paper
 can otherwise manufacture its central phenomenon by selecting a pathological
 environment after observing results.
 
@@ -385,14 +405,10 @@ adaptation, while adaptive competition produces SIRR $1.0$ and competition
 effects of $-0.0514$ (E7) and $-0.0405$ (E8). The sensitivity contrast is
 $-0.1082$.
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{fig6_observer_actor_strategic.png}
-  \caption{The same update evaluated in observer, actor, and strategic worlds.}
-  \label{fig:layers}
-\end{figure}
-
-The opponent-mode sweep is reported in Appendix Figure~\ref{fig:strategic}.
+The same update is evaluated in observer, actor, and strategic worlds; the
+layer diagnostic is deferred to Appendix \cref{fig:layers} to preserve the
+main-text page budget. The opponent-mode sweep is reported in Appendix
+\cref{fig:strategic}.
 These results are mechanism evidence for the strategic layer, not a claim of
 general equilibrium or realistic market ecology. External strategic
 validation remains open.
@@ -413,7 +429,7 @@ $[-5.3969,-2.9638]\times10^{-7}$. Thus finance supplies a plausibility and
 boundary test, not causal confirmation of improvement reversal.
 
 \section{Ablations and Robustness}
-The frozen suite contains twelve required comparisons. Table~\ref{tab:ablation}
+The frozen suite contains twelve required comparisons. \cref{tab:ablation}
 shows the compact main-text subset; the full aggregate, raw rows, and failure
 ledgers are included in the artifact snapshot.
 
@@ -453,8 +469,8 @@ audit. We do not certify actions, solve general multi-agent equilibrium, or
 claim that a learned simulator is ground truth.
 
 \section{Reproducibility and Conclusion}
-The paper snapshot contains 29 hash-indexed artifacts, seven figure/source-table
-pairs, the controlled evaluator-contrast rows, controlled gate summaries, the
+The paper snapshot contains 33 hash-indexed artifacts, seven figure/source-table
+pairs, one editable OpenTikZ architecture bundle, the controlled evaluator-contrast rows, controlled gate summaries, the
 public expansion summary, and the full twelve-ablation aggregate. Three
 disjoint ablation runs reproduce with zero failed runs. The repository's full
 test suite and static checks are recorded in the release manifest. The IMPROVE-X transition contracts and controlled
@@ -514,6 +530,15 @@ required before changing any result table.
 \caption{Public expansion boundary.}
 \input{../tables/public_results.tex}
 \end{table}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{fig6_observer_actor_strategic.png}
+  \caption{The same update evaluated in observer, actor, and strategic worlds.
+  This diagnostic separates mechanical response from competitor adaptation;
+  it is fixture evidence rather than a general-equilibrium claim.}
+  \label{fig:layers}
+\end{figure}
 
 \begin{figure}[h]
   \centering

@@ -89,6 +89,21 @@ The matched-budget trajectory diagnostic is reproducible with:
 Its checked-in result is a controlled diagnostic with a hash-bound query
 ledger, not a general superiority claim.
 
+## ICLR 2027 paper and architecture figure
+
+Build the anonymous submission package from the pinned snapshot:
+
+```bash
+(cd paper/iclr2027 && ./build.sh)
+.venv/bin/python scripts/bootstrap_opentikz.py
+.venv/bin/python scripts/build_opentikz_architecture.py
+```
+
+OpenTikZ is locked to commit
+`359befbf8e8af7ce08e7e387b2c2a198e0ca735d`; its adapted architecture source
+is `paper/iclr2027/figures/fig3_pivot_architecture.tex`, and the paper uses
+the hash-bound copy under `paper/snapshot/figures/`.
+
 Start with:
 
 - `/opt/projects/research/pivot/docs/pivot.md`
