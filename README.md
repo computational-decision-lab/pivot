@@ -3,7 +3,7 @@
 PIVOT studies **Improvement Fidelity**: whether a policy update that looks beneficial in a cheap or fixed proxy world remains beneficial after deployment changes the environment and, later, after other agents adapt.
 
 ```text
-PIVOT = Paired Interventional Verification of Optimization Transitions
+PIVOT = Paired Interventional Validation of Optimization Transitions
 ```
 
 Working paper title: *When Better Gets Worse: Improvement Fidelity for Self-Improving Agents in Adaptive Worlds*.

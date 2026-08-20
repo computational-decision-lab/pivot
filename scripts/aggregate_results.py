@@ -6,6 +6,7 @@ import json
 import sys
 from pathlib import Path
 from statistics import mean
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
@@ -17,7 +18,7 @@ def main() -> None:
     parser.add_argument("--inputs", nargs="+", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    records = []
+    records: list[dict[str, Any]] = []
     for directory in args.inputs:
         metrics_path = directory / "metrics.json"
         if not metrics_path.exists():

@@ -7,7 +7,7 @@ import json
 import shutil
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
@@ -40,8 +40,10 @@ def main() -> None:
     validation = validate_figure_bundle(args.output, STEMS)
     (args.output / "figure_validation.json").write_text(json.dumps(validation, indent=2, sort_keys=True), encoding="utf-8")
     if not validation["valid"]:
-        raise SystemExit("figure validation failed: " + "; ".join(validation["errors"]))
-    print(f"validated figures={len(validation['checked'])} output={args.output}")
+        errors = cast(list[str], validation["errors"])
+        raise SystemExit("figure validation failed: " + "; ".join(errors))
+    checked = cast(list[object], validation["checked"])
+    print(f"validated figures={len(checked)} output={args.output}")
 
 
 def _find(input_dir: Path, filename: str) -> Path | None:

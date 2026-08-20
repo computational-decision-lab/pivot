@@ -2,7 +2,7 @@
 
 ## Project: PIVOT
 
-**PIVOT = Paired Interventional Verification of Optimization Transitions**
+**PIVOT = Paired Interventional Validation of Optimization Transitions**
 
 ### Target Paper
 

@@ -22,7 +22,7 @@ intentionally deferred.
 ## Global Constraints
 
 - The authoritative research object is `pi_t -> pi'_{t,j}`. Do not substitute a policy leaderboard, action gate, authorization decision, or trajectory score.
-- PIVOT means **Paired Interventional Verification of Optimization Transitions**.
+- PIVOT means **Paired Interventional Validation of Optimization Transitions**.
 - Distinguish `Delta_proxy`, `Delta_actor`, and `Delta_strategic`; unavailable values are explicit `null`, never silently substituted.
 - Use paired evaluation with matched initial states, scenarios, exogenous seeds, market days, order flow, and opponent initialization whenever possible.
 - Report IDE, ISC, IRR, SIRR, MTR with a denominator threshold, ISR, CTI, and high-fidelity cost.

@@ -5,7 +5,7 @@
 **Target venue:** ICLR 2027
 **Planning deadlines supplied for this freeze:** abstract 2026-09-18 AOE; full paper 2026-09-25 AOE; main text limit 9 pages
 **Working title:** *When Better Gets Worse: Improvement Fidelity for Self-Improving Agents in Adaptive Worlds*
-**Method name:** PIVOT — *Paired Interventional Verification of Optimization Transitions*
+**Method name:** PIVOT — *Paired Interventional Validation of Optimization Transitions*
 
 ## 1. Design lock
 

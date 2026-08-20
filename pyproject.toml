@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pivot-research"
 version = "0.1.0"
-description = "Paired Interventional Verification of Optimization Transitions"
+description = "Paired Interventional Validation of Optimization Transitions"
 requires-python = ">=3.10"
 dependencies = ["numpy>=1.24", "PyYAML>=6.0"]
 
@@ -19,7 +19,7 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 addopts = "-ra"
 
 [tool.ruff]

@@ -6,7 +6,7 @@
 
 **Goal:** Build a reproducible research harness that measures improvement fidelity for policy updates, demonstrates Improvement Reversal in a controlled adaptive world, and implements PIVOT's budgeted paired high-fidelity validation before adding finance and strategic extensions.
 
-**Architecture:** Start with a small typed Python package. A `PolicyTransition` is the shared contract across policy operators, evaluators, environments, metrics, acquisition, and experiment logging. Evaluators expose paired deltas rather than forcing consumers to subtract independently estimated policy values. The controlled environment is the only required world for the first milestone; finance, adaptive opponents, LLM/EvoQuant, and M3 are adapters added only after explicit gates pass. The authoritative acronym is PIVOT: *Paired Interventional Verification of Optimization Transitions*.
+**Architecture:** Start with a small typed Python package. A `PolicyTransition` is the shared contract across policy operators, evaluators, environments, metrics, acquisition, and experiment logging. Evaluators expose paired deltas rather than forcing consumers to subtract independently estimated policy values. The controlled environment is the only required world for the first milestone; finance, adaptive opponents, LLM/EvoQuant, and M3 are adapters added only after explicit gates pass. The authoritative acronym is PIVOT: *Paired Interventional Validation of Optimization Transitions*.
 
 **Tech Stack:** Python 3.11+, standard-library frozen dataclasses, `numpy`, `pandas`, `scipy`, `scikit-learn`, `PyYAML`, `pytest`, `ruff`, `mypy`, `matplotlib`, and JSONL/Parquet experiment artifacts.
 

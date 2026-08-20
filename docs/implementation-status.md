@@ -4,6 +4,11 @@ Updated 2026-08-19 after the public-data calibration audit, the F2 fill-only
 impact semantics amendment, the clean multi-asset expansion run, and the
 registered twelve-ablation suite.
 
+Paper delivery update 2026-08-20: an anonymous six-page working-paper PDF,
+hash-indexed snapshot, table generator, and PDF verification report are now
+tracked under `paper/`. This is a reproducible working-paper milestone; the
+external-validity gaps below remain open.
+
 ## Implemented
 
 | Phase | Evidence in this checkout | Status |
