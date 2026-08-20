@@ -21,6 +21,7 @@ This matrix audits the authoritative specification in [master-goal.md](master-go
 | Repository and artifact structure | master sections 26-27; master plan repository contract | Implemented | Files exist and scripts reproduce outputs |
 | Analytic toy tests and full integration round | master section 28; plan P0/P9 | Implemented and tested | Unit tests and one complete round test |
 | P0-P10 implementation order | master section 29; master plan phases | P0-P9 implemented; P10 deferred | Commits and gate ledger follow order |
+| IMPROVE-X V5 platform | V5 platform plan; transition-level benchmark contract | Implemented and locally verified | ImprovementBench v1, multi-round trajectory runner, PIVOT-X acquisition; confirmatory external evaluation pending |
 | First milestone | master section 30; plan P1/P2 | Implemented; registered run completed | `run_sweep.py`, 240-row Parquet/JSONL, five diagnostics |
 | Second milestone | master section 31; plan P3 | Implemented; matched-budget registered evidence completed | `e4_global_vs_local.py`, disjoint IDs and budget ledger |
 | Third milestone | master section 32; plan P4/P5 | Implemented; fixture Gate D pass | `e5_budget_frontier.py`; external-validity review required |
@@ -37,8 +38,10 @@ twelve-ablation suite, and a checksum-bound public
 finance audit across three assets and four calendar blocks are recorded, but
 none is being presented as a final submission claim. The public percentage-depth
 result is an observational execution proxy, not causal actor-world ground truth;
-the expansion observed no reversal at any predeclared participation. P10 remains
-intentionally deferred; the next blockers are a confirmatory update-generation
-rule, causal response robustness, external strategic validation, and the
-replication design for the footprint/budget nulls. The full audit is in
+the expansion observed no reversal at any predeclared participation. The
+IMPROVE-X extension adds a reusable transition benchmark and trajectory layer,
+but does not close those scientific gates. P10 remains intentionally deferred;
+the next blockers are a confirmatory update-generation rule, causal response
+robustness, external strategic validation, and the replication design for the
+footprint/budget nulls. The full audit is in
 `docs/experiments/remaining-gaps-2026-08-19.md`.

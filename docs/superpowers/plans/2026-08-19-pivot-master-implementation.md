@@ -8,7 +8,7 @@
 
 **Tech Stack:** Python 3.10+, typed dataclasses or Pydantic-style schemas, NumPy/Pandas/SciPy/scikit-learn, PyYAML, pytest, Ruff, mypy, Matplotlib, Parquet, JSON/YAML provenance, and SHA-256 manifests.
 
-**Live implementation note (2026-08-19):** P0-P9 harnesses, registered fixture
+**Live implementation note (2026-08-20):** P0-P9 harnesses, registered fixture
 runs, a seven-session single-asset public calibration, and a frozen 12-session
 three-asset public expansion are present in the checkout. The checkboxes below
 remain the original execution contract rather than a live completion ledger;
@@ -17,7 +17,10 @@ current implementation and gate status are tracked in
 `docs/experiments/public-finance-evidence-2026-08-19.md`, and
 `docs/experiments/public-expansion-evidence-2026-08-19.md`. The public depth
 audits are observational, not causal actor-world validation. P10 remains
-intentionally deferred.
+intentionally deferred. The IMPROVE-X V5 platform extension (transition
+contracts, ImprovementBench, multi-round trajectories, failure taxonomy, and
+PIVOT-X scoring) is complete as a separately verified vertical slice; its
+confirmatory external evaluation is still open.
 
 ## Global Constraints
 

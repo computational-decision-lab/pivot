@@ -19,7 +19,10 @@ that require a new design decision or an external intervention source.
 - Cross-run aggregation reports `valid_run_count=3` and `ablation_count=12`.
 - Raw rows, empty failure ledgers, provenance, configuration hashes, and clean
   reproduction hashes are retained.
-- Full local verification is `76 passed`; ruff and mypy are clean.
+- Full local verification after the IMPROVE-X V5 platform extension is `114
+  passed`; Ruff and mypy are clean.
+- ImprovementBench v1 and a four-round controlled trajectory are hash-bound
+  and tested. They are platform fixtures, not external causal evidence.
 
 ## Submission boundary
 
