@@ -13,6 +13,9 @@ not a claim that the ICLR submission has been uploaded.
   cumulative curves.
 - `ImprovementBench v1` stores `(pi_t, pi_t+1)` rows as canonical JSONL with
   explicit nulls, schema version, metadata, file hashes, and validation.
+- `ImprovementBench v2` adds three seeded operators, three sequential rounds,
+  and frozen train/validation/test splits in a separate 243-row release. Its
+  ranking task pools candidates across operators within one trajectory round.
 - Sign, candidate-ranking, and failure-explanation task evaluators are
   available in `src/improve_x/benchmark/tasks.py`.
 - Failure labels distinguish observer, environment-response, strategic, and
@@ -46,6 +49,23 @@ and layer fidelity without changing the dataset. All use matched contexts and a 
 checked-in benchmark release is generated only after the full verification
 run; generated temporary directories should not be treated as paper evidence.
 
+Build the multi-round, multi-operator release with:
+
+```bash
+.venv/bin/python scripts/build_improvementbench.py \
+  --config configs/improve_x/benchmark_v2.yaml \
+  --output /tmp/improvementbench-v2
+
+.venv/bin/python scripts/evaluate_improvementbench.py \
+  --input benchmarks/improvementbench/v2 \
+  --output /tmp/improvementbench-v2-metrics \
+  --split test
+```
+
+This emits 243 rows (three splits x three rounds x three operators x three
+scales x three worlds). The actor-oracle promotion is recorded only as a
+collection policy; it is not a PIVOT-X superiority result.
+
 ## Evidence boundary
 
 The controlled runner demonstrates that the platform can represent and audit
@@ -63,6 +83,8 @@ At the 2026-08-20 checkpoint:
 - `.venv/bin/ruff check .`: **clean**;
 - `.venv/bin/mypy src scripts`: **clean**;
 - ImprovementBench v1: **12 rows**, manifest validation **true**;
+- ImprovementBench v2: **243 rows**, three frozen splits, manifest validation
+  **true**, and nine cross-operator ranking groups per split;
 - trajectory smoke: **4 rounds / 12 retained rows**. The controlled run ended
   with proxy `2.5269201087`, actor `-3.0549010603`, and strategic
   `-5.1170298273`. These values are fixture diagnostics only;
@@ -72,7 +94,7 @@ At the 2026-08-20 checkpoint:
 
 ## Remaining V5 work
 
-1. Add confirmatory multi-round operator comparisons and held-out seeds before
+1. Add a held-out proxy-only versus PIVOT-X multi-round comparison before
    promoting ImprovementBench numbers into the paper.
 2. Add independently calibrated interactive and strategic response worlds;
    observational depth data cannot identify those responses.

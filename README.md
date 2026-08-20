@@ -59,6 +59,24 @@ causal claims about real markets; see
 `docs/improve-x-v5-status.md` and
 `benchmarks/improvementbench/v1/README.md`.
 
+The v2 controlled release adds three operators, three sequential rounds, and
+frozen train/validation/test splits:
+
+```bash
+.venv/bin/python scripts/build_improvementbench.py \
+  --config configs/improve_x/benchmark_v2.yaml \
+  --output /tmp/improvementbench-v2
+
+.venv/bin/python scripts/evaluate_improvementbench.py \
+  --input benchmarks/improvementbench/v2 \
+  --output /tmp/improvementbench-v2-metrics \
+  --split test
+```
+
+Its actor-oracle collection promotion is explicitly metadata, not a claim
+that PIVOT-X has won a held-out comparison. See
+`benchmarks/improvementbench/v2/README.md`.
+
 Start with:
 
 - `/opt/projects/research/pivot/docs/pivot.md`

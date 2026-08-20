@@ -4,12 +4,17 @@ import hashlib
 import json
 from pathlib import Path
 
+from scripts.build_iclr_supplement import ALLOWLIST
 from scripts.verify_iclr_submission import (
     audit_archive_members,
     audit_source_text,
     audit_style_hashes,
     build_decision,
 )
+
+
+def test_supplement_allowlist_contains_improvementbench_v2() -> None:
+    assert "benchmarks/improvementbench/v2" in ALLOWLIST
 
 
 def test_audit_source_text_requires_anonymous_iclr_contract() -> None:

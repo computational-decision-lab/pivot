@@ -1,0 +1,40 @@
+{
+  "benchmark": "ImprovementBench",
+  "candidate_scales": [
+    0.04,
+    0.1,
+    0.2
+  ],
+  "collection_promotion_world": "actor",
+  "created_at": "2026-08-20T00:00:00+00:00",
+  "mode": "multiround_multioperator",
+  "operators": [
+    "synthetic",
+    "rl-update",
+    "evolutionary-mutation"
+  ],
+  "release_version": "v2",
+  "rounds": 3,
+  "row_count": 243,
+  "schema_version": "improvementbench-v1",
+  "source_commit": "87d63c0bdda94ab929b84be60036df4cc2268860",
+  "splits": {
+    "test": [
+      51
+    ],
+    "train": [
+      31
+    ],
+    "validation": [
+      41
+    ]
+  },
+  "world_config": {
+    "competition_strength": 0.5,
+    "config_id": "improve-x-benchmark-v2",
+    "horizon": 12,
+    "noise_scale": 0.0,
+    "response_strength": 0.7,
+    "reward_bound": 10.0
+  }
+}

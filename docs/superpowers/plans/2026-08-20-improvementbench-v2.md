@@ -34,7 +34,7 @@
 - `evaluate_ranking_task` groups v2 candidates by world, trajectory, round, and incumbent, not operator.
 - `evaluate_improvementbench.py --split NAME` evaluates exactly the named frozen split.
 
-- [ ] **Step 1: Write failing tests** for split discovery/filtering, unknown split rejection, cross-operator nine-candidate group size, and CLI split metrics.
+- [x] **Step 1: Write failing tests** for split discovery/filtering, unknown split rejection, cross-operator nine-candidate group size, and CLI split metrics.
 
 ```python
 assert dataset.split_names == ("test", "train", "validation")
@@ -42,15 +42,15 @@ assert len(dataset.rows_for_split("test")) == 81
 assert evaluate_ranking_task(rows, scores)["n_groups"] == 9
 ```
 
-- [ ] **Step 2: Run focused tests** and confirm the missing split API or wrong grouping failure.
+- [x] **Step 2: Run focused tests** and confirm the missing split API or wrong grouping failure.
 
 Run: `.venv/bin/pytest -q tests/unit/test_improvementbench.py tests/integration/test_improve_x_commands.py`
 
-- [ ] **Step 3: Implement the minimal contract** with a seed fallback for legacy rows and full-release validation before CLI filtering.
+- [x] **Step 3: Implement the minimal contract** with a seed fallback for legacy rows and full-release validation before CLI filtering.
 
-- [ ] **Step 4: Run focused tests** and confirm all pass.
+- [x] **Step 4: Run focused tests** and confirm all pass.
 
-- [ ] **Step 5: Commit** the tested API checkpoint.
+- [x] **Step 5: Commit** the tested API checkpoint (`87d63c0`).
 
 ### Task 2: Deterministic v2 builder and release
 
@@ -68,15 +68,15 @@ Run: `.venv/bin/pytest -q tests/unit/test_improvementbench.py tests/integration/
 - The release contains 243 rows and all three operator/world labels.
 - Each v2 row has split, trajectory, operator scale, source transition, and collection metadata.
 
-- [ ] **Step 1: Write the failing v2 integration test** asserting 243 rows, split count 81, three rounds, nine candidates per group, and deterministic manifests.
+- [x] **Step 1: Write the failing v2 integration test** asserting 243 rows, split count 81, three rounds, nine candidates per group, and deterministic manifests.
 
-- [ ] **Step 2: Run it** and confirm the current builder cannot create the v2 dataset.
+- [x] **Step 2: Run it** and confirm the current builder cannot create the v2 dataset.
 
-- [ ] **Step 3: Implement the builder mode** using seeded synthetic, RL-update, and evolutionary operators. Promote only the actor-oracle collection winner after recording every candidate/world row.
+- [x] **Step 3: Implement the builder mode** using seeded synthetic, RL-update, and evolutionary operators. Promote only the actor-oracle collection winner after recording every candidate/world row.
 
-- [ ] **Step 4: Run the v1 and v2 integration tests**, then generate v2 to a temporary directory.
+- [x] **Step 4: Run the v1 and v2 integration tests**, then generate v2 to a temporary directory.
 
-- [ ] **Step 5: Commit source**, regenerate the tracked v2 artifact from that commit, validate its manifest, and commit the frozen release.
+- [x] **Step 5: Commit source** (`87d63c0`), regenerate the tracked v2 artifact from that commit, validate its manifest, and stage the frozen release.
 
 ### Task 3: Documentation, supplement, and verification
 
@@ -86,7 +86,7 @@ Run: `.venv/bin/pytest -q tests/unit/test_improvementbench.py tests/integration/
 - Modify: `paper/iclr2027/supplementary/scripts/build_iclr_supplement.py`
 - Modify: `paper/iclr2027/supplementary/README.md`
 
-- [ ] **Step 1: Document v2 commands and the collection/evidence boundary.**
+- [x] **Step 1: Document v2 commands and the collection/evidence boundary.**
 
 - [ ] **Step 2: Include the hash-bound v2 release in the anonymous supplement without bundling generated temporary outputs.**
 
