@@ -48,8 +48,13 @@ def _first_number(values: Iterable[float | None]) -> float | None:
     return next((float(value) for value in values if value is not None), None)
 
 
-def evaluate(dataset: ImprovementBenchDataset, manifest_sha256: str) -> dict[str, object]:
-    rows = tuple(dataset.rows)
+def evaluate(
+    dataset: ImprovementBenchDataset,
+    manifest_sha256: str,
+    *,
+    requested_split: str | None = None,
+) -> dict[str, object]:
+    rows = dataset.rows_for_split(requested_split) if requested_split else tuple(dataset.rows)
     predictions = {
         row.transition_id: row.proxy_delta
         for row in rows
@@ -68,6 +73,7 @@ def evaluate(dataset: ImprovementBenchDataset, manifest_sha256: str) -> dict[str
         "schema_version": "improvementbench-evaluation-v1",
         "input_manifest_sha256": manifest_sha256,
         "dataset_valid": True,
+        "requested_split": requested_split,
         "row_count": len(rows),
         "world_level_counts": dict(sorted(Counter(row.world_level for row in rows).items())),
         "failure_counts": dict(sorted(Counter(row.failure_type for row in rows).items())),
@@ -82,13 +88,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Evaluate a frozen ImprovementBench release")
     parser.add_argument("--input", type=Path, required=True, help="ImprovementBench directory")
     parser.add_argument("--output", type=Path, required=True, help="metrics output directory")
+    parser.add_argument("--split", dest="requested_split", help="optional frozen split name")
     args = parser.parse_args()
     dataset = ImprovementBenchDataset.read(args.input)
     validation = dataset.validate()
     if not bool(validation["valid"]):
         raise ValueError(f"invalid ImprovementBench release: {validation['errors']}")
     manifest_sha256 = hashlib.sha256((args.input / "manifest.json").read_bytes()).hexdigest()
-    result = evaluate(dataset, manifest_sha256)
+    result = evaluate(dataset, manifest_sha256, requested_split=args.requested_split)
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "metrics.json").write_text(
         json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8"

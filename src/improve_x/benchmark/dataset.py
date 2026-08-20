@@ -172,6 +172,27 @@ class ImprovementBenchDataset:
             raise ValueError(f"duplicate transition_id: {row.transition_id}")
         self.rows.append(row)
 
+    @property
+    def split_names(self) -> tuple[str, ...]:
+        """Return deterministic names of explicitly recorded frozen splits."""
+
+        names = {
+            str(value)
+            for row in self.rows
+            if isinstance((value := row.metadata.get("split")), str) and value
+        }
+        return tuple(sorted(names))
+
+    def rows_for_split(self, split_name: str) -> tuple[ImprovementBenchRow, ...]:
+        """Return every row in one frozen split or reject an unknown name."""
+
+        if not split_name:
+            raise ValueError("split name must not be empty")
+        rows = tuple(row for row in self.rows if row.metadata.get("split") == split_name)
+        if not rows:
+            raise ValueError(f"unknown split: {split_name}")
+        return rows
+
     def write(self, directory: Path, *, created_at: str | None = None) -> dict[str, object]:
         directory = Path(directory)
         directory.mkdir(parents=True, exist_ok=True)

@@ -32,10 +32,13 @@ def evaluate_ranking_task(
     for row in rows:
         if row.deployment_delta is not None and row.transition_id in scores:
             # A round can contain the same candidate transition evaluated in
-            # several worlds and under several seeds. Keep those candidate
-            # pools separate so the task measures within-world update ranking.
+            # several worlds. Keep those candidate pools separate, but pool
+            # update operators that competed from the same incumbent.
             incumbent_key = tuple(sorted(row.incumbent_policy.items()))
-            groups[(row.world_level, row.seed, row.round_id, row.improvement_operator, incumbent_key)].append(row)
+            trajectory_id = row.metadata.get("trajectory_id")
+            if trajectory_id is None:
+                trajectory_id = f"seed:{row.seed}"
+            groups[(row.world_level, str(trajectory_id), row.round_id, incumbent_key)].append(row)
     correct = 0
     for candidates in groups.values():
         if not candidates:

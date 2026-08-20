@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -71,6 +72,43 @@ def test_dataset_rejects_invalid_jsonl(tmp_path: Path) -> None:
     (tmp_path / "manifest.json").write_text(json.dumps({"files": {}}), encoding="utf-8")
     with pytest.raises(ValueError, match="JSON"):
         ImprovementBenchDataset.read(tmp_path)
+
+
+def test_dataset_exposes_named_frozen_splits() -> None:
+    rows = make_rows()
+    dataset = ImprovementBenchDataset(
+        [
+            replace(rows[0], metadata={"split": "train"}),
+            replace(rows[1], metadata={"split": "test"}),
+        ]
+    )
+
+    assert dataset.split_names == ("test", "train")
+    assert dataset.rows_for_split("train") == (dataset.rows[0],)
+    with pytest.raises(ValueError, match="unknown split"):
+        dataset.rows_for_split("validation")
+
+
+def test_ranking_task_pools_operators_within_one_transition_round() -> None:
+    rows = make_rows()
+    pooled_rows = [
+        replace(
+            rows[0],
+            improvement_operator="synthetic",
+            metadata={"trajectory_id": "held-out-11"},
+        ),
+        replace(
+            rows[1],
+            improvement_operator="rl-update",
+            metadata={"trajectory_id": "held-out-11"},
+        ),
+    ]
+    scores = {row.transition_id: row.deployment_delta for row in pooled_rows}
+
+    ranking = evaluate_ranking_task(pooled_rows, scores)
+
+    assert ranking["n_groups"] == 1
+    assert ranking["accuracy"] == 1.0
 
 
 def test_dataset_validation_checks_schema_and_row_count(tmp_path: Path) -> None:
