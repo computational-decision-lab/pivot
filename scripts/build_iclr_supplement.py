@@ -11,7 +11,7 @@ import shutil
 import zipfile
 from pathlib import Path
 
-ALLOWLIST = ("src", "scripts", "experiments", "configs", "tests")
+ALLOWLIST = ("src", "scripts", "experiments", "configs", "tests", "benchmarks/improvementbench/v1")
 TEXT_SUFFIXES = {".py", ".yaml", ".yml", ".json", ".md", ".tex", ".bib", ".txt", ".csv"}
 SKIP_PARTS = {"__pycache__", ".pytest_cache", ".ruff_cache", ".mypy_cache", ".venv", "build", "pivot_research.egg-info"}
 PRIVATE_RE = re.compile(r"(?:/opt/projects|/home/ubuntu|/tmp(?:/[A-Za-z0-9_.-]*)?)")
@@ -70,10 +70,11 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
 
     readme = output_root / "README.md"
     readme.write_text(
-        """# PIVOT ICLR 2027 Supplementary Artifact
+        """# IMPROVE-X / PIVOT ICLR 2027 Supplementary Artifact
 
-This archive contains the anonymous source, configurations, tests, and
-hash-indexed paper snapshot used for the submission PDF. From the
+This archive contains the anonymous source, configurations, tests, the
+controlled ImprovementBench release, and the hash-indexed paper snapshot used
+for the submission PDF. From the
 repository root, install the project in editable mode and run:
 
 ```bash

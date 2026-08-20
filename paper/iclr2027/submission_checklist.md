@@ -10,8 +10,8 @@ that cannot be closed inside the repository.
 - PASS: 9 main-text pages, references and appendix after the main-text gate.
 - PASS: embedded fonts, non-empty text, no undefined citations, no overfull boxes.
 - PASS: mandatory AI Use Statement, Reproducibility Statement, and Ethics Statement.
-- PASS: deterministic supplementary ZIP with source, configs, tests, snapshot,
-  tables, and README.
+- PASS: deterministic supplementary ZIP with source, configs, tests, the
+  controlled ImprovementBench release, snapshot, tables, and README.
 - PASS: no author identity, private paths, credentials, raw vendor archives, or
   live-order artifacts in the submission package.
 - PASS: repository tests, Ruff, and mypy are clean at the delivery snapshot.

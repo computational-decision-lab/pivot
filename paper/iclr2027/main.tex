@@ -93,7 +93,9 @@ Our contributions are deliberately limited to three points:
   \item We formalize \textbf{improvement fidelity} and report differential
   metrics for local update decisions: improvement differential error (IDE),
   sign consistency (ISC), reversal rate (IRR), strategic reversal rate (SIRR),
-  update-selection regret (ISR), and cumulative true improvement (CTI).
+  update-selection regret (ISR), and cumulative true improvement (CTI). The
+  accompanying IMPROVE-X contract stores each policy transition and preserves
+  unavailable world layers as explicit nulls.
   \item We introduce \textbf{PIVOT}, a paired correction model plus active
   high-fidelity querying rule. It spends intervention budget where a query is
   most likely to change the update ordering or sign.
@@ -385,9 +387,11 @@ claim that a learned simulator is ground truth.
 The paper snapshot contains 25 hash-indexed artifacts, seven figure/source-table
 pairs, controlled gate summaries, the public expansion summary, and the full
 twelve-ablation aggregate. Three disjoint ablation runs reproduce with zero
-failed runs. The repository's full test suite reports 82 passing tests; Ruff
-and mypy are clean. The build records the source commit and PDF verification
-metadata. No credentials or raw vendor archives enter the paper package.
+failed runs. The repository's full test suite reports 114 passing tests; Ruff
+and mypy are clean. The IMPROVE-X transition contracts and controlled
+ImprovementBench smoke artifact are separately hash-bound in the repository.
+The build records the source commit and PDF verification metadata. No
+credentials or raw vendor archives enter the paper package.
 
 The central lesson is simple: a self-improving agent should not be judged only
 by whether its new policy performs better in the world used to verify it. It
