@@ -22,3 +22,11 @@ Files:
 
 Run `ImprovementBenchDataset.read(...).validate()` before consuming a copied
 release. Do not overwrite a tracked release with a partial or failed run.
+
+For the built-in proxy baseline and layer metrics:
+
+```bash
+.venv/bin/python scripts/evaluate_improvementbench.py \
+  --input benchmarks/improvementbench/v1 \
+  --output /tmp/improvementbench-v1-metrics
+```

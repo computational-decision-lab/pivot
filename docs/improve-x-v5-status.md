@@ -33,11 +33,16 @@ not a claim that the ICLR submission has been uploaded.
 .venv/bin/python scripts/run_improvement_trajectory.py \
   --config configs/improve_x/trajectory.yaml \
   --output /tmp/improve-x-trajectory
+
+.venv/bin/python scripts/evaluate_improvementbench.py \
+  --input benchmarks/improvementbench/v1 \
+  --output /tmp/improvementbench-v1-metrics
 ```
 
 The first command emits 12 controlled rows (2 seeds x 2 candidates x 3
 world levels). The second emits four rounds and 12 retained candidate rows.
-Both use matched contexts and a seeded controlled performative world. The
+The third reports the proxy sign/ranking baseline, oracle explanation sanity,
+and layer fidelity without changing the dataset. All use matched contexts and a seeded controlled performative world. The
 checked-in benchmark release is generated only after the full verification
 run; generated temporary directories should not be treated as paper evidence.
 

@@ -62,6 +62,33 @@ def test_improvementbench_ranking_task_groups_candidates_by_world_and_round(tmp_
     assert ranking["accuracy"] == 1.0
 
 
+def test_improvementbench_evaluator_emits_task_and_layer_metrics(tmp_path: Path) -> None:
+    dataset_output = tmp_path / "benchmark"
+    metrics_output = tmp_path / "metrics"
+    run_script("scripts/build_improvementbench.py", "configs/improve_x/benchmark.yaml", dataset_output)
+    result = subprocess.run(
+        [
+            sys.executable,
+            "scripts/evaluate_improvementbench.py",
+            "--input",
+            str(dataset_output),
+            "--output",
+            str(metrics_output),
+        ],
+        cwd=PROJECT_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    assert "rows" in result.stdout
+    metrics = json.loads((metrics_output / "metrics.json").read_text(encoding="utf-8"))
+    assert metrics["row_count"] == 12
+    assert metrics["dataset_valid"] is True
+    assert metrics["sign_by_world"]["observer"]["accuracy"] == 1.0
+    assert metrics["layer_fidelity"]["observer_fidelity"] == 0.0
+
+
 def test_trajectory_runner_retains_candidates_and_multiple_rounds(tmp_path: Path) -> None:
     output = tmp_path / "trajectory"
     run_script("scripts/run_improvement_trajectory.py", "configs/improve_x/trajectory.yaml", output)

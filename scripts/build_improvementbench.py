@@ -78,7 +78,12 @@ def main() -> None:
                         **{
                             **adjusted.__dict__,
                             "transition_id": f"{adjusted.transition_id}-{world_level}",
-                            "metadata": {**dict(adjusted.metadata), "scale_index": scale_index, "scale": scale},
+                            "metadata": {
+                                **dict(adjusted.metadata),
+                                "source_transition_id": transition.transition_id,
+                                "scale_index": scale_index,
+                                "scale": scale,
+                            },
                         }
                     )
                 )

@@ -44,6 +44,15 @@ Run a four-round trajectory while retaining every candidate:
   --output /tmp/improve-x-trajectory
 ```
 
+Evaluate the frozen transition benchmark's sign, ranking, explanation, and
+world-layer fidelity tasks:
+
+```bash
+.venv/bin/python scripts/evaluate_improvementbench.py \
+  --input benchmarks/improvementbench/v1 \
+  --output /tmp/improvementbench-v1-metrics
+```
+
 The stable platform contracts live under
 `src/improve_x/`. `ImprovementBench` rows are transition-level records, not
 causal claims about real markets; see
