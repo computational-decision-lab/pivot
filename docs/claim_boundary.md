@@ -40,6 +40,13 @@ pairwise ranking over the same complete deployment policy set would imply
 pairwise sign agreement and is not claimed to be insufficient. See
 `docs/improve-x-v5-theory.md`.
 
+The V6 Global Fidelity Blindness result is a constructive operator-conditioned
+counterexample: global MAE and Spearman correlation can be arbitrarily close
+to ideal while an update operator concentrated on a locally swapped pair has
+IRR `1` and ISC `0`. The registered Response-Footprint Sensitivity result is
+likewise an exact scalar regularity check. Neither construction is evidence of
+causal market impact or strategic equilibrium.
+
 ## Non-Goals
 
 No factor-mining agent, HFT architecture, new trading RL algorithm, Sharpe maximization, market foundation-model training, M3 reproduction, general equilibrium solver, full multi-agent co-evolution, live trading, production trading infrastructure, KAIROS integration, or complexity for novelty optics.

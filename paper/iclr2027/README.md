@@ -36,6 +36,18 @@ It compares an evaluator with slightly better isolated policy-value accuracy
 against one with exact paired deltas. The result is intentionally labelled a
 controlled estimand diagnostic, not a universal method claim.
 
+The V6 theorem checks are reproducible with:
+
+```bash
+.venv/bin/python experiments/e10_theory_empirical.py \\
+  --config configs/theory/v6_empirical.yaml \\
+  --output results/theory/e10-theory-empirical
+```
+
+The registered output is included in the supplementary archive under
+`results/theory`; it checks the Global Fidelity Blindness construction and the
+exact response-footprint bound without making a causal market claim.
+
 The architecture figure is generated from the pinned OpenTikZ
 `system-block-diagram` template (commit
 `359befbf8e8af7ce08e7e387b2c2a198e0ca735d`). The checkout is installed and

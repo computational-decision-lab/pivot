@@ -14,8 +14,8 @@ page 10 and is excluded from the ICLR main-text limit through the explicit
 - Supplement: `paper/iclr2027/pivot_iclr2027_supplementary.zip`
 - Snapshot: `paper/snapshot/manifest.json` (33 hash-indexed files)
 - Architecture: `paper/snapshot/figures/fig3_pivot_architecture.pdf`
-- PDF SHA-256: `ec4ef37c0f8822c5847a49953e28d30b88f0c65e56e1e039053335deecec7214`
-- Supplement SHA-256: `927be24bd89cdc8e5c412e7d8520e26da3bbcddb85d3efbcc345fd7509e16037`
+- PDF SHA-256: `617a7ac552b120f78e4da198b39f81157c0b83da5e1320afc7b460ffe8227778`
+- Supplement SHA-256: `7f9c55f861d40f7630a18bdea3baec3104c8797057904977d8f51191ea80e70f`
 - Snapshot manifest SHA-256: `a79d65be03b8719aaa3b06fac4c7181f02147a15a455baa2267a1942214931fa`
 
 OpenTikZ is installed through the lock-bound bootstrap at commit
@@ -37,6 +37,11 @@ Figures are generated with the local PIVOT style adapter, whose two external
 style references are pinned in `configs/tooling/figure_tools.json`; the
 checkouts remain outside the tracked/public tree. The paper's AI Use
 Statement is limited to language editing and code/figure formatting support.
+
+The supplement also contains the registered V6 theory artifact: 285
+row-level checks for Global Fidelity Blindness and the exact response-footprint
+bound. These checks are analytic constructions and do not close the separate
+causal interactive-response or strategic-validation gates.
 
 The remaining blockers are author-side OpenReview gates and independent
 interactive/strategic scientific validation. They are intentionally not

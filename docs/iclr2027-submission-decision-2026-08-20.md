@@ -20,8 +20,11 @@ records the retrieved rules in `paper/iclr2027/official_rules.json`.
   `refs:start` boundary; the appendix starts on page 13. Citations, fonts, and
   no-overfull-box checks pass the local verifier.
 - The deterministic supplementary archive contains the code, configs, tests,
-  frozen snapshot, and generated tables without raw vendor archives or private
-  paths.
+  frozen snapshot, generated tables, and the registered V6 theory artifact
+  without raw vendor archives or private paths.
+- The V6 artifact checks Global Fidelity Blindness and the exact
+  response-footprint bound on 285 row-level cases; it is explicitly labelled
+  analytic evidence rather than causal market validation.
 - The delivery auditor writes `paper/iclr2027/submission_verification.json`;
   all report paths are portable relative paths.
 - The bibliography contains 50 entries, with 19 verified 2025--2026 papers and

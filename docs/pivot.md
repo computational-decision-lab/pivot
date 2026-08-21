@@ -16,6 +16,7 @@
 - 时间约束：按本轮记录的 ICLR 2027 目标，摘要截止 2026-09-18 AOE，全文截止 2026-09-25 AOE，主文最多 9 页。
 
 - Design/specification: [2026-08-19-pivot-design.md](superpowers/specs/2026-08-19-pivot-design.md)
+- V6 theory design/evidence: [2026-08-21-v6-empirical-theory-design.md](superpowers/specs/2026-08-21-v6-empirical-theory-design.md), [v6-theory-empirical-evidence-2026-08-21.md](v6-theory-empirical-evidence-2026-08-21.md)
 - IMPROVE-X V5 status: [improve-x-v5-status.md](improve-x-v5-status.md)
 - IMPROVE-X V5 theory boundary: [improve-x-v5-theory.md](improve-x-v5-theory.md)
 - Master implementation plan: [2026-08-19-pivot-master-implementation.md](superpowers/plans/2026-08-19-pivot-master-implementation.md)

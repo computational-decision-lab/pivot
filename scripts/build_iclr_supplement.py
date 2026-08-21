@@ -16,6 +16,7 @@ ALLOWLIST = (
     "scripts",
     "experiments",
     "configs",
+    "results/theory",
     "tests",
     "benchmarks/improvementbench/v1",
     "benchmarks/improvementbench/v2",
@@ -105,6 +106,18 @@ The controlled value-versus-improvement diagnostic can be regenerated with:
 
 This is a controlled estimand diagnostic, not a universal method or market
 performance claim.
+
+The V6 analytic theory checks are included under `results/theory` and can be
+regenerated with:
+
+```bash
+.venv/bin/python experiments/e10_theory_empirical.py \\
+  --config configs/theory/v6_empirical.yaml \\
+  --output /tmp/pivot-e10-theory-empirical
+```
+
+They test the constructive Global Fidelity Blindness and Response-Footprint
+Sensitivity claims; they are not causal market evidence.
 
 The editable architecture source is adapted from the pinned OpenTikZ
 `system-block-diagram` template. Rebuild it after installing the lock-bound

@@ -2,7 +2,8 @@
 
 Updated 2026-08-21 after the public-data calibration audit, the F2 fill-only
 impact semantics amendment, the clean multi-asset expansion run, and the
-registered twelve-ablation suite. The IMPROVE-X V5 platform vertical slice is
+registered twelve-ablation suite. The V6 analytic theory checks are now
+registered under `results/theory/e10-theory-empirical`. The IMPROVE-X V5 platform vertical slice is
 also tracked in `docs/improve-x-v5-status.md`.
 
 Paper delivery update 2026-08-21: the anonymous ICLR package now has nine
@@ -28,6 +29,7 @@ author-side gates below remain open.
 | Clean-room reproduction | fresh P2/E4-E9 registries, fresh public cache, independent aggregation, seven-figure validation | Verified at commit `0ba4117`; artifact record in `clean-room-evidence-2026-08-19.md` |
 | Public expansion | frozen BTC/ETH/BNB quarterly-start grid, 12 sessions, subconfig contract validation, pooled/asset/holdout aggregation | Complete observational run; no reversal observed; causal validation open |
 | Twelve ablations | paired/unpaired, transition/global-value, footprint, acquisition, update size, response, F1/F2, competitors, response-model count, candidate count, HF budget | Complete controlled suite; three clean registered runs; external validity and null follow-up open |
+| V6 analytic theory checks | constructive Global Fidelity Blindness adjacent-swap family; exact Response-Footprint Sensitivity bound; row-level data, figures, provenance, and SHA-256 manifest | Registered full grid; all theorem gates pass; claim boundary is analytic, not causal market evidence |
 | IMPROVE-X V5 platform | operator batches, multi-round trajectories, ImprovementBench v1, three-world rows, failure taxonomy, sign/ranking/explanation tasks, seeded evolutionary operator, PIVOT-X query scores | Implemented and locally tested; confirmatory benchmark and external response validation remain open |
 | ICLR spotlight narrative upgrade | transition-first abstract/introduction, four contribution framing, decision-preservation proposition, active-learning distinction, controlled value-vs-improvement E4 contrast, semantic Figure 1/2/4, portable snapshot paths | Implemented; local PDF/supplement gates pass, scientific/manual gates remain open |
 
@@ -52,6 +54,11 @@ The implementation does not silently promote smoke results to paper claims.
 - Gate F: the corrected registered E7/E8 fixture summary has positive E8 actor
   improvement before adaptation and E7/E8 SIRR of `1.0`. External strategic
   validation is still required.
+- Gate G: the V6 GFB construction covers all three epsilon targets, with
+  operator IRR `1.0` at minimum global MAE `1.91e-6`; the RFS construction
+  holds its bound on all 180 rows with a tight ratio of one. This closes the
+  analytic theorem-check gate only; it does not close causal or strategic
+  external-validity gates.
 
 ## Remaining before a submission-grade result
 

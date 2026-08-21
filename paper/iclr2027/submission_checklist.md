@@ -1,6 +1,6 @@
 # ICLR 2027 Submission Checklist
 
-Updated 2026-08-20. This checklist distinguishes local evidence from gates
+Updated 2026-08-21. This checklist distinguishes local evidence from gates
 that cannot be closed inside the repository.
 
 ## Machine-verified
@@ -18,6 +18,10 @@ that cannot be closed inside the repository.
 - PASS (platform extension): IMPROVE-X contracts, ImprovementBench v1/v2, and
   the held-out controlled comparison are included in the anonymous supplement;
   they are not silently promoted into main-text results.
+- PASS (V6 theory artifact): Global Fidelity Blindness and
+  Response-Footprint Sensitivity checks include registered configuration,
+  row-level data, figures, provenance, and a SHA-256 manifest in the
+  supplementary archive.
 
 ## Manual author gates
 

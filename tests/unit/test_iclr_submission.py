@@ -35,6 +35,10 @@ def test_supplement_allowlist_contains_improvementbench_v2() -> None:
     assert "benchmarks/improvementbench/v2" in ALLOWLIST
 
 
+def test_supplement_allowlist_contains_registered_theory_artifact() -> None:
+    assert "results/theory" in ALLOWLIST
+
+
 def test_audit_source_text_requires_anonymous_iclr_contract() -> None:
     source = r"""
     \documentclass{article}

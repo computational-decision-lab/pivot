@@ -261,7 +261,7 @@ selection margin.
 \end{figure}
 
 \section{Theory}
-We state three modest results that motivate the differential estimand. They are
+We state four results that motivate the differential estimand. They are
 not claims about a particular simulator architecture.
 
 \begin{proposition}[Global fidelity is sufficient]
@@ -274,6 +274,27 @@ By adding and subtracting the two policy values,
 $\dproxy-\dtrue=[J_V(\pip)-J_*(\pip)]-[J_V(\pii)-J_*(\pii)]$.
 The triangle inequality gives the bound. If $|\dtrue|>2\varepsilon$, the
 perturbation cannot cross zero.
+\end{proof}
+
+\begin{proposition}[Global Fidelity Blindness]
+For every $\varepsilon>0$, there is a finite policy family and an update
+operator such that
+\[
+  \operatorname{MAE}(J_V,J_*)<\varepsilon,\qquad
+  \operatorname{Spearman}(J_V,J_*)>1-\varepsilon,
+\]
+while the operator-conditioned improvement reversal rate is $1$ and its
+improvement sign consistency is $0$.
+\end{proposition}
+\begin{proof}
+Take $n$ policies with $J_*(i)=i/(n-1)$ and let $V$ swap the values of one
+adjacent pair. Then $\operatorname{MAE}=2/[n(n-1)]$ and the only nonzero rank
+displacements are $+1$ and $-1$, so
+$1-\operatorname{Spearman}=12/[n(n^2-1)]$. Choose $n$ large enough that both
+quantities are below $\varepsilon$. Let the update operator sample only the
+swapped pair and propose the lower-valued true policy as a replacement for the
+higher-valued incumbent. The proxy delta is positive and the deployment delta
+is negative on every sampled transition, giving IRR $=1$ and ISC $=0$.
 \end{proof}
 
 \begin{proposition}[Response--footprint bound]
@@ -314,9 +335,12 @@ the margin condition.
 
 The first proposition explains why global value accuracy is sufficient but
 unnecessarily strong: a policy-independent offset can be arbitrarily large
-without changing any improvement difference. The second motivates targeted
-fidelity: high footprint and high response sensitivity are the transitions most
-likely to change a decision. The third connects differential error to the
+without changing any improvement difference. The Global Fidelity Blindness
+construction shows that the converse fails even for excellent global MAE and
+rank correlation: the update distribution can concentrate on a locally swapped
+transition. The response--footprint result motivates targeted fidelity: high
+footprint and high response sensitivity are the transitions most likely to
+change a decision. The final proposition connects differential error to the
 selection decision that PIVOT must preserve. In strategic environments, small policy changes
 can still cause large competitor responses, so the bound should be treated as a
 diagnostic hypothesis rather than a universal smoothness assumption.
@@ -330,6 +354,15 @@ response grid $\{0,0.3,0.7,0.9\}$, footprint scales
 $\{0.1,0.2,0.3,0.5\}$, and optimization strengths
 $\{0.5,1,1.5\}$. All primary comparisons use disjoint registered seeds and
 paired high-fidelity transitions.
+
+We also run the registered V6 analytic checks in the supplementary artifact.
+The Global Fidelity Blindness grid
+contains 105 rows: all three targets $\varepsilon\in\{10^{-1},10^{-2},10^{-3}\}$
+are covered, the minimum Spearman correlation is $0.9971$, and the minimum
+operator-conditioned IRR is $1.0$. The response--footprint grid contains 180
+rows and satisfies the stated bound on every row, with maximum observed/bound
+ratio $1+3.3\times10^{-15}$. These values are exact-construction checks and
+are kept separate from the controlled adaptive-world and finance evidence.
 
 \begin{figure}[t]
   \centering
