@@ -14,7 +14,9 @@ claims in the V6 objective without introducing a new application domain:
    improvement operator concentrated on the swapped pair sees a proxy-positive,
    deployment-negative transition on every draw. The experiment reports MAE,
    Spearman, operator-conditioned IDE/ISC/IRR, and the global-to-operator error
-   ratio for a grid of policy-family sizes and target epsilons.
+   ratio for a grid of policy-family sizes and target epsilons. The sampled rows
+   are the empirical transition law $Q_{\mathcal A}$, so absolute-delta IF is
+   IDE and sign-error IF is $1-\mathrm{ISC}$.
 2. **Response-Footprint Scaling (RFS).** Use a scalar response map
    `M_lambda(x)=lambda*x` and value `J(x,m)=x-L_J*m`. For an update footprint
    `d=|x'-x|`, the known regularity constants are `L_M=lambda` and `L_J`.

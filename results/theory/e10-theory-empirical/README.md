@@ -4,7 +4,10 @@ This registered artifact checks two analytic claims used by PIVOT:
 
 1. **Global Fidelity Blindness (GFB):** an adjacent rank swap in a growing
    finite policy family makes global MAE and rank deficit vanish while the
-   operator-conditioned update reversal rate remains one.
+   operator-conditioned update reversal rate remains one. The sampled rows
+   define `Q_A`; `improvement_fidelity_ide` and
+   `improvement_fidelity_sign_error` are its absolute-delta and sign-error
+   losses.
 2. **Response-Footprint Sensitivity (RFS):** the scalar response map and
    Lipschitz value functional attain the bound
    `|Delta_actor - Delta_direct| <= L_J L_M d` exactly.

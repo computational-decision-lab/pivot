@@ -32,6 +32,16 @@ def test_global_fidelity_blindness_matches_constructive_errors() -> None:
     assert result["operator_sample_count"] == 10
 
 
+def test_global_fidelity_case_exposes_operator_distribution_and_if() -> None:
+    result = evaluate_global_fidelity_case(32, operator_samples=10, seed=3)
+
+    assert result["q_a_name"] == "adjacent-swap-focused"
+    assert result["q_a_support_size"] == 1
+    assert result["q_a_support_probability"] == pytest.approx(1.0)
+    assert result["improvement_fidelity_ide"] == pytest.approx(result["operator_ide"])
+    assert result["improvement_fidelity_sign_error"] == pytest.approx(1.0)
+
+
 def test_response_footprint_bound_is_tight_for_analytic_response_map() -> None:
     result = evaluate_response_footprint_case(
         response_strength=0.75,

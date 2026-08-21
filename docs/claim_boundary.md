@@ -43,7 +43,10 @@ pairwise sign agreement and is not claimed to be insufficient. See
 The V6 Global Fidelity Blindness result is a constructive operator-conditioned
 counterexample: global MAE and Spearman correlation can be arbitrarily close
 to ideal while an update operator concentrated on a locally swapped pair has
-IRR `1` and ISC `0`. The registered Response-Footprint Sensitivity result is
+IRR `1` and ISC `0`. Formally, the operator induces `Q_A` and
+`IF(V,A;L)=E_{Q_A}[L(Delta_V,Delta_*)]`; the registered artifact reports
+absolute-delta and sign-error losses under this law. The registered
+Response-Footprint Sensitivity result is
 likewise an exact scalar regularity check. Neither construction is evidence of
 causal market impact or strategic equilibrium.
 

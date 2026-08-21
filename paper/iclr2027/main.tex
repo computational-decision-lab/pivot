@@ -105,6 +105,20 @@ This definition makes no assumption about whether the proxy is learned,
 hand-coded, or externally audited. It asks whether the object consumed by the
 self-improvement loop transfers.
 
+An improvement operator $\mathcal A$ induces a transition distribution
+$Q_{\mathcal A}$ over the replacements it proposes. We therefore define
+operator-relative Improvement Fidelity for any loss $L$ by
+\begin{equation}
+  \operatorname{IF}(V,\mathcal A;L)
+  =\mathbb E_{(\pi,\pi')\sim Q_{\mathcal A}}
+    \left[L\!\left(\Delta_V,\Delta_*\right)\right].
+\end{equation}
+The absolute-delta choice $L(a,b)=|a-b|$ is operator-conditioned IDE, while
+the sign-error choice is $1-\operatorname{ISC}(Q_{\mathcal A})$ after excluding
+ties. IRR is the corresponding conditional failure probability. Thus the
+relevant population is induced by the self-improvement operator, rather than
+the uniform population of all policy pairs.
+
 Our contributions are deliberately limited to four points:
 \begin{enumerate}
   \item \textbf{Contribution 1 --- Failure mode.} We identify and formalize
@@ -198,6 +212,9 @@ $n^{-1}\sum_k|(\dproxy)_k-(\dtrue)_k|$. ISC is the fraction of non-tied
 transitions whose signs agree. IRR is
 $P(\dtrue<0\mid\dproxy>0)$, while SIRR is
 $P(\Delta_{\mathrm{strategic}}<0\mid\Delta_{\mathrm{actor}}>0)$.
+When the rows are draws from $Q_{\mathcal A}$, IDE and $1-\mathrm{ISC}$ are
+the two empirical losses in $\operatorname{IF}(V,\mathcal A;L)$ above; the
+operator label is therefore part of the estimand, not merely metadata.
 For a candidate set $C_t$, the update-selection regret is
 \begin{equation}
  \mathrm{ISR}_t=\max_{j\in C_t}(\dtrue)_{t,j}-(\dtrue)_{t,\hat j},
@@ -277,24 +294,31 @@ perturbation cannot cross zero.
 \end{proof}
 
 \begin{proposition}[Global Fidelity Blindness]
-For every $\varepsilon>0$, there is a finite policy family and an update
-operator such that
+For every $\varepsilon>0$, there is a finite policy family, a deployment value
+function $J_*$, a verifier $V$, a policy distribution $P$, and an update
+operator $\mathcal A$ such that
 \[
-  \operatorname{MAE}(J_V,J_*)<\varepsilon,\qquad
+  \operatorname{MAE}_{P}(J_V,J_*)<\varepsilon,\qquad
   \operatorname{Spearman}(J_V,J_*)>1-\varepsilon,
 \]
-while the operator-conditioned improvement reversal rate is $1$ and its
-improvement sign consistency is $0$.
+while, for the transition law $Q_{\mathcal A}$,
+\[
+  \operatorname{IRR}(Q_{\mathcal A})=1,
+  \qquad
+  \operatorname{ISC}(Q_{\mathcal A})=0.
+\]
 \end{proposition}
 \begin{proof}
-Take $n$ policies with $J_*(i)=i/(n-1)$ and let $V$ swap the values of one
-adjacent pair. Then $\operatorname{MAE}=2/[n(n-1)]$ and the only nonzero rank
+Take $n$ policies with uniform $P$ and $J_*(i)=i/(n-1)$, and let $V$ swap the
+values of one adjacent pair. Then $\operatorname{MAE}_{P}=2/[n(n-1)]$ and the only nonzero rank
 displacements are $+1$ and $-1$, so
 $1-\operatorname{Spearman}=12/[n(n^2-1)]$. Choose $n$ large enough that both
-quantities are below $\varepsilon$. Let the update operator sample only the
-swapped pair and propose the lower-valued true policy as a replacement for the
-higher-valued incumbent. The proxy delta is positive and the deployment delta
-is negative on every sampled transition, giving IRR $=1$ and ISC $=0$.
+quantities are below $\varepsilon$. Let $\mathcal A$ sample only the swapped
+directed transition (so $Q_{\mathcal A}$ has unit mass there) and propose the
+lower-valued true policy as a replacement for the higher-valued incumbent. The
+proxy delta is positive and the deployment delta is negative on every sampled
+transition, giving $\operatorname{IRR}(Q_{\mathcal A})=1$ and
+$\operatorname{ISC}(Q_{\mathcal A})=0$.
 \end{proof}
 
 \begin{proposition}[Response--footprint bound]
@@ -538,22 +562,19 @@ paired, transition-level, budgeted interventional validation. The controlled
 evidence supports the need for that estimand; the external audits state exactly
 where evidence is still missing.
 
-\section*{AI Use Statement}
-AI tools provided limited assistance with language editing and code/figure
-formatting. The authors verified all claims, computations, and artifacts and
-take full responsibility for the final submission.
-
-\section*{Reproducibility Statement}
-The anonymous supplement contains the source package, deterministic
-configuration files, hash-indexed snapshot, table/figure inputs, and commands
-needed to rebuild the reported artifact. The included public-data audit uses
-virtual fills only; no credentials, private data, raw vendor archives, or live
-orders are part of the submission package.
-
-\section*{Ethics Statement}
-This work uses public market data and controlled virtual environments. It does
-not involve human subjects, personal data, live trading, or authorization of
-external actions.
+\begingroup\scriptsize
+\noindent\textbf{AI Use Statement.} AI tools provided limited assistance with
+language editing and code/figure formatting; the authors verified all claims,
+computations, and artifacts and take full responsibility.
+\par\noindent\textbf{Reproducibility Statement.} The anonymous supplement
+contains source, deterministic configurations, hash-indexed snapshot,
+table/figure inputs, and rebuild commands. The public-data audit uses virtual
+fills only and includes no credentials, private data, raw vendor archives, or
+live orders.
+\par\noindent\textbf{Ethics Statement.} Public market data and controlled
+virtual environments only; no human subjects, personal data, live trading, or
+external authorization.
+\endgroup
 
 % ICLR excludes the bibliography from the main-text page limit.  Keep it on
 % a fresh page and expose a machine-readable boundary for the release checks.

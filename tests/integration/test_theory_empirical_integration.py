@@ -37,9 +37,15 @@ def test_theory_experiment_writes_deterministic_audited_artifact(tmp_path: Path)
         ],
     )["valid"] is True
     metrics = json.loads((output / "metrics.json").read_text(encoding="utf-8"))
+    config_snapshot = json.loads((output / "config_snapshot.json").read_text(encoding="utf-8"))
     assert metrics["global_fidelity"]["n_rows"] == 4
     assert metrics["global_fidelity"]["all_epsilon_targets_covered"] is True
     assert metrics["response_footprint"]["n_rows"] == 8
+    assert config_snapshot["q_a_definition"].startswith("empirical law")
+    assert config_snapshot["improvement_fidelity_losses"] == [
+        "absolute_delta_error",
+        "sign_error",
+    ]
     provenance = json.loads((output / "provenance.json").read_text(encoding="utf-8"))
     assert provenance["git_commit"]
 

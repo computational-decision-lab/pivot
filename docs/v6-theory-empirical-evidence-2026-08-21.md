@@ -12,6 +12,11 @@ the affected replacement transition. As the family grows, global MAE and rank
 deficit shrink, while every operator transition has the wrong improvement
 sign.
 
+The operator samples define the empirical transition law `Q_A`. For a loss
+`L`, the reported operator-relative estimand is
+`IF(V, A; L) = E_{Q_A}[L(Delta_V, Delta_*)]`; the artifact records the
+absolute-delta IF (IDE) and sign-error IF (`1 - ISC`) explicitly.
+
 **Response-Footprint Sensitivity (RFS).** The response map is
 `M_lambda(x) = lambda x` and the value functional is
 `J(x, m) = x - L_J m`. This gives an exact check of
@@ -63,4 +68,3 @@ error bound is tight for the stated scalar construction.
 - Independent artifact validation: `valid: true`, no manifest errors.
 - Figures were visually checked at high resolution for labels, legends, and
   axis/title overlap.
-

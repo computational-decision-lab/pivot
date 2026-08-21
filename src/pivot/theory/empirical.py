@@ -21,7 +21,7 @@ from typing import Any
 
 import numpy as np
 
-from pivot.metrics.improvement import compute_improvement_metrics
+from pivot.metrics.improvement import compute_improvement_fidelity, compute_improvement_metrics
 from pivot.transfer.global_value import spearman_rank_correlation
 
 
@@ -72,6 +72,12 @@ def evaluate_global_fidelity_case(
             }
         )
     operator_metrics = compute_improvement_metrics(operator_rows)
+    improvement_fidelity_ide = compute_improvement_fidelity(
+        operator_rows, loss="absolute_delta_error"
+    )
+    improvement_fidelity_sign_error = compute_improvement_fidelity(
+        operator_rows, loss="sign_error"
+    )
     global_mae = float(np.mean(np.abs(proxy_values - true_values)))
     spearman = spearman_rank_correlation(proxy_values.tolist(), true_values.tolist())
     result: dict[str, Any] = {
@@ -79,6 +85,11 @@ def evaluate_global_fidelity_case(
         "operator_sample_count": operator_samples,
         "seed": seed,
         "swapped_policy_indices": [swap_left, swap_left + 1],
+        "q_a_name": "adjacent-swap-focused",
+        "q_a_support_size": 1,
+        "q_a_support_probability": 1.0,
+        "q_a_incumbent_policy_index": swap_left + 1,
+        "q_a_candidate_policy_index": swap_left,
         "global_mae": global_mae,
         "spearman": float(spearman),
         "spearman_deficit": float(1.0 - spearman),
@@ -87,6 +98,8 @@ def evaluate_global_fidelity_case(
         "operator_improvement_reversal_rate": _metric_float(operator_metrics, "irr"),
         "operator_positive_proxy_count": _metric_int(operator_metrics, "n_positive_proxy"),
         "operator_reversal_count": _metric_int(operator_metrics, "n_reversals"),
+        "improvement_fidelity_ide": improvement_fidelity_ide,
+        "improvement_fidelity_sign_error": improvement_fidelity_sign_error,
     }
     # Short aliases make the row directly comparable with the paper's metric
     # vocabulary while retaining the operator-conditioned names in artifacts.
@@ -226,6 +239,8 @@ def run_theory_experiment(output_dir: Path, config: Mapping[str, Any]) -> dict[s
         "operator_samples": operator_samples,
         "value_lipschitz": value_lipschitz,
         "dataset_version": "v6-theory-constructions-1",
+        "q_a_definition": "empirical law induced by adjacent-swap-focused operator",
+        "improvement_fidelity_losses": ["absolute_delta_error", "sign_error"],
     }
     _write_jsonl(output / "global_fidelity_rows.jsonl", global_rows)
     _write_jsonl(output / "response_footprint_rows.jsonl", response_rows)
@@ -273,6 +288,16 @@ def _global_summary(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         "max_spearman_deficit": max(float(row["spearman_deficit"]) for row in rows),
         "min_operator_irr": min(float(row["operator_improvement_reversal_rate"]) for row in rows),
         "max_operator_ide": max(float(row["operator_ide"]) for row in rows),
+        "max_improvement_fidelity_ide": max(
+            float(row["improvement_fidelity_ide"]) for row in rows
+        ),
+        "min_improvement_fidelity_sign_error": min(
+            float(row["improvement_fidelity_sign_error"]) for row in rows
+        ),
+        "max_improvement_fidelity_sign_error": max(
+            float(row["improvement_fidelity_sign_error"]) for row in rows
+        ),
+        "q_a_name": str(rows[0]["q_a_name"]),
     }
 
 
@@ -357,7 +382,12 @@ def _write_summary_csv(
     rows.extend({"experiment": "response_footprint", **dict(row)} for row in response_rows)
     columns = sorted({key for row in rows for key in row})
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=columns, extrasaction="ignore")
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=columns,
+            extrasaction="ignore",
+            lineterminator="\n",
+        )
         writer.writeheader()
         writer.writerows(rows)
 
@@ -435,7 +465,10 @@ This registered artifact checks two analytic claims used by PIVOT:
 
 1. **Global Fidelity Blindness (GFB):** an adjacent rank swap in a growing
    finite policy family makes global MAE and rank deficit vanish while the
-   operator-conditioned update reversal rate remains one.
+   operator-conditioned update reversal rate remains one. The sampled rows
+   define `Q_A`; `improvement_fidelity_ide` and
+   `improvement_fidelity_sign_error` are its absolute-delta and sign-error
+   losses.
 2. **Response-Footprint Sensitivity (RFS):** the scalar response map and
    Lipschitz value functional attain the bound
    `|Delta_actor - Delta_direct| <= L_J L_M d` exactly.

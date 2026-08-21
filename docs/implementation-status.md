@@ -58,7 +58,9 @@ The implementation does not silently promote smoke results to paper claims.
   operator IRR `1.0` at minimum global MAE `1.91e-6`; the RFS construction
   holds its bound on all 180 rows with a tight ratio of one. This closes the
   analytic theorem-check gate only; it does not close causal or strategic
-  external-validity gates.
+  external-validity gates. The final paper now defines
+  `IF(V,A;L)=E_{Q_A}[L(Delta_V,Delta_*)]`, and the artifact records the
+  adjacent-swap `Q_A` support plus absolute-delta and sign-error IF losses.
 
 ## Remaining before a submission-grade result
 

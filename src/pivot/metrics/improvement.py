@@ -5,6 +5,30 @@ from collections.abc import Mapping, Sequence
 from typing import Any
 
 
+def compute_improvement_fidelity(
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    loss: str = "absolute_delta_error",
+    tau_sign: float = 1e-9,
+) -> float | None:
+    """Estimate ``IF(V, A)`` from transitions sampled from ``Q_A``.
+
+    Each row is one draw from the operator-induced transition distribution.
+    Repeated rows therefore represent their empirical probability mass.  The
+    absolute-delta loss is the usual IDE estimand; ``sign_error`` is
+    ``1 - ISC`` and ignores sign ties using ``tau_sign``.
+    """
+
+    if loss not in {"absolute_delta_error", "sign_error"}:
+        raise ValueError("loss must be 'absolute_delta_error' or 'sign_error'")
+    metrics = compute_improvement_metrics(rows, tau_sign=tau_sign)
+    if loss == "absolute_delta_error":
+        value = metrics["ide"]
+        return None if value is None else float(value)
+    isc = metrics["isc"]
+    return None if isc is None else 1.0 - float(isc)
+
+
 def _sign(value: float | None, tolerance: float) -> int:
     if value is None or abs(float(value)) <= tolerance:
         return 0
