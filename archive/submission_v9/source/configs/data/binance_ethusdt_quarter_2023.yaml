@@ -1,0 +1,50 @@
+dataset_id: binance-um-ethusdt-quarter-v1
+provider: Binance Public Data
+provider_repository: https://github.com/binance/binance-public-data
+license: MIT
+market: futures_um
+symbol: ETHUSDT
+interval: 1m
+scope: predeclared multi-asset quarterly-start observational audit
+ground_truth_for_endogenous_response: false
+sessions:
+  - session_id: ethusdt-2023-01-01
+    date: '2023-01-01'
+    klines:
+      filename: ETHUSDT-1m-2023-01-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/ETHUSDT/1m/ETHUSDT-1m-2023-01-01.zip
+      sha256: 2c03b4a67d78bfc4627d6b12c8e5978220340c773b3f7ddc4ce523328c72260e
+    book_depth:
+      filename: ETHUSDT-bookDepth-2023-01-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/ETHUSDT/ETHUSDT-bookDepth-2023-01-01.zip
+      sha256: 7f58a39d788fdbb2ae0a737942fafdca36600fabba9e6cdbade7aa66ebc5b320
+  - session_id: ethusdt-2023-04-01
+    date: '2023-04-01'
+    klines:
+      filename: ETHUSDT-1m-2023-04-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/ETHUSDT/1m/ETHUSDT-1m-2023-04-01.zip
+      sha256: 664046305b2ab625bef09748bc3a0aa99052495166fbd9acaf4c7f6738eaed42
+    book_depth:
+      filename: ETHUSDT-bookDepth-2023-04-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/ETHUSDT/ETHUSDT-bookDepth-2023-04-01.zip
+      sha256: c0b0e74fea3c87129df505cf61e830d764158513fd44c61a800d0a6487eeece7
+  - session_id: ethusdt-2023-07-01
+    date: '2023-07-01'
+    klines:
+      filename: ETHUSDT-1m-2023-07-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/ETHUSDT/1m/ETHUSDT-1m-2023-07-01.zip
+      sha256: de5853b142c455e878fef18f2efc515cf1f1c814d514251045c98a7e1eadf6a0
+    book_depth:
+      filename: ETHUSDT-bookDepth-2023-07-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/ETHUSDT/ETHUSDT-bookDepth-2023-07-01.zip
+      sha256: 25aa27a5631bbf43847ed7c40569ccdb1a7a1514637a8fd25416b4561c5c54f9
+  - session_id: ethusdt-2023-10-01
+    date: '2023-10-01'
+    klines:
+      filename: ETHUSDT-1m-2023-10-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/ETHUSDT/1m/ETHUSDT-1m-2023-10-01.zip
+      sha256: 1767303b1246eb058c5ef6aeb05dd877396614faacd69f8e11c644744e4cd536
+    book_depth:
+      filename: ETHUSDT-bookDepth-2023-10-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/ETHUSDT/ETHUSDT-bookDepth-2023-10-01.zip
+      sha256: c2ec5a0807b998a13fa63982a3e83831953e8aafd0b60e53fa40b9e58038d268

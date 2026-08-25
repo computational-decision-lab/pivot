@@ -55,18 +55,20 @@ $\dproxy>0$ with $\dtrue<0$: a verifier-approved replacement that becomes
 worse after the world responds.
 
 PIVOT (Paired Interventional Validation of Optimization Transitions) is a
-budgeted intervention mechanism that preserves update decisions. It uses
-paired rollouts and a differential correction $\Delta_* - \Delta_V$, then
-queries transitions whose high-fidelity result is most likely to change the
-selected update. It is not generic active learning and does not target global
+budgeted intervention mechanism that preserves update decisions. Its primary
+rule, PIVOT-VOI, maintains a posterior over the differential correction
+$\Delta_* - \Delta_V$ and queries the transition with largest expected value of
+sample information per cost; the earlier transparent score is retained as
+PIVOT-H. It is not generic active learning and does not target global
 world-model error.
 
-Across controlled mechanism and strategic fixture evidence, PIVOT exposes the
-transition-level failure while keeping the external stress test explicitly
-observational: the Binance audit finds no reversal (0/7 primary, 0/5
-holdout). We do not claim causal market reversal, simulator ground truth,
-universal failure, or general multi-agent equilibrium; the contribution is a
-falsifiable evaluation criterion and a first budgeted implementation.
+Across controlled mechanism evidence and a pinned public adaptive-environment
+pipeline, PIVOT exposes the transition-level estimand: powered E3b/E4b tests
+do not support a generic external CTI advantage, while a held-out strategic
+opponent family supports strategic reversal. The negative Binance stress test
+remains explicit. We do not claim causal market reversal, simulator ground
+truth, universal failure, or general multi-agent equilibrium; the contribution
+is a falsifiable evaluation criterion and a decision-theoretic implementation.
 \end{abstract}
 
 \section{Introduction}
@@ -119,24 +121,20 @@ ties. IRR is the corresponding conditional failure probability. Thus the
 relevant population is induced by the self-improvement operator, rather than
 the uniform population of all policy pairs.
 
-Our contributions are deliberately limited to four points:
+Our contributions are deliberately limited to three points:
 \begin{enumerate}
-  \item \textbf{Contribution 1 --- Failure mode.} We identify and formalize
-  \emph{improvement reversal}: a verifier-approved update can reduce deployed
-  performance because deployment induces environmental response.
-  \item \textbf{Contribution 2 --- Evaluation criterion.} We introduce
-  \emph{Improvement Fidelity} as the transfer criterion for self-improvement
-  transitions and report IDE, ISC, IRR, SIRR, ISR, and CTI. The IMPROVE-X
-  contract stores each transition and preserves unavailable world layers as
-  explicit nulls.
-  \item \textbf{Contribution 3 --- Method.} We introduce \textbf{PIVOT}, a
-  paired differential evaluator and budgeted intervention rule that allocates
-  queries to preserve update-selection decisions, not to minimize global
-  prediction error.
-  \item \textbf{Contribution 4 --- Evidence.} We provide controlled
-  mechanism evidence, a strategic response fixture, and an external stress
-  test with a checksum-bound observational finance audit. Nulls and open
-  scientific gates remain explicit.
+  \item \textbf{Contribution 1 --- Principle and theory.} We introduce
+  operator-relative \emph{Improvement Fidelity}, prove Global Fidelity
+  Blindness and an Operator Shift Bound, and retain the local
+  response--footprint bound.
+  \item \textbf{Contribution 2 --- Algorithm.} We introduce \textbf{PIVOT-VOI},
+  a paired posterior differential evaluator with EVSI-per-cost acquisition,
+  adaptive stopping, and an explicit best-update sample bound; PIVOT-H is a
+  transparent heuristic baseline.
+  \item \textbf{Contribution 3 --- Evidence contract.} We provide controlled
+  operator-shift and response-mechanism evidence plus a pinned external
+  adaptive/strategic pipeline. Development underpowering and the negative
+  finance boundary are reported as scientific outcomes, not hidden.
 \end{enumerate}
 
 \section{Related Work}
@@ -244,15 +242,20 @@ Pairing subtracts common-mode noise before aggregation. The unpaired ablation
 uses disjoint context seeds and the standard independent-sample standard error.
 
 \paragraph{Active query rule.}
-Let $\widehat\Delta_j$ and $u_j$ be a corrected estimate and uncertainty. A
-transparent PIVOT score is
+Let $D$ denote current paired evidence and let the posterior over true deltas
+define expected simple regret
+$\mathcal R(D)=\mathbb E[\max_j\Delta^*_j-\Delta^*_{a(D)}\mid D]$, where
+$a(D)=\arg\max_j\mathbb E[\Delta^*_j\mid D]$. A hypothetical HF observation
+$Y_j$ induces
 \begin{equation}
- q_j=\frac{u_j(0.5+r_j)(1+o_j)}{c_j},
+ \operatorname{EVSI}_j=\mathcal R(D)-\mathbb E_{Y_j\mid D}[\mathcal R(D\cup\{Y_j\})],
+ \qquad A_j=\frac{\operatorname{EVSI}_j}{c_j},
 \end{equation}
-where $r_j$ is predicted sign risk, $o_j$ is opportunity relative to the
-current best candidate, and $c_j$ is high-fidelity cost. The rule is a
-decision-change heuristic, not a Bayesian optimality claim. Queried values
-replace predictions; unqueried candidates retain proxy/model estimates.
+and PIVOT-VOI queries $\arg\max_j A_j$. It stops when the posterior selection
+probability is at least $1-\delta$ or $\max_j A_j<\eta$. The earlier transparent
+score $q_j=u_j(0.5+r_j)(1+o_j)/c_j$ is PIVOT-H, a baseline rather than the
+primary claim. Queried values replace predictions; unqueried candidates retain
+proxy/model estimates.
 
 \paragraph{Why Transition Validation Differs from Active Learning.}
 Traditional active learning asks which label will reduce a global prediction
@@ -321,6 +324,23 @@ transition, giving $\operatorname{IRR}(Q_{\mathcal A})=1$ and
 $\operatorname{ISC}(Q_{\mathcal A})=0$.
 \end{proof}
 
+\begin{proposition}[Operator Shift Bound]
+Let $P$ be the calibration law over transitions and let
+$Q_{\mathcal A}\ll P$ have density ratio $w=dQ_{\mathcal A}/dP$. For a
+non-negative transition loss $\ell(\tau)=L(\Delta_V(\tau),\Delta_*(\tau))$,
+\begin{equation}
+ \operatorname{IF}(V,\mathcal A;L)
+ =\mathbb E_P[w(\tau)\ell(\tau)]
+ \leq \sqrt{\mathbb E_P[\ell(\tau)^2]}
+       \sqrt{1+\chi^2(Q_{\mathcal A}\Vert P)}.
+\end{equation}
+\end{proposition}
+\begin{proof}
+Absolute continuity gives the first equality. Cauchy--Schwarz bounds the
+expectation by $\sqrt{\mathbb E_P[\ell^2]}\sqrt{\mathbb E_P[w^2]}$.
+Since $\mathbb E_P[w^2]=1+\chi^2(Q_{\mathcal A}\Vert P)$, the result follows.
+\end{proof}
+
 \begin{proposition}[Response--footprint bound]
 Let $d(\pii,\pip)$ be an update footprint and define the direct comparison in
 the incumbent response world, $\Delta_{\mathrm{direct}}=
@@ -357,17 +377,33 @@ does not claim that PIVOT is globally optimal or that all candidates satisfy
 the margin condition.
 \end{proof}
 
+\begin{proposition}[Finite-Sample Best-Update Identification]
+Suppose paired rollout differences are $\sigma$-sub-Gaussian and the best
+candidate has true margin at least $m>0$ over each of $K-1$ competitors. With
+$n$ paired rollouts per candidate, the probability of selecting a wrong update
+is at most
+\begin{equation}
+ (K-1)\exp\!\left(-\frac{n m^2}{4\sigma^2}\right).
+\end{equation}
+Thus $n\geq 4\sigma^2m^{-2}\log((K-1)/\delta)$ suffices for error at most
+$\delta$ (and the implementation uses the conservative $K$ in its registry).
+\end{proposition}
+\begin{proof}
+For each competitor, a wrong ordering requires the difference of two
+sample-mean errors to exceed $m$. The sub-Gaussian tail bound gives the stated
+pairwise probability; a union bound over $K-1$ competitors completes the proof.
+\end{proof}
+
 The first proposition explains why global value accuracy is sufficient but
 unnecessarily strong: a policy-independent offset can be arbitrarily large
-without changing any improvement difference. The Global Fidelity Blindness
-construction shows that the converse fails even for excellent global MAE and
-rank correlation: the update distribution can concentrate on a locally swapped
-transition. The response--footprint result motivates targeted fidelity: high
-footprint and high response sensitivity are the transitions most likely to
-change a decision. The final proposition connects differential error to the
-selection decision that PIVOT must preserve. In strategic environments, small policy changes
-can still cause large competitor responses, so the bound should be treated as a
-diagnostic hypothesis rather than a universal smoothness assumption.
+without changing any improvement difference. Global Fidelity Blindness shows
+that the converse fails when the update law concentrates on a locally swapped
+transition. The Operator Shift Bound quantifies the bridge: local IF can grow
+with the chi-square distance between the calibration law and $Q_{\mathcal A}$.
+The response--footprint result motivates targeted fidelity, while the final
+proposition connects differential error to the selection decision PIVOT must
+preserve. In strategic environments, small policy changes can still cause
+large competitor responses, so smoothness remains a diagnostic assumption.
 
 \section{Controlled Experiments}
 \paragraph{Setup.}
@@ -388,13 +424,21 @@ rows and satisfies the stated bound on every row, with maximum observed/bound
 ratio $1+3.3\times10^{-15}$. These values are exact-construction checks and
 are kept separate from the controlled adaptive-world and finance evidence.
 
+\paragraph{Operator shift diagnostic.}
+The registered E2 population contains 63 paired transitions. We vary the
+temperature of a softmax improvement operator from $0.25$ to $4$, while the
+calibration population and verifier remain fixed. Chi-square shift rises from
+$0.0572$ to $1.4466$ and absolute operator-conditioned IF rises from $10.8833$
+to $15.5595$; all rows satisfy the analytic bound. This supports the predicted
+operator-shift mechanism in the controlled world, not a claim about external
+adaptive environments.
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{fig2_reversal_phase_diagram.png}
-  \caption{Continuous reversal-rate heatmap over response strength and update
-  footprint. Bilinear display interpolation makes the registered grid's
-  zero-to-positive reversal boundary visible; the structure is a controlled
-  mechanism result, not a universal market law.}
+  \caption{raw sampled reversal-rate cells over response strength and update
+  footprint. Cell labels show observed IRR; the descriptive contour is not an
+  interpolated empirical phase boundary.}
   \label{fig:phase}
 \end{figure}
 
@@ -474,40 +518,31 @@ can otherwise manufacture its central phenomenon by selecting a pathological
 environment after observing results.
 
 \section{Stress Tests Beyond Controlled Environments}
-\paragraph{Strategic response.}
-Only the focal policy self-improves. Competitors are fixed, reactive, or finite-
-step adaptive. In the registered fixture, actor improvement is positive before
-adaptation, while adaptive competition produces SIRR $1.0$ and competition
-effects of $-0.0514$ (E7) and $-0.0405$ (E8). The sensitivity contrast is
-$-0.1082$.
+\paragraph{Pinned external adaptive development.}
+We use version-pinned Farama MPE2~\cite{mpe22025} through PettingZoo~\cite{pettingzoo2021}.
+The short direct-replay observer and full actor rollout use paired,
+trajectory-disjoint seeds. Powered E3b and E4b comparisons do not support
+generic external CTI or transition-over-global advantages (E3b difference
+$-3.8672$), so neither supports an external closed-loop claim.
 
-The same update is evaluated in observer, actor, and strategic worlds; the
-layer diagnostic is deferred to Appendix \cref{fig:layers} to preserve the
-main-text page budget. The opponent-mode sweep is reported in Appendix
-\cref{fig:strategic}.
-These results are mechanism evidence for the strategic layer, not a claim of
-general equilibrium or realistic market ecology. External strategic
-validation remains open.
+\paragraph{Strategic response.}
+Only the focal policy self-improves. In the powered held-out finite-action
+best-response family, 140 opponent-seed clusters exceed the required 135 and
+the cluster strategic effect is $-0.5884$ (threshold $-0.5$). This supports
+strategic reversal for this opponent family only; no equilibrium or
+realistic-ecology claim is made. Diagnostics are in Appendix
+\cref{fig:layers,fig:strategic}.
 
 \paragraph{Finance audit.}
-The finance ladder is F0 historical path, F1 execution replay, F2 interactive
-virtual fills, and F4 strategic response. We additionally audit 12 sessions
-covering BTCUSDT, ETHUSDT, and BNBUSDT at four 2023 quarter starts using
-Binance's public one-minute klines and percentage book depth~\cite{binancepublicdata}. The archive
-checksums are frozen in the project manifests. The depth world is an
-observational execution proxy: it cannot identify replenishment, hidden
-liquidity, post-trade response, or strategic adaptation.
-
-At primary participation, seven sessions have positive F1 improvement and
-depth-proxy reversal is 0/7; the frozen holdout has 0/5 reversals. The pooled
-depth mechanical effect is $-4.1554\times10^{-7}$ with 95\% bootstrap interval
-$[-5.3969,-2.9638]\times10^{-7}$. Thus finance supplies a plausibility and
-boundary test, not causal confirmation of improvement reversal.
+The finance ladder is F0 historical path, F1 execution replay, F2 virtual
+fills, and F4 strategic response. Across 12 BTCUSDT, ETHUSDT, and BNBUSDT
+sessions, the public-data depth proxy has reversal 0/7 (primary) and 0/5
+(holdout), with pooled effect $-4.1554\times10^{-7}$. It is a
+plausibility/boundary test, not causal confirmation.
 
 \section{Ablations and Robustness}
-The frozen suite contains twelve required comparisons. \cref{tab:ablation}
-shows the compact main-text subset; the full aggregate, raw rows, and failure
-ledgers are included in the artifact snapshot.
+The frozen suite contains twelve comparisons; \cref{tab:ablation} shows the
+compact subset and the snapshot contains full rows and failure ledgers.
 
 \begin{table}[t]
 \centering\scriptsize
@@ -517,50 +552,31 @@ three independent registered runs; slash-separated values compare variants.}
 \resizebox{\linewidth}{!}{\input{../tables/ablation_results.tex}}
 \end{table}
 
-Pairing reduces standard error (0.0433 versus 0.0676). Multiple response levels
-improve held-out differential error relative to a single response level.
-However, footprint features are nearly tied with no-footprint features in this
-grid (IDE 2.0668 versus 2.0669), and candidate-count/HF-budget effects are
-small or non-monotonic. These nulls constrain the method claim: PIVOT is a
-budgeted transition-validation mechanism, not proof that every feature or
-budget increase helps.
+Pairing reduces standard error (0.0433 versus 0.0676); footprint, candidate,
+and budget variants are tied or non-monotonic. PIVOT is therefore a budgeted
+transition-validation mechanism, not a claim that every feature or budget
+increase helps.
 
 \section{Limitations and Claim Boundary}
-First, the controlled world is intentionally small and its response law is
-known. It establishes falsifiability of the estimand, not realism. Second, the
-public finance data are observational and use virtual fills; no live orders,
-broker connection, or private L2 data were used. Third, the strategic fixture
-is deterministic and requires validation in an independently calibrated
-competitive environment. Fourth, the current public typed update was selected
-exploratorily; a confirmatory update-generation and regime/holdout rule must be
-frozen before a new external claim. Fifth, E3's null means the current fixture
-does not demonstrate performative overoptimization. Finally, LLM/EvoQuant and
-M3/world-model adapters are intentionally deferred and are not needed for the
-core estimand.
-
-The claim boundary is therefore precise: we validate learning progress at the
-policy-transition level in controlled adaptive worlds, demonstrate a
-strategic mechanism in a fixture, and report a negative observational finance
-audit. We do not certify actions, solve general multi-agent equilibrium, or
-claim that a learned simulator is ground truth.
+The controlled world establishes falsifiability rather than realism. Finance is
+observational with virtual fills and no live or private data. E3b/E4b are
+powered nulls; E7b is bounded to one held-out opponent family. LLM/EvoQuant and
+M3 adapters are deferred. We do not certify actions, solve equilibrium, or
+call a learned simulator ground truth.
 
 \section{Reproducibility and Conclusion}
-The paper snapshot contains 33 hash-indexed artifacts, seven figure/source-table
-pairs, one editable OpenTikZ architecture bundle, the controlled evaluator-contrast rows, controlled gate summaries, the
-public expansion summary, and the full twelve-ablation aggregate. Three
-disjoint ablation runs reproduce with zero failed runs. The repository's full
-test suite and static checks are recorded in the release manifest. The IMPROVE-X transition contracts and controlled
-ImprovementBench smoke artifact are separately hash-bound in the repository.
-The build records the source commit and PDF verification metadata. No
-credentials or raw vendor archives enter the paper package.
+The snapshot contains 33 hash-indexed artifacts, seven figure/source-table
+pairs, an editable OpenTikZ bundle, evaluator-contrast rows, gate summaries,
+the public expansion, and the twelve-ablation aggregate. Three disjoint
+ablation runs reproduce with zero failures; tests, static checks, source commit,
+and PDF metadata are recorded in the release manifest. No credentials or raw
+vendor archives enter the package.
 
-The central lesson is simple: a self-improving agent should not be judged only
-by whether its new policy performs better in the world used to verify it. It
-should be judged by whether the update remains better in the world---and among
-the agents---that deployment causes to exist. PIVOT operationalizes this as
-paired, transition-level, budgeted interventional validation. The controlled
-evidence supports the need for that estimand; the external audits state exactly
-where evidence is still missing.
+The lesson is that self-improvement must be judged by whether an update remains
+better in the world---and among the agents---that deployment causes to exist.
+PIVOT implements paired, transition-level, budgeted interventional validation;
+controlled evidence supports the estimand, while powered external tests bound
+generic CTI gains and expose a family-specific strategic reversal.
 
 \begingroup\scriptsize
 \noindent\textbf{AI Use Statement.} AI tools provided limited assistance with

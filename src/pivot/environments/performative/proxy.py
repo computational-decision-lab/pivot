@@ -387,7 +387,7 @@ def _write_plots(
         origin="lower",
         aspect="auto",
         extent=(x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]),
-        interpolation="bilinear",
+        interpolation="none",
         vmin=0.0,
         vmax=1.0,
         cmap="viridis",
@@ -397,10 +397,23 @@ def _write_plots(
     axis.set_xticks(footprints, [f"{value:.3f}" for value in footprints], rotation=45, ha="right")
     axis.set_yticks(responses, [f"{value:.2f}" for value in responses])
     axis.set(xlabel="Update footprint", ylabel="Response strength", title="Response x footprint")
+    for response_index, response in enumerate(responses):
+        for footprint_index, footprint in enumerate(footprints):
+            value = matrix[response_index][footprint_index]
+            if math.isfinite(value):
+                axis.text(
+                    footprint,
+                    response,
+                    f"{value:.2f}",
+                    ha="center",
+                    va="center",
+                    fontsize=6.5,
+                    color="black" if value > 0.55 else "white",
+                )
     axis.text(
         0.02,
         0.02,
-        "bilinear display; light contour: zero-to-positive boundary",
+        "raw sampled cells; labels show IRR; contour is descriptive only",
         transform=axis.transAxes,
         fontsize=7,
         color="white",

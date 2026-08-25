@@ -1,0 +1,18 @@
+mode: multiround_multioperator
+world:
+  response_strength: 0.7
+  competition_strength: 0.5
+  noise_scale: 0.0
+  horizon: 12
+  reward_bound: 10.0
+  config_id: improve-x-benchmark-v2
+splits:
+  train: [31]
+  validation: [41]
+  test: [51]
+rounds: 3
+candidate_scales: [0.04, 0.10, 0.20]
+initial_policy:
+  intensity: 0.15
+contexts_per_transition: 2
+collection_promotion_world: actor

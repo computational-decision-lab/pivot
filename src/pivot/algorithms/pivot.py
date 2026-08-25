@@ -5,6 +5,12 @@ from dataclasses import dataclass
 from typing import Any
 
 from pivot.acquisition.common import candidate_id, validate_budget
+from pivot.acquisition.pivot_voi import (
+    BayesianLinearDeltaPosterior,
+    score_pivot_voi,
+    select_pivot_voi,
+    should_stop,
+)
 from pivot.core.policy import Policy
 from pivot.core.transition import PolicyTransition
 
@@ -21,6 +27,10 @@ class RoundResult:
     cti_delta: float | None
     hf_budget: int
     hf_cost: float
+    acquisition_method: str = "unspecified"
+    acquisition_scores: tuple[Mapping[str, Any], ...] = ()
+    stop_reason: str | None = None
+    posterior_version: str | None = None
 
 
 def run_pivot_round(
@@ -32,6 +42,11 @@ def run_pivot_round(
     budget: int,
     *,
     model: Any | None = None,
+    acquisition_kwargs: Mapping[str, Any] | None = None,
+    acquisition_method: str = "unspecified",
+    acquisition_scores: Sequence[Mapping[str, Any]] = (),
+    stop_reason: str | None = None,
+    posterior_version: str | None = None,
 ) -> RoundResult:
     """Execute one budgeted transition-selection round.
 
@@ -50,16 +65,17 @@ def run_pivot_round(
             base.update(dict(proxy(candidate)))
         base.setdefault("hf_queried", False)
         rows.append(base)
+    extra = dict(acquisition_kwargs or {})
     if model is None:
         try:
-            selected_ids = acquisition(rows, budget)
+            selected_ids = acquisition(rows, budget, **extra)
         except TypeError:
-            selected_ids = acquisition(rows, budget=budget)
+            selected_ids = acquisition(rows, budget=budget, **extra)
     else:
         try:
-            selected_ids = acquisition(rows, model, budget)
+            selected_ids = acquisition(rows, model, budget, **extra)
         except TypeError:
-            selected_ids = acquisition(rows, model=model, budget=budget)
+            selected_ids = acquisition(rows, model=model, budget=budget, **extra)
     selected_set = set(selected_ids)
     if len(selected_set) != budget or not selected_set <= {candidate_id(row) for row in rows}:
         raise ValueError("acquisition must return exactly valid unique candidate IDs")
@@ -111,4 +127,72 @@ def run_pivot_round(
         cti_delta=None if selected_true is None else float(selected_true),
         hf_budget=len(ledger),
         hf_cost=sum(float(item["cost"]) for item in ledger),
+        acquisition_method=acquisition_method,
+        acquisition_scores=tuple(dict(item) for item in acquisition_scores),
+        stop_reason=stop_reason,
+        posterior_version=posterior_version,
+    )
+
+
+def run_pivot_voi_round(
+    incumbent: Policy | None,
+    candidates: Sequence[Mapping[str, Any] | PolicyTransition],
+    hf: Callable[[Any], Mapping[str, Any] | float],
+    posterior: BayesianLinearDeltaPosterior,
+    max_budget: int,
+    *,
+    seed: int = 0,
+    delta: float = 0.05,
+    eta: float = 0.0,
+    fantasies: int = 64,
+    posterior_samples: int = 256,
+) -> RoundResult:
+    """Run PIVOT-VOI with posterior-confidence/EVSI stopping.
+
+    The acquisition scores are computed before a query. If the current
+    posterior is already decisive, the method selects from model estimates and
+    spends zero HF budget; otherwise it consumes at most ``max_budget``.
+    """
+
+    validate_budget(candidates, max_budget)
+    scores = score_pivot_voi(
+        candidates,
+        posterior,
+        seed=seed,
+        fantasies=fantasies,
+        posterior_samples=posterior_samples,
+    )
+    selection_probability = float(scores[0]["selection_probability"]) if scores else 1.0
+    max_acquisition = max((float(item["acquisition"]) for item in scores), default=0.0)
+    stop, reason = should_stop(
+        selection_probability=selection_probability,
+        max_acquisition=max_acquisition,
+        delta=delta,
+        eta=eta,
+    )
+    budget = 0 if stop else max_budget
+    acquisition: Callable[..., list[str]]
+    if budget == 0:
+        acquisition = lambda rows, model, budget: []
+    else:
+        acquisition = select_pivot_voi
+    return run_pivot_round(
+        incumbent,
+        candidates,
+        proxy=None,
+        hf=hf,
+        acquisition=acquisition,
+        budget=budget,
+        model=posterior,
+        acquisition_kwargs={
+            "seed": seed,
+            "fantasies": fantasies,
+            "posterior_samples": posterior_samples,
+        }
+        if budget
+        else None,
+        acquisition_method="PIVOT-VOI",
+        acquisition_scores=scores,
+        stop_reason=reason if stop else None,
+        posterior_version="bayesian-linear-v1",
     )

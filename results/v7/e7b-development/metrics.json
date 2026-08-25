@@ -1,0 +1,47 @@
+{
+  "actor_positive_rows": 3,
+  "cluster_units": [
+    "opponent_family",
+    "opponent_seed"
+  ],
+  "cross_family": {
+    "split_contract": "opponent-family-disjoint",
+    "test_family": "family_b",
+    "test_rows": 36,
+    "train_family": "family_a",
+    "transition_correction_mae": 0.5141277270898911
+  },
+  "environment_source": "Farama MPE2",
+  "experiment": "e7b_external_strategic",
+  "families": {
+    "family_a": {
+      "actor_mean": -0.75655837510109,
+      "actor_positive_rows": 0,
+      "rows": 36,
+      "sir": null,
+      "strategic_effect_ci": [
+        null,
+        null
+      ],
+      "strategic_effect_mean": null,
+      "strategic_mean": -0.13208305627389483
+    },
+    "family_b": {
+      "actor_mean": -0.9762691328001618,
+      "actor_positive_rows": 3,
+      "rows": 36,
+      "sir": 1.0,
+      "strategic_effect_ci": [
+        -1.4814332376274821,
+        -1.4814332376274821
+      ],
+      "strategic_effect_mean": -1.4814332376274821,
+      "strategic_mean": -0.6843296866892019
+    }
+  },
+  "paired": true,
+  "phase": "development",
+  "state": "UNDERPOWERED",
+  "state_reason": "development strategic run uses fewer than five registered seeds",
+  "total_rows": 72
+}

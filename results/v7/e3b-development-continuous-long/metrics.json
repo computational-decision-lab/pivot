@@ -1,0 +1,69 @@
+{
+  "cti_effect_mean": 16.919990769067816,
+  "cti_effect_std": 32.2350048142717,
+  "cti_pivot_voi_minus_proxy": 16.919990769067816,
+  "experiment": "e3b_closed_loop",
+  "hf_budget_per_round": 2,
+  "matched_selection_budget": true,
+  "methods": [
+    "Proxy Only",
+    "Random HF",
+    "Top Proxy HF",
+    "Uncertainty HF",
+    "PIVOT-H",
+    "PIVOT-VOI",
+    "All-HF Oracle"
+  ],
+  "observed_method_trajectory_count": 70,
+  "observed_paired_trajectory_count": 10,
+  "observed_trajectory_count": 10,
+  "paired_effect_count": 10,
+  "phase": "development",
+  "power_required_paired_trajectories": 327,
+  "power_required_trajectories": 327,
+  "state": "UNDERPOWERED",
+  "state_reason": "development E3b result is diagnostic; confirmatory trajectory pool is not frozen",
+  "uncertainty_unit": "trajectory",
+  "validity": {
+    "gates": [
+      {
+        "name": "no_premature_ceiling",
+        "passed": true,
+        "reason": "fraction of policies within two percent of the reward ceiling",
+        "threshold": "fraction < 0.1",
+        "value": 0.0
+      },
+      {
+        "name": "nontrivial_response",
+        "passed": true,
+        "reason": "variance of actor-minus-direct improvement",
+        "threshold": "variance > 0.0001",
+        "value": 24.823784770470038
+      },
+      {
+        "name": "candidate_diversity",
+        "passed": true,
+        "reason": "candidate count is 6276",
+        "threshold": "K >= 4 and dispersion > 0.001",
+        "value": 4.730257906356588
+      },
+      {
+        "name": "nonperfect_proxy",
+        "passed": true,
+        "reason": "proxy must be informative but not identical to deployment truth",
+        "threshold": "0.05 < |correlation| < 0.999",
+        "value": 0.10068791785027216
+      },
+      {
+        "name": "stable_measurement",
+        "passed": true,
+        "reason": "paired rollout noise must resolve candidate margins",
+        "threshold": "paired SE / candidate range < 0.5",
+        "value": 0.000816878051936235
+      }
+    ],
+    "valid": true
+  },
+  "workers": 8,
+  "worst_case_update_identification_trajectories": 822
+}

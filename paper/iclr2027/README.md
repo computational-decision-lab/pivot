@@ -21,8 +21,9 @@ cd ../..
 ```
 
 The current decision is `CONDITIONAL GO`: local formatting and artifact gates
-pass, but author-side OpenReview gates and external causal/strategic validity
-remain open. No submission was uploaded.
+pass, but author-side OpenReview gates and causal market validity remain open.
+The strategic result is bounded to the registered held-out opponent family.
+No submission was uploaded.
 
 The controlled E4 spotlight diagnostic is reproducible with:
 

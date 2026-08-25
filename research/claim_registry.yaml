@@ -1,0 +1,26 @@
+schema_version: v7.0
+claims:
+  global_fidelity_insufficiency:
+    status: allowed
+    evidence: theory_global_blindness
+    scope: impossibility_result
+  operator_shift_harms_local_fidelity:
+    status: allowed
+    evidence: theory_operator_shift
+    scope: operator_conditioned_diagnostic
+  pivot_voi_improves_closed_loop:
+    status: disallowed
+    evidence: e3b_closed_loop
+    scope: matched_hf_budget_and_clustered_uncertainty
+  global_vs_transition_estimand:
+    status: disallowed
+    evidence: e4b_global_vs_transition
+    scope: unseen_self_improvement_trajectories
+  strategic_response_changes_update_value:
+    status: allowed
+    evidence: e7b_external_strategic
+    scope: independent_adaptive_opponents_only
+  finance_improvement_reversal:
+    status: disallowed
+    evidence: finance_boundary
+    scope: observational_negative_boundary_test

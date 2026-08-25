@@ -426,7 +426,7 @@ def _evaluate_selection(method: str, rows: Sequence[Mapping[str, Any]], model: D
                 estimates[identifier] = model.predict_correction(row).predicted_delta
             else:
                 estimates[identifier] = float(row["delta_proxy"])
-        selected = max(estimates, key=estimates.get)
+        selected = max(estimates, key=lambda identifier: estimates[identifier])
         results.append({"cti": truth[selected], "isr": max(truth.values()) - truth[selected]})
     return results
 

@@ -1,0 +1,50 @@
+dataset_id: binance-um-btcusdt-quarter-v1
+provider: Binance Public Data
+provider_repository: https://github.com/binance/binance-public-data
+license: MIT
+market: futures_um
+symbol: BTCUSDT
+interval: 1m
+scope: predeclared multi-asset quarterly-start observational audit
+ground_truth_for_endogenous_response: false
+sessions:
+  - session_id: btcusdt-2023-01-01
+    date: '2023-01-01'
+    klines:
+      filename: BTCUSDT-1m-2023-01-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/BTCUSDT/1m/BTCUSDT-1m-2023-01-01.zip
+      sha256: 62185157e73a1293f3254044aa4be6e2392735ffcc476ea907b581a7b4d8137c
+    book_depth:
+      filename: BTCUSDT-bookDepth-2023-01-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/BTCUSDT/BTCUSDT-bookDepth-2023-01-01.zip
+      sha256: 09fc24c79cdde37aca1982f1ba191afc682e62d54456149bf8b2665aa961e326
+  - session_id: btcusdt-2023-04-01
+    date: '2023-04-01'
+    klines:
+      filename: BTCUSDT-1m-2023-04-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/BTCUSDT/1m/BTCUSDT-1m-2023-04-01.zip
+      sha256: d595dc7f405c3840c5609ed4a11dbe776c1145acceae508ae672d19e95abce27
+    book_depth:
+      filename: BTCUSDT-bookDepth-2023-04-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/BTCUSDT/BTCUSDT-bookDepth-2023-04-01.zip
+      sha256: 2ebffdcc6ea2486c2c3afc76bdd6fbf9f65d9a5dc4bafd6e47031c9a35f855bf
+  - session_id: btcusdt-2023-07-01
+    date: '2023-07-01'
+    klines:
+      filename: BTCUSDT-1m-2023-07-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/BTCUSDT/1m/BTCUSDT-1m-2023-07-01.zip
+      sha256: 9d64b14c76b7a750f7f146134cc65069d38deedac71cc154becbc664845de67b
+    book_depth:
+      filename: BTCUSDT-bookDepth-2023-07-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/BTCUSDT/BTCUSDT-bookDepth-2023-07-01.zip
+      sha256: 99a970667c0a8aaddbbfe2067152f43909e462b8c48e290e7df7718d32edd02c
+  - session_id: btcusdt-2023-10-01
+    date: '2023-10-01'
+    klines:
+      filename: BTCUSDT-1m-2023-10-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/BTCUSDT/1m/BTCUSDT-1m-2023-10-01.zip
+      sha256: f5d7c435c017b64418f34c996ff6fbf87239b8a9cdc35a2ac2420e08b1fe3828
+    book_depth:
+      filename: BTCUSDT-bookDepth-2023-10-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/BTCUSDT/BTCUSDT-bookDepth-2023-10-01.zip
+      sha256: aa5907f93a70da56a9dcbd1afb3ab4a0cc5c8643284d52fb28eed30306a15a30

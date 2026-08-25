@@ -4,7 +4,10 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Mapping
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -14,6 +17,7 @@ from pivot.acquisition.pivot import select_pivot
 from pivot.algorithms.pivot import run_pivot_round
 from pivot.core.policy import Policy
 from pivot.core.result import RolloutContext
+from pivot.core.transition import PolicyTransition
 from pivot.environments.performative.config import PerformativeConfig
 from pivot.environments.performative.world import PerformativeWorld
 from pivot.evaluation.paired import PairedEvaluator
@@ -25,17 +29,28 @@ from pivot.transfer.differential import DifferentialModel
 class _ColdStartModel:
     """Conservative model for the first round before correction data exists."""
 
-    def predict_correction(self, row):
-        class Prediction:
-            correction = 0.0
-            standard_deviation = max(0.1, float(row.get("update_footprint", 0.0)))
-            predicted_delta = float(row.get("delta_proxy", 0.0))
-            sign_change_probability = 0.5
+    def predict_correction(self, row: Mapping[str, Any]) -> _ColdPrediction:
+        footprint = row.get("update_footprint", 0.0)
+        proxy = row.get("delta_proxy", 0.0)
+        if not isinstance(footprint, (int, float)) or not isinstance(proxy, (int, float)):
+            raise TypeError("cold-start rows require numeric footprint and proxy delta")
+        return _ColdPrediction(
+            correction=0.0,
+            standard_deviation=max(0.1, float(footprint)),
+            predicted_delta=float(proxy),
+            sign_change_probability=0.5,
+        )
 
-        return Prediction()
-
-    def uncertainty(self, row):
+    def uncertainty(self, row: Mapping[str, Any]) -> float:
         return self.predict_correction(row).standard_deviation
+
+
+@dataclass(frozen=True)
+class _ColdPrediction:
+    correction: float
+    standard_deviation: float
+    predicted_delta: float
+    sign_change_probability: float
 
 
 def main() -> None:
@@ -77,7 +92,10 @@ def main() -> None:
 
         transition_by_id = {transition.transition_id: transition for transition in transitions}
 
-        def hf(row, lookup=transition_by_id):
+        def hf(
+            row: Mapping[str, object],
+            lookup: Mapping[str, PolicyTransition] = transition_by_id,
+        ) -> dict[str, object]:
             transition = lookup[str(row["transition_id"])]
             actor = PairedEvaluator(world, mode="actor").evaluate(transition, [context])
             return {
@@ -106,7 +124,14 @@ def main() -> None:
         queried_rows.extend(dict(row) for row in result.rows if row.get("hf_queried"))
         if queried_rows:
             model = DifferentialModel()
-            model.fit(queried_rows, [float(row["delta_true"]) - float(row["delta_proxy"]) for row in queried_rows])
+            corrections: list[float] = []
+            for row in queried_rows:
+                true_value = row.get("delta_true")
+                proxy_value = row.get("delta_proxy")
+                if not isinstance(true_value, (int, float)) or not isinstance(proxy_value, (int, float)):
+                    raise TypeError("queried rows require numeric true and proxy deltas")
+                corrections.append(float(true_value) - float(proxy_value))
+            model.fit(queried_rows, corrections)
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "closed_loop.json").write_text(json.dumps(history, indent=2, sort_keys=True), encoding="utf-8")
     (args.output / "transition_rows.jsonl").write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in all_transition_rows), encoding="utf-8")

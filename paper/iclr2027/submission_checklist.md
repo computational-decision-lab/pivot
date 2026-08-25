@@ -32,19 +32,21 @@ that cannot be closed inside the repository.
   are checked without changing the anonymous PDF.
 - PENDING: authors confirm no parallel-submission violation.
 
-## Scientific gates
+## Scientific evidence boundaries
 
-- OPEN: independently calibrated causal interactive response beyond the
-  controlled fixture.
-- OPEN: external strategic validation beyond the deterministic opponent fixture.
-- OPEN: confirmatory update-generation rule, volatility/liquidity labels, and
-  frozen holdout for any stronger external claim.
-- OPEN: repeat the new held-out comparison over additional frozen seeds and
-  rebuild paper tables/figures from a fresh, hash-bound confirmatory run before
-  changing the submitted PDF.
+- FROZEN NULL: E3b passes all five construct gates but its powered 772-paired-
+  trajectory comparison does not support a PIVOT-VOI CTI advantage.
+- FROZEN NULL: E4b's powered trajectory-disjoint comparison does not support
+  a transition-over-global advantage.
+- FROZEN SCOPED PASS: E7b has 140 held-out opponent-seed clusters (required
+  135) and supports strategic reversal for the registered best-response
+  family; this is not a general equilibrium or market-validity claim.
+- OPEN BOUNDARY: independently calibrated causal market response, realistic
+  ecology, and any stronger finance claim remain outside this package.
 
 ## Decision
 
-`CONDITIONAL GO` is the correct local conclusion. It means the paper can enter
-final author review and rebuttal preparation, not that an OpenReview upload is
-complete or that the external finance claim is causal.
+`CONDITIONAL GO` is the correct local conclusion. Machine checks and the
+scientific states above are frozen, but OpenReview profile, author metadata,
+quota, conflict, and parallel-submission gates remain manual. This is not an
+OpenReview upload and it does not make the finance audit causal.

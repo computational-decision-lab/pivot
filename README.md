@@ -19,11 +19,11 @@ Working paper title: *When Better Gets Worse: Improvement Fidelity of Self-Impro
   IMPROVE-X vertical slice provides operator batches, multi-round trajectories,
   ImprovementBench v1, world-layer fidelity metrics, and failure taxonomy.
   LLM/EvoQuant/M3 adapters remain deferred.
-- Scientific gates A-F: fixture-level registered passes are recorded, but none
-  are promoted to final paper claims. A checksum-bound public Binance execution
-  audit across three assets and four calendar blocks is
-  complete; it observed no depth-proxy reversal, and causal response plus
-  external strategic validity remain open.
+- V7 scientific status: theory and operator-shift tests pass; powered E3b and
+  E4b external comparisons are registered nulls; powered E7b supports
+  strategic reversal for one held-out best-response opponent family. The
+  Binance audit remains a negative, observational boundary (0/7 primary,
+  0/5 holdout), not causal market evidence.
 - Live trading or external execution: out of scope.
 
 ## IMPROVE-X quick start

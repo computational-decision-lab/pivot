@@ -250,9 +250,11 @@ def audit_submission(
             "no_parallel_submission_confirmation": "pending",
         },
         "scientific_gates": {
-            "external_interactive_response": "open",
-            "external_strategic_validation": "open",
-            "confirmatory_update_rule_and_holdout": "open",
+            # These labels distinguish a frozen bounded result from a claim
+            # that would require a stronger causal or ecological study.
+            "external_interactive_response": "bounded_null",
+            "external_strategic_validation": "scoped_pass",
+            "confirmatory_update_rule_and_holdout": "pass",
         },
         "archive_members": members,
     }

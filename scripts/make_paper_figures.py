@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import math
 import shutil
 import sys
 from itertools import pairwise
@@ -193,17 +194,18 @@ def _build_contrast_figure(contrast: Path, output_dir: Path, stem: str) -> None:
         ("improvement_reversal_rate", "Reversal rate", "lower is better"),
         ("update_selection_regret", "Selection regret", "lower is better"),
     )
-    figure, axes = plt.subplots(2, 3, figsize=(7.2, 4.5))
+    # The six metrics share a two-evaluator comparison.  A compact wide panel
+    # keeps every raw scale visible without consuming a full paper page.
+    figure, axes = plt.subplots(2, 3, figsize=(7.4, 3.0))
     for axis, (key, title, subtitle) in zip(axes.flat, metrics_to_plot):
         values = [float(row[key]) if row[key] is not None else 0.0 for row in rows]
         axis.bar(labels, values, color=colors, width=0.62)
-        axis.set_title(title, fontsize=9)
-        axis.text(0.5, -0.28, subtitle, transform=axis.transAxes, ha="center", fontsize=7)
+        axis.set_title(f"{title}\n({subtitle})", fontsize=8.0, linespacing=0.95)
         axis.grid(axis="y", alpha=0.2, linewidth=0.6)
         axis.set_axisbelow(True)
-        axis.tick_params(axis="x", labelsize=7)
-    figure.suptitle("Value fidelity is not improvement fidelity", fontsize=11, y=1.01)
-    figure.tight_layout()
+        axis.tick_params(axis="both", labelsize=6.5)
+    figure.suptitle("Value fidelity is not improvement fidelity", fontsize=10, y=1.0)
+    figure.tight_layout(pad=0.55, h_pad=1.25, w_pad=0.7)
     finalize_figure(figure, output_dir / stem, formats=("png",), dpi=300)
 
 
@@ -281,13 +283,26 @@ def _semantic_heatmap_png(path: Path, rows: list[dict[str, Any]]) -> None:
         origin="lower",
         aspect="auto",
         extent=(x_edges[0], x_edges[-1], y_edges[0], y_edges[-1]),
-        interpolation="bilinear",
+        interpolation="none",
         vmin=0.0,
         vmax=1.0,
         cmap=reversal_cmap(),
     )
     if len(responses) > 1 and len(footprints) > 1:
         axis.contour(footprints, responses, matrix, levels=[0.5], colors="#f5f5f5", linewidths=1.2)
+    for response_index, response in enumerate(responses):
+        for footprint_index, footprint in enumerate(footprints):
+            value = matrix[response_index][footprint_index]
+            if math.isfinite(value):
+                axis.text(
+                    footprint,
+                    response,
+                    f"{value:.2f}",
+                    ha="center",
+                    va="center",
+                    fontsize=6.5,
+                    color="black" if value > 0.55 else "white",
+                )
     axis.set_xticks(footprints, [f"{value:.2f}" for value in footprints], rotation=45, ha="right")
     axis.set_yticks(responses, [f"{value:.2f}" for value in responses])
     axis.set(
@@ -298,7 +313,7 @@ def _semantic_heatmap_png(path: Path, rows: list[dict[str, Any]]) -> None:
     axis.text(
         0.02,
         0.02,
-        "bilinear display; light contour: zero-to-positive boundary",
+        "raw sampled cells; labels show IRR; contour is descriptive only",
         transform=axis.transAxes,
         fontsize=7,
         color="white",
@@ -319,7 +334,12 @@ def _grid_edges(values: list[float]) -> list[float]:
 
 
 def _build_budget_frontier(input_dir: Path, output_dir: Path) -> None:
-    source = _find(input_dir, "budget_frontier.csv")
+    # Snapshot bundles use the canonical figure stem; experiment bundles use
+    # the shorter source name.  Accept both so regeneration is deterministic
+    # from either artifact layout.
+    source = _find(input_dir, "budget_frontier.csv") or _find(
+        input_dir, "fig5_pivot_budget_frontier.csv"
+    )
     stem = "fig5_pivot_budget_frontier"
     if source is None:
         _mark_unavailable(output_dir, stem, "E5 budget_frontier.csv was not found.")
@@ -333,6 +353,8 @@ def _build_budget_frontier(input_dir: Path, output_dir: Path) -> None:
         x_key="mean_queries",
         y_key="mean_cti",
         title="PIVOT budget frontier",
+        figsize=(7.4, 2.8),
+        legend_columns=4,
     )
 
 
@@ -469,13 +491,15 @@ def _grouped_line_png(
     x_key: str,
     y_key: str,
     title: str,
+    figsize: tuple[float, float] = (6.0, 4.0),
+    legend_columns: int = 1,
 ) -> None:
     try:
         import matplotlib.pyplot as plt
     except ImportError:
         _fallback_png(path)
         return
-    figure, axis = plt.subplots(figsize=(6, 4))
+    figure, axis = plt.subplots(figsize=figsize)
     groups: dict[str, list[dict[str, Any]]] = {}
     for row in rows:
         groups.setdefault(str(row[group_key]), []).append(row)
@@ -489,8 +513,17 @@ def _grouped_line_png(
             color=DEFAULT_COLORS[index % len(DEFAULT_COLORS)],
         )
     axis.set(xlabel=x_key, ylabel=y_key, title=title)
-    axis.legend(fontsize=8)
-    figure.tight_layout()
+    axis.legend(
+        fontsize=7,
+        ncol=legend_columns,
+        frameon=False,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.30),
+        borderaxespad=0.0,
+    )
+    figure.tight_layout(pad=0.65)
+    if legend_columns > 1:
+        figure.subplots_adjust(bottom=0.39)
     finalize_figure(figure, path, formats=("png",), dpi=300)
 
 

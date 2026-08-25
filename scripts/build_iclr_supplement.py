@@ -17,9 +17,12 @@ ALLOWLIST = (
     "experiments",
     "configs",
     "results/theory",
+    "results/v7",
+    "research",
     "tests",
     "benchmarks/improvementbench/v1",
     "benchmarks/improvementbench/v2",
+    "benchmarks/improvementbench/v7",
 )
 TEXT_SUFFIXES = {".py", ".yaml", ".yml", ".json", ".md", ".tex", ".bib", ".txt", ".csv"}
 SKIP_PARTS = {"__pycache__", ".pytest_cache", ".ruff_cache", ".mypy_cache", ".venv", "build", "pivot_research.egg-info"}
@@ -72,6 +75,15 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
         target = output_root / "tables" / name
         _copy_sanitized(source, target)
         copied.append(target)
+    for relative_path in (
+        "docs/v7-evidence-2026-08-25.md",
+        "docs/external-environment-provenance.md",
+        "docs/claim_boundary.md",
+    ):
+        source = project_root / relative_path
+        target = output_root / relative_path
+        _copy_sanitized(source, target)
+        copied.append(target)
     _rewrite_snapshot_manifest(
         output_root / "snapshot" / "manifest.json",
         original_manifest_sha256,
@@ -107,7 +119,12 @@ The controlled value-versus-improvement diagnostic can be regenerated with:
 This is a controlled estimand diagnostic, not a universal method or market
 performance claim.
 
-The V6 analytic theory checks are included under `results/theory` and can be
+The V6 analytic theory checks are included under `results/theory`; the V7
+operator-shift, powered external classifications, compressed transition
+streams, and ImprovementBench V7 artifacts are included under `results/v7`,
+`research`, and `benchmarks/improvementbench/v7`. Decompress a row stream with
+`gzip -dk transition_rows.jsonl.gz` when a row-level audit is needed.
+The V6 checks can be
 regenerated with:
 
 ```bash

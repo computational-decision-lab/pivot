@@ -35,6 +35,12 @@ def test_supplement_allowlist_contains_improvementbench_v2() -> None:
     assert "benchmarks/improvementbench/v2" in ALLOWLIST
 
 
+def test_supplement_allowlist_contains_v7_artifacts() -> None:
+    assert "benchmarks/improvementbench/v7" in ALLOWLIST
+    assert "results/v7" in ALLOWLIST
+    assert "research" in ALLOWLIST
+
+
 def test_supplement_allowlist_contains_registered_theory_artifact() -> None:
     assert "results/theory" in ALLOWLIST
 
@@ -126,7 +132,8 @@ def test_spotlight_upgrade_source_contains_transition_first_narrative() -> None:
         "Contribution 1",
         "Contribution 2",
         "Contribution 3",
-        "Contribution 4",
+        "Operator Shift Bound",
+        "Finite-Sample Best-Update Identification",
         "Decision Preservation Under Differential Error",
         "Why Transition Validation Differs from Active Learning",
         "Stress Tests Beyond Controlled Environments",
@@ -134,7 +141,7 @@ def test_spotlight_upgrade_source_contains_transition_first_narrative() -> None:
         "Q_{\\mathcal A}",
         "operator-relative Improvement Fidelity",
         "\\operatorname{IF}(V,\\mathcal A;L)",
-        "zero-to-positive reversal boundary",
+        "raw sampled reversal-rate cells",
         "false improvement (improvement reversal)",
         "CTI",
         "0/7",

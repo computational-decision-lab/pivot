@@ -40,3 +40,9 @@ def test_canonical_figures_regenerate_from_source_tables(tmp_path: Path) -> None
     )
     assert result["valid"] is True
     assert (figures / "fig1_when_better_gets_worse.csv").exists()
+
+
+def test_reversal_landscape_uses_raw_cells_not_bilinear_interpolation() -> None:
+    source = Path("scripts/make_paper_figures.py").read_text(encoding="utf-8")
+    assert 'interpolation="none"' in source
+    assert "bilinear display" not in source

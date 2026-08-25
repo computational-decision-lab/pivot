@@ -162,7 +162,7 @@ def _evaluate_method(method: str, group: list[dict[str, Any]], budget: int, mode
             estimates[identifier] = model.predict_correction(row).predicted_delta
         else:
             estimates[identifier] = float(row["delta_proxy"])
-    selected = max(estimates, key=estimates.get)
+    selected = max(estimates, key=lambda identifier: estimates[identifier])
     selected_true = true_values[selected]
     oracle = max(true_values.values())
     return {

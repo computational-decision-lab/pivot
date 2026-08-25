@@ -1,0 +1,38 @@
+{
+  "config": {
+    "adaptation_strengths": [
+      0.25,
+      0.5,
+      1.0
+    ],
+    "alpha": 0.05,
+    "candidate_scale": 0.15,
+    "candidates_per_seed": 8,
+    "experiment": "e7b_external_strategic",
+    "max_cycles": 12,
+    "minimum_effect_strategic": 0.02,
+    "observation_dim": 10,
+    "phase": "development",
+    "power": 0.8,
+    "scenario": "simple_adversary_v3",
+    "seeds": [
+      7701,
+      7702,
+      7703,
+      7704,
+      7705
+    ]
+  },
+  "config_sha256": "fd29c566036e201af37a1a05faf5200232865d53e8e17e55724c016d42d119b8",
+  "environment_source": "Farama MPE2",
+  "held_out_adaptation_strengths": [
+    0.25,
+    0.5,
+    1.0
+  ],
+  "opponent_families": {
+    "family_a": "reactive-observation",
+    "family_b": "explicit-best-response"
+  },
+  "paired": true
+}
