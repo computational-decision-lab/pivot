@@ -20,17 +20,28 @@ ALLOWLIST = (
     "results/v7",
     "results/v9",
     "figures/v9",
+    "figures/v10",
     "tables/v9",
     "artifacts/v9",
+    "artifacts/v10",
     "snapshot/v9_preupgrade",
     "research",
     "tests",
     "benchmarks/improvementbench/v1",
     "benchmarks/improvementbench/v2",
     "benchmarks/improvementbench/v7",
+    "paper/figures/v10_style.py",
 )
 TEXT_SUFFIXES = {".py", ".yaml", ".yml", ".json", ".md", ".tex", ".bib", ".txt", ".csv"}
-SKIP_PARTS = {"__pycache__", ".pytest_cache", ".ruff_cache", ".mypy_cache", ".venv", "build", "pivot_research.egg-info"}
+SKIP_PARTS = {
+    "__pycache__",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".mypy_cache",
+    ".venv",
+    "build",
+    "pivot_research.egg-info",
+}
 PRIVATE_RE = re.compile(r"(?:/opt/projects|/home/ubuntu|/tmp(?:/[A-Za-z0-9_.-]*)?)")
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
 
@@ -61,13 +72,22 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
     copied: list[Path] = []
     for root_name in ALLOWLIST:
         root = project_root / root_name
-        for source in sorted(root.rglob("*")):
+        if root.is_file():
+            sources = [root]
+        elif root.is_dir():
+            sources = sorted(root.rglob("*"))
+        else:
+            raise FileNotFoundError(root)
+        for source in sources:
             if not source.is_file() or any(part in SKIP_PARTS for part in source.parts):
                 continue
             # Parquet is retained in the repository artifact root, but the
             # anonymous supplement audit intentionally excludes raw archive
             # formats. CSV/JSON and vector sources remain fully auditable.
-            if source.suffix.casefold() in {".parquet", ".feather", ".zip", ".tar", ".gz"} and "results/v9" not in source.as_posix():
+            if (
+                source.suffix.casefold() in {".parquet", ".feather", ".zip", ".tar", ".gz"}
+                and "results/v9" not in source.as_posix()
+            ):
                 continue
             if source.suffix.casefold() == ".parquet":
                 continue
@@ -87,10 +107,23 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
         target = output_root / "tables" / name
         _copy_sanitized(source, target)
         copied.append(target)
+    for relative_path in ("paper/iclr2027/v10_results_macros.tex",):
+        source = project_root / relative_path
+        target = output_root / relative_path
+        _copy_sanitized(source, target)
+        copied.append(target)
     for relative_path in (
         "docs/v7-evidence-2026-08-25.md",
         "docs/external-environment-provenance.md",
         "docs/claim_boundary.md",
+        "V10_PRE_FINAL_AUDIT.md",
+        "V10_METRIC_SCALE_AUDIT.md",
+        "V10_NUMBER_AUDIT.md",
+        "V10_FIGURE_AUDIT.md",
+        "V10_REVIEWER_ATTACK_AUDIT.md",
+        "V10_CLAIM_AUDIT.md",
+        "V10_BIBLIOGRAPHY_AUDIT.md",
+        "V10_FINAL_REPORT.md",
     ):
         source = project_root / relative_path
         target = output_root / relative_path
@@ -131,13 +164,10 @@ The controlled value-versus-improvement diagnostic can be regenerated with:
 This is a controlled estimand diagnostic, not a universal method or market
 performance claim.
 
-The V6 analytic theory checks are included under `results/theory`; the V7
-operator-shift, powered external classifications, compressed transition
-streams, and ImprovementBench V7 artifacts are included under `results/v7`,
-`research`, and `benchmarks/improvementbench/v7`. Decompress a row stream with
-`gzip -dk transition_rows.jsonl.gz` when a row-level audit is needed.
-The V6 checks can be
-regenerated with:
+Earlier controlled checks and frozen external classifications remain under
+`results/theory` and `results/v7` for provenance. Decompress a row stream with
+`gzip -dk transition_rows.jsonl.gz` when a row-level audit is needed. The
+analytic checks can be regenerated with:
 
 ```bash
 .venv/bin/python experiments/e10_theory_empirical.py \\
@@ -148,10 +178,17 @@ regenerated with:
 They test the constructive Global Fidelity Blindness and Response-Footprint
 Sensitivity claims; they are not causal market evidence.
 
-The V9 confirmatory package is included under `results/v9`; publication figures
-and source tables are under `figures/v9` and `tables/v9`. Rebuild the registered
-runs with `experiments.v9.run`, then run the validation, analysis, figure, table,
-and audit commands listed in `V9_REPRODUCIBILITY.md`.
+The frozen confirmatory package is included under `results/v9`; publication
+transforms are under `figures/v10` and `experiments/v10`. They do not rerun
+science: they read hash-indexed source rows and emit PDF/SVG/PNG figures plus
+CSV provenance tables. Rebuild and audit the complete package with:
+
+```bash
+.venv/bin/python -m experiments.v10.finalize --root .
+```
+
+The manuscript reports the scientific names of the evidence layers. Internal
+run identifiers are retained only in manifests and source metadata.
 
 The editable architecture source is adapted from the pinned OpenTikZ
 `system-block-diagram` template. Rebuild it after installing the lock-bound
@@ -209,7 +246,8 @@ def main() -> None:
         "snapshot_manifest_sha256": hashlib.sha256(
             (args.output_root / "snapshot" / "manifest.json").read_bytes()
         ).hexdigest(),
-        "allowlist": list(ALLOWLIST) + ["paper/snapshot", "paper/tables", "paper/iclr2027/v9_results_macros.tex"],
+        "allowlist": list(ALLOWLIST)
+        + ["paper/snapshot", "paper/tables", "paper/iclr2027/v10_results_macros.tex"],
     }
     (args.output_root / "supplement_manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import subprocess
 from pathlib import Path
 
@@ -80,43 +81,34 @@ def test_architecture_source_preserves_opentikz_contract() -> None:
     assert metadata["composed_of"] == ["system-block-diagram"]
     assert metadata["license"] == "CC0-1.0"
     assert lock["template_id"] == "system-block-diagram"
-    assert "\\documentclass[border=8pt]{standalone}" in source
-    for color in ("otblue", "otorange", "otteal", "otpurple", "otgray"):
+    assert "\\documentclass[border=6pt]{standalone}" in source
+    for color in ("pblue", "porange", "pteal", "ppurple", "pgray"):
         assert color in source
     assert "fill=white" not in source
     assert "draw=black" not in source
     for node in (
-        "incumbent",
-        "operator",
-        "candidates",
+        "inc",
+        "op",
+        "batch",
         "proxy",
-        "footprint",
-        "score",
+        "posterior",
+        "regret",
+        "foot",
+        "evsi",
+        "cost",
         "paired",
-        "correction",
-        "promote",
-        "decomposition",
-        "world0",
-        "world1",
-        "world2",
-        "world3",
-        "metrics",
-        "evidence",
+        "stop",
     ):
         assert f"({node})" in source
-    assert "\\def\\colsep" in source
-    assert "\\def\\boxminw" in source
-    assert "decision-change" in source
-    assert "same state, seed, opponents" in source
-    assert "\\draw[arrow] (correction.east) -- (promote.west)" in source
-    assert "\\draw[dashedarrow] (promote.east) -- (15.55,3.95)" in source
-    assert "node[edgeLabel" not in source
-    assert "(world0) at (1.75,1.05)" in source
-    assert "(promote.east) -- (15.55,3.95)" in source
-    assert "paneltitle, anchor=north west] at (0.45,1.96)" in source
-    assert "paneltitle, anchor=north west] at (0.45,-0.42)" in source
-    assert "(decomposition) at (11.65,2.85)" in source
-    assert "REPORTING OBJECTS AND CLAIM BOUNDARY" in source
+    assert "expected regret" in source
+    assert "expected regret reduction" in source
+    assert "cost-aware acquisition" in source
+    assert "same state, noise," in source
+    assert "opponent initialization" in source
+    assert "\\draw[hfarrow] (paired) -- (stop)" in source
+    assert "\\draw[loop] (stop.east)" in source
+    assert "CANDIDATE GENERATION AND DIFFERENTIAL POSTERIOR" in source
+    assert "DECISION-SENSITIVE PAIRED INTERVENTION" in source
 
 
 def test_rendered_architecture_contains_all_paper_layers(tmp_path: Path) -> None:
@@ -137,17 +129,23 @@ def test_rendered_architecture_contains_all_paper_layers(tmp_path: Path) -> None
     assert result.returncode == 0, result.stdout + result.stderr
     output = tmp_path / "fig3_pivot_architecture.pdf"
     extracted = subprocess.check_output(["pdftotext", "-layout", str(output), "-"], text=True)
+    extracted = re.sub(r"\s+", " ", extracted)
     for token in (
         "PIVOT",
-        "Observer verifier",
-        "Paired HF rollouts",
-        "Response decomposition",
-        "W0 Observer",
-        "W1 Replay",
-        "W2 Actor",
-        "W3 Strategic",
-        "Improvement Fidelity",
-        "Evidence",
+            "candidate",
+            "batch",
+            "cheap",
+            "verifier",
+            "differential",
+            "posterior",
+            "expected",
+            "regret",
+            "reduction",
+            "cost-aware",
+            "acquisition",
+            "paired",
+            "rollout",
+            "stop",
     ):
         assert token in extracted
 
@@ -173,10 +171,10 @@ def test_architecture_is_standalone_compilable(tmp_path: Path) -> None:
     assert (output / "fig3_pivot_architecture.pdf").is_file()
 
 
-def test_paper_places_architecture_before_contrast_and_moves_stress_diagnostic_to_appendix() -> None:
+def test_paper_places_architecture_in_main_text_and_world_diagnostics_in_appendix() -> None:
     source = (PROJECT / "paper/iclr2027/main.tex").read_text(encoding="utf-8")
-    assert source.index("fig2_reversal_phase_diagram.png") < source.index("fig3_pivot_architecture.pdf")
-    assert source.index("fig3_pivot_architecture.pdf") < source.index("fig4_policy_vs_improvement_fidelity.png")
+    assert source.index("fig3_pivot_voi.pdf") < source.index("fig2_operator_shift.png")
+    assert source.index("fig2_operator_shift.png") < source.index("fig4_evidence_efficiency.png")
     appendix = source.index("\\appendix")
-    observer = source.index("fig6_observer_actor_strategic.png")
+    observer = source.index("figA_response_footprint.png")
     assert observer > appendix

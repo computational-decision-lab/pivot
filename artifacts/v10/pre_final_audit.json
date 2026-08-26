@@ -1,0 +1,119 @@
+{
+  "audit_dimensions": [
+    "abstract claims",
+    "contributions",
+    "proposition count",
+    "captions",
+    "metrics",
+    "experiment identifiers",
+    "numbers",
+    "version leakage",
+    "related work",
+    "terminology",
+    "figure/appendix references",
+    "page budget",
+    "double blind"
+  ],
+  "freeze": {
+    "immutable": true,
+    "pdf_sha256": "928e4776de7b78814c78343e0a85933fa4dc08b33f379969750e4cd42791fc32",
+    "self_hash_exception": "SHA256SUMS self-entry is not used; the file is externally bound by sha256_manifest_sha256",
+    "sha256_manifest_sha256": "b70341fce9c4a8f7b5f8046fc4a265483456ed1856f6f9fededb2e6dc7724807",
+    "snapshot_path": "snapshot/v10_pre_final",
+    "snapshot_size_bytes": 152597873,
+    "snapshot_timestamp": "2026-08-26T20:16:54+08:00",
+    "source_git_commit": "8541638d9115fb71c1b4d780e702762a030e3f59",
+    "supplement_sha256": "60e5f13cc57b9007ea1b69d3326eadc884bc6d14fa5455f4a564e0b1ed4678df"
+  },
+  "issues": [
+    {
+      "location": "snapshot manuscript, Theory introduction",
+      "problem": "Text stated four results while six propositions were present.",
+      "required_fix": "State six results and automatically count proposition environments.",
+      "resolution": "fixed and checked by claim/PDF verifier",
+      "severity": "blocking",
+      "source_evidence": "snapshot main.tex:283 and six proposition environments"
+    },
+    {
+      "location": "snapshot abstract, results, captions, and appendix",
+      "problem": "Internal version and run identifiers read like a development log.",
+      "required_fix": "Use scientific environment/operator names in the main paper; retain IDs only in artifact metadata.",
+      "resolution": "fixed in the scientific body; automated forbidden-token scan added",
+      "severity": "high",
+      "source_evidence": "snapshot main.tex contains V7/V9 and E2C/E3C/E4C/E5C/E7C"
+    },
+    {
+      "location": "snapshot Figures 6--9",
+      "problem": "Sparse points/bars/lines did not expose mechanism, raw variation, null evidence, or strategic reversal.",
+      "required_fix": "Rebuild as paired layers, effect distributions/forests, robustness diagnostics, and reversal planes.",
+      "resolution": "replaced by Figures A--D with source tables and cluster-level uncertainty",
+      "severity": "high",
+      "source_evidence": "frozen pre-final figure bundles"
+    },
+    {
+      "location": "snapshot architecture figure",
+      "problem": "The earlier dense world/reporting layout produced container and connector collisions at paper scale.",
+      "required_fix": "Use a compact decision-critical two-band OpenTikZ architecture and keep world taxonomy in the appendix.",
+      "resolution": "rebuilt with 11 semantic nodes, routed connectors, raster/vector QA, and no overflow",
+      "severity": "high",
+      "source_evidence": "frozen OpenTikZ source and visual review"
+    },
+    {
+      "location": "metrics and cross-environment figures",
+      "problem": "CISR was used for both one-set and cumulative settings without a single scale contract; FER was absent.",
+      "required_fix": "Define ISR, CTI, CISR_T, and matched-cell FER; prohibit raw cross-environment comparisons.",
+      "resolution": "formal definitions and V10 metric-scale audit added",
+      "severity": "high",
+      "source_evidence": "statistics.py, closed-loop runner, efficiency runner"
+    },
+    {
+      "location": "related work and references",
+      "problem": "Novelty boundaries omitted key self-improvement reversal/benchmark work; one off-policy URL was wrong.",
+      "required_fix": "Add explicit boundary paragraphs and verify primary metadata.",
+      "resolution": "expanded recent/top-conference coverage; Thomas--Brunskill URL corrected",
+      "severity": "high",
+      "source_evidence": "pre-final bibliography and recent primary metadata"
+    },
+    {
+      "location": "finance paragraph and public table",
+      "problem": "The seven-session single-asset sweep and the 12-session three-asset expansion were conflated.",
+      "required_fix": "Describe the datasets separately and source 0/7, 0/5, and the pooled effect from the frozen expansion JSON.",
+      "resolution": "main text, caption, table, and number audit now keep the two observational layers distinct",
+      "severity": "high",
+      "source_evidence": "public calibration summary versus paper snapshot public-expansion-summary.json"
+    },
+    {
+      "location": "main Figure 3 bundle",
+      "problem": "Editable architecture assets existed but the required method-oriented figure bundle was incomplete.",
+      "required_fix": "Export PDF/SVG/PNG/TEX plus semantic-node CSV/Parquet and metadata under fig3_pivot_voi.",
+      "resolution": "implemented in deterministic architecture/figure build",
+      "severity": "medium",
+      "source_evidence": "release output contract"
+    },
+    {
+      "location": "page budget",
+      "problem": "The pre-final manuscript occupied the full nine-page main-text budget.",
+      "required_fix": "Rebuild and verify the reference boundary rather than total PDF page count.",
+      "resolution": "final verifier enforces at most nine main pages; current build leaves margin",
+      "severity": "medium",
+      "source_evidence": "pre-final verification main_pages=9"
+    },
+    {
+      "location": "pre-final SHA256SUMS",
+      "problem": "The manifest contains an unavoidable invalid self-hash placeholder for SHA256SUMS itself.",
+      "required_fix": "Do not mutate the frozen snapshot; bind the manifest externally by its own SHA-256.",
+      "resolution": "external freeze record stores the manifest hash and excludes self-verification",
+      "severity": "low",
+      "source_evidence": "first manifest line is the empty-file digest while the external digest is nonempty"
+    },
+    {
+      "location": "double-blind package",
+      "problem": "No identity leak was found in the pre-final PDF/package.",
+      "required_fix": "Preserve and rerun source/PDF/archive checks.",
+      "resolution": "retained as a release gate",
+      "severity": "none",
+      "source_evidence": "pre-final verification anonymous_author=true"
+    }
+  ],
+  "valid": true
+}

@@ -121,12 +121,48 @@ def verify_paper(
         "finite-sample best-update identification",
         "decision preservation under differential error",
         "why transition validation differs from active learning",
-        "fig3_pivot_architecture",
-        "decision-preserving data flow",
+        "fig3_pivot_voi",
         "stress tests beyond controlled environments",
+        "value fidelity versus improvement fidelity",
+        "operator-relative improvement fidelity",
+        "q_{\\mathcal a}",
+        "raw sampled reversal-rate cells",
+        "false improvement (improvement reversal)",
     ]
     source_lower = source_text.casefold()
-    missing_tokens = [token for token in required_tokens if token not in source_lower]
+    missing_tokens = [token for token in required_tokens if token.casefold() not in source_lower]
+
+    scientific_source = source_text.split("\\begin{document}", 1)[-1].split("\\appendix", 1)[0]
+    forbidden_version_tokens = sorted(
+        set(
+            re.findall(
+                r"\b(?:v7|v8|v9|v10|e2c|e3c|e4c|e5c|e7c|hypothesis_[a-z_]+)\b",
+                scientific_source,
+                flags=re.IGNORECASE,
+            )
+        )
+    )
+    proposition_count = len(re.findall(r"\\begin\{proposition\}", source_text))
+    required_assets = {
+        "fig1_improvement_reversal.png",
+        "fig2_operator_shift.png",
+        "fig3_pivot_voi.pdf",
+        "fig4_evidence_efficiency.png",
+        "fig5_closed_loop.png",
+        "figA_response_footprint.png",
+        "figB_learned_ood_null.png",
+        "figC_posterior_robustness.png",
+        "figD_strategic_distribution.png",
+        "figE_finance_boundary.png",
+    }
+    asset_missing = [
+        name
+        for name in sorted(required_assets)
+        if not (
+            (source.parent / "figures" / "v10" / name).is_file()
+            or (source.parent / "figures" / name).is_file()
+        )
+    ]
 
     preview_path = _render_preview(pdf, preview) if preview is not None else None
     checks = {
@@ -138,6 +174,9 @@ def verify_paper(
         "anonymous_author": author in {"", "-", "Anonymous", "Anonymous Authors"},
         "embedded_fonts": bool(fonts) and all(font["embedded"] for font in fonts),
         "required_source_tokens": not missing_tokens,
+        "six_propositions": proposition_count == 6,
+        "no_internal_version_language_in_main": not forbidden_version_tokens,
+        "required_figure_assets": not asset_missing,
         "no_undefined_references": not log_scan.get("undefined_references", False),
         "no_overfull_hboxes": log_scan.get("overfull_hboxes", 0) == 0,
         "preview_nonempty": preview_path is None or preview_path.stat().st_size > 1000,
@@ -155,6 +194,9 @@ def verify_paper(
         "fonts": fonts,
         "log": log_scan,
         "missing_source_tokens": missing_tokens,
+        "forbidden_version_tokens": forbidden_version_tokens,
+        "proposition_count": proposition_count,
+        "missing_figure_assets": asset_missing,
         "preview": _portable_path(preview_path) if preview_path else None,
         "checks": checks,
         "valid": all(checks.values()) and pages >= appendix_page,
@@ -207,7 +249,19 @@ def _render_preview(pdf: Path, target: Path) -> Path:
     target.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="pivot-paper-preview-") as temp_dir:
         prefix = Path(temp_dir) / "page"
-        _command(["gs", "-q", "-dSAFER", "-dBATCH", "-dNOPAUSE", "-sDEVICE=png16m", "-r120", f"-sOutputFile={prefix}-%02d.png", f"{pdf}"])
+        _command(
+            [
+                "gs",
+                "-q",
+                "-dSAFER",
+                "-dBATCH",
+                "-dNOPAUSE",
+                "-sDEVICE=png16m",
+                "-r120",
+                f"-sOutputFile={prefix}-%02d.png",
+                f"{pdf}",
+            ]
+        )
         first = Path(f"{prefix}-01.png")
         if not first.is_file():
             raise RuntimeError("ghostscript did not render a first-page preview")
@@ -224,7 +278,11 @@ def main() -> None:
     parser.add_argument("--max-main-pages", type=int, default=9)
     args = parser.parse_args()
     report = verify_paper(args.pdf, args.source, args.output, args.preview, args.max_main_pages)
-    print(json.dumps({"valid": report["valid"], "main_pages": report["main_pages"], "pages": report["pages"]}))
+    print(
+        json.dumps(
+            {"valid": report["valid"], "main_pages": report["main_pages"], "pages": report["pages"]}
+        )
+    )
 
 
 if __name__ == "__main__":

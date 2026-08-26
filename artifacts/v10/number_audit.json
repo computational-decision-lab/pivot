@@ -1,0 +1,189 @@
+{
+  "errors": [],
+  "finance_boundary": {
+    "causal_impact_identified": false,
+    "expanded_holdout_positive": 5,
+    "expanded_holdout_reversals": 0,
+    "expanded_holdout_sessions": 6,
+    "expanded_primary_positive": 7,
+    "expanded_primary_reversals": 0,
+    "expanded_primary_sessions": 12,
+    "initial_single_asset_sessions": 7
+  },
+  "macro_checks": [
+    {
+      "actual": 30,
+      "expected": 30,
+      "macro": "OperatorShiftSeeds",
+      "pass": true
+    },
+    {
+      "actual": 36000,
+      "expected": 36000,
+      "macro": "OperatorShiftRows",
+      "pass": true
+    },
+    {
+      "actual": 0.2627,
+      "expected": 0.26269296571543216,
+      "macro": "OperatorShiftEffect",
+      "pass": true
+    },
+    {
+      "actual": [
+        0.1684,
+        0.3763
+      ],
+      "expected": [
+        0.16837888967779296,
+        0.3763466806661414
+      ],
+      "macro": "OperatorShiftEffectCI",
+      "pass": true
+    },
+    {
+      "actual": 30,
+      "expected": 30,
+      "macro": "ClosedLoopSeeds",
+      "pass": true
+    },
+    {
+      "actual": 40,
+      "expected": 40,
+      "macro": "ClosedLoopRounds",
+      "pass": true
+    },
+    {
+      "actual": 1.4883,
+      "expected": 1.4883181603109166,
+      "macro": "ClosedLoopEffect",
+      "pass": true
+    },
+    {
+      "actual": [
+        1.0618,
+        1.9105
+      ],
+      "expected": [
+        1.0618401589208712,
+        1.9105004088834245
+      ],
+      "macro": "ClosedLoopEffectCI",
+      "pass": true
+    },
+    {
+      "actual": 30,
+      "expected": 30,
+      "macro": "OODSeeds",
+      "pass": true
+    },
+    {
+      "actual": 36000,
+      "expected": 36000,
+      "macro": "OODRows",
+      "pass": true
+    },
+    {
+      "actual": -0.259,
+      "expected": -0.25904011480505584,
+      "macro": "OODGain",
+      "pass": true
+    },
+    {
+      "actual": [
+        -0.3588,
+        -0.1707
+      ],
+      "expected": [
+        -0.3587730650355345,
+        -0.17067604313768528
+      ],
+      "macro": "OODGainCI",
+      "pass": true
+    },
+    {
+      "actual": 30,
+      "expected": 30,
+      "macro": "EfficiencySeeds",
+      "pass": true
+    },
+    {
+      "actual": 180,
+      "expected": 180,
+      "macro": "EfficiencyPairedN",
+      "pass": true
+    },
+    {
+      "actual": 0.000668,
+      "expected": 0.000667931413502052,
+      "macro": "EfficiencyEffect",
+      "pass": true
+    },
+    {
+      "actual": [
+        1.1e-05,
+        0.0013
+      ],
+      "expected": [
+        1.100865090954107e-05,
+        0.0013294208175714253
+      ],
+      "macro": "EfficiencyEffectCI",
+      "pass": true
+    },
+    {
+      "actual": 30,
+      "expected": 30,
+      "macro": "StrategicSeeds",
+      "pass": true
+    },
+    {
+      "actual": 30,
+      "expected": 30,
+      "macro": "StrategicClusters",
+      "pass": true
+    },
+    {
+      "actual": -0.024,
+      "expected": -0.023972592410669527,
+      "macro": "StrategicEffect",
+      "pass": true
+    },
+    {
+      "actual": [
+        -0.0249,
+        -0.0231
+      ],
+      "expected": [
+        -0.024900347450970375,
+        -0.023106334486912433
+      ],
+      "macro": "StrategicEffectCI",
+      "pass": true
+    },
+    {
+      "actual": 0.9495,
+      "expected": 0.9494929453262785,
+      "macro": "StrategicSIRR",
+      "pass": true
+    }
+  ],
+  "row_counts": {
+    "e2_transition_rows": 36000,
+    "e3_transition_rows": 192000,
+    "e7_strategic_rows": 3600
+  },
+  "source_sha256": {
+    "e2": "f8357569006667b22bb5a8f820012f7fcd4370cf62ee4d25198e7cc30063e004",
+    "e3": "8d86e3d20a6273c69f8476aad5b7a6dc6a1f4726ae25454bfc5307a9aee42385",
+    "e4": "19d01069e33f915dc8291894cafa2bee8db3f41a24f956196b55db06d8ffe1e2",
+    "e5": "a60877236cbe8a4cdb01548754e5560fcc7c311905c1eca2b4350ea54a733936",
+    "e7": "0021b26b599bce42ecbc967006d6c837395e66f459711694260991dba5467e08",
+    "finance": "ee50047c89461f569c5647891106a40364e99389f0eb85760ad6b880e6a87aa2",
+    "finance_expansion": "66e2539b36ffa48674b070ddc18683a3af474ad6140ba8737ed0efb6a7afaaae"
+  },
+  "valid": true,
+  "warnings": [
+    "result prose contains only macro-backed estimates plus figure/table constants: "
+  ]
+}

@@ -1,4 +1,4 @@
-.PHONY: reproduce-paper test lint typecheck v9-validate v9-analyze v9-figures v9-tables v9-audit
+.PHONY: reproduce-paper test lint typecheck v9-validate v9-analyze v9-figures v9-tables v9-audit v10-finalize
 
 reproduce-paper:
 	.venv/bin/python scripts/reproduce_paper.py
@@ -31,3 +31,6 @@ v9-audit:
 	.venv/bin/python scripts/audit_v9_statistics.py --root .
 	.venv/bin/python scripts/audit_v9_figures.py --root .
 	.venv/bin/python scripts/audit_v9_claims.py --root .
+
+v10-finalize:
+	.venv/bin/python -m experiments.v10.finalize --root .

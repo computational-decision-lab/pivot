@@ -1,43 +1,48 @@
 {
-  "id": "pivot-architecture",
-  "name": "PIVOT decision-preservation architecture",
-  "type": "template",
-  "domain": ["ml", "systems", "pipeline"],
-  "tags": ["PIVOT", "policy transition", "improvement fidelity", "paired intervention", "adaptive world", "feedback loop"],
-  "venue": ["ICLR", "NeurIPS", "ICML"],
-  "author": "PIVOT project, adapted from OpenTikZ contributors",
+  "analysis_script": "scripts/build_opentikz_architecture.py",
+  "appendix": false,
+  "composed_of": [
+    "system-block-diagram"
+  ],
+  "config_hashes": {
+    "configs/v9/e2c.yaml": "af7ed9a66f15fbd5d70779f5c38fc7c762dec3f649d9a7869f15591242070cab",
+    "configs/v9/e3c.yaml": "9176e2d44c70f667045d909a0ac092b07f6a3973c84835b276fc9c5faa522e71",
+    "configs/v9/e4c.yaml": "4c2c12e70ff6f870211753321adbc28dbfa3c29b32eabf55d161e619b9313025",
+    "configs/v9/e5c.yaml": "67402e7d1340284c36da907b39a5666b6ca45ed7ab1423fe494b12abd8314760",
+    "configs/v9/e7c.yaml": "4793c457727834ef8f8456cce2e5049ea38325651cebd7cdf01ad0c4fb14e649",
+    "configs/v9/profiles.yaml": "2ad644bb362bd34ea07989f1557c227953ce9db89cb9b9318db5d1dedfeee7a3"
+  },
+  "display_policy": "all semantic nodes retained",
+  "experiment_sources": [
+    "paper/iclr2027/figures/fig3_pivot_architecture.tex"
+  ],
+  "figure_id": "fig3_pivot_architecture",
+  "generated_at": "2026-08-20T12:00:00Z",
+  "git_commit": "8541638d9115fb71c1b4d780e702762a030e3f59",
+  "grayscale_distinguishable": true,
+  "incomparable_conditions": "not applicable",
+  "interpolation": "none",
+  "interval_definition": "not applicable; semantic node inventory",
   "license": "CC0-1.0",
-  "requires": ["graphicx", "tikz", "positioning", "arrows.meta", "shapes.geometric", "fit", "backgrounds", "calc"],
+  "oracle_reference": "not applicable",
+  "outputs": [
+    "fig3_pivot_architecture.pdf",
+    "fig3_pivot_architecture.svg",
+    "fig3_pivot_architecture.png",
+    "fig3_pivot_architecture.tex"
+  ],
   "preview": "fig3_pivot_architecture.svg",
-  "description": "A detailed ICLR-style overview of PIVOT from candidate generation through adaptive-world evaluation, differential transfer, and evidence reporting.",
-  "composed_of": ["system-block-diagram"],
-  "edit_contract": {
-    "parameters": [
-      {"name": "\\rowsep", "type": "length-cm", "meaning": "reference vertical spacing between architecture layers", "default": "1.45"},
-      {"name": "\\colsep", "type": "length-cm", "meaning": "reference horizontal spacing between stages", "default": "1.10"},
-      {"name": "\\boxminw", "type": "length-cm", "meaning": "base width for process and external nodes", "default": "2.15"},
-      {"name": "\\boxminh", "type": "length-cm", "meaning": "base height for process and external nodes", "default": "0.78"},
-      {"name": "\\figurewidth", "type": "length", "meaning": "render width before venue scaling", "default": "15.8cm"}
-    ],
-    "node_naming": "fixed semantic nodes: generation (incumbent, operator, candidates, proxy), PIVOT (footprint, score, paired, correction, promote, decomposition), worlds (world0-world3), reports (metrics, evidence)",
-    "styles": ["base", "stage", "external", "process", "query", "intervention", "promotion", "world", "decomposition", "metric", "evidence", "arrow", "dashedarrow", "hfarrow", "edgeLabel", "panel", "paneltitle"],
-    "operations": [
-      {"id": "rename-stage", "summary": "edit the corresponding label macro while preserving the node name"},
-      {"id": "add-stage", "summary": "add a semantic node relative to an existing stage, connect it with an arrow, and include it in the appropriate fixed panel"},
-      {"id": "change-role", "summary": "switch a node between process, query, intervention, promotion, or world styles"},
-      {"id": "resize-column", "summary": "adjust figurewidth or named spacing parameters for a venue column"},
-      {"id": "edit-world-layer", "summary": "change a W0-W3 world label while preserving the observer-to-strategic ladder"},
-      {"id": "recolor", "summary": "use only the named OpenTikZ palette colors and their tints/shades"}
-    ],
-    "invariants": [
-      "the standalone document must compile without the paper preamble",
-      "the three fixed panels must remain behind all nodes and titles",
-      "semantic node names, world ladder, and feedback edge must remain intact",
-      "world0 must remain inside the adaptive-world panel",
-      "the feedback edge must remain inside the PIVOT panel boundary",
-      "world and reporting titles must remain inside their own panel boundaries",
-      "labels must not be placed on top of node text or other labels",
-      "colors must use only the five OpenTikZ palette names"
-    ]
-  }
+  "raw_observations": true,
+  "scientific_question": "How does PIVOT-VOI allocate paired interventional evaluations to preserve update decisions?",
+  "semantic_node_count": 11,
+  "source_hashes": {
+    "paper/iclr2027/figures/fig3_pivot_architecture.pdf": "75bcdc5917aa38de7aab56b0a7f9474d5418fc2771cfbcc3f38851f841e7722a",
+    "paper/iclr2027/figures/fig3_pivot_architecture.png": "df97940cee9a4c8dffe97279df430020ab814623e02e3a4ac64da961bf176630",
+    "paper/iclr2027/figures/fig3_pivot_architecture.svg": "9e621396e1eb9bc36aa82233b1a9597d12e57059219107c55ff43d6880623f6a",
+    "paper/iclr2027/figures/fig3_pivot_architecture.tex": "6abd151c7995de1c3e87f43fbb1675d636208ade18f30e152b59e20dafb196d1"
+  },
+  "style_version": "pivot-v10-publication-style-1",
+  "template": "OpenTikZ system-block-diagram",
+  "tool_repository": "https://github.com/opentikz/opentikz",
+  "unit_of_inference": "semantic architecture node and directed stage"
 }

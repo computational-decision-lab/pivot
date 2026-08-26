@@ -1,0 +1,90 @@
+{
+  "candidate_budget_contract": {
+    "closed_loop": {
+      "K": 8,
+      "hf_budget_per_round": 2,
+      "rounds": 40
+    },
+    "connected_lines": "only fixed K and environment; heterogeneous cells are never connected",
+    "frontier": {
+      "K": [
+        4,
+        8,
+        16
+      ],
+      "budgets": [
+        0,
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    }
+  },
+  "errors": [],
+  "inference_units": {
+    "closed_loop": "trajectory seed",
+    "efficiency": "paired environment x K x seed decision set",
+    "finance": "session-level observational diagnostic",
+    "ood": "registered held-out unit and fitted family; descriptive split spans are not pseudo-CIs",
+    "operator_shift": "independent seed; cell summaries preserve transition counts",
+    "strategic": "opponent-seed cluster"
+  },
+  "metric_contracts": {
+    "CISR": {
+      "aggregation": "trajectory for repeated improvement; equals ISR in the one-set budget study",
+      "definition": "sum_t ISR_t",
+      "unit": "native environment reward"
+    },
+    "CTI": {
+      "aggregation": "trajectory in the closed loop; one selected delta when T=1",
+      "definition": "sum_t Delta_*selected,t",
+      "unit": "native environment reward"
+    },
+    "FER": {
+      "aggregation": "only matched environment, K, horizon, and cost protocol",
+      "definition": "1 - (CISR_method-CISR_allHF)/(CISR_proxy-CISR_allHF)",
+      "unit": "dimensionless fraction of excess regret removed",
+      "withhold_when": "denominator is nonpositive/unstable or all-HF is not comparable"
+    },
+    "IDE": {
+      "aggregation": "transition rows within the declared operator law",
+      "definition": "mean absolute difference |Delta_V - Delta_*|",
+      "unit": "native environment reward"
+    },
+    "IRR": {
+      "aggregation": "proxy-positive transition rows",
+      "definition": "P(Delta_* < -tau | Delta_V > tau)",
+      "unit": "conditional probability"
+    },
+    "ISC": {
+      "aggregation": "comparable transition rows",
+      "definition": "sign agreement after excluding proxy/true ties at tau",
+      "unit": "probability"
+    },
+    "ISR": {
+      "aggregation": "one incumbent/candidate decision set",
+      "definition": "max_j Delta_*j - Delta_*selected",
+      "unit": "native environment reward"
+    }
+  },
+  "scale_diagnostic": {
+    "congestion_proxy_cisr": 0.025273021055140617,
+    "cross_environment_raw_comparison_allowed": false,
+    "native_scale_ratio": 168.6802525754076,
+    "performative_proxy_cisr": 4.263059574924713
+  },
+  "source_locations": {
+    "IDE_ISC_IRR_ISR": "src/pivot/v9/statistics.py:58",
+    "budget_set_CTI_CISR": "experiments/v9/e5c_efficiency.py:67",
+    "closed_loop_CTI_CISR": "experiments/v9/e3c_closed_loop.py:249"
+  },
+  "source_sha256": {
+    "budget_frontier": "0afd1a8422cc751e9c97c98f2ce6b1dd800a349e053aec3c9f1179a09ea0e4ef",
+    "canonical_metrics": "ab31847aceafed8e7aa1af20b8ab5b65e40995d6bff82e01ad59672fa46f4964",
+    "closed_loop": "c6437dc4625c6229372eba5b1fb9e417f40d0d41163e76a138a7733be469eafc",
+    "manuscript": "5ae3e923529231aba4c7264b2dacdc98fbb25ade285580ce387ce3086747f2a7"
+  },
+  "valid": true
+}

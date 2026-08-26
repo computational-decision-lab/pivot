@@ -1,0 +1,12 @@
+label,node,role,stage
+pi_t incumbent,incumbent,input,generation
+self-improvement operator,operator,process,generation
+candidate batch,candidate_batch,process,generation
+cheap verifier Delta_V,cheap_verifier,process,generation
+posterior p(Delta* | D),differential_posterior,process,generation
+expected regret R(D),expected_regret,query,generation
+update footprint z_Delta,update_footprint,process,intervention
+EVSI,evsi,query,intervention
+EVSI / cost,cost_aware_acquisition,query,intervention
+paired high-fidelity rollout,paired_hf_rollout,evaluation,intervention
+posterior update and stop,posterior_update_stop,decision,intervention
