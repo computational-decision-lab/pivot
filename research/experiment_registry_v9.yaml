@@ -1,0 +1,46 @@
+schema_version: v9.0
+baseline: snapshot/v9_preupgrade
+profiles: configs/v9/profiles.yaml
+primary_hypotheses:
+  H1: operator_shift_predicts_operator_relative_fidelity_degradation
+  H2: pivot_voi_reduces_cisr_vs_proxy_only
+  H3: pivot_voi_reduces_cisr_vs_paired_lucb
+  H4: pivot_voi_reduces_cisr_vs_global_voi
+  H5: differential_evaluator_improves_ood_operator_conditioned_isc
+experiments:
+  E2C:
+    question: Does operator shift degrade local transition fidelity across independent environment and operator families?
+    environments: [performative_control, congestion_resource, mpe2_frozen]
+    operator_families: [local_random, gradient_informed, evolutionary_population]
+    shift_levels: 10
+    confirmatory_independent_seeds: 30
+    primary_metrics: [chi_square_shift, IDE, ISC, IRR, ISR]
+  E3C:
+    question: Does transition-aware validation affect closed-loop self-improvement across adaptive mechanisms?
+    environments: [performative_control, congestion_resource]
+    environment_panel: [mpe2_frozen_external_null, performative_control, congestion_resource]
+    frozen_external_null: results/v7/e3b-confirmatory
+    protocol_note: "T=40, K=8, 30 seeds on the two newly implemented worlds; the powered V7 MPE2 result is shown as a frozen external null without rerun or relabeling."
+    rounds: 40
+    candidates_per_round: 8
+    confirmatory_independent_seeds: 30
+    primary_metrics: [final_deployment_value, CISR, CTI, hf_cost]
+  E4C:
+    question: Do learned global and differential evaluators generalize under OOD splits?
+    splits: [trajectory, environment, operator, response_regime]
+    model_families: [bayesian_linear, bootstrap_ensemble]
+    matched_hf_evidence: true
+    primary_metrics: [MAE, RMSE, Spearman, IDE, ISC, IRR, ISR, NLL, Brier, coverage]
+  E5C:
+    question: Which acquisition method is most evidence-efficient at fixed high-fidelity cost?
+    candidate_counts: [4, 8, 16]
+    budgets: [0, 1, 2, 4, 8, all]
+    methods: [proxy_only, random_hf, top_proxy_hf, uncertainty_hf, paired_lucb, global_voi, pivot_h, pivot_voi, all_hf]
+    primary_metrics: [CISR, final_deployment_value, hf_cost]
+  E7C:
+    question: Does independent strategic adaptation create an additional update reversal layer?
+    opponent_modes: [fixed, reactive, best_response, gradient_adaptive, rl_evolutionary]
+    held_out_seeds: true
+    cluster_level_inference: true
+    primary_metrics: [delta_direct, delta_actor, delta_strategic, SIRR, strategic_effect]
+terminal_states: [IMPLEMENTATION_FAILURE, DESIGN_INVALID, UNDERPOWERED, HYPOTHESIS_SUPPORTED, HYPOTHESIS_NOT_SUPPORTED]

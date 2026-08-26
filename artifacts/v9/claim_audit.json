@@ -1,0 +1,72 @@
+{
+  "claims": [
+    {
+      "allowed": true,
+      "claim_id": "C_OPERATOR_SHIFT",
+      "decisions": [
+        {
+          "design_valid": true,
+          "experiment": "e2c",
+          "powered": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "reason": "registered powered decision supports scoped claim"
+    },
+    {
+      "allowed": true,
+      "claim_id": "C_CLOSED_LOOP",
+      "decisions": [
+        {
+          "design_valid": true,
+          "experiment": "e3c",
+          "powered": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "reason": "registered powered decision supports scoped claim"
+    },
+    {
+      "allowed": false,
+      "claim_id": "C_EVALUATOR_OOD",
+      "decisions": [
+        {
+          "design_valid": true,
+          "experiment": "e4c",
+          "powered": true,
+          "status": "HYPOTHESIS_NOT_SUPPORTED"
+        }
+      ],
+      "reason": "required powered decision is absent"
+    },
+    {
+      "allowed": true,
+      "claim_id": "C_EFFICIENCY",
+      "decisions": [
+        {
+          "design_valid": true,
+          "experiment": "e5c",
+          "powered": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "reason": "registered powered decision supports scoped claim"
+    },
+    {
+      "allowed": true,
+      "claim_id": "C_STRATEGIC",
+      "decisions": [
+        {
+          "design_valid": true,
+          "experiment": "e7c",
+          "powered": true,
+          "status": "HYPOTHESIS_SUPPORTED"
+        }
+      ],
+      "reason": "registered powered decision supports scoped claim"
+    }
+  ],
+  "errors": [],
+  "universal_claims_forbidden": true,
+  "valid": true
+}

@@ -1,0 +1,6 @@
+# Matplotlib's deterministic SVG writer wraps path data with indentation
+# before newlines; those spaces are formatting, not semantic source changes.
+*.svg -whitespace
+# CSV exports may use RFC 4180 CRLF line endings; do not flag the carriage
+# return as source whitespace in review diffs.
+*.csv -whitespace

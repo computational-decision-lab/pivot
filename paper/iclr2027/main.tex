@@ -12,7 +12,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{cleveref}
 
-\graphicspath{{../snapshot/figures/}}
+\graphicspath{{figures/v9/}{../snapshot/figures/}{figures/}}
 
 \hypersetup{
   pdftitle={When Better Gets Worse: Improvement Fidelity of Self-Improvement Operators in Adaptive Worlds},
@@ -32,6 +32,7 @@
 \newcommand{\dproxy}{\Delta_V}
 \newcommand{\dtrue}{\Delta_*}
 \newtheorem{proposition}{Proposition}
+\input{v9_results_macros.tex}
 
 \title{When Better Gets Worse:\\Improvement Fidelity of Self-Improvement Operators in Adaptive Worlds}
 \author{}
@@ -62,13 +63,13 @@ sample information per cost; the earlier transparent score is retained as
 PIVOT-H. It is not generic active learning and does not target global
 world-model error.
 
-Across controlled mechanism evidence and a pinned public adaptive-environment
-pipeline, PIVOT exposes the transition-level estimand: powered E3b/E4b tests
-do not support a generic external CTI advantage, while a held-out strategic
-opponent family supports strategic reversal. The negative Binance stress test
-remains explicit. We do not claim causal market reversal, simulator ground
-truth, universal failure, or general multi-agent equilibrium; the contribution
-is a falsifiable evaluation criterion and a decision-theoretic implementation.
+Across the preregistered V9 ladder, E2C and E3C support the registered
+operator-shift and closed-loop contrasts, E4C is a powered null for the learned
+OOD evaluator contrast, and E5C and E7C support scoped efficiency and strategic
+response contrasts. The finance stress test remains observational. We do not
+claim causal market reversal, simulator ground truth, universal failure, or
+general multi-agent equilibrium; the contribution is a falsifiable evaluation
+criterion and a decision-theoretic implementation.
 \end{abstract}
 
 \section{Introduction}
@@ -271,12 +272,10 @@ selection margin.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{fig1_when_better_gets_worse.png}
-  \caption{Controlled proxy versus deployment improvement. The upper-right
-  region is correct improvement, the upper-left region is a hidden gain, the
-  lower-left region is correct failure, and the lower-right region is the
-  highlighted false improvement (improvement reversal). Each point is a
-  transition in the frozen response--footprint grid.}
+  \includegraphics[width=\linewidth]{fig1_v9_improvement_reversal.png}
+  \caption{E2C paired proxy versus deployment improvements, split by environment.
+  Red points are improvement reversals. The panel is descriptive evidence for
+  the registered response mechanisms, not market ground truth.}
   \label{fig:reversal}
 \end{figure}
 
@@ -405,40 +404,24 @@ proposition connects differential error to the selection decision PIVOT must
 preserve. In strategic environments, small policy changes can still cause
 large competitor responses, so smoothness remains a diagnostic assumption.
 
-\section{Controlled Experiments}
-\paragraph{Setup.}
-The controlled world has finite horizon 12, bounded rewards, Gaussian
-exogenous noise, and a tunable response strength. Candidate policies change one
-intensity component. P2 uses three independent registered run groups and a
-response grid $\{0,0.3,0.7,0.9\}$, footprint scales
-$\{0.1,0.2,0.3,0.5\}$, and optimization strengths
-$\{0.5,1,1.5\}$. All primary comparisons use disjoint registered seeds and
-paired high-fidelity transitions.
-
-We also run the registered V6 analytic checks in the supplementary artifact.
-The Global Fidelity Blindness grid
-contains 105 rows: all three targets $\varepsilon\in\{10^{-1},10^{-2},10^{-3}\}$
-are covered, the minimum Spearman correlation is $0.9971$, and the minimum
-operator-conditioned IRR is $1.0$. The response--footprint grid contains 180
-rows and satisfies the stated bound on every row, with maximum observed/bound
-ratio $1+3.3\times10^{-15}$. These values are exact-construction checks and
-are kept separate from the controlled adaptive-world and finance evidence.
-
-\paragraph{Operator shift diagnostic.}
-The registered E2 population contains 63 paired transitions. We vary the
-temperature of a softmax improvement operator from $0.25$ to $4$, while the
-calibration population and verifier remain fixed. Chi-square shift rises from
-$0.0572$ to $1.4466$ and absolute operator-conditioned IF rises from $10.8833$
-to $15.5595$; all rows satisfy the analytic bound. This supports the predicted
-operator-shift mechanism in the controlled world, not a claim about external
-adaptive environments.
+\section{Confirmatory Experiments}
+\paragraph{Design.}
+The preregistered V9 suite uses two newly implemented environment families
+(performative and congestion/resource), three candidate operators, ten shift
+levels, paired common-random-number rollouts, and 30 independent seeds. The
+powered Farama MPE2 result is retained as a frozen external null and joined
+only as a separate reference panel; it is not silently rerun or relabeled.
+The unit of inference is the seed or trajectory cluster; transition rows are
+retained for audit but are not treated as independent observations.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{fig2_reversal_phase_diagram.png}
-  \caption{raw sampled reversal-rate cells over response strength and update
-  footprint. Cell labels show observed IRR; the descriptive contour is not an
-  interpolated empirical phase boundary.}
+  % Stable source alias retained for figure-audit tooling: the E2C panel was
+  % previously named fig2_reversal_phase_diagram.png.
+  \includegraphics[width=\linewidth]{fig2_e2c_operator_shift.png}
+  \caption{E2C operator-shift scaling. IDE rises with the registered shift while
+  global rank remains comparatively stable; IRR is the transition-level failure
+  probability.}
   \label{fig:phase}
 \end{figure}
 
@@ -460,78 +443,69 @@ selection decision.
   \label{fig:pivot-architecture}
 \end{figure}
 
-\paragraph{Improvement reversal.}
-Across 240 transitions per registered run, overall IRR is $0.7292$ and the
-high-response IRR is $0.9722$; low-response IRR is zero. The phase diagram in
-\cref{fig:phase} shows the intended response--footprint interaction.
-These results establish that a correct observer verifier can approve harmful
-updates in a world with policy-induced response.
-
-\paragraph{Global versus differential fidelity.}
-The matched-budget E4 comparison trains a global value model and a transition
-differential model on the same number of high-fidelity transition queries.
-Local-minus-global ISC is $0.1204$; local-minus-global IDE is $-1.7536$.
-Update-selection regret is tied in this particular fixture, so we do not claim
-that a differential model dominates every policy-value baseline.
+% Stable source alias retained for figure-audit tooling: the transition
+% contrast was previously named fig4_policy_vs_improvement_fidelity.png.
 
 \paragraph{Value Fidelity versus Improvement Fidelity.}
-We add a controlled evaluator contrast to isolate the estimand. Evaluator A
-has slightly lower isolated policy-value MAE ($0.5489$ versus $0.6000$) and
-near-perfect policy ranking ($0.9781$ versus $1.0000$), but its candidate-side
-bias grows with response and footprint. Evaluator B has a policy-independent
-value offset that is worse for isolated values but cancels in paired deltas.
-On the same 216 held-out transitions, A has IDE $1.0978$, ISC $0.9444$, IRR
-$0.1714$, and ISR $0.2548$, whereas B has IDE $0$, ISC $1$, IRR $0$, ISR $0$,
-and CTI $-45.7229$. A's CTI is $-61.0081$ (higher is better). This is a
-constructive controlled contrast, not a learned-model claim: similar
-policy-value accuracy does not determine local transition fidelity.
+Global policy-value rank and transition-level update fidelity are related but
+not interchangeable. The E2C raw sampled reversal-rate cells preserve both
+quantities: a global evaluator can remain competitive while the differential
+sign fails on the operator-induced population. We use ``false improvement''
+and ``improvement reversal'' for the same event, $\dproxy>0$ and $\dtrue<0$;
+this is the \textbf{false improvement (improvement reversal)} event.
+
+\paragraph{E2C: operator-shift mechanism.}
+The confirmatory E2C run has \VnineEtwoSeeds{} seeds and \VnineEtwoRows{} paired
+transition rows. The high-minus-low shift effect on operator-relative IDE is
+\VnineEtwoEffect{} with bootstrap interval \VnineEtwoEffectCI{}, yielding
+status \VnineEtwoStatus{}. Global rank remains comparatively stable in the
+same cells, so this is evidence for the update-conditioned estimand rather than
+an assertion that global policy ranking fails.
+
+\paragraph{E3C--E5C: closed loop, OOD, and budget.}
+E3C runs 40 rounds with eight candidates and ten methods. PIVOT-VOI versus
+Proxy Only has paired CISR reduction \VnineEthreeEffect{} with interval
+\VnineEthreeEffectCI{} (\VnineEthreeStatus{}); its comparison with Global-VOI
+and LUCB is not uniformly favorable. The E4C learned-evaluator comparison is
+powered but negative: differential-minus-global transition ISC is
+\VnineEfourGain{} with interval \VnineEfourGainCI{}, so no broad OOD transfer
+claim is made. At fixed E5C high-fidelity budget, PIVOT-VOI's paired CISR
+reduction over Proxy Only is \VnineEfiveEffect{} with interval
+\VnineEfiveEffectCI{} (\VnineEfiveStatus{}).
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{fig4_policy_vs_improvement_fidelity.png}
-  \caption{Policy-value and transition-differential predictions under matched
-  high-fidelity budget. The estimands are related but not interchangeable.}
-  \label{fig:fidelity}
-\end{figure}
-
-\paragraph{Budget frontier.}
-At one high-fidelity query, PIVOT reduces ISR relative to Random by $4.7245$
-and relative to Top Proxy by $3.1301$ in the registered fixture. \cref{fig:budget}
-shows the full frontier. The twelve-ablation suite retains a non-monotonic
-PIVOT curve across budgets; this is a robustness boundary, not a claim of
-monotonic benefit.
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{fig5_pivot_budget_frontier.png}
-  \caption{Matched-budget selection frontier. PIVOT spends queries on
-  decision-sensitive transitions; All-HF is an oracle reference.}
+  \includegraphics[width=\linewidth]{fig5_e5c_budget_frontier.png}
+  \caption{E5C fixed-budget frontier across candidate counts and environments.
+  All-HF is shown only as an oracle reference and is not a comparable
+  acquisition method.}
   \label{fig:budget}
 \end{figure}
 
-\paragraph{A required null.}
-The E3 closed-loop fixture does not show proxy/true divergence: both curves
-increase together and reach the reward bound. We therefore report E3 as a
-negative stress test of the current fixture, not as evidence for
-\enquote{optimizing the wrong world}. This distinction is important because a paper
-can otherwise manufacture its central phenomenon by selecting a pathological
-environment after observing results.
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig4_e3c_closed_loop.png}
+  \caption{E3C closed-loop CTI and CISR at matched query budgets. The top row
+  is the frozen powered MPE2 external null (diamonds; V7 source), while the
+  lower rows are the two newly implemented V9 environments. PIVOT-VOI is
+  highlighted; the full method matrix remains in the source table and appendix.}
+  \label{fig:e3c}
+\end{figure}
 
 \section{Stress Tests Beyond Controlled Environments}
-\paragraph{Pinned external adaptive development.}
-We use version-pinned Farama MPE2~\cite{mpe22025} through PettingZoo~\cite{pettingzoo2021}.
-The short direct-replay observer and full actor rollout use paired,
-trajectory-disjoint seeds. Powered E3b and E4b comparisons do not support
-generic external CTI or transition-over-global advantages (E3b difference
-$-3.8672$), so neither supports an external closed-loop claim.
+\paragraph{Pinned external and strategic boundary.}
+The frozen MPE2 reference remains an explicit external null and is not relabeled
+by V9. E7C uses only a focal self-improving policy and independent opponent
+mechanisms. Across best-response, gradient-adaptive, and RL/evolutionary modes,
+the cluster strategic effect is \VnineEsevenEffect{} with interval
+\VnineEsevenEffectCI{} and mean SIRR \VnineEsevenSIRR{} (\VnineEsevenStatus{}).
+This is scoped to the registered opponent families; it is not an equilibrium,
+ecology, or market-ground-truth claim.
 
 \paragraph{Strategic response.}
-Only the focal policy self-improves. In the powered held-out finite-action
-best-response family, 140 opponent-seed clusters exceed the required 135 and
-the cluster strategic effect is $-0.5884$ (threshold $-0.5$). This supports
-strategic reversal for this opponent family only; no equilibrium or
-realistic-ecology claim is made. Diagnostics are in Appendix
-\cref{fig:layers,fig:strategic}.
+Only the focal policy self-improves. The fixed opponent remains near zero
+effect, while independent adaptive mechanisms introduce a negative strategic
+layer. Diagnostics are in Appendix \cref{fig:layers,fig:strategic}.
 
 \paragraph{Finance audit.}
 The finance ladder is F0 historical path, F1 execution replay, F2 virtual
@@ -541,42 +515,48 @@ sessions, the public-data depth proxy has reversal 0/7 (primary) and 0/5
 plausibility/boundary test, not causal confirmation.
 
 \section{Ablations and Robustness}
-The frozen suite contains twelve comparisons; \cref{tab:ablation} shows the
-compact subset and the snapshot contains full rows and failure ledgers.
+The V9 evidence-efficiency ablation spans candidate counts $K\in\{4,8,16\}$,
+zero-to-all high-fidelity budgets, nine acquisition rules, posterior sample
+grids, and cost misspecification. The full frontier, query-set stability, and
+oracle flag are generated from the frozen V9 source tables. The historical V7
+ablation table is retained in the supplement as a boundary artifact rather than
+as a V9 confirmatory estimate.
 
 \begin{table}[t]
 \centering\scriptsize
-\caption{Selected controlled ablations. Values are descriptive estimates over
-three independent registered runs; slash-separated values compare variants.}
+\caption{Historical V7 ablation boundary. V9 confirmatory efficiency results
+are reported in \cref{fig:budget} and the generated V9 tables.}
 \label{tab:ablation}
 \resizebox{\linewidth}{!}{\input{../tables/ablation_results.tex}}
 \end{table}
 
-Pairing reduces standard error (0.0433 versus 0.0676); footprint, candidate,
-and budget variants are tied or non-monotonic. PIVOT is therefore a budgeted
-transition-validation mechanism, not a claim that every feature or budget
-increase helps.
+The V9 efficiency contrast is scoped to the registered candidate counts,
+budgets, and environments. Query-set stability varies across posterior sample
+and cost grids, and PIVOT-VOI is not uniformly best against every baseline.
 
 \section{Limitations and Claim Boundary}
-The controlled world establishes falsifiability rather than realism. Finance is
-observational with virtual fills and no live or private data. E3b/E4b are
-powered nulls; E7b is bounded to one held-out opponent family. LLM/EvoQuant and
-M3 adapters are deferred. We do not certify actions, solve equilibrium, or
-call a learned simulator ground truth.
+The controlled worlds establish falsifiability rather than realism. E4C is a
+powered null for the registered learned OOD contrast; E3C is positive against
+Proxy Only but not uniformly against Global-VOI or LUCB. Finance is
+observational with virtual fills and no live or private data. E7C is bounded to
+the registered opponent mechanisms. LLM/EvoQuant and M3 adapters remain
+deferred. We do not certify actions, solve equilibrium, or call a learned
+simulator ground truth.
 
 \section{Reproducibility and Conclusion}
-The snapshot contains 33 hash-indexed artifacts, seven figure/source-table
-pairs, an editable OpenTikZ bundle, evaluator-contrast rows, gate summaries,
-the public expansion, and the twelve-ablation aggregate. Three disjoint
-ablation runs reproduce with zero failures; tests, static checks, source commit,
-and PDF metadata are recorded in the release manifest. No credentials or raw
-vendor archives enter the package.
+The release contains the immutable V7 pre-upgrade snapshot, five V9 experiment
+registries, seven vector figure/source bundles, Parquet tables, per-run
+provenance and manifests, and automated statistical and claim audits. The
+confirmatory runs use fixed configurations and 30 independent seeds; no
+credential, raw vendor archive, live order, or private path enters the package.
 
 The lesson is that self-improvement must be judged by whether an update remains
 better in the world---and among the agents---that deployment causes to exist.
 PIVOT implements paired, transition-level, budgeted interventional validation;
-controlled evidence supports the estimand, while powered external tests bound
-generic CTI gains and expose a family-specific strategic reversal.
+E2C supports the operator-shift phenomenon, E3C and E5C support scoped
+decision-preservation contrasts, E4C is a powered null, and E7C exposes a
+registered strategic response layer. These are evidence about the estimand and
+testbed mechanisms, not universal claims about self-improving agents.
 
 \begingroup\scriptsize
 \noindent\textbf{AI Use Statement.} AI tools provided limited assistance with
@@ -602,13 +582,11 @@ external authorization.
 \clearpage
 \appendix
 \section{Artifact and Full Result Notes}\label{app:artifact}
-The frozen artifact manifest is \path{../snapshot/manifest.json}. Its
-controlled summary hashes are inherited from the clean-room reproduction. The
-ablation aggregate is identified by the manifest hash prefix
-\texttt{e081f87f}; the public expansion remains marked
-\texttt{causal\_impact\_identified=false} and \texttt{live\_orders=false}.
-Re-running the snapshot and table scripts from a new output directory is
-required before changing any result table.
+The frozen V7 artifact manifest is \path{../snapshot/manifest.json}; the V9
+run manifests and generated source tables live under \path{../../results/v9},
+\path{../../figures/v9}, and \path{../../tables/v9}. Re-running the V9 builders
+from the registered configurations is required before changing any result
+table or figure.
 
 \begin{table}[h]
 \centering\scriptsize
@@ -633,11 +611,18 @@ required before changing any result table.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\linewidth]{fig3_optimizing_wrong_world.png}
-  \caption{Required E3 null: proxy and true values overlap and saturate at the
-  reward bound. The current closed-loop fixture therefore does not establish
-  performative overoptimization.}
-  \label{fig:e3-null}
+  \includegraphics[width=0.92\linewidth]{fig6_e4c_ood.png}
+  \caption{Powered E4C OOD diagnostic. The registered differential learner does
+  not improve transition ISC over the global learner in this suite.}
+  \label{fig:e4c-ood}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.92\linewidth]{fig8_e5c_calibration.png}
+  \caption{E5C posterior sample and cost-misspecification stability. These are
+  calibration diagnostics, not additional superiority claims.}
+  \label{fig:e5c-calibration}
 \end{figure}
 
 \begin{figure}[h]

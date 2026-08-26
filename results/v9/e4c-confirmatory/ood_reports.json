@@ -1,0 +1,450 @@
+[
+  {
+    "Brier": 0.4910833333333333,
+    "coverage_50": 0.9401666666666667,
+    "coverage_80": 0.944,
+    "coverage_95": 0.9444166666666667,
+    "family": "bayesian_linear",
+    "global_IDE": 0.7545124820488874,
+    "global_IRR": 0.15775280898876404,
+    "global_ISC": 0.8557199772339215,
+    "policy_MAE": 2.565118179324514,
+    "policy_RMSE": 6.29913852936932,
+    "policy_Spearman": 0.27762308786543816,
+    "sign_calibration": [
+      {
+        "lower": 0.0,
+        "n": 3909,
+        "observed": 0.5633154259401382,
+        "predicted": 0.0,
+        "upper": 0.2
+      },
+      {
+        "lower": 0.2,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.4
+      },
+      {
+        "lower": 0.4,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.6
+      },
+      {
+        "lower": 0.6,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.8
+      },
+      {
+        "lower": 0.8,
+        "n": 8091,
+        "observed": 0.5438141144481523,
+        "predicted": 1.0,
+        "upper": 1.01
+      }
+    ],
+    "split": "trajectory",
+    "test_n": 12000,
+    "train_n": 24000,
+    "transition_IDE": 0.6563860930296099,
+    "transition_IRR": 0.27623285131627734,
+    "transition_ISC": 0.5791121229368241
+  },
+  {
+    "Brier": 0.47,
+    "coverage_50": 0.008,
+    "coverage_80": 0.013666666666666667,
+    "coverage_95": 0.016083333333333335,
+    "family": "bootstrap_ensemble",
+    "global_IDE": 0.7513286154760159,
+    "global_IRR": 0.15638418079096045,
+    "global_ISC": 0.8557199772339215,
+    "policy_MAE": 2.5633500647235223,
+    "policy_RMSE": 6.299868265767444,
+    "policy_Spearman": 0.2749279017564438,
+    "sign_calibration": [
+      {
+        "lower": 0.0,
+        "n": 3660,
+        "observed": 0.5330601092896174,
+        "predicted": 0.0,
+        "upper": 0.2
+      },
+      {
+        "lower": 0.2,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.4
+      },
+      {
+        "lower": 0.4,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.6
+      },
+      {
+        "lower": 0.6,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.8
+      },
+      {
+        "lower": 0.8,
+        "n": 8340,
+        "observed": 0.557673860911271,
+        "predicted": 1.0,
+        "upper": 1.01
+      }
+    ],
+    "split": "trajectory",
+    "test_n": 12000,
+    "train_n": 24000,
+    "transition_IDE": 0.6565564850726254,
+    "transition_IRR": 0.26798561151079137,
+    "transition_ISC": 0.602921646746348
+  },
+  {
+    "Brier": 0.346875,
+    "coverage_50": 0.17118055555555556,
+    "coverage_80": 0.25305555555555553,
+    "coverage_95": 0.29041666666666666,
+    "family": "bayesian_linear",
+    "global_IDE": 0.40934865876845733,
+    "global_IRR": 0.32934990439770556,
+    "global_ISC": 0.7495833333333334,
+    "policy_MAE": 0.8031358021911555,
+    "policy_RMSE": 0.9834068357071875,
+    "policy_Spearman": -0.2942049629068848,
+    "sign_calibration": [
+      {
+        "lower": 0.0,
+        "n": 5501,
+        "observed": 0.29740047264133795,
+        "predicted": 0.0,
+        "upper": 0.2
+      },
+      {
+        "lower": 0.2,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.4
+      },
+      {
+        "lower": 0.4,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.6
+      },
+      {
+        "lower": 0.6,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.8
+      },
+      {
+        "lower": 0.8,
+        "n": 8899,
+        "observed": 0.6225418586358018,
+        "predicted": 1.0,
+        "upper": 1.01
+      }
+    ],
+    "split": "environment",
+    "test_n": 14400,
+    "train_n": 21600,
+    "transition_IDE": 1.0167030285771694,
+    "transition_IRR": 0.37745814136419825,
+    "transition_ISC": 0.653125
+  },
+  {
+    "Brier": 0.34465277777777775,
+    "coverage_50": 0.0020833333333333333,
+    "coverage_80": 0.0036805555555555554,
+    "coverage_95": 0.004861111111111111,
+    "family": "bootstrap_ensemble",
+    "global_IDE": 0.4047393410143748,
+    "global_IRR": 0.32934990439770556,
+    "global_ISC": 0.7495833333333334,
+    "policy_MAE": 0.7837590739212212,
+    "policy_RMSE": 0.9628730178189379,
+    "policy_Spearman": -0.2919452472364258,
+    "sign_calibration": [
+      {
+        "lower": 0.0,
+        "n": 5471,
+        "observed": 0.293365015536465,
+        "predicted": 0.0,
+        "upper": 0.2
+      },
+      {
+        "lower": 0.2,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.4
+      },
+      {
+        "lower": 0.4,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.6
+      },
+      {
+        "lower": 0.6,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.8
+      },
+      {
+        "lower": 0.8,
+        "n": 8929,
+        "observed": 0.6239220517415164,
+        "predicted": 1.0,
+        "upper": 1.01
+      }
+    ],
+    "split": "environment",
+    "test_n": 14400,
+    "train_n": 21600,
+    "transition_IDE": 1.018217106523471,
+    "transition_IRR": 0.3760779482584836,
+    "transition_ISC": 0.6553472222222222
+  },
+  {
+    "Brier": 0.4474166666666667,
+    "coverage_50": 0.3789166666666667,
+    "coverage_80": 0.5995833333333334,
+    "coverage_95": 0.70475,
+    "family": "bayesian_linear",
+    "global_IDE": 0.3980250125446385,
+    "global_IRR": 0.1772357723577236,
+    "global_ISC": 0.8522357121705656,
+    "policy_MAE": 2.827602067332294,
+    "policy_RMSE": 6.289265244397471,
+    "policy_Spearman": 0.14258788108741588,
+    "sign_calibration": [
+      {
+        "lower": 0.0,
+        "n": 5628,
+        "observed": 0.30774697938877044,
+        "predicted": 0.0,
+        "upper": 0.2
+      },
+      {
+        "lower": 0.2,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.4
+      },
+      {
+        "lower": 0.4,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.6
+      },
+      {
+        "lower": 0.6,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.8
+      },
+      {
+        "lower": 0.8,
+        "n": 6372,
+        "observed": 0.42922159447583175,
+        "predicted": 1.0,
+        "upper": 1.01
+      }
+    ],
+    "split": "operator",
+    "test_n": 12000,
+    "train_n": 24000,
+    "transition_IDE": 0.7339348869388417,
+    "transition_IRR": 0.2849968612680477,
+    "transition_ISC": 0.6497877800809397
+  },
+  {
+    "Brier": 0.44633333333333336,
+    "coverage_50": 0.012833333333333334,
+    "coverage_80": 0.02125,
+    "coverage_95": 0.024666666666666667,
+    "family": "bootstrap_ensemble",
+    "global_IDE": 0.38963113727602694,
+    "global_IRR": 0.1772357723577236,
+    "global_ISC": 0.8522357121705656,
+    "policy_MAE": 2.8133153288198143,
+    "policy_RMSE": 6.289092303442106,
+    "policy_Spearman": 0.14195981111083206,
+    "sign_calibration": [
+      {
+        "lower": 0.0,
+        "n": 5647,
+        "observed": 0.3072427837789977,
+        "predicted": 0.0,
+        "upper": 0.2
+      },
+      {
+        "lower": 0.2,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.4
+      },
+      {
+        "lower": 0.4,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.6
+      },
+      {
+        "lower": 0.6,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.8
+      },
+      {
+        "lower": 0.8,
+        "n": 6353,
+        "observed": 0.4300330552494884,
+        "predicted": 1.0,
+        "upper": 1.01
+      }
+    ],
+    "split": "operator",
+    "test_n": 12000,
+    "train_n": 24000,
+    "transition_IDE": 0.7343951865266077,
+    "transition_IRR": 0.2844325515504486,
+    "transition_ISC": 0.6503800217155266
+  },
+  {
+    "Brier": 0.6241666666666666,
+    "coverage_50": 0.6930555555555555,
+    "coverage_80": 0.8655555555555555,
+    "coverage_95": 0.9079166666666667,
+    "family": "bayesian_linear",
+    "global_IDE": 0.3047529220984146,
+    "global_IRR": 0.18795411089866157,
+    "global_ISC": 0.8522222222222222,
+    "policy_MAE": 0.6285317872331945,
+    "policy_RMSE": 0.7064196242592911,
+    "policy_Spearman": 0.3629844306452758,
+    "sign_calibration": [
+      {
+        "lower": 0.0,
+        "n": 5642,
+        "observed": 0.6437433534207728,
+        "predicted": 0.0,
+        "upper": 0.2
+      },
+      {
+        "lower": 0.2,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.4
+      },
+      {
+        "lower": 0.4,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.6
+      },
+      {
+        "lower": 0.6,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.8
+      },
+      {
+        "lower": 0.8,
+        "n": 1558,
+        "observed": 0.4467265725288832,
+        "predicted": 1.0,
+        "upper": 1.01
+      }
+    ],
+    "split": "response_regime",
+    "test_n": 7200,
+    "train_n": 28800,
+    "transition_IDE": 0.4571750877794499,
+    "transition_IRR": 0.5532734274711169,
+    "transition_ISC": 0.37583333333333335
+  },
+  {
+    "Brier": 0.6193055555555556,
+    "coverage_50": 0.020555555555555556,
+    "coverage_80": 0.032916666666666664,
+    "coverage_95": 0.03805555555555556,
+    "family": "bootstrap_ensemble",
+    "global_IDE": 0.3150666783687154,
+    "global_IRR": 0.18795411089866157,
+    "global_ISC": 0.8522222222222222,
+    "policy_MAE": 0.6407152338865544,
+    "policy_RMSE": 0.7224930079123748,
+    "policy_Spearman": 0.3667535694139706,
+    "sign_calibration": [
+      {
+        "lower": 0.0,
+        "n": 5613,
+        "observed": 0.6413682522715125,
+        "predicted": 0.0,
+        "upper": 0.2
+      },
+      {
+        "lower": 0.2,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.4
+      },
+      {
+        "lower": 0.4,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.6
+      },
+      {
+        "lower": 0.6,
+        "n": 0,
+        "observed": 0.0,
+        "predicted": 0.0,
+        "upper": 0.8
+      },
+      {
+        "lower": 0.8,
+        "n": 1587,
+        "observed": 0.4587271581600504,
+        "predicted": 1.0,
+        "upper": 1.01
+      }
+    ],
+    "split": "response_regime",
+    "test_n": 7200,
+    "train_n": 28800,
+    "transition_IDE": 0.45199612911779025,
+    "transition_IRR": 0.5412728418399496,
+    "transition_ISC": 0.38069444444444445
+  }
+]

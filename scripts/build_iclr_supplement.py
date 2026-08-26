@@ -18,6 +18,11 @@ ALLOWLIST = (
     "configs",
     "results/theory",
     "results/v7",
+    "results/v9",
+    "figures/v9",
+    "tables/v9",
+    "artifacts/v9",
+    "snapshot/v9_preupgrade",
     "research",
     "tests",
     "benchmarks/improvementbench/v1",
@@ -58,6 +63,13 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
         root = project_root / root_name
         for source in sorted(root.rglob("*")):
             if not source.is_file() or any(part in SKIP_PARTS for part in source.parts):
+                continue
+            # Parquet is retained in the repository artifact root, but the
+            # anonymous supplement audit intentionally excludes raw archive
+            # formats. CSV/JSON and vector sources remain fully auditable.
+            if source.suffix.casefold() in {".parquet", ".feather", ".zip", ".tar", ".gz"} and "results/v9" not in source.as_posix():
+                continue
+            if source.suffix.casefold() == ".parquet":
                 continue
             relative = source.relative_to(project_root)
             target = output_root / relative
@@ -113,7 +125,7 @@ The controlled value-versus-improvement diagnostic can be regenerated with:
 ```bash
 .venv/bin/python experiments/e4_value_vs_improvement.py \\
   --config configs/sweeps/e4_value_vs_improvement.yaml \\
-  --output /tmp/pivot-e4-value-vs-improvement
+  --output artifacts/v9/reproduction/e4-value-vs-improvement
 ```
 
 This is a controlled estimand diagnostic, not a universal method or market
@@ -130,11 +142,16 @@ regenerated with:
 ```bash
 .venv/bin/python experiments/e10_theory_empirical.py \\
   --config configs/theory/v6_empirical.yaml \\
-  --output /tmp/pivot-e10-theory-empirical
+  --output artifacts/v9/reproduction/e10-theory-empirical
 ```
 
 They test the constructive Global Fidelity Blindness and Response-Footprint
 Sensitivity claims; they are not causal market evidence.
+
+The V9 confirmatory package is included under `results/v9`; publication figures
+and source tables are under `figures/v9` and `tables/v9`. Rebuild the registered
+runs with `experiments.v9.run`, then run the validation, analysis, figure, table,
+and audit commands listed in `V9_REPRODUCIBILITY.md`.
 
 The editable architecture source is adapted from the pinned OpenTikZ
 `system-block-diagram` template. Rebuild it after installing the lock-bound
@@ -192,7 +209,7 @@ def main() -> None:
         "snapshot_manifest_sha256": hashlib.sha256(
             (args.output_root / "snapshot" / "manifest.json").read_bytes()
         ).hexdigest(),
-        "allowlist": list(ALLOWLIST) + ["paper/snapshot", "paper/tables"],
+        "allowlist": list(ALLOWLIST) + ["paper/snapshot", "paper/tables", "paper/iclr2027/v9_results_macros.tex"],
     }
     (args.output_root / "supplement_manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"

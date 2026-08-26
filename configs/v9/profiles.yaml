@@ -1,0 +1,44 @@
+schema_version: v9.0
+profiles:
+  smoke:
+    seeds: 2
+    rounds: 5
+    candidates_per_round: 4
+    rollouts_per_transition: 2
+    bootstrap_draws: 200
+    workers: 1
+  dev:
+    seeds: 8
+    rounds: 20
+    candidates_per_round: 8
+    rollouts_per_transition: 8
+    bootstrap_draws: 1000
+    workers: 2
+  confirmatory:
+    seeds: 30
+    rounds: 40
+    candidates_per_round: 8
+    rollouts_per_transition: 16
+    bootstrap_draws: 10000
+    precision_extension_seeds: 50
+    workers: 4
+environments:
+  e2c:
+    ids: [performative_control, congestion_resource, mpe2_frozen]
+  e3c:
+    ids: [performative_control, congestion_resource]
+    external_null_ids: [mpe2_frozen]
+  e7c:
+    opponent_modes: [fixed, reactive, best_response, gradient_adaptive, rl_evolutionary]
+operators:
+  families: [local_random, gradient_informed, evolutionary_population]
+  shift_levels: [0.0, 0.1, 0.2, 0.35, 0.5, 0.7, 1.0, 1.5, 2.0, 3.0]
+methods:
+  e3c: [proxy_only, global_value, random_hf, top_proxy_hf, uncertainty_hf, paired_lucb, global_voi, pivot_h, pivot_voi, all_hf]
+  e5c: [proxy_only, random_hf, top_proxy_hf, uncertainty_hf, paired_lucb, global_voi, pivot_h, pivot_voi, all_hf]
+statistics:
+  tau_sign: 1.0e-9
+  tau_mtr: 1.0e-8
+  confidence_level: 0.95
+  bootstrap_grouping: [environment_family, operator_family, seed, trajectory_id]
+  holm_primary_family: [H1, H2, H3, H4, H5]

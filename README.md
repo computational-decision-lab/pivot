@@ -91,6 +91,30 @@ ledger, not a general superiority claim.
 
 ## ICLR 2027 paper and architecture figure
 
+## V9 confirmatory package
+
+V9 promotes the replacement transition `pi -> pi'` to the primary statistical
+object. The registered experiments are E2C operator-shift scaling, E3C
+closed-loop selection, E4C learned-evaluator OOD, E5C fixed-budget evidence
+efficiency, and E7C strategic response. Results are isolated under
+`results/v9/`; the V7 boundary is preserved in `snapshot/v9_preupgrade/`.
+
+The confirmatory workflow is:
+
+```bash
+.venv/bin/python -m experiments.v9.run --experiment e2c --profile confirmatory --output results/v9/e2c-confirmatory --root .
+.venv/bin/python -m experiments.v9.run --experiment e3c --profile confirmatory --output results/v9/e3c-confirmatory --root .
+.venv/bin/python -m experiments.v9.run --experiment e4c --profile confirmatory --output results/v9/e4c-confirmatory --root .
+.venv/bin/python -m experiments.v9.run --experiment e5c --profile confirmatory --output results/v9/e5c-confirmatory --root .
+.venv/bin/python -m experiments.v9.run --experiment e7c --profile confirmatory --output results/v9/e7c-confirmatory --root .
+make v9-analyze v9-figures v9-tables v9-audit
+```
+
+Each run emits a terminal scientific state, compressed raw transition rows,
+provenance, a failure ledger, and a SHA-256 manifest. `UNDERPOWERED` and
+`HYPOTHESIS_NOT_SUPPORTED` are retained as valid outcomes. PIVOT is not claimed
+to dominate every acquisition method, and All-HF is an oracle reference only.
+
 Build the anonymous submission package from the pinned snapshot:
 
 ```bash
@@ -106,15 +130,15 @@ the hash-bound copy under `paper/snapshot/figures/`.
 
 Start with:
 
-- `/opt/projects/research/pivot/docs/pivot.md`
-- `/opt/projects/research/pivot/docs/master-goal.md`
-- `/opt/projects/research/pivot/docs/superpowers/plans/2026-08-19-pivot-master-implementation.md`
-- `/opt/projects/research/pivot/docs/experiments/gates.md`
-- `/opt/projects/research/pivot/docs/experiments/registered-protocol.md`
-- `/opt/projects/research/pivot/docs/experiments/registered-evidence-2026-08-19.md`
-- `/opt/projects/research/pivot/docs/experiments/public-finance-evidence-2026-08-19.md`
-- `/opt/projects/research/pivot/docs/experiments/clean-room-evidence-2026-08-19.md`
-- `/opt/projects/research/pivot/docs/experiments/public-expansion-evidence-2026-08-19.md`
+- `docs/pivot.md`
+- `docs/master-goal.md`
+- `docs/superpowers/plans/2026-08-19-pivot-master-implementation.md`
+- `docs/experiments/gates.md`
+- `docs/experiments/registered-protocol.md`
+- `docs/experiments/registered-evidence-2026-08-19.md`
+- `docs/experiments/public-finance-evidence-2026-08-19.md`
+- `docs/experiments/clean-room-evidence-2026-08-19.md`
+- `docs/experiments/public-expansion-evidence-2026-08-19.md`
 
 Run the controlled first milestone with:
 

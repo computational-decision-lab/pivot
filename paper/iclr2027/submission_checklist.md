@@ -1,6 +1,6 @@
 # ICLR 2027 Submission Checklist
 
-Updated 2026-08-21. This checklist distinguishes local evidence from gates
+Updated 2026-08-26. This checklist distinguishes local evidence from gates
 that cannot be closed inside the repository.
 
 ## Machine-verified
@@ -22,6 +22,13 @@ that cannot be closed inside the repository.
   Response-Footprint Sensitivity checks include registered configuration,
   row-level data, figures, provenance, and a SHA-256 manifest in the
   supplementary archive.
+- PASS (V9 confirmatory artifact): E2C, E3C, E4C, E5C, and E7C have isolated
+  configurations, terminal scientific states, independent-seed accounting,
+  paired transition streams or explicitly typed OOD/strategic artifacts, and
+  regenerated source tables/figures. The powered E4C null is retained.
+- PASS (V9 baseline): tracked V7 blobs verify against the recorded pre-upgrade
+  commit; ignored LaTeX/supplement derivatives are explicitly classified as
+  derived in `artifacts/v9/baseline_verification.json`.
 
 ## Manual author gates
 
@@ -35,7 +42,8 @@ that cannot be closed inside the repository.
 ## Scientific evidence boundaries
 
 - FROZEN NULL: E3b passes all five construct gates but its powered 772-paired-
-  trajectory comparison does not support a PIVOT-VOI CTI advantage.
+  trajectory comparison does not support a PIVOT-VOI CTI advantage; this is the
+  external MPE2 panel carried into E3C, not a relabeled V9 rerun.
 - FROZEN NULL: E4b's powered trajectory-disjoint comparison does not support
   a transition-over-global advantage.
 - FROZEN SCOPED PASS: E7b has 140 held-out opponent-seed clusters (required

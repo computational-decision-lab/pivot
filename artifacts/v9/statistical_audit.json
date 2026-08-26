@@ -1,0 +1,61 @@
+{
+  "bootstrap_unit": "seed_or_trajectory_cluster",
+  "checks": [
+    {
+      "cluster_count": 4500,
+      "finite": true,
+      "row_count": 36000,
+      "row_kind": "transition",
+      "run": "e2c-confirmatory",
+      "seed_count": 30,
+      "status": "HYPOTHESIS_SUPPORTED"
+    },
+    {
+      "cluster_count": 1200,
+      "finite": true,
+      "row_count": 9600,
+      "row_kind": "transition",
+      "run": "e2c-development",
+      "seed_count": 8,
+      "status": "UNDERPOWERED"
+    },
+    {
+      "cluster_count": 600,
+      "finite": true,
+      "row_count": 192000,
+      "row_kind": "transition",
+      "run": "e3c-confirmatory",
+      "seed_count": 30,
+      "status": "HYPOTHESIS_SUPPORTED"
+    },
+    {
+      "cluster_count": 8,
+      "finite": true,
+      "row_count": 8,
+      "row_kind": "ood_report",
+      "run": "e4c-confirmatory",
+      "seed_count": 30,
+      "status": "HYPOTHESIS_NOT_SUPPORTED"
+    },
+    {
+      "cluster_count": 180,
+      "finite": true,
+      "row_count": 90720,
+      "row_kind": "transition",
+      "run": "e5c-confirmatory",
+      "seed_count": 30,
+      "status": "HYPOTHESIS_SUPPORTED"
+    },
+    {
+      "cluster_count": 30,
+      "finite": true,
+      "row_count": 3600,
+      "row_kind": "strategic",
+      "run": "e7c-confirmatory",
+      "seed_count": 30,
+      "status": "HYPOTHESIS_SUPPORTED"
+    }
+  ],
+  "errors": [],
+  "valid": true
+}

@@ -1,0 +1,86 @@
+{
+  "config": {
+    "calibration_seed_start": 9001,
+    "calibration_seeds": 16,
+    "candidate_count": 8,
+    "environments": [
+      {
+        "id": "performative_control",
+        "response_strength": 0.85
+      },
+      {
+        "id": "congestion_resource",
+        "response_strength": 0.75
+      }
+    ],
+    "experiment_id": "E3C",
+    "frozen_mpe2": {
+      "result_root": "results/v7/e3b-confirmatory"
+    },
+    "hf_budget_per_round": 2,
+    "methods": [
+      "proxy_only",
+      "global_value",
+      "random_hf",
+      "top_proxy_hf",
+      "uncertainty_hf",
+      "paired_lucb",
+      "global_voi",
+      "pivot_h",
+      "pivot_voi",
+      "all_hf"
+    ],
+    "operator_family": "gradient_informed",
+    "operator_shift": 0.7,
+    "seed_start": 9101,
+    "statistics": {
+      "candidate_spread_floor": 1e-05,
+      "minimum_cisr_reduction": 0.0,
+      "minimum_independent_seeds": 30,
+      "response_variance_floor": 1e-06,
+      "voi_fantasies": 32,
+      "voi_posterior_samples": 128
+    }
+  },
+  "config_sha256": "e70ec469f424374e34796a68ddf69501ebb31807a1e4e0e16e72393df7e6d010",
+  "created_at_utc": "2026-08-26T05:26:09.853993+00:00",
+  "experiment_id": "E3C",
+  "machine": "x86_64",
+  "paired_context": true,
+  "python": "3.10.12",
+  "raw_outcomes_preserved": true,
+  "schema_version": "pivot-v9-provenance-v1",
+  "seed_list": [
+    9101,
+    9102,
+    9103,
+    9104,
+    9105,
+    9106,
+    9107,
+    9108,
+    9109,
+    9110,
+    9111,
+    9112,
+    9113,
+    9114,
+    9115,
+    9116,
+    9117,
+    9118,
+    9119,
+    9120,
+    9121,
+    9122,
+    9123,
+    9124,
+    9125,
+    9126,
+    9127,
+    9128,
+    9129,
+    9130
+  ],
+  "source_commit": "c5c9496004effefee02324e399621e6bd8970430"
+}
