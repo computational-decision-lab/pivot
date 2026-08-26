@@ -82,5 +82,5 @@
 - PDF SHA-256: `84d3489463af42e5ea322ebdb2379a58a5ac72779be4eb7ce1e4f88cbca8252c`.
 - Supplement SHA-256: `e8369baa3794ca1fce983fb9aa3f22810885a0cda90d18573b54a1f06a9bf32a`.
 - Verification: 205 pytest tests passed; Ruff and mypy passed (176 files); ZIP integrity and remote hash parity passed.
-- GitHub: standalone curated release commit `dcf6d1897f8fcd7a1d04c54211092349df00c95d` is on `origin/master` (with `0790025f5939d24ce8bac712d3c5681cfc868fdc` as its V10 artifact parent).
+- GitHub: standalone curated release chain ends at `7f884e17aac457d514c7cc9eec7664fa8b3c88bc` on `origin/master` (the artifact commit is `0790025f5939d24ce8bac712d3c5681cfc868fdc`).
 - Remaining gates are author-side OpenReview metadata/quota/conflicts/parallel-submission checks and the explicitly bounded external interactive/strategic scientific validation; no causal finance or equilibrium claim is made.
