@@ -30,9 +30,11 @@ records the retrieved rules in `paper/iclr2027/official_rules.json`.
 - The bibliography contains 50 entries, with 19 verified 2025--2026 papers and
   recent/top-conference benchmark references. The primary-metadata audit is in
   `docs/reference-audit-2026-08-21.md`.
-- The AI Use Statement is deliberately limited to language editing and
-  code/figure formatting assistance; authors retain verification and
-  responsibility for the submission.
+- The AI Use Statement discloses language editing, code and figure-formatting
+  assistance, limited experimental-infrastructure assistance, and literature
+  discovery. Authors review and verify the experimental design, code,
+  numerical results, mathematical claims, cited sources, and final manuscript,
+  and retain responsibility for the submission.
 
 ## What prevents an unconditional GO
 

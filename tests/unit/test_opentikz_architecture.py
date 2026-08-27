@@ -82,6 +82,7 @@ def test_architecture_source_preserves_opentikz_contract() -> None:
     assert metadata["license"] == "CC0-1.0"
     assert lock["template_id"] == "system-block-diagram"
     assert "\\documentclass[border=6pt]{standalone}" in source
+    assert "\\pdftrailerid{5049564f542d415243482d3030303031}" in source
     for color in ("pblue", "porange", "pteal", "ppurple", "pgray"):
         assert color in source
     assert "fill=white" not in source

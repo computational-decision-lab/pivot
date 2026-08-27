@@ -68,6 +68,9 @@ def apply() -> None:
             "lines.linewidth": 1.2,
             "lines.markersize": 4.5,
             "svg.fonttype": "none",
+            # Matplotlib otherwise generates random SVG element identifiers,
+            # which makes byte-identical figure rebuilds impossible.
+            "svg.hashsalt": "pivot-v10-publication-style-1",
             "pdf.fonttype": 42,
             "savefig.bbox": "tight",
             "savefig.pad_inches": 0.04,

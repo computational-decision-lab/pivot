@@ -91,6 +91,12 @@ def audit(root: Path) -> dict[str, Any]:
         for row in m7["by_mode"]
         if row.get("opponent_mode") in {"best_response", "gradient_adaptive", "rl_evolutionary"}
     ]
+    family_cluster_counts = {int(row["cluster_n"]) for row in m7["by_mode"]}
+    if len(family_cluster_counts) != 1:
+        errors.append("strategic opponent families do not share a matched seed-cluster count")
+    matched_cluster_count = int(m7["independent_seed_count"])
+    if family_cluster_counts and matched_cluster_count != next(iter(family_cluster_counts)):
+        errors.append("strategic matched seed count disagrees with family cluster count")
     expected: dict[str, float | int | tuple[float, float]] = {
         "OperatorShiftSeeds": int(m2["independent_seed_count"]),
         "OperatorShiftRows": int(m2["transition_count"]),
@@ -121,7 +127,9 @@ def audit(root: Path) -> dict[str, Any]:
             float(m5["pivot_voi_minus_proxy_ci_high"]),
         ),
         "StrategicSeeds": int(m7["independent_seed_count"]),
-        "StrategicClusters": int(m7["by_mode"][0]["cluster_n"]),
+        "StrategicClusters": matched_cluster_count,
+        "StrategicAdaptiveFamilies": len(strategic_modes),
+        "StrategicFamilySeedTraces": sum(int(row["cluster_n"]) for row in m7["by_mode"]),
         "StrategicEffect": float(m7["adaptive_effect_mean"]),
         "StrategicEffectCI": (
             float(m7["adaptive_effect_ci_low"]),
@@ -206,6 +214,13 @@ def audit(root: Path) -> dict[str, Any]:
         "warnings": warnings,
         "macro_checks": macro_checks,
         "row_counts": row_counts,
+        "strategic_aggregation": {
+            "adaptive_families": ["best_response", "gradient_adaptive", "rl_evolutionary"],
+            "matched_seed_clusters": matched_cluster_count,
+            "family_seed_traces": sum(int(row["cluster_n"]) for row in m7["by_mode"]),
+            "effect": "mean of the three adaptive family values within each matched seed; bootstrap over matched seeds",
+            "sirr": "unweighted mean of the three family-level SIRRs",
+        },
         "source_sha256": {key: sha256(path) for key, path in source_paths.items()},
         "finance_boundary": {
             "initial_single_asset_sessions": finance.get("n_sessions"),
@@ -243,6 +258,19 @@ def _markdown(report: dict[str, Any]) -> str:
     for row in report.get("macro_checks", []):
         lines.append(
             f"| `{row['macro']}` | `{fmt(row['actual'])}` | `{fmt(row['expected'])}` | {row['pass']} |"
+        )
+    aggregation = report.get("strategic_aggregation", {})
+    if aggregation:
+        lines.extend(
+            [
+                "",
+                "## Strategic aggregation",
+                "",
+                f"- Adaptive families: {', '.join(aggregation.get('adaptive_families', []))}.",
+                f"- Matched seed clusters: {aggregation.get('matched_seed_clusters')}; family-by-seed traces: {aggregation.get('family_seed_traces')}.",
+                f"- Effect: {aggregation.get('effect')}",
+                f"- SIRR: {aggregation.get('sirr')}",
+            ]
         )
     lines.extend(["", "## Row counts", ""])
     for key, value in report.get("row_counts", {}).items():

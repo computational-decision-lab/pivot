@@ -4,7 +4,7 @@ Status: **PASS**
 
 Entries: 67; cited: 42; recent 2025--2026 cited: 20; cited top-conference works: 5.
 
-Recent preprints are described as preprints, not promoted to conference publications. Primary metadata was checked on 2026-08-26.
+Recent preprints are described as preprints, not promoted to conference publications. `wu2024progress` records its ICLR 2025 submission metadata without claiming accepted-proceedings status. Primary metadata was checked on 2026-08-27.
 
 | Key | Primary source | Pass |
 | --- | --- | --- |
@@ -29,6 +29,7 @@ Recent preprints are described as preprints, not promoted to conference publicat
 | `chi2026ai4ai` | https://arxiv.org/abs/2608.20318 | True |
 | `m3market2026` | https://arthurzhang02.github.io/m3-market-microstructure/M3_paper.pdf | True |
 | `thomas2016dataefficient` | https://proceedings.mlr.press/v48/thomasa16.html | True |
+| `wu2024progress` | https://openreview.net/forum?id=RFqeoVfLHa | True |
 
 ## Claim-boundary coverage
 

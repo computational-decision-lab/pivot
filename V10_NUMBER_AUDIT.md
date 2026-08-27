@@ -24,9 +24,18 @@ The LaTeX macros are recomputed from the frozen confirmatory JSON artifacts; no 
 | `EfficiencyEffectCI` | `(1.1e-05, 0.0013)` | `(1.100865090954107e-05, 0.0013294208175714253)` | True |
 | `StrategicSeeds` | `30` | `30` | True |
 | `StrategicClusters` | `30` | `30` | True |
+| `StrategicAdaptiveFamilies` | `3` | `3` | True |
+| `StrategicFamilySeedTraces` | `150` | `150` | True |
 | `StrategicEffect` | `-0.024` | `-0.0239726` | True |
 | `StrategicEffectCI` | `(-0.0249, -0.0231)` | `(-0.024900347450970375, -0.023106334486912433)` | True |
 | `StrategicSIRR` | `0.9495` | `0.949493` | True |
+
+## Strategic aggregation
+
+- Adaptive families: best_response, gradient_adaptive, rl_evolutionary.
+- Matched seed clusters: 30; family-by-seed traces: 150.
+- Effect: mean of the three adaptive family values within each matched seed; bootstrap over matched seeds
+- SIRR: unweighted mean of the three family-level SIRRs
 
 ## Row counts
 

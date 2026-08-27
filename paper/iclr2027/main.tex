@@ -404,8 +404,9 @@ and CISR; its environment panels use their native reward scales.
   \caption{Evidence-efficiency frontier.  The top panels fix $K=8$ and show
   Proxy Only, Paired LUCB, Global-VOI, and PIVOT-VOI at matched query costs;
   the all-high-fidelity line is an oracle reference and the proxy point has
-  zero query cost.  The lower forest reports paired PIVOT-VOI minus Proxy
-  effects at budget four over $K\in\{4,8,16\}$ and the two worlds.  Intervals
+  zero query cost.  The lower forest reports the paired CISR reduction of
+  PIVOT-VOI relative to Proxy Only (Proxy Only minus PIVOT-VOI) at budget four
+  over $K\in\{4,8,16\}$ and the two worlds.  Intervals
   are seed bootstraps; no uniform method ordering is asserted.}
   \label{fig:efficiency}
 \end{figure}
@@ -432,9 +433,12 @@ model.
 
 \paragraph{Strategic response.}
 Only a focal policy self-improves; competitors are independent adaptive
-mechanisms.  Across \StrategicClusters{} opponent-seed clusters, the adaptive
-strategic effect is \StrategicEffect{} with interval \StrategicEffectCI{} and
-mean SIRR \StrategicSIRR{}.  In the strongest cases,
+mechanisms.  Across \StrategicClusters{} matched opponent-seed clusters, each
+aggregating the \StrategicAdaptiveFamilies{} registered adaptive families
+(best-response, gradient-adaptive, and RL/evolutionary), the family-balanced
+strategic effect is \StrategicEffect{} with interval \StrategicEffectCI{}.
+The reported SIRR \StrategicSIRR{} is the unweighted mean of the three
+family-level SIRRs, rather than a pooled transition-row rate.  In the strongest cases,
 $\Delta_{\mathrm{actor}}>0$ while
 $\Delta_{\mathrm{strategic}}<0$: a candidate survives its own mechanical
 response but fails after competitors adapt.  \Cref{fig:layers,fig:strategic} show the response
@@ -479,9 +483,12 @@ Valid progress in adaptive worlds means validating consequences, not merely
 certifying actions.
 
 \begingroup\scriptsize
-\noindent\textbf{AI Use Statement.} AI tools were used for limited language and
-formatting assistance.  The authors verified the manuscript, experiments, and
-claims.
+\noindent\textbf{AI Use Statement.} Generative AI tools were used for language
+editing, code and figure-formatting assistance, limited assistance in developing
+experimental infrastructure, and literature discovery.  All experimental
+designs, mathematical claims, generated code, numerical results, cited sources,
+and manuscript claims were reviewed and verified by the authors, who take full
+responsibility for the work.
 \par\noindent\textbf{Reproducibility Statement.} The anonymous supplement
 contains deterministic configurations, hash-indexed source evidence, figure
 tables, and rebuild commands.  The public finance audit uses virtual fills and
@@ -499,7 +506,7 @@ personal data, live trading, or external authorization.
 \appendix
 \section{Extended Figures and Artifact Notes}\label{app:artifact}
 The release includes the frozen source snapshot, confirmatory result manifests,
-and generated V10 figure bundles.  Every figure bundle contains PDF, SVG, PNG,
+and generated figure bundles.  Every figure bundle contains PDF, SVG, PNG,
 CSV, Parquet, metadata, source hashes, and the analysis script.  The metadata
 records the unit of inference and distinguishes descriptive spans from
 bootstrap intervals.
@@ -507,19 +514,20 @@ bootstrap intervals.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figA_response_footprint.png}
-  \caption{World-response decomposition.  Panel A traces paired cluster
-  transitions through proxy/direct observer, actor, and strategic worlds; Panel B
-  separates mechanical and strategic effects; Panel C marks the strategic
-  reversal quadrant.}
+  \caption{World-response decomposition.  Panel A traces 150
+  family-by-seed observations (five opponent families $\times$ 30 matched
+  seeds) through proxy/direct observer, actor, and strategic worlds; its summary
+  intervals use the 30 matched seeds.  Panel B separates mechanical and
+  strategic effects; Panel C marks the strategic reversal quadrant.}
   \label{fig:layers}
 \end{figure}
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figB_learned_ood_null.png}
-  \caption{Powered OOD null.  Forest intervals are descriptive spans across
-  the two fitted model families in each split; the scatter retains the paired
-  reports and the diagonal indicates equal ISC.}
+  \caption{Powered OOD null.  Forest horizontal ranges are descriptive spans
+  across the two fitted model families in each split, not confidence intervals;
+  the scatter retains the paired reports and the diagonal indicates equal ISC.}
   \label{fig:ood-null}
 \end{figure}
 
@@ -537,8 +545,10 @@ bootstrap intervals.
   \centering
   \includegraphics[width=\linewidth]{figD_strategic_distribution.png}
   \caption{Strategic generalization across opponent mechanisms.  Raincloud and
-  forest views show cluster effects and SIRR; the reversal plane uses both
-  color and marker shape so the failure is legible in grayscale.}
+  forest views show family-specific effects and SIRR, each over 30 matched
+  opponent-seed clusters.  The reversal plane labels the unweighted mean over
+  the three adaptive family-level SIRRs; it uses both color and marker shape so
+  the failure is legible in grayscale.}
   \label{fig:strategic}
 \end{figure}
 

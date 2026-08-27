@@ -10,10 +10,11 @@ Adaptive Worlds*.
 .venv/bin/python -m experiments.v10.finalize --root .
 ```
 
-The finalizer returns `READY_WITH_MINOR_MANUAL_CHECKS` when the local PDF,
-figure, number, claim, bibliography, supplement, and double-blind gates pass.
-OpenReview profile/author metadata, conflicts, quota, and the final upload are
-manual author actions. No causal market or equilibrium claim is made.
+The finalizer returns `READY_FOR_SUBMISSION` when the local PDF, figure,
+number, claim, bibliography, supplement, and double-blind gates pass. This
+describes the anonymous package, not a completed OpenReview action: profile,
+author metadata, conflicts, quota, AI-use form disclosure, and final upload
+remain manual author actions. No causal market or equilibrium claim is made.
 
 For a paper-only rebuild, `./build.sh` remains available; the unified V10
 command should be used before release so all audits and the supplement are

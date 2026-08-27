@@ -36,6 +36,11 @@ PRIMARY_EXTERNAL = {
     "m3market2026": "https://arthurzhang02.github.io/m3-market-microstructure/M3_paper.pdf",
     "thomas2016dataefficient": "https://proceedings.mlr.press/v48/thomasa16.html",
 }
+SUBMISSION_METADATA = {
+    # This is an ICLR 2025 conference submission, not an accepted-proceedings
+    # citation.  Keep its archival arXiv record as the primary publication.
+    "wu2024progress": "ICLR 2025 Conference Submission 8799 (OpenReview forum RFqeoVfLHa)",
+}
 BOUNDARY_KEYS = {
     "wu2024progress",
     "chi2026ai4ai",
@@ -136,6 +141,20 @@ def audit(root: Path) -> dict[str, Any]:
         primary_records.append(
             {"key": key, "primary_url": expected_url, "year": _field(block, "year"), "pass": passed}
         )
+    for key, expected_note in SUBMISSION_METADATA.items():
+        block = entries.get(key, "")
+        note = _field(block, "note") or ""
+        passed = expected_note in note
+        if not passed:
+            errors.append(f"{key}: conference-submission metadata is absent or misstated")
+        primary_records.append(
+            {
+                "key": key,
+                "primary_url": "https://openreview.net/forum?id=RFqeoVfLHa",
+                "year": _field(block, "year"),
+                "pass": passed,
+            }
+        )
     recent_cited = sorted(
         key for key in cited if (_field(entries.get(key, ""), "year") or "") in {"2025", "2026"}
     )
@@ -162,9 +181,9 @@ def audit(root: Path) -> dict[str, Any]:
         "top_conference_cited_count": len(top_cited),
         "top_conference_cited_keys": top_cited,
         "required_boundary_keys": sorted(BOUNDARY_KEYS),
-        "primary_metadata_verified_on": "2026-08-26",
+        "primary_metadata_verified_on": "2026-08-27",
         "primary_metadata": primary_records,
-        "verification_scope": "title/author/year/identifier were checked against arXiv or publisher pages; venue labels are used only where explicitly recorded",
+        "verification_scope": "title/author/year/identifier were checked against arXiv or publisher pages; venue labels are used only where explicitly recorded. Conference submissions are not presented as accepted proceedings papers.",
     }
     write_json(root, "artifacts/v10/bibliography_audit.json", report)
     write_markdown(root, "V10_BIBLIOGRAPHY_AUDIT.md", _markdown(report))
@@ -179,7 +198,7 @@ def _markdown(report: dict[str, Any]) -> str:
         "",
         f"Entries: {report.get('entry_count', 0)}; cited: {report.get('cited_count', 0)}; recent 2025--2026 cited: {report.get('recent_2025_2026_cited_count', 0)}; cited top-conference works: {report.get('top_conference_cited_count', 0)}.",
         "",
-        "Recent preprints are described as preprints, not promoted to conference publications. Primary metadata was checked on 2026-08-26.",
+        "Recent preprints are described as preprints, not promoted to conference publications. `wu2024progress` records its ICLR 2025 submission metadata without claiming accepted-proceedings status. Primary metadata was checked on 2026-08-27.",
         "",
         "| Key | Primary source | Pass |",
         "| --- | --- | --- |",

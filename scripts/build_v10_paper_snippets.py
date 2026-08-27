@@ -54,11 +54,20 @@ def build(root: Path) -> Path:
     m5 = e5["metrics"]
     m7 = e7["metrics"]
     e3_effects = m3["effects"]
+    adaptive_mode_names = {"best_response", "gradient_adaptive", "rl_evolutionary"}
     strategic_modes = {
         str(row["opponent_mode"]): float(row["SIRR"])
         for row in m7["by_mode"]
-        if str(row["opponent_mode"]) in {"best_response", "gradient_adaptive", "rl_evolutionary"}
+        if str(row["opponent_mode"]) in adaptive_mode_names
     }
+    if set(strategic_modes) != adaptive_mode_names:
+        raise ValueError("registered adaptive opponent families are incomplete")
+    family_cluster_counts = {int(row["cluster_n"]) for row in m7["by_mode"]}
+    if len(family_cluster_counts) != 1:
+        raise ValueError("opponent families do not share a matched seed-cluster count")
+    matched_cluster_count = int(m7["independent_seed_count"])
+    if matched_cluster_count != family_cluster_counts.pop():
+        raise ValueError("adaptive effect must use the registered matched opponent-seed clusters")
     strategic_sirr = sum(strategic_modes.values()) / len(strategic_modes)
     congestion_proxy = _method_row(m3, "congestion_resource", "proxy_only")
     congestion_pivot = _method_row(m3, "congestion_resource", "pivot_voi")
@@ -87,10 +96,14 @@ def build(root: Path) -> Path:
         f"\\newcommand{{\\EfficiencyEffect}}{{{_num(m5['pivot_voi_minus_proxy_cisr_reduction'])}}}",
         f"\\newcommand{{\\EfficiencyEffectCI}}{{{_interval(m5['pivot_voi_minus_proxy_ci_low'], m5['pivot_voi_minus_proxy_ci_high'])}}}",
         f"\\newcommand{{\\StrategicSeeds}}{{{int(m7['independent_seed_count'])}}}",
-        f"\\newcommand{{\\StrategicClusters}}{{{int(m7['by_mode'][0]['cluster_n'])}}}",
+        f"\\newcommand{{\\StrategicClusters}}{{{matched_cluster_count}}}",
+        f"\\newcommand{{\\StrategicAdaptiveFamilies}}{{{len(strategic_modes)}}}",
+        f"\\newcommand{{\\StrategicFamilySeedTraces}}{{{sum(int(row['cluster_n']) for row in m7['by_mode'])}}}",
         f"\\newcommand{{\\StrategicEffect}}{{{_num(m7['adaptive_effect_mean'])}}}",
         f"\\newcommand{{\\StrategicEffectCI}}{{{_interval(m7['adaptive_effect_ci_low'], m7['adaptive_effect_ci_high'])}}}",
         f"\\newcommand{{\\StrategicSIRR}}{{{_num(strategic_sirr)}}}",
+        "% Strategic effect: mean of three adaptive family values within each matched seed; interval bootstraps matched seeds.",
+        "% Strategic SIRR: unweighted mean of the three family-level SIRRs.",
         "% The external finance audit is observational and has no causal reversal estimate.",
     ]
     output = root / "paper/iclr2027/v10_results_macros.tex"

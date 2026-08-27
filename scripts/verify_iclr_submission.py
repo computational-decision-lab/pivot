@@ -247,6 +247,7 @@ def audit_submission(
             "openreview_profile": "pending",
             "author_quota_and_reciprocal_review": "pending",
             "final_author_metadata_and_conflicts": "pending",
+            "ai_use_disclosure_in_submission_form": "pending",
             "no_parallel_submission_confirmation": "pending",
         },
         "scientific_gates": {

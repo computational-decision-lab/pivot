@@ -144,6 +144,18 @@
       "pass": true
     },
     {
+      "actual": 3,
+      "expected": 3,
+      "macro": "StrategicAdaptiveFamilies",
+      "pass": true
+    },
+    {
+      "actual": 150,
+      "expected": 150,
+      "macro": "StrategicFamilySeedTraces",
+      "pass": true
+    },
+    {
       "actual": -0.024,
       "expected": -0.023972592410669527,
       "macro": "StrategicEffect",
@@ -181,6 +193,17 @@
     "e7": "0021b26b599bce42ecbc967006d6c837395e66f459711694260991dba5467e08",
     "finance": "ee50047c89461f569c5647891106a40364e99389f0eb85760ad6b880e6a87aa2",
     "finance_expansion": "66e2539b36ffa48674b070ddc18683a3af474ad6140ba8737ed0efb6a7afaaae"
+  },
+  "strategic_aggregation": {
+    "adaptive_families": [
+      "best_response",
+      "gradient_adaptive",
+      "rl_evolutionary"
+    ],
+    "effect": "mean of the three adaptive family values within each matched seed; bootstrap over matched seeds",
+    "family_seed_traces": 150,
+    "matched_seed_clusters": 30,
+    "sirr": "unweighted mean of the three family-level SIRRs"
   },
   "valid": true,
   "warnings": [

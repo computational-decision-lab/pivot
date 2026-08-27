@@ -11,6 +11,11 @@ that cannot be closed inside the repository.
   appendix begin after the main-text gate.
 - PASS: embedded fonts, non-empty text, no undefined citations, no overfull boxes.
 - PASS: mandatory AI Use Statement, Reproducibility Statement, and Ethics Statement.
+  The AI disclosure names language editing, code and figure-formatting assistance,
+  limited experimental-infrastructure assistance, and literature discovery; it
+  also assigns verification and responsibility to the authors.
+  This follows the ICLR 2027 policy checked on 2026-08-27, which requires
+  disclosure both in the manuscript and in the submission form.
 - PASS: deterministic supplementary ZIP with source, configs, tests, the
   controlled ImprovementBench release, snapshot, tables, and README.
 - PASS: no author identity, private paths, credentials, raw vendor archives, or
@@ -40,6 +45,8 @@ that cannot be closed inside the repository.
 - PENDING: conflicts, affiliations, acknowledgements, and final author order
   are checked without changing the anonymous PDF.
 - PENDING: authors confirm no parallel-submission violation.
+- PENDING: the same AI-use disclosure is copied accurately into the submission
+  form, as required by the ICLR policy.
 
 ## Scientific evidence boundaries
 
@@ -56,7 +63,9 @@ that cannot be closed inside the repository.
 
 ## Decision
 
-`READY_WITH_MINOR_MANUAL_CHECKS` is the intended local conclusion after the
-V10 finalizer passes. OpenReview profile, author metadata, quota, conflict,
-parallel-submission, and upload gates remain manual. This is not an OpenReview
-upload and it does not make the finance audit causal.
+`READY_FOR_SUBMISSION` is the package-level conclusion after the finalizer
+passes: the anonymous PDF and supplement are ready for upload within their
+stated scientific scope. The separate platform audit remains `CONDITIONAL GO`
+until OpenReview profile, author metadata, quota, conflict, AI-use form,
+parallel-submission, and upload gates are completed manually. This does not
+make the finance audit causal.

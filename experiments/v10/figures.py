@@ -1070,10 +1070,24 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                 "actor_positive": float(np.mean([bool(r["actor_positive"]) for r in subset])),
             }
         )
+    # The five opponent-family traces reuse the same 30 seeds.  Preserve all
+    # family-by-seed observations as raw visual evidence, but compute summary
+    # estimates at the matched-seed unit rather than treating 150 traces as
+    # independent replicates.
+    matched_by_seed: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in cluster:
+        matched_by_seed[str(row["opponent_seed"])].append(row)
+    matched_seed_summary = [
+        {
+            key: float(np.mean([row[key] for row in subset]))
+            for key in ("delta_direct", "delta_actor", "delta_strategic", "strategic_effect")
+        }
+        for _, subset in sorted(matched_by_seed.items())
+    ]
     figure, axes = plt.subplots(
         1, 3, figsize=(7.15, 2.35), gridspec_kw={"width_ratios": [1.05, 0.9, 1.15]}
     )
-    # A: paired layer transition, one light line per independent opponent cluster.
+    # A: one light line per family-by-seed trace; summaries use matched seeds.
     x = np.arange(3)
     for row in cluster:
         axes[0].plot(
@@ -1085,7 +1099,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             zorder=1,
         )
     for index, key in enumerate(("delta_direct", "delta_actor", "delta_strategic")):
-        values = np.asarray([row[key] for row in cluster], dtype=float)
+        values = np.asarray([row[key] for row in matched_seed_summary], dtype=float)
         low, high = _ci(values, 601 + index)
         axes[0].errorbar(
             index,
@@ -1102,8 +1116,14 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[0].set_xticks(x, ["Proxy/direct\n(observer)", "Actor", "Strategic"])
     axes[0].set_ylabel(r"paired improvement $\Delta$")
     axes[0].set_title("A  response layers")
-    axes[0].text(0.03, 0.04, f"cluster N={len(cluster)}", transform=axes[0].transAxes, fontsize=6.8)
-    # B: response-effect distributions at the independent cluster level.
+    axes[0].text(
+        0.03,
+        0.04,
+        f"{len(cluster)} family-seed traces\nsummary N={len(matched_seed_summary)} matched seeds",
+        transform=axes[0].transAxes,
+        fontsize=5.8,
+    )
+    # B: raw family-by-seed distributions with matched-seed summary intervals.
     effects = [
         np.asarray([row["delta_actor"] - row["delta_direct"] for row in cluster]),
         np.asarray([row["delta_strategic"] - row["delta_actor"] for row in cluster]),
@@ -1114,7 +1134,13 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         body.set_edgecolor(color)
         body.set_alpha(0.24)
     rng = np.random.default_rng(602)
-    for pos, values, color in zip([0, 1], effects, [COLORS["actor"], COLORS["strategic"]]):
+    summary_effects = [
+        np.asarray([row["delta_actor"] - row["delta_direct"] for row in matched_seed_summary]),
+        np.asarray([row["delta_strategic"] - row["delta_actor"] for row in matched_seed_summary]),
+    ]
+    for pos, values, summary_values, color in zip(
+        [0, 1], effects, summary_effects, [COLORS["actor"], COLORS["strategic"]]
+    ):
         axes[1].scatter(
             np.full(values.size, pos) + rng.normal(0, 0.045, values.size),
             values,
@@ -1123,8 +1149,8 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             color=color,
             edgecolors="none",
         )
-        low, high = _ci(values, 610 + pos)
-        mean = float(np.mean(values))
+        low, high = _ci(summary_values, 610 + pos)
+        mean = float(np.mean(summary_values))
         axes[1].errorbar(
             pos,
             mean,
@@ -1140,6 +1166,13 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[1].set_xticks([0, 1], ["Actor\n- direct", "Strategic\n- actor"])
     axes[1].set_ylabel("layer effect")
     axes[1].set_title("B  response-effect distribution")
+    axes[1].text(
+        0.03,
+        0.04,
+        "points: family-seed traces\nintervals: matched-seed bootstrap",
+        transform=axes[1].transAxes,
+        fontsize=5.5,
+    )
     # C: cluster-level strategic reversal plane.
     family_style = {
         "fixed": (COLORS["direct"], "o"),
@@ -1185,7 +1218,11 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     ]
     sirr = float(np.mean(family_sirrs)) if family_sirrs else float("nan")
     axes[2].text(
-        0.04, 0.05, f"adaptive SIRR={100 * sirr:.2f}%", transform=axes[2].transAxes, fontsize=6.8
+        0.04,
+        0.05,
+        f"adaptive family-mean\nSIRR={100 * sirr:.2f}%",
+        transform=axes[2].transAxes,
+        fontsize=6.0,
     )
     # Family identity is intentionally shown in the more expansive strategic
     # generalization figure.  A second legend here would overlap this panel's
@@ -1200,7 +1237,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         out_rows,
         source_paths,
         "Where does a proposed update change across direct observer, actor, and strategic worlds?",
-        "opponent-seed cluster",
+        "matched opponent seed (summary); family-by-seed trace (raw)",
         appendix=True,
     )
 
@@ -1522,7 +1559,11 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[2].set_ylabel(r"strategic $\Delta$")
     axes[2].set_title("C  strategic reversal plane")
     axes[2].text(
-        0.04, 0.06, f"adaptive SIRR={100 * sirr:.2f}%", transform=axes[2].transAxes, fontsize=6.2
+        0.04,
+        0.06,
+        f"adaptive family-mean\nSIRR={100 * sirr:.2f}%",
+        transform=axes[2].transAxes,
+        fontsize=5.7,
     )
     axes[2].legend(fontsize=5.4, loc="upper left")
     figure.tight_layout(w_pad=1.0)

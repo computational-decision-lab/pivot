@@ -15,6 +15,29 @@ from scripts.verify_iclr_submission import (
 )
 
 
+def test_finalizer_normalizes_intermediate_supplement_digests() -> None:
+    from experiments.v10.finalize import _stable_build_steps
+
+    steps = [
+        {
+            "command": ["python", "scripts/build_iclr_supplement.py"],
+            "stdout_tail": [
+                (
+                    '{"archive": "pivot_iclr2027_supplementary.zip", '
+                    '"sha256": "changing", "snapshot_manifest_sha256": "stable"}'
+                )
+            ],
+        }
+    ]
+
+    normalized = _stable_build_steps(steps)
+    line = normalized[0]["stdout_tail"][0]
+    payload = json.loads(line)
+    assert payload["archive"] == "pivot_iclr2027_supplementary.zip"
+    assert payload["snapshot_manifest_sha256"] == "stable"
+    assert "sha256" not in payload
+
+
 def test_aux_path_falls_back_to_build_sidecar_for_copied_submission(tmp_path: Path) -> None:
     submission = tmp_path / "paper" / "pivot_submission.pdf"
     submission.parent.mkdir(parents=True)

@@ -69,6 +69,28 @@ def _run(command: list[str], root: Path, log: list[dict[str, Any]]) -> None:
         raise RuntimeError(f"command failed ({' '.join(command)}):\n{detail}")
 
 
+def _stable_build_steps(steps: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Remove the self-referential interim supplement digest from build logs."""
+
+    normalized: list[dict[str, Any]] = []
+    for step in steps:
+        record = dict(step)
+        stdout_tail: list[str] = []
+        for line in record.get("stdout_tail", []):
+            try:
+                payload = json.loads(line)
+            except json.JSONDecodeError:
+                stdout_tail.append(line)
+                continue
+            if isinstance(payload, dict) and payload.get("archive") == "pivot_iclr2027_supplementary.zip":
+                payload.pop("sha256", None)
+                line = json.dumps(payload, sort_keys=True)
+            stdout_tail.append(line)
+        record["stdout_tail"] = stdout_tail
+        normalized.append(record)
+    return normalized
+
+
 def _validate_frozen_sources(root: Path) -> dict[str, Any]:
     errors: list[str] = []
     decisions: dict[str, Any] = {}
@@ -219,7 +241,7 @@ The registered transition-specific OOD learner does not outperform the global ev
 
 ## Main-text changes
 
-The manuscript now centers the directed update `pi -> pi'`, states all six propositions, defines ISR/CTI/CISR and matched-cell FER, removes internal run/version language from the scientific body, separates PIVOT-VOI from PIVOT-H, and uses a light AI Use Statement. The current PDF has `{main_pages}` main pages and `{pages}` total pages; references and appendix are outside the main-text gate.
+The manuscript now centers the directed update `pi -> pi'`, states all six propositions, defines ISR/CTI/CISR and matched-cell FER, removes internal run/version language from the scientific body, separates PIVOT-VOI from PIVOT-H, and includes an AI disclosure matched to the documented tooling. The current PDF has `{main_pages}` main pages and `{pages}` total pages; references and appendix are outside the main-text gate.
 
 ## Figure changes
 
@@ -228,7 +250,7 @@ The manuscript now centers the directed update `pi -> pi'`, states all six propo
 - Figure 3: dense overlapping systems diagram -> compact two-band OpenTikZ PIVOT-VOI decision path with semantic provenance.
 - Figure 4: heterogeneous frontier -> fixed-K environment panels plus paired fixed-budget forest.
 - Figure 5: endpoint summary -> seed-level closed-loop CTI/CISR trajectories with the external null kept endpoint-only.
-- Figure A (old Figure 6): sparse world points -> paired response paths, effect distributions, and a strategic reversal plane.
+- Figure A (old Figure 6): sparse world points -> paired response paths, matched-seed summary intervals, effect distributions, and a strategic reversal plane.
 - Figure B (old Figure 7): bars -> powered-null forest and paired raw scatter.
 - Figure C (old Figure 8): Jaccard-only curves -> numerical and decision robustness diagnostics.
 - Figure D (old Figure 9): sensitivity line -> opponent distributions, cluster forest, and strategic reversal plane.
@@ -255,7 +277,7 @@ The novelty boundary now explicitly covers Self-Improvement Reversal, AI4AI-Benc
 
 `{status}`
 
-All local machine checks pass: `{machine_pass}`. The package is locally submission-ready within its stated scientific scope, but it has not been uploaded to OpenReview and the manual author gates above remain pending.
+All local machine checks pass: `{machine_pass}`. `READY_FOR_SUBMISSION` describes the anonymous PDF and supplement only. The separate platform audit remains conditional until the authors complete the OpenReview profile, metadata, quota, conflict, AI-use form disclosure, and parallel-submission gates; it has not been uploaded to OpenReview.
 """
 
 
@@ -305,7 +327,7 @@ def finalize(root: Path) -> dict[str, Any]:
         raise RuntimeError("paper verification report is not valid")
     submission = _submission_audit(root)
     machine_pass = all(bool(value) for value in submission.get("machine_checks", {}).values())
-    status = "READY_WITH_MINOR_MANUAL_CHECKS" if machine_pass else "NOT_READY"
+    status = "READY_FOR_SUBMISSION" if machine_pass else "NOT_READY"
     _write_final_report(
         root,
         status=status,
@@ -330,7 +352,7 @@ def finalize(root: Path) -> dict[str, Any]:
         "submission_machine_checks": submission.get("machine_checks"),
         "manual_gates": submission.get("manual_gates"),
         "scientific_boundaries": _publicize(submission.get("scientific_gates"), root),
-        "build_steps": _publicize(steps, root),
+        "build_steps": _publicize(_stable_build_steps(steps), root),
     }
     write_json(root, "artifacts/v10/finalize_report.json", finalize_report)
 
