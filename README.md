@@ -140,6 +140,12 @@ and are intentionally excluded from Git and the reviewer package. The
 supplement and release contain hash-indexed redacted plane summaries; the
 sealed inputs are required separately before any confirmatory execution.
 
+The stable agent-agnostic import surface is `src/pivot_core/`, with the
+Inspect-controlled external boundary in `src/pivot_inspect/`.  Both facades
+are contract-only on import: they do not invoke a model, open a sealed task,
+or start a container.  The implementation boundary and remaining scientific
+gates are recorded in `V15_IMPLEMENTATION_MATRIX.md`.
+
 To materialize the small public handoff directory (without raw V15 traces or
 local runtime files), run:
 

@@ -1,4 +1,4 @@
-.PHONY: reproduce-paper test lint typecheck v9-validate v9-analyze v9-figures v9-tables v9-audit v10-finalize v15-reports v15-figures v15-figure-review v15-finalize v15-release
+.PHONY: reproduce-paper test lint typecheck v9-validate v9-analyze v9-figures v9-tables v9-audit v10-finalize v15-reports v15-figures v15-figure-review v15-finalize v15-release v15-master-loop
 
 reproduce-paper:
 	.venv/bin/python scripts/reproduce_paper.py
@@ -50,3 +50,6 @@ v15-finalize:
 
 v15-release: v15-finalize
 	.venv/bin/python scripts/build_release_assets.py --root . --public-release --force
+
+v15-master-loop:
+	.venv/bin/python -m experiments.v15 master-loop --root .

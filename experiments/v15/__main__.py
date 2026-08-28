@@ -32,6 +32,7 @@ from .commands import (
     figures,
     freeze,
     freeze_candidates,
+    master_loop,
     repair_manifests,
     reports,
     run_ablations,
@@ -88,6 +89,7 @@ def main() -> None:
             "run-ablations", "figures", "approve-figures", "reports", "finalize",
             "audit-numbers", "audit-claims", "audit-references", "audit-anonymity",
             "audit-language", "audit-reproducibility",
+            "master-loop",
         ),
     )
     parser.add_argument("--root", type=Path, default=Path.cwd())
@@ -126,6 +128,7 @@ def main() -> None:
         "dev-smoke": lambda: dev_smoke(root),
         "dev-construct": lambda: dev_construct(root),
         "dev-resource-plan": lambda: dev_resource_plan(root),
+        "master-loop": lambda: master_loop(root),
         "dev-external-smoke": lambda: dev_external_smoke(
             root,
             seed=args.seed,

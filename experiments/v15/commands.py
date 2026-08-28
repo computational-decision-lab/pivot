@@ -64,6 +64,18 @@ def dev_resource_plan(root: Path) -> dict[str, Any]:
     return {"status": "PASS", "phase": "DEV", "resource_plan": "V15_RESOURCE_PLAN.md"}
 
 
+def master_loop(root: Path) -> dict[str, Any]:
+    """Run the non-invasive V15 orchestration loop.
+
+    The loop calls only unflagged commands, so external phases remain explicit
+    dry-runs and no model or sealed assessment is opened accidentally.
+    """
+
+    from .master_loop import run_master_loop
+
+    return run_master_loop(root)
+
+
 def dev_external_smoke(root: Path, *, seed: int = 10001, task_limit: int = 1) -> dict[str, Any]:
     from .dev.external_smoke import run_external_smoke
 

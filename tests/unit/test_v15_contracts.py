@@ -159,6 +159,31 @@ def test_validate_pi_module_entrypoint_is_available() -> None:
     assert payload["status"] == "NOT_RUN"
 
 
+def test_public_facades_expose_agent_agnostic_core_and_control_plane() -> None:
+    import pivot_core
+    import pivot_inspect
+
+    assert pivot_core.PolicyTransition is not None
+    assert pivot_core.select_pivot_voi is not None
+    assert pivot_inspect.InspectControlPlane().status()["execution_status"] == "NOT_RUN"
+    assert pivot_inspect.MiniSWEAdapter().status()["execution_status"] == "NOT_RUN"
+    assert pivot_inspect.PiAdapter().status()["execution_status"] == "NOT_RUN"
+
+
+def test_master_loop_is_explicitly_available_from_command_surface() -> None:
+    import subprocess
+    import sys
+
+    completed = subprocess.run(
+        [sys.executable, "-m", "experiments.v15", "--help"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert completed.returncode == 0, completed.stderr
+    assert "master-loop" in completed.stdout
+
+
 def test_pi_adapter_reports_built_cli_without_opening_a_model() -> None:
     from experiments.v15.adapters.pi import PiAdapter
 
