@@ -13,6 +13,7 @@ from pivot.acquisition.pivot_voi import (
     select_pivot_voi,
     should_stop,
 )
+from pivot.algorithms.pivot import RoundResult, run_pivot_round, run_pivot_voi_round
 from pivot.core.policy import Policy
 from pivot.core.result import PairedEvaluation, RolloutContext, RolloutResult
 from pivot.core.transition import PolicyTransition
@@ -28,8 +29,11 @@ __all__ = [
     "PolicyTransition",
     "RolloutContext",
     "RolloutResult",
+    "RoundResult",
     "compute_update_footprint",
     "expected_simple_regret",
+    "run_pivot_round",
+    "run_pivot_voi_round",
     "score_pivot_voi",
     "select_pivot_voi",
     "should_stop",

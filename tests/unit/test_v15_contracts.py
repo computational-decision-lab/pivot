@@ -164,6 +164,8 @@ def test_public_facades_expose_agent_agnostic_core_and_control_plane() -> None:
     import pivot_inspect
 
     assert pivot_core.PolicyTransition is not None
+    assert pivot_core.RoundResult is not None
+    assert pivot_core.run_pivot_voi_round is not None
     assert pivot_core.select_pivot_voi is not None
     assert pivot_inspect.InspectControlPlane().status()["execution_status"] == "NOT_RUN"
     assert pivot_inspect.MiniSWEAdapter().status()["execution_status"] == "NOT_RUN"
