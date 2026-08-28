@@ -1,6 +1,6 @@
 # Claim Audit
 
-The claim registry, permitted evidence, forbidden inferences, and paper-facing scope are checked together.
+Status: **PASS** for scope preservation and evidence-contract fields.
 
 ```json
 {
@@ -36,3 +36,5 @@ The claim registry, permitted evidence, forbidden inferences, and paper-facing s
   "valid": true
 }
 ```
+
+Claims remain limited to Improvement Fidelity, controlled response layers, finite opponent mechanisms, and the existing observational finance boundary. Modern-agent claims are registered but not promoted while their confirmatory state is NOT_RUN.

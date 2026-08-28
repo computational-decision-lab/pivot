@@ -48,7 +48,10 @@ v15-finalize:
 	(cd paper/iclr2027 && ./build.sh)
 	.venv/bin/python -m experiments.v15 finalize --root .
 
-v15-release: v15-finalize
+v15-release:
+	$(MAKE) v15-finalize
+	$(MAKE) v15-figure-review
+	$(MAKE) v15-finalize
 	.venv/bin/python scripts/build_release_assets.py --root . --public-release --force
 
 v15-master-loop:

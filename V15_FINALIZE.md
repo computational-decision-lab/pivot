@@ -305,7 +305,7 @@ Local package status: **BLOCKED**. External modern-agent evidence remains separa
         "dev-external-ablations": "5a9620e6435ead52bf6bc53312af28dc80fd67e56409e767172b9ede712dc567",
         "dev-external-closed-loop": "05b2b74467ae0ec6d18a75ea3e62a53af6253e85eeaf490fa1ae0bf24ed6cd7d",
         "dev-external-promotion": "7ca02c2a6c9d188357a560f7eedf6b89d26c695c6cdcde70e8fbf20c1b6a4b37",
-        "dev-external-strategic-response": "d05842bed862d1df2478c75b6fd1c3fc8f61869cd20445857ec7429088d4c31a",
+        "dev-external-strategic-response": "a39e3a2f3119695f4301c0b1f60d193769fa43d9f73706d5dd7a9be7ae91d190",
         "dev-external-transition-audit": "6f499b8132534822b2fcdf10d79804f6559b59d25b4497234817247ad369aa78",
         "dev-pi-replication": "b8c5d490435a19da7ce54cb14e77727c1c895b0d82e04e7f900156c2376235a0"
       },

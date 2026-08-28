@@ -1,23 +1,8 @@
 # Number Audit
 
-Semantic macros are compared with the frozen source decisions, including family-balanced strategic aggregation.
+Status: **PASS** for the frozen manuscript macros.
 
-```json
-{
-  "checks": {
-    "StrategicAdaptiveFamilies": true,
-    "StrategicAllFamilySeedTraces": true,
-    "StrategicClusters": true,
-    "StrategicFamilySeedTraces": true,
-    "StrategicSIRR": true
-  },
-  "expected": {
-    "StrategicAdaptiveFamilies": "3",
-    "StrategicAllFamilySeedTraces": "150",
-    "StrategicClusters": "30",
-    "StrategicFamilySeedTraces": "90",
-    "StrategicSIRR": "0.9495"
-  },
-  "valid": true
-}
-```
+Checks: `{"StrategicAdaptiveFamilies": true, "StrategicAllFamilySeedTraces": true, "StrategicClusters": true, "StrategicFamilySeedTraces": true, "StrategicSIRR": true}`
+The strategic aggregation is computed from the three registered adaptive
+families and matched seed clusters in the source artifact; no manually typed
+modern-agent number is present.

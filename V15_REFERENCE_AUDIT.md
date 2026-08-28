@@ -1,15 +1,10 @@
 # Reference Audit
 
-Citation keys are reconciled against the bundled bibliography; this local audit does not invent external metadata.
+Status: **PASS**.
 
-```json
-{
-  "bibliography_exists": true,
-  "cited_entry_count": 42,
-  "duplicate_entry_keys": [],
-  "entry_count": 67,
-  "missing_citation_keys": [],
-  "unique_entry_count": 67,
-  "valid": true
-}
-```
+The bundled bibliography contains `67`
+entries, of which `42` are cited in
+the manuscript.  Duplicate keys: `[]`;
+missing citation keys: `[]`.
+Recent preprints remain labelled as preprints; this local key audit does not
+claim that every external metadata record is a peer-reviewed venue record.
