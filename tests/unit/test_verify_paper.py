@@ -7,6 +7,7 @@ import pytest
 from scripts.verify_paper import (
     _parse_fonts,
     _portable_path,
+    _resolve_aux,
     parse_appendix_start_page,
     parse_references_start_page,
     scan_log,
@@ -57,3 +58,22 @@ def test_scan_log_rejects_undefined_references_and_overfull_boxes() -> None:
     result = scan_log("LaTeX Warning: Reference `x' undefined\nOverfull \\hbox (3.0pt too wide)")
     assert result["undefined_references"] is True
     assert result["overfull_hboxes"] == 1
+
+
+def test_resolve_aux_accepts_build_sidecar_for_submission_pdf(tmp_path: Path) -> None:
+    pdf = tmp_path / "paper.pdf"
+    pdf.write_bytes(b"%PDF")
+    sidecar = tmp_path / "build" / "main.aux"
+    sidecar.parent.mkdir()
+    sidecar.write_text("\\relax\n", encoding="utf-8")
+
+    assert _resolve_aux(pdf) == sidecar.resolve()
+
+
+def test_resolve_aux_prefers_explicit_sidecar(tmp_path: Path) -> None:
+    pdf = tmp_path / "paper.pdf"
+    pdf.write_bytes(b"%PDF")
+    explicit = tmp_path / "locked.aux"
+    explicit.write_text("\\relax\n", encoding="utf-8")
+
+    assert _resolve_aux(pdf, explicit) == explicit.resolve()

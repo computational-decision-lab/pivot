@@ -52,6 +52,22 @@ def _portable_path(path: Path) -> str:
         return resolved.name
 
 
+def _resolve_aux(pdf: Path, aux: Path | None = None) -> Path:
+    """Resolve a LaTeX sidecar for build and release directory layouts."""
+
+    resolved_pdf = Path(pdf).resolve()
+    candidates = [
+        Path(aux).resolve() if aux is not None else None,
+        resolved_pdf.with_suffix(".aux"),
+        resolved_pdf.parent / "build" / "main.aux",
+    ]
+    for candidate in candidates:
+        if candidate is not None and candidate.is_file():
+            return candidate.resolve()
+    searched = ", ".join(str(candidate) for candidate in candidates if candidate is not None)
+    raise FileNotFoundError(f"LaTeX aux sidecar is missing; searched: {searched}")
+
+
 def scan_log(log_text: str) -> dict[str, Any]:
     """Extract warning counts that should block a paper handoff."""
 
@@ -72,6 +88,7 @@ def verify_paper(
     output: Path,
     preview: Path | None = None,
     max_main_pages: int = 9,
+    aux: Path | None = None,
 ) -> dict[str, Any]:
     """Run PDF, source, font, text, figure, and warning checks.
 
@@ -95,10 +112,8 @@ def verify_paper(
     font_output = _command(["pdffonts", str(pdf)]) if shutil.which("pdffonts") else ""
     fonts = _parse_fonts(font_output)
 
-    aux = pdf.with_suffix(".aux")
-    if not aux.is_file():
-        raise FileNotFoundError(f"expected LaTeX aux next to PDF: {aux}")
-    aux_text = aux.read_text(encoding="utf-8", errors="replace")
+    aux_path = _resolve_aux(pdf, aux)
+    aux_text = aux_path.read_text(encoding="utf-8", errors="replace")
     references_page = parse_references_start_page(aux_text)
     appendix_page = parse_appendix_start_page(aux_text)
     main_pages = references_page - 1
@@ -190,6 +205,7 @@ def verify_paper(
         "main_pages": main_pages,
         "references_start_page": references_page,
         "appendix_start_page": appendix_page,
+        "aux": _portable_path(aux_path),
         "title": title,
         "author": author,
         "fonts": fonts,
@@ -277,8 +293,9 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--preview", type=Path)
     parser.add_argument("--max-main-pages", type=int, default=9)
+    parser.add_argument("--aux", type=Path, help="LaTeX aux sidecar; defaults to PDF/build/main.aux")
     args = parser.parse_args()
-    report = verify_paper(args.pdf, args.source, args.output, args.preview, args.max_main_pages)
+    report = verify_paper(args.pdf, args.source, args.output, args.preview, args.max_main_pages, args.aux)
     print(
         json.dumps(
             {"valid": report["valid"], "main_pages": report["main_pages"], "pages": report["pages"]}
