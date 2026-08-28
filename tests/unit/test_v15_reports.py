@@ -13,6 +13,20 @@ def test_required_report_names_are_closed_and_include_finalizer() -> None:
     assert len(REQUIRED_REPORTS) == len(set(REQUIRED_REPORTS))
 
 
+def test_baseline_report_uses_immutable_snapshot_provenance(tmp_path: Path) -> None:
+    from experiments.v15.reports import _snapshot_git_commit
+
+    provenance = tmp_path / "snapshot/v15_pre_modern_agent/PROVENANCE.txt"
+    provenance.parent.mkdir(parents=True)
+    provenance.write_text(
+        "git_commit 0123456789abcdef\n"
+        "git_tree deadbeef\n",
+        encoding="utf-8",
+    )
+
+    assert _snapshot_git_commit(tmp_path) == "0123456789abcdef"
+
+
 def test_repository_readme_uses_v15_finalizer() -> None:
     readme = Path("README.md").read_text(encoding="utf-8")
 

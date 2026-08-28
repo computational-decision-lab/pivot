@@ -1,13 +1,20 @@
 # Language and Paper-Facing Token Audit
 
-Status: **PASS**
+The manuscript body and rendered PDF are checked for internal iteration labels and implementation-assistant provenance.
 
-- Version tokens in manuscript body: `[]`
-- Body source closure: `['main.tex']`
-- Version tokens in rendered PDF text: `[]`
-- Forbidden implementation-assistant tokens in paper/PDF: `0`
-- Forbidden implementation-assistant tokens in reviewer artifacts: `0`
-
-Internal experiment directory labels are not rendered into the scientific
-body.  The manuscript does not use internal version labels as paper-facing
-claims.
+```json
+{
+  "body_source_files": [
+    "main.tex"
+  ],
+  "body_source_version_hits": {},
+  "body_version_tokens": [],
+  "paper_facing_codex_tokens": 0,
+  "pdf_exists": true,
+  "pdf_version_tokens": [],
+  "reviewer_artifact_codex_hits": [],
+  "reviewer_artifact_codex_tokens": 0,
+  "source_exists": true,
+  "valid": true
+}
+```

@@ -83,6 +83,20 @@ def _git(root: Path, *args: str) -> str:
         return "unavailable"
 
 
+def _snapshot_git_commit(root: Path) -> str:
+    """Read the commit recorded when the pre-modern-agent snapshot was made."""
+
+    provenance = Path(root) / "snapshot/v15_pre_modern_agent/PROVENANCE.txt"
+    try:
+        for line in provenance.read_text(encoding="utf-8").splitlines():
+            key, separator, value = line.partition(" ")
+            if key == "git_commit" and separator and value.strip():
+                return value.strip()
+    except OSError:
+        pass
+    return "unavailable"
+
+
 def _write(root: Path, name: str, text: str) -> Path:
     path = root / name
     path.write_text(text.rstrip() + "\n", encoding="utf-8")
@@ -424,7 +438,7 @@ def generate_reports(root: Path) -> dict[str, Any]:
 Status: **{'PASS' if snapshot_ok else 'BLOCKED'}**
 
 The pre-modern-agent fallback is preserved before any new edits.  Git commit:
-`{_git(root, 'rev-parse', 'HEAD')}`.  The exact tracked subtree is stored in
+`{_snapshot_git_commit(root)}` (from the snapshot provenance).  The exact tracked subtree is stored in
 `snapshot/v15_pre_modern_agent/source/research-pivot-head.tar`; key PDF,
 source, bibliography, supplement, and macro copies plus SHA-256 provenance are
 under `snapshot/v15_pre_modern_agent/key_artifacts`.
@@ -440,7 +454,9 @@ Provenance file: `{_sha256(snapshot) if snapshot.is_file() else 'missing'}`
 
 Status: **PASS** for the local protocol layer.
 
-Current commit: `{_git(root, 'rev-parse', 'HEAD')}`
+The inventory is audited from the current checkout; commit identity is
+provided by Git history rather than embedded here, avoiding a self-referential
+report change on rebuild.
 Tracked PIVOT files: `{len(_git(root, 'ls-files').splitlines())}`
 Python: `{platform.python_version()}`
 Outcome chasing flag: `false`

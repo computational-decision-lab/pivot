@@ -3,7 +3,7 @@
 Status: **PASS**
 
 The pre-modern-agent fallback is preserved before any new edits.  Git commit:
-`c3c12e0f8442bd6f1be8af2099d97d0a6213fc43`.  The exact tracked subtree is stored in
+`2ea1246230eda7ce2f645d2e12774db883a79a72` (from the snapshot provenance).  The exact tracked subtree is stored in
 `snapshot/v15_pre_modern_agent/source/research-pivot-head.tar`; key PDF,
 source, bibliography, supplement, and macro copies plus SHA-256 provenance are
 under `snapshot/v15_pre_modern_agent/key_artifacts`.

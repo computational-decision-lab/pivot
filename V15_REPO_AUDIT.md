@@ -2,8 +2,10 @@
 
 Status: **PASS** for the local protocol layer.
 
-Current commit: `c3c12e0f8442bd6f1be8af2099d97d0a6213fc43`
-Tracked PIVOT files: `1596`
+The inventory is audited from the current checkout; commit identity is
+provided by Git history rather than embedded here, avoiding a self-referential
+report change on rebuild.
+Tracked PIVOT files: `1598`
 Python: `3.10.12`
 Outcome chasing flag: `false`
 
