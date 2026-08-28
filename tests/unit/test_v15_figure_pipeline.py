@@ -59,6 +59,33 @@ def test_figure_pipeline_requires_hash_bound_visual_signoff(tmp_path: Path) -> N
     assert invalidated["records"][0]["state"] == "BLOCKED"
 
 
+def test_visual_signoff_timestamp_is_reused_for_unchanged_hashes(tmp_path: Path) -> None:
+    from experiments.v15.figure_pipeline import bundle_figures, write_visual_review_manifest
+
+    source = tmp_path / "figures/v10"
+    source.mkdir(parents=True)
+    (source / "figure_manifest.json").write_text(
+        json.dumps({"figures": [{"figure_id": "demo", "scientific_question": "q", "alias_of": None}]}),
+        encoding="utf-8",
+    )
+    for suffix, payload in (
+        ("pdf", b"%PDF"),
+        ("svg", b"<svg/>"),
+        ("png", b"png"),
+        ("csv", b"x\n1\n"),
+        ("parquet", b"parquet"),
+        ("meta.json", b"{}"),
+    ):
+        (source / f"demo.{suffix}").write_bytes(payload)
+
+    bundle_figures(tmp_path)
+    write_visual_review_manifest(tmp_path, reviewer="test", reviewed_at_utc="2026-01-01T00:00:00+00:00")
+    first = json.loads((tmp_path / "figures/v15/visual_review_manifest.json").read_text())
+    write_visual_review_manifest(tmp_path, reviewer="test")
+    second = json.loads((tmp_path / "figures/v15/visual_review_manifest.json").read_text())
+    assert second["reviewed_at_utc"] == first["reviewed_at_utc"]
+
+
 def test_figure_audit_rejects_unbound_visual_pass(tmp_path: Path) -> None:
     from experiments.v15.figure_pipeline import bundle_figures
     from figures.v15.audit import audit

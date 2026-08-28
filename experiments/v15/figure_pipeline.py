@@ -227,9 +227,20 @@ def write_visual_review_manifest(
                 "review_note": str(note),
             }
         )
+    # A review is a signed assertion about exact rendered bytes.  Reusing its
+    # timestamp when those bytes are unchanged keeps clean rebuilds byte-stable;
+    # a changed source hash still requires a fresh explicit sign-off.
+    stable_review_time = reviewed_at_utc
+    if stable_review_time is None:
+        prior_hashes, prior_error = _load_visual_review(root)
+        current_hashes = {
+            str(entry["figure_id"]): entry["source_hashes"] for entry in entries
+        }
+        if prior_error is None and prior_hashes == current_hashes:
+            stable_review_time = _visual_review_timestamp(root)
     payload: dict[str, Any] = {
         "schema_version": "pivot-v15-visual-review-1",
-        "reviewed_at_utc": reviewed_at_utc or datetime.now(timezone.utc).isoformat(),
+        "reviewed_at_utc": stable_review_time or datetime.now(timezone.utc).isoformat(),
         "reviewer": str(reviewer),
         "inspection_method": [
             "rendered_vector",

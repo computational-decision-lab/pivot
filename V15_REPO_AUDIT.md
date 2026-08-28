@@ -2,7 +2,7 @@
 
 Status: **PASS** for the local protocol layer.
 
-Current commit: `800762b1f3d8e549cbb17446654fc86b072cf2ad`
+Current commit: `c3c12e0f8442bd6f1be8af2099d97d0a6213fc43`
 Tracked PIVOT files: `1596`
 Python: `3.10.12`
 Outcome chasing flag: `false`

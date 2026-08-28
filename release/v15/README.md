@@ -17,3 +17,6 @@ must not be read as completed scientific evidence.
 No raw Inspect traces, sandbox trees, candidate archives, private paths,
 credentials, or local runtime installations are included. Rebuild the
 paper and supplement with `make v15-finalize` from the repository root.
+Figure metadata uses the tracked build provenance anchor in
+`configs/v15/build_provenance.json` so clean rebuilds preserve the
+hash-bound visual review.

@@ -172,7 +172,10 @@ def build_public_release(root: Path, output: Path | None = None, *, force: bool 
         "- `SHA256SUMS`: hashes for every release file except the checksum file.\n\n"
         "No raw Inspect traces, sandbox trees, candidate archives, private paths,\n"
         "credentials, or local runtime installations are included. Rebuild the\n"
-        "paper and supplement with `make v15-finalize` from the repository root.\n",
+        "paper and supplement with `make v15-finalize` from the repository root.\n"
+        "Figure metadata uses the tracked build provenance anchor in\n"
+        "`configs/v15/build_provenance.json` so clean rebuilds preserve the\n"
+        "hash-bound visual review.\n",
         encoding="utf-8",
     )
     copied.append(readme)

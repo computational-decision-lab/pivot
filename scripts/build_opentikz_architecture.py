@@ -45,6 +45,18 @@ def _generated_at() -> str | None:
 
 
 def _git_commit(root: Path) -> str | None:
+    override = os.environ.get("PIVOT_BUILD_COMMIT", "").strip()
+    if override:
+        return override
+    provenance = root / "configs/v15/build_provenance.json"
+    try:
+        payload = json.loads(provenance.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        payload = {}
+    if isinstance(payload, dict):
+        configured = payload.get("artifact_source_commit")
+        if isinstance(configured, str) and configured.strip():
+            return configured.strip()
     try:
         return subprocess.check_output(
             ["git", "-C", str(root), "rev-parse", "HEAD"], text=True
