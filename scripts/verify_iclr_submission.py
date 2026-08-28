@@ -28,11 +28,18 @@ PRIVATE_PATH_PATTERNS = (
     "secret",
 )
 RAW_ARCHIVE_SUFFIXES = (".zip", ".tar", ".tar.gz", ".parquet", ".feather")
+SEALED_ARCHIVE_MEMBERS = {
+    "configs/v15/task_manifest.json",
+    "experiments/v15/confirmatory_lock_history.jsonl",
+}
 IDENTITY_PATTERNS = (
     r"\\author\s*\{[^}]*@",
     r"\\author\s*\{(?!\s*anonymous)[^}]+\}",
     r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}",
 )
+ARCHIVE_PRIVATE_CONTENT_RE = re.compile(rb"(?i)/(?:opt/projects|home/ubuntu|tmp)/")
+ARCHIVE_CREDENTIAL_RE = re.compile(rb"(?:sk-[A-Za-z0-9]{12,}|AKIA[0-9A-Z]{16}|Bearer\s+[A-Za-z0-9._-]{12,})")
+ARCHIVE_ASSISTANT_RE = re.compile(rb"(?i)\bcodex\b")
 
 
 def audit_source_text(source: str) -> dict[str, bool]:
@@ -60,7 +67,7 @@ def audit_source_text(source: str) -> dict[str, bool]:
     }
 
 
-def audit_archive_members(members: Iterable[str]) -> dict[str, bool]:
+def audit_archive_members(members: Iterable[str]) -> dict[str, Any]:
     """Check a supplementary archive member list for private/raw artifacts."""
 
     names = [name.replace("\\", "/") for name in members]
@@ -69,14 +76,67 @@ def audit_archive_members(members: Iterable[str]) -> dict[str, bool]:
         for name in names
         if any(token.casefold() in name.casefold() for token in PRIVATE_PATH_PATTERNS)
     ]
-    raw = [name for name in names if name.casefold().endswith(RAW_ARCHIVE_SUFFIXES)]
+    generated_parquet = [
+        name
+        for name in names
+        if name.casefold().endswith(".parquet")
+        and name.casefold().startswith(("results/v15/", "figures/v15/", "artifacts/v15/"))
+    ]
+    raw = [
+        name
+        for name in names
+        if name.casefold().endswith(RAW_ARCHIVE_SUFFIXES) and name not in generated_parquet
+    ]
+    sealed = [name for name in names if name in SEALED_ARCHIVE_MEMBERS]
     return {
         "no_private_paths": not private,
         "no_raw_archives": not raw,
+        "no_sealed_inputs": not sealed,
         "has_readme": any(name.casefold().endswith("readme.md") for name in names),
         "has_snapshot_manifest": "snapshot/manifest.json" in names,
         "private_members": not private,
         "raw_members": not raw,
+        "sealed_members": sealed,
+        "generated_parquet_members": generated_parquet,
+    }
+
+
+def audit_archive_contents(archive_path: Path) -> dict[str, Any]:
+    """Scan member bytes for private paths or unreplaced credentials.
+
+    The member-name audit cannot see values embedded in JSONL or binary
+    Parquet.  This second pass intentionally uses narrow absolute-path and
+    credential signatures so ordinary public URLs and source identifiers are
+    not treated as leaks.
+    """
+
+    private_hits: list[str] = []
+    credential_hits: list[str] = []
+    assistant_hits: list[str] = []
+    try:
+        with zipfile.ZipFile(archive_path) as archive:
+            for name in archive.namelist():
+                if name.endswith("/"):
+                    continue
+                data = archive.read(name)
+                if ARCHIVE_PRIVATE_CONTENT_RE.search(data):
+                    private_hits.append(name)
+                if ARCHIVE_CREDENTIAL_RE.search(data):
+                    credential_hits.append(name)
+                if ARCHIVE_ASSISTANT_RE.search(data):
+                    assistant_hits.append(name)
+    except (OSError, zipfile.BadZipFile):
+        return {
+            "valid": False,
+            "private_content_hits": [],
+            "credential_content_hits": [],
+            "assistant_content_hits": [],
+        }
+    return {
+        "valid": not private_hits and not credential_hits and not assistant_hits,
+        "private_content_hits": sorted(private_hits),
+        "credential_content_hits": sorted(credential_hits),
+        "assistant_content_hits": sorted(assistant_hits),
     }
 
 
@@ -99,10 +159,13 @@ def audit_style_hashes(style_dir: Path, manifest_path: Path) -> bool:
 def build_decision(report: dict[str, Any]) -> dict[str, Any]:
     """Return GO only when machine, manual, and scientific gates all pass."""
 
+    inventory_fields = {"generated_parquet_members", "private_members", "raw_members", "sealed_members"}
     blocking: list[str] = []
     for category in ("machine_checks", "manual_gates", "scientific_gates"):
         values = report.get(category, {})
         for name, value in values.items():
+            if name.removeprefix("archive_") in inventory_fields:
+                continue
             passed = value is True or str(value).casefold() in {"pass", "passed", "true"}
             if not passed:
                 blocking.append(f"{category}.{name}")
@@ -203,6 +266,7 @@ def audit_submission(
     with zipfile.ZipFile(supplement) as archive:
         members = archive.namelist()
     archive_checks = audit_archive_members(members)
+    archive_content_checks = audit_archive_contents(supplement)
     page_count = _pdf_pages(pdf)
     aux_path = _aux_path(pdf, aux)
     references_page = _references_page(pdf, aux_path)
@@ -222,14 +286,24 @@ def audit_submission(
         "style_hashes_match": style_manifest.is_file()
         and audit_style_hashes(style_dir, style_manifest),
         "supplement_exists": supplement.is_file() and supplement.stat().st_size > 0,
-        "supplement_archive": all(archive_checks.values()),
+        "supplement_archive": all(
+            bool(archive_checks.get(name))
+            for name in (
+                "no_private_paths",
+                "no_raw_archives",
+                "no_sealed_inputs",
+                "has_readme",
+                "has_snapshot_manifest",
+            )
+        ),
+        "supplement_content_clean": bool(archive_content_checks.get("valid", False)),
     }
     machine_checks.update({f"source_{name}": value for name, value in source_checks.items()})
     machine_checks.update(
         {
             f"archive_{name}": value
             for name, value in archive_checks.items()
-            if name not in {"private_members", "raw_members"}
+            if name not in {"private_members", "raw_members", "sealed_members", "generated_parquet_members"}
         }
     )
     report: dict[str, Any] = {
@@ -258,6 +332,7 @@ def audit_submission(
             "confirmatory_update_rule_and_holdout": "pass",
         },
         "archive_members": members,
+        "archive_content_checks": archive_content_checks,
     }
     report.update(build_decision(report))
     output.parent.mkdir(parents=True, exist_ok=True)

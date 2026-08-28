@@ -1,0 +1,43 @@
+{
+  "analysis_script": "publication_figure_builder",
+  "appendix": false,
+  "config_hashes": {
+    "configs/v9/e2c.yaml": "af7ed9a66f15fbd5d70779f5c38fc7c762dec3f649d9a7869f15591242070cab",
+    "configs/v9/e3c.yaml": "9176e2d44c70f667045d909a0ac092b07f6a3973c84835b276fc9c5faa522e71",
+    "configs/v9/e4c.yaml": "4c2c12e70ff6f870211753321adbc28dbfa3c29b32eabf55d161e619b9313025",
+    "configs/v9/e5c.yaml": "67402e7d1340284c36da907b39a5666b6ca45ed7ab1423fe494b12abd8314760",
+    "configs/v9/e7c.yaml": "4793c457727834ef8f8456cce2e5049ea38325651cebd7cdf01ad0c4fb14e649",
+    "configs/v9/profiles.yaml": "2ad644bb362bd34ea07989f1557c227953ce9db89cb9b9318db5d1dedfeee7a3"
+  },
+  "display_policy": "source rows are retained; rendering may use deterministic display subsets",
+  "display_row_count": 9600,
+  "display_subsample": "stride=max(1, floor(n/4200))",
+  "experiment_sources": [
+    "results/v9/e2c-confirmatory/transition_rows.jsonl.gz",
+    "tables/v9/e2c_cells.csv"
+  ],
+  "figure_id": "fig1_improvement_reversal",
+  "generated_at": "2026-08-20T12:00:00Z",
+  "git_commit": "8da53e16e0237a83a11a24e814038f48ff8c50b8",
+  "grayscale_distinguishable": true,
+  "incomparable_conditions": "environment reward scales are not compared by raw magnitude",
+  "interpolation": "none; plotted points are observed cells",
+  "interval_definition": "bootstrap or descriptive span as stated in figure caption",
+  "oracle_reference": "all-HF is reference-only where shown; it is not a connected method line",
+  "outputs": [
+    "fig1_improvement_reversal.pdf",
+    "fig1_improvement_reversal.svg",
+    "fig1_improvement_reversal.png"
+  ],
+  "raw_observations": true,
+  "scientific_question": "Can a verifier-approved improvement reverse after deployment?",
+  "source_csv": "fig1_improvement_reversal.csv",
+  "source_hashes": {
+    "results/v9/e2c-confirmatory/transition_rows.jsonl.gz": "12244f8a032516c69cf70104b0c1dfa1c5bd2b612908ae540517bfb036a8259f",
+    "tables/v9/e2c_cells.csv": "7843eddc7863b5d33ad9dd3cdd2cb0ec157630d831ec45c0e7550a3f1ff17b96"
+  },
+  "source_parquet": "fig1_improvement_reversal.parquet",
+  "source_row_count": 28800,
+  "style_version": "pivot-publication-style-1",
+  "unit_of_inference": "paired transition; full source rows with deterministic display flag"
+}

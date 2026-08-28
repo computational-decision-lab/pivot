@@ -1,6 +1,6 @@
 # ICLR 2027 Submission Checklist
 
-Updated 2026-08-26. This checklist distinguishes local evidence from gates
+Updated 2026-08-27. This checklist distinguishes local evidence from gates
 that cannot be closed inside the repository.
 
 ## Machine-verified
@@ -20,8 +20,8 @@ that cannot be closed inside the repository.
   controlled ImprovementBench release, snapshot, tables, and README.
 - PASS: no author identity, private paths, credentials, raw vendor archives, or
   live-order artifacts in the submission package.
-- PASS: repository tests (`205 passed`), Ruff, and mypy are clean at the
-  delivery snapshot.
+- PASS: the full repository test suite, targeted V15 tests, Ruff, and mypy are
+  clean at the delivery snapshot; exact counts are recorded by the build log.
 - PASS (platform extension): IMPROVE-X contracts, ImprovementBench v1/v2, and
   the held-out controlled comparison are included in the anonymous supplement;
   they are not silently promoted into main-text results.
@@ -63,9 +63,11 @@ that cannot be closed inside the repository.
 
 ## Decision
 
-`READY_FOR_SUBMISSION` is the package-level conclusion after the finalizer
-passes: the anonymous PDF and supplement are ready for upload within their
-stated scientific scope. The separate platform audit remains `CONDITIONAL GO`
+`READY_WITH_MINOR_MANUAL_CHECKS` is the package-level conclusion for the
+anonymous PDF and supplement when the local finalizer passes. The separate
+modern-agent confirmatory study remains `BLOCKED` until the pinned external
+scaffolds and an authorized model run are available; this does not turn DEV
+smoke into scientific evidence. The platform audit remains `CONDITIONAL GO`
 until OpenReview profile, author metadata, quota, conflict, AI-use form,
 parallel-submission, and upload gates are completed manually. This does not
 make the finance audit causal.

@@ -1,0 +1,381 @@
+{
+  "K": 4,
+  "T": 30,
+  "allowed_policy_edit_space": [
+    "system_prompt",
+    "agent_loop_config",
+    "tool_policy",
+    "search_policy",
+    "test_policy",
+    "context_policy"
+  ],
+  "baselines": [
+    "Proxy Only",
+    "Random HF",
+    "Paired LUCB",
+    "Global-VOI",
+    "PIVOT-VOI",
+    "All-HF Oracle"
+  ],
+  "bootstrap": {
+    "confidence_level": 0.95,
+    "draws": 10000,
+    "unit": "trajectory_or_task_cluster"
+  },
+  "case_selection_rule": "first eligible reversal by frozen trajectory/operator/round order",
+  "confirmatory_execution": "NOT_RUN",
+  "dependency_lock": "configs/v15/external_runtime_requirements.txt",
+  "figure_definitions": {
+    "appendix": [
+      "world_response",
+      "ood_null",
+      "voi_robustness",
+      "strategic_response",
+      "finance_boundary"
+    ],
+    "main_modern_agent": "2x2 transition, footprint, promotion, and closed-loop panels when supported"
+  },
+  "footprint_features": [
+    "prompt_token_delta",
+    "prompt_semantic_distance",
+    "skill_diff_size",
+    "skills_added",
+    "skills_removed",
+    "tool_schema_change",
+    "tool_count_delta",
+    "loop_parameter_delta",
+    "context_policy_change",
+    "test_policy_change",
+    "search_policy_change"
+  ],
+  "foundation_model": {
+    "api_base_env": "ANTHROPIC_BASE_URL",
+    "credential_env": "ANTHROPIC_AUTH_TOKEN",
+    "identifier": "anthropic/claude-haiku-4-5-20251001",
+    "provider": "anthropic",
+    "status": "authorized_in_runtime_environment"
+  },
+  "frameworks": {
+    "adapters": [
+      {
+        "available": true,
+        "command": "inspect",
+        "import_name": "inspect_ai",
+        "name": "Inspect AI",
+        "source": "local_probe",
+        "version": "0.1.dev1+g9fa31ccbc"
+      },
+      {
+        "available": true,
+        "command": "mini-swe-agent",
+        "import_name": "minisweagent",
+        "name": "mini-SWE-agent",
+        "source": "local_probe",
+        "version": "2.4.6"
+      },
+      {
+        "available": true,
+        "command": "pi",
+        "import_name": null,
+        "name": "Pi",
+        "source": "project_local_probe",
+        "version": "ccfe79ed238674f760c986e3a61493aab794000a"
+      }
+    ],
+    "pinned_sources": {
+      "checked_utc": "2026-08-28",
+      "confirmatory_claim_allowed": false,
+      "control_plane": {
+        "availability": "installed_in_tools_v15_runtime",
+        "commit": "9fa31ccbccd0157bab73b1caa8b03c522470f83d",
+        "license": "MIT",
+        "name": "Inspect AI",
+        "repository": "https://github.com/UKGovernmentBEIS/inspect_ai",
+        "resolved_version": "0.1.dev1+g9fa31ccbc",
+        "runtime_python": ".tools/v15/runtime/bin/python"
+      },
+      "execution_status": "dev_runtime_available_confirmatory_not_started",
+      "model_calls_performed": 0,
+      "primary_scaffold": {
+        "availability": "installed_in_tools_v15_runtime",
+        "commit": "25941c89cfbc91eb40b3f8756348c91d9977d57e",
+        "license": "MIT",
+        "name": "mini-SWE-agent",
+        "repository": "https://github.com/SWE-agent/mini-swe-agent",
+        "resolved_version": "2.4.6",
+        "runtime_python": ".tools/v15/runtime/bin/python"
+      },
+      "replication_scaffold": {
+        "availability": "built_cli_available_dev_smoke_completed",
+        "cli_path": ".tools/v15/external/pi/packages/coding-agent/dist/cli.js",
+        "commit": "ccfe79ed238674f760c986e3a61493aab794000a",
+        "confirmatory_claim_allowed": false,
+        "dev_replication_manifest": "results/v15/dev-pi-replication/manifest.json",
+        "gateway_extension": "experiments/v15/pi_gateway_extension.ts",
+        "license": "MIT",
+        "name": "Pi",
+        "node_version": "v22.22.3",
+        "repository": "https://github.com/earendil-works/pi",
+        "resolved_commit": "ccfe79ed238674f760c986e3a61493aab794000a",
+        "runtime_path": ".tools/v15/external/pi"
+      },
+      "schema_version": "pivot-v15-external-provenance-1"
+    },
+    "platform": "Linux-5.15.0-187-generic-x86_64-with-glibc2.35",
+    "python": "3.10.12"
+  },
+  "hf_budgets": [
+    1,
+    2,
+    4
+  ],
+  "lock_hash": "4ca829544bf02b0a97f2750f2a644c0c330000bfd74cc4d34d1e45f3f4d785d0",
+  "metric_definitions": {
+    "independent_unit": "trajectory_or_task_cluster",
+    "primary": "task_success_under_fixed_budget",
+    "transition": [
+      "delta_proxy",
+      "delta_actor",
+      "delta_strategic",
+      "IDE",
+      "ISC",
+      "IRR",
+      "SIRR",
+      "ISR",
+      "CISR",
+      "CTI"
+    ]
+  },
+  "operator_implementations": [
+    "harness_skill_evolution",
+    "mutation_self_edit"
+  ],
+  "operator_information": "D_proxy only; no gate or assessment outcomes",
+  "operator_prompts": {
+    "families": {
+      "harness_skill_evolution": "Modify instructions, skills, search, testing, and planning workflow from proxy diagnostics.",
+      "mutation_self_edit": "Modify prompt/config, loop parameters, tool policy, and context policy from proxy diagnostics."
+    },
+    "forbidden_information": [
+      "hypothesis",
+      "gate_tasks",
+      "assessment_tasks",
+      "strategic_responder",
+      "candidate_identity"
+    ],
+    "information_contract": "Improve the coding agent under the provided evaluation using only proxy feedback and the registered resource budget."
+  },
+  "outcome_chasing": false,
+  "pairing_rules": {
+    "independent_fresh_copies": true,
+    "same_container_digest": true,
+    "same_initial_context": true,
+    "same_resource_limits": true,
+    "same_task_snapshot": true
+  },
+  "phase": "pre_outcome_freeze",
+  "pivot": {
+    "acquisition": "EVSI_per_cost",
+    "delta": 0.05,
+    "eta": 0.01,
+    "posterior": "paired_differential_correction",
+    "stopping": [
+      "posterior_best_probability",
+      "max_acquisition_score"
+    ]
+  },
+  "predecessor_lock_hash": "75ed4bddb3888d8ae09a2635e16f2de2a61aa2e29816183dd3d5bb7d6af56d52",
+  "primary_hypotheses": {
+    "H1": "autonomous_updates_have_observer_deployment_error",
+    "H2": "operator_relative_fidelity_differs_from_global_fidelity",
+    "H3": "pivot_reduces_promotion_regret_at_frozen_budget",
+    "H4": "paired_evaluation_improves_efficiency",
+    "H5": "footprint_predicts_transition_error",
+    "H6": "transition_result_replicates_on_second_scaffold"
+  },
+  "protocol_input_hashes": {
+    "configs/v15/confirmatory.yaml": "b27311f8c1c6d12cddd3e15ef42143f8b9901c47ad872c45a4430213b0f81f0e",
+    "configs/v15/external_versions.json": "553cf89dd0ffbdb329d78026b9e8f1fc59aeb98450004c55236b39267a6204d3",
+    "configs/v15/task_manifest.json": "33a0546b95e8765cdd677b1ee27aaee896bb1c3e2933dce050693f3e27d404bc"
+  },
+  "resource_limits": {
+    "container_cpu": 1,
+    "container_memory_mb": 2048,
+    "token_limit": 2048,
+    "tool_calls": 16,
+    "wall_clock_seconds": 120
+  },
+  "resource_plan": {
+    "estimated": {
+      "cost_usd": "estimate_after_external_smoke",
+      "cpu": "1 vCPU per container",
+      "gpu": "none required by protocol; model provider may impose external quota",
+      "inspect_evaluations": 14400,
+      "llm_calls": 6480,
+      "paired_container_executions": 28800,
+      "storage_gb": "estimate after trace-size calibration",
+      "task_instances": 12,
+      "token_budget_per_call": 2048,
+      "wall_clock_hours": "estimate after adapter dry-run and provider latency calibration"
+    },
+    "independent_trajectories": 30,
+    "observed_before_confirmatory_run": {
+      "container_executions": 0,
+      "hidden_task_queries": 0,
+      "inspect_evaluations": 0,
+      "llm_calls": 0
+    },
+    "operator_families": 2,
+    "status": "PRE_OUTCOME_ESTIMATE",
+    "task_families": 2
+  },
+  "sandbox": {
+    "dependency_lock": "configs/v15/external_runtime_requirements.txt",
+    "fresh_copy_per_policy": true,
+    "image": "python:3.11-slim",
+    "image_digest": "sha256:be1575ed968de893bd54f4c56315ff7c4736ce522c1bca08fd521731aafc0d76",
+    "network": "disabled_by_default"
+  },
+  "scaffolds": {
+    "primary": {
+      "adapter": "experiments.v15.adapters.mini_swe.MiniSWEAdapter",
+      "name": "mini-SWE-agent",
+      "role": "confirmatory_primary",
+      "runtime_source": "local_probe",
+      "runtime_version": "2.4.6",
+      "status": "available"
+    },
+    "replication": {
+      "adapter": "experiments.v15.adapters.pi.PiAdapter",
+      "name": "Pi",
+      "role": "cross_scaffold_replication",
+      "runtime_source": "project_local_probe",
+      "runtime_version": "ccfe79ed238674f760c986e3a61493aab794000a",
+      "status": "available"
+    }
+  },
+  "schema_version": "pivot-v15-confirmatory-lock-1",
+  "sealed_planes": {
+    "outcome_visibility": {
+      "operator": [
+        "proxy"
+      ],
+      "pivot": [
+        "proxy",
+        "gate"
+      ],
+      "promotion": [
+        "proxy",
+        "gate"
+      ],
+      "terminal_assessor": [
+        "assessment"
+      ]
+    },
+    "plane_counts": {
+      "assessment": 4,
+      "gate": 4,
+      "proxy": 4
+    },
+    "planes": {
+      "assessment": [
+        {
+          "family": "bug_fixing",
+          "task_hash": "df5ea23f4cb00d49363ec5c1e1f11424f9fe215bded1cb41974e3377c3e22e2b",
+          "task_id": "assessment-bug-001"
+        },
+        {
+          "family": "bug_fixing",
+          "task_hash": "b9562df315a05d3bf80504b726c05e42b612cce5c96b5b479082bddadcc7ee3b",
+          "task_id": "assessment-bug-002"
+        },
+        {
+          "family": "tool_context",
+          "task_hash": "dbdb4b1dd1c1088f96555bf16ee1e93f28eb57d8e0d36a6f95297df9d52cfc24",
+          "task_id": "assessment-tools-001"
+        },
+        {
+          "family": "tool_context",
+          "task_hash": "e89e75b69372a437d3530e6a5a9ca6ecfe9a487f67285e4ab4d429664c74b9ad",
+          "task_id": "assessment-tools-002"
+        }
+      ],
+      "gate": [
+        {
+          "family": "bug_fixing",
+          "task_hash": "ddf606c03c61f8e75b02d7618b2915923e928b520cf201bdf0fb427f606ffb19",
+          "task_id": "gate-bug-001"
+        },
+        {
+          "family": "bug_fixing",
+          "task_hash": "e075e80c71294079684f9171e19fd70b7c2d1f411891815996196deee0b24947",
+          "task_id": "gate-bug-002"
+        },
+        {
+          "family": "tool_context",
+          "task_hash": "baff13ce938e0a48ca45d823771f1607e984f634c369a7a59a6302232704b100",
+          "task_id": "gate-tools-001"
+        },
+        {
+          "family": "tool_context",
+          "task_hash": "0dd2dbe13a14bdbe6864a50399767eb0313bd44088106a45d770c87adcadeadf",
+          "task_id": "gate-tools-002"
+        }
+      ],
+      "proxy": [
+        {
+          "family": "bug_fixing",
+          "task_hash": "dd49726b864a3f3f863ccd6a69131509eacfb0796cfafc9327ec22935d00f994",
+          "task_id": "proxy-bug-001"
+        },
+        {
+          "family": "bug_fixing",
+          "task_hash": "ef1fc0361a2da9918ee19a87fc07ba3e4b69fd1e366322fede9f2c79508cf331",
+          "task_id": "proxy-bug-002"
+        },
+        {
+          "family": "tool_context",
+          "task_hash": "9951d3c2dca94e79d63a260023cef793996bf06db6d0408e6fd8c0ae8289ad6c",
+          "task_id": "proxy-tools-001"
+        },
+        {
+          "family": "tool_context",
+          "task_hash": "03dcddac9394ac45ebfa437c78f5e7cd0d0cb54926cc5be0721191ab1cdf42f8",
+          "task_id": "proxy-tools-002"
+        }
+      ]
+    },
+    "public_redaction": true,
+    "schema_version": "pivot-v15-task-manifest-public-1",
+    "sealed": true,
+    "source_sha256": "33a0546b95e8765cdd677b1ee27aaee896bb1c3e2933dce050693f3e27d404bc"
+  },
+  "seed_registry": {
+    "seed_blocks": [
+      10001,
+      10101
+    ],
+    "seed_policy": "frozen_before_outcomes",
+    "trajectory_count_per_operator_family": 30
+  },
+  "strategic_response": {
+    "candidate_identity_visible": false,
+    "expected_inputs": [
+      "candidate_patch",
+      "changed_interfaces",
+      "execution_trace"
+    ],
+    "families": [
+      {
+        "id": "non_llm_mutation_property_fuzz",
+        "implementation": "registered mutation, property-based, and fuzz tests conditioned on the actual patch and trajectory"
+      },
+      {
+        "id": "independent_agent_reviewer",
+        "implementation": "independent reviewer/test-generation agent with a separately pinned prompt and budget"
+      }
+    ],
+    "freeze_before_outcomes": true,
+    "identity_blind": true
+  }
+}

@@ -12,7 +12,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{cleveref}
 
-\graphicspath{{figures/v10/}{figures/}{../snapshot/figures/}}
+\graphicspath{{figures/release/}{figures/}{../snapshot/figures/}}
 
 \hypersetup{
   pdftitle={When Better Gets Worse: Improvement Fidelity for Self-Improving Agents in Adaptive Worlds},
@@ -32,7 +32,7 @@
 \newcommand{\pii}{\pi}
 \newcommand{\pip}{\pi'}
 \newtheorem{proposition}{Proposition}
-\input{v10_results_macros.tex}
+\input{results_macros.tex}
 
 \title{When Better Gets Worse: Improvement Fidelity for Self-Improving Agents in Adaptive Worlds}
 \author{}
@@ -433,9 +433,10 @@ model.
 
 \paragraph{Strategic response.}
 Only a focal policy self-improves; competitors are independent adaptive
-mechanisms.  Across \StrategicClusters{} matched opponent-seed clusters, each
-aggregating the \StrategicAdaptiveFamilies{} registered adaptive families
-(best-response, gradient-adaptive, and RL/evolutionary), the family-balanced
+mechanisms.  Across \StrategicClusters{} matched opponent-seed clusters, we
+evaluate the \StrategicAdaptiveFamilies{} registered adaptive families
+(best-response, gradient-adaptive, and RL/evolutionary), giving
+\StrategicFamilySeedTraces{} family-by-seed traces before the family-balanced aggregation.  The resulting
 strategic effect is \StrategicEffect{} with interval \StrategicEffectCI{}.
 The reported SIRR \StrategicSIRR{} is the unweighted mean of the three
 family-level SIRRs, rather than a pooled transition-row rate.  In the strongest cases,
@@ -514,8 +515,8 @@ bootstrap intervals.
 \begin{figure}[h]
   \centering
   \includegraphics[width=\linewidth]{figA_response_footprint.png}
-  \caption{World-response decomposition.  Panel A traces 150
-  family-by-seed observations (five opponent families $\times$ 30 matched
+  \caption{World-response decomposition.  Panel A traces
+  \StrategicAllFamilySeedTraces{} family-by-seed observations (five opponent families $\times$ 30 matched
   seeds) through proxy/direct observer, actor, and strategic worlds; its summary
   intervals use the 30 matched seeds.  Panel B separates mechanical and
   strategic effects; Panel C marks the strategic reversal quadrant.}

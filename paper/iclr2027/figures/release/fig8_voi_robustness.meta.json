@@ -1,0 +1,40 @@
+{
+  "analysis_script": "publication_figure_builder",
+  "appendix": true,
+  "config_hashes": {
+    "configs/v9/e2c.yaml": "af7ed9a66f15fbd5d70779f5c38fc7c762dec3f649d9a7869f15591242070cab",
+    "configs/v9/e3c.yaml": "9176e2d44c70f667045d909a0ac092b07f6a3973c84835b276fc9c5faa522e71",
+    "configs/v9/e4c.yaml": "4c2c12e70ff6f870211753321adbc28dbfa3c29b32eabf55d161e619b9313025",
+    "configs/v9/e5c.yaml": "67402e7d1340284c36da907b39a5666b6ca45ed7ab1423fe494b12abd8314760",
+    "configs/v9/e7c.yaml": "4793c457727834ef8f8456cce2e5049ea38325651cebd7cdf01ad0c4fb14e649",
+    "configs/v9/profiles.yaml": "2ad644bb362bd34ea07989f1557c227953ce9db89cb9b9318db5d1dedfeee7a3"
+  },
+  "display_policy": "source rows are retained; rendering may use deterministic display subsets",
+  "experiment_sources": [
+    "results/v9/e5c-confirmatory/calibration_robustness.json",
+    "results/v9/e5c-confirmatory/efficiency_frontier.csv"
+  ],
+  "figure_id": "fig8_voi_robustness",
+  "generated_at": "2026-08-20T12:00:00Z",
+  "git_commit": "8da53e16e0237a83a11a24e814038f48ff8c50b8",
+  "grayscale_distinguishable": true,
+  "incomparable_conditions": "environment reward scales are not compared by raw magnitude",
+  "interpolation": "none; plotted points are observed cells",
+  "interval_definition": "bootstrap or descriptive span as stated in figure caption",
+  "oracle_reference": "all-HF is reference-only where shown; it is not a connected method line",
+  "outputs": [
+    "fig8_voi_robustness.pdf",
+    "fig8_voi_robustness.svg",
+    "fig8_voi_robustness.png"
+  ],
+  "raw_observations": true,
+  "scientific_question": "Do posterior approximation and cost misspecification materially change PIVOT-VOI decisions?",
+  "source_csv": "fig8_voi_robustness.csv",
+  "source_hashes": {
+    "results/v9/e5c-confirmatory/calibration_robustness.json": "5c26e35b4d6f56eda82b2c38135873cb5e22ec1b7f3bfa9c9089bbc868ae9e3e",
+    "results/v9/e5c-confirmatory/efficiency_frontier.csv": "576d3b39f61aab32eca706d6b2233a0076ea88f65a138a52616df9bb75c79277"
+  },
+  "source_parquet": "fig8_voi_robustness.parquet",
+  "style_version": "pivot-publication-style-1",
+  "unit_of_inference": "calibration group"
+}

@@ -1,0 +1,69 @@
+schema_version: pivot-claims-1
+study_id: improvement-fidelity-adaptive-worlds
+scope:
+  estimand: policy_update_transition
+  primary_unit: trajectory_or_task_cluster
+  confirmatory_status: not_run_without_external_scaffolds
+claims:
+  - id: C1
+    claim_id: C1
+    status: registered
+    statement: Improvement Fidelity evaluates whether the direction and ordering of policy updates transfer from a proxy world to an intervention world.
+    required_experiment: [phase1_transition_audit]
+    required_terminal_state: [HYPOTHESIS_SUPPORTED]
+    allowed_scope: operator-relative policy-update transitions under the frozen protocol
+    forbidden_scope: universal claims about all self-improving agents or environments
+    paper_location: paper/iclr2027/main.tex#Introduction
+    evidence_required: [paired_transition_table, sealed_assessment, independent_units]
+  - id: C2
+    claim_id: C2
+    status: registered
+    statement: PIVOT-VOI allocates limited high-fidelity queries to candidate updates whose decision could change under intervention.
+    required_experiment: [phase2_promotion_replay]
+    required_terminal_state: [HYPOTHESIS_SUPPORTED]
+    allowed_scope: frozen candidate archives, matched query budgets, and the registered promotion metric
+    forbidden_scope: universal dominance over LUCB, Global-VOI, or every acquisition strategy
+    paper_location: paper/iclr2027/main.tex#Method
+    evidence_required: [frozen_budget, query_log, paired_deltas, selection_regret]
+  - id: C3
+    claim_id: C3
+    status: registered
+    statement: Observer, actor, and strategic worlds form a scoped response ladder for testing update fidelity.
+    required_experiment: [phase1_transition_audit, phase3_closed_loop, strategic_response]
+    required_terminal_state: [HYPOTHESIS_SUPPORTED]
+    allowed_scope: the explicitly implemented response layers and registered opponent families
+    forbidden_scope: equilibrium, market-causality, or simulator-ground-truth conclusions
+    paper_location: paper/iclr2027/main.tex#Problem-Formulation
+    evidence_required: [world_definitions, response_decomposition, opponent_registry]
+  - id: C4
+    claim_id: C4
+    status: conditional
+    statement: Improvement Reversal may occur when a proxy-positive update is negative after endogenous or strategic response.
+    required_experiment: [phase1_transition_audit, strategic_response]
+    required_terminal_state: [HYPOTHESIS_SUPPORTED, HYPOTHESIS_NOT_SUPPORTED]
+    allowed_scope: a finite, predeclared task/operator/environment population
+    forbidden_scope: requiring reversal, selecting a favorable case, or generalizing to all agents
+    paper_location: paper/iclr2027/main.tex#Introduction
+    evidence_required: [delta_proxy, delta_actor, delta_strategic, reversal_rate]
+  - id: C5
+    claim_id: C5
+    status: boundary
+    statement: The public finance extension is an observational plausibility diagnostic with virtual fills and no causal market-impact claim.
+    required_experiment: [public_finance_audit]
+    required_terminal_state: [HYPOTHESIS_SUPPORTED]
+    allowed_scope: public-data descriptive diagnostics and virtual-fill accounting
+    forbidden_scope: live trading, causal market-impact identification, or deployment performance
+    paper_location: paper/iclr2027/main.tex#Finance-Audit
+    evidence_required: [public_data_manifest, virtual_fill_accounting, boundary_statement]
+forbidden_inference:
+  - universal method superiority
+  - simulator ground truth
+  - causal market-impact identification
+  - general equilibrium or market-ecology conclusion
+  - deployment performance from DEV smoke
+terminal_states:
+  - IMPLEMENTATION_FAILURE
+  - DESIGN_INVALID
+  - UNDERPOWERED
+  - HYPOTHESIS_SUPPORTED
+  - HYPOTHESIS_NOT_SUPPORTED

@@ -4,10 +4,11 @@ import hashlib
 import json
 from pathlib import Path
 
-from scripts.build_iclr_supplement import ALLOWLIST
+from scripts.build_iclr_supplement import ALLOWLIST, _copy_sanitized
 from scripts.verify_iclr_submission import (
     _aux_path,
     _portable_path,
+    audit_archive_contents,
     audit_archive_members,
     audit_source_text,
     audit_style_hashes,
@@ -68,6 +69,117 @@ def test_supplement_allowlist_contains_registered_theory_artifact() -> None:
     assert "results/theory" in ALLOWLIST
 
 
+def test_supplement_sanitizer_redacts_runtime_endpoint(tmp_path: Path) -> None:
+    source = tmp_path / "runtime.json"
+    target = tmp_path / "out" / "runtime.json"
+    source.write_text('{"api_base": "https://private.example.invalid"}\n', encoding="utf-8")
+
+    _copy_sanitized(source, target)
+
+    rendered = target.read_text(encoding="utf-8")
+    assert "private.example.invalid" not in rendered
+    assert '"api_base": "<external-endpoint>"' in rendered
+
+
+def test_supplement_sanitizer_redacts_jsonl_paths(tmp_path: Path) -> None:
+    source = tmp_path / "trace.jsonl"
+    target = tmp_path / "out" / "trace.jsonl"
+    source.write_text('{"path": "/opt/projects/private/trace.json"}\n', encoding="utf-8")
+
+    _copy_sanitized(source, target)
+
+    assert "/opt/projects" not in target.read_text(encoding="utf-8")
+
+
+def test_supplement_sanitizer_redacts_sealed_task_contents(tmp_path: Path) -> None:
+    source = tmp_path / "task_manifest.json"
+    target = tmp_path / "out" / "task_manifest.json"
+    source.write_text(
+        json.dumps(
+            {
+                "sealed": True,
+                "planes": {
+                    "proxy": [
+                        {
+                            "task_id": "p",
+                            "family": "bug_fixing",
+                            "files": {"example.py": "example task content"},
+                            "metadata": {"instruction": "redacted fixture"},
+                        }
+                    ],
+                    "gate": [],
+                    "assessment": [],
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    _copy_sanitized(source, target, Path("configs/v15/task_manifest.json"))
+
+    payload = json.loads(target.read_text(encoding="utf-8"))
+    rendered = target.read_text(encoding="utf-8")
+    assert payload["public_redaction"] is True
+    assert "example.py" not in rendered
+    assert "example task content" not in rendered
+    assert payload["source_sha256"] == hashlib.sha256(source.read_bytes()).hexdigest()
+
+
+def test_supplement_sanitizer_redacts_sealed_lock_contents(tmp_path: Path) -> None:
+    source = tmp_path / "confirmatory_lock.json"
+    target = tmp_path / "out" / "confirmatory_lock.json"
+    source.write_text(
+        json.dumps(
+            {
+                "confirmatory_execution": "NOT_RUN",
+                "sealed_planes": {
+                    "planes": {
+                        "proxy": [
+                            {
+                                "task_id": "p",
+                                "family": "f",
+                                "files": {"hidden.txt": "hidden"},
+                            }
+                        ],
+                        "gate": [],
+                        "assessment": [],
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    _copy_sanitized(source, target, Path("experiments/v15/confirmatory_lock.json"))
+
+    rendered = target.read_text(encoding="utf-8")
+    assert "hidden.txt" not in rendered
+    assert "hidden" not in rendered
+    assert "public_redaction" in rendered
+
+
+def test_supplement_allowlist_excludes_phase_level_v15_parquet() -> None:
+    from scripts.build_iclr_supplement import (
+        _is_public_parquet,
+        _is_public_v15_path,
+        _is_sealed_public_input,
+    )
+
+    assert _is_public_parquet(Path("results/v15/canonical/autonomous_transitions.parquet"))
+    assert _is_public_parquet(Path("figures/v15/fig1/figure.parquet"))
+    assert not _is_public_parquet(Path("results/v15/dev-external-transition-audit/autonomous_transitions.parquet"))
+    assert _is_public_v15_path(Path("results/v15/dev-external-transition-audit/manifest.json"))
+    assert not _is_public_v15_path(
+        Path("results/v15/dev-external-transition-audit/artifacts/task.traj.json")
+    )
+    assert not _is_public_v15_path(
+        Path("results/v15/dev-external-transition-audit/artifacts/task.execution.json")
+    )
+    assert _is_sealed_public_input(Path("configs/v15/task_manifest.json"))
+    assert _is_sealed_public_input(Path("experiments/v15/confirmatory_lock_history.jsonl"))
+    assert not _is_sealed_public_input(Path("configs/v15/task_manifest.public.json"))
+
+
 def test_audit_source_text_requires_anonymous_iclr_contract() -> None:
     source = r"""
     \documentclass{article}
@@ -101,6 +213,77 @@ def test_audit_archive_members_rejects_private_paths_and_raw_archives() -> None:
     )
     assert not checks["no_private_paths"]
     assert not checks["no_raw_archives"]
+
+
+def test_audit_archive_members_rejects_sealed_task_inputs() -> None:
+    checks = audit_archive_members(
+        ["README.md", "snapshot/manifest.json", "configs/v15/task_manifest.json"]
+    )
+    assert not checks["no_sealed_inputs"]
+    assert checks["sealed_members"] == ["configs/v15/task_manifest.json"]
+
+
+def test_audit_archive_contents_rejects_private_path_in_jsonl(tmp_path: Path) -> None:
+    archive = tmp_path / "supplement.zip"
+    import zipfile
+
+    with zipfile.ZipFile(archive, "w") as output:
+        output.writestr("trace.jsonl", '{"path": "/opt/projects/private/trace"}\n')
+
+    checks = audit_archive_contents(archive)
+
+    assert not checks["valid"]
+    assert checks["private_content_hits"] == ["trace.jsonl"]
+
+
+def test_audit_archive_contents_accepts_clean_archive(tmp_path: Path) -> None:
+    archive = tmp_path / "supplement.zip"
+    import zipfile
+
+    with zipfile.ZipFile(archive, "w") as output:
+        output.writestr("README.md", "public artifact\n")
+
+    checks = audit_archive_contents(archive)
+
+    assert checks["valid"]
+
+
+def test_audit_archive_contents_rejects_forbidden_assistant_token(tmp_path: Path) -> None:
+    archive = tmp_path / "supplement.zip"
+    import zipfile
+
+    with zipfile.ZipFile(archive, "w") as output:
+        output.writestr("notes.txt", "codex\n")
+
+    checks = audit_archive_contents(archive)
+
+    assert not checks["valid"]
+    assert checks["assistant_content_hits"] == ["notes.txt"]
+
+
+def test_audit_archive_members_allows_generated_v15_parquet_sources() -> None:
+    checks = audit_archive_members(["results/v15/canonical/table.parquet", "README.md"])
+
+    assert checks["no_raw_archives"]
+    assert checks["generated_parquet_members"] == ["results/v15/canonical/table.parquet"]
+
+
+def test_generated_parquet_inventory_is_not_a_submission_gate() -> None:
+    report = {
+        "machine_checks": {
+            "pdf": True,
+            "supplement_archive": True,
+            "archive_no_raw_archives": True,
+            "archive_generated_parquet_members": ["results/v15/canonical/table.parquet"],
+        },
+        "manual_gates": {},
+        "scientific_gates": {},
+    }
+
+    decision = build_decision(report)
+
+    assert decision["blocking_gates"] == []
+    assert decision["submission_ready"] is True
 
 
 def test_build_decision_is_conditional_until_manual_gates_close(tmp_path: Path) -> None:

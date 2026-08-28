@@ -1,0 +1,124 @@
+schema_version: pivot-v15-protocol-1
+phase: pre_outcome_freeze
+rounds: 30
+candidates_per_round: 4
+scaffolds:
+  primary:
+    name: mini-SWE-agent
+    role: confirmatory_primary
+    adapter: experiments.v15.adapters.mini_swe.MiniSWEAdapter
+  replication:
+    name: Pi
+    role: cross_scaffold_replication
+    adapter: experiments.v15.adapters.pi.PiAdapter
+foundation_model:
+  status: authorized_in_runtime_environment
+  identifier: anthropic/claude-haiku-4-5-20251001
+  provider: anthropic
+  api_base_env: ANTHROPIC_BASE_URL
+  credential_env: ANTHROPIC_AUTH_TOKEN
+operator_prompts:
+  information_contract: "Improve the coding agent under the provided evaluation using only proxy feedback and the registered resource budget."
+  forbidden_information: [hypothesis, gate_tasks, assessment_tasks, strategic_responder, candidate_identity]
+  families:
+    harness_skill_evolution: "Modify instructions, skills, search, testing, and planning workflow from proxy diagnostics."
+    mutation_self_edit: "Modify prompt/config, loop parameters, tool policy, and context policy from proxy diagnostics."
+allowed_policy_edit_space:
+  - system_prompt
+  - agent_loop_config
+  - tool_policy
+  - search_policy
+  - test_policy
+  - context_policy
+sandbox:
+  image: python:3.11-slim
+  image_digest: sha256:be1575ed968de893bd54f4c56315ff7c4736ce522c1bca08fd521731aafc0d76
+  dependency_lock: configs/v15/external_runtime_requirements.txt
+  network: disabled_by_default
+  fresh_copy_per_policy: true
+figure_definitions:
+  main_modern_agent: "2x2 transition, footprint, promotion, and closed-loop panels when supported"
+  appendix: [world_response, ood_null, voi_robustness, strategic_response, finance_boundary]
+strategic_response:
+  freeze_before_outcomes: true
+  identity_blind: true
+  families:
+    - id: non_llm_mutation_property_fuzz
+      implementation: registered mutation, property-based, and fuzz tests conditioned on the actual patch and trajectory
+    - id: independent_agent_reviewer
+      implementation: independent reviewer/test-generation agent with a separately pinned prompt and budget
+  candidate_identity_visible: false
+  expected_inputs: [candidate_patch, changed_interfaces, execution_trace]
+resource_limits:
+  token_limit: 2048
+  wall_clock_seconds: 120
+  tool_calls: 16
+  container_cpu: 1
+  container_memory_mb: 2048
+seed_registry:
+  trajectory_count_per_operator_family: 30
+  seed_policy: frozen_before_outcomes
+  seed_blocks: [10001, 10101]
+pairing_rules:
+  same_task_snapshot: true
+  same_container_digest: true
+  same_initial_context: true
+  same_resource_limits: true
+  independent_fresh_copies: true
+metrics:
+  primary: task_success_under_fixed_budget
+  transition: [delta_proxy, delta_actor, delta_strategic, IDE, ISC, IRR, SIRR, ISR, CISR, CTI]
+  independent_unit: trajectory_or_task_cluster
+footprint_features:
+  - prompt_token_delta
+  - prompt_semantic_distance
+  - skill_diff_size
+  - skills_added
+  - skills_removed
+  - tool_schema_change
+  - tool_count_delta
+  - loop_parameter_delta
+  - context_policy_change
+  - test_policy_change
+  - search_policy_change
+pivot:
+  posterior: paired_differential_correction
+  acquisition: EVSI_per_cost
+  stopping: [posterior_best_probability, max_acquisition_score]
+  delta: 0.05
+  eta: 0.01
+baselines: [Proxy Only, Random HF, Paired LUCB, Global-VOI, PIVOT-VOI, All-HF Oracle]
+hf_budgets: [1, 2, 4]
+bootstrap:
+  confidence_level: 0.95
+  unit: trajectory_or_task_cluster
+  draws: 10000
+primary_hypotheses:
+  H1: autonomous_updates_have_observer_deployment_error
+  H2: operator_relative_fidelity_differs_from_global_fidelity
+  H3: pivot_reduces_promotion_regret_at_frozen_budget
+  H4: paired_evaluation_improves_efficiency
+  H5: footprint_predicts_transition_error
+  H6: transition_result_replicates_on_second_scaffold
+case_selection_rule: first eligible reversal by frozen trajectory/operator/round order
+resource_plan:
+  status: PRE_OUTCOME_ESTIMATE
+  independent_trajectories: 30
+  operator_families: 2
+  task_families: 2
+  estimated:
+    llm_calls: 6480
+    inspect_evaluations: 14400
+    paired_container_executions: 28800
+    task_instances: 12
+    cpu: "1 vCPU per container"
+    gpu: "none required by protocol; model provider may impose external quota"
+    token_budget_per_call: 2048
+    storage_gb: "estimate after trace-size calibration"
+    wall_clock_hours: "estimate after adapter dry-run and provider latency calibration"
+    cost_usd: estimate_after_external_smoke
+  observed_before_confirmatory_run:
+    llm_calls: 0
+    inspect_evaluations: 0
+    container_executions: 0
+    hidden_task_queries: 0

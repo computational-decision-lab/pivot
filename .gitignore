@@ -1,5 +1,6 @@
 .venv/
 .tools/
+.codex/
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -20,6 +21,16 @@ paper/iclr2027/supplementary/*
 # Local pre-final audit input; the curated anonymous supplement carries the
 # sanitized snapshot needed for review and reproducibility.
 snapshot/v10_pre_final/
+# Modern-agent execution traces and fallback bundles are local provenance,
+# not public source artifacts. The sanitized supplement/release carries the
+# reviewer-safe materialization instead.
+results/v15/
+snapshot/v15_pre_modern_agent/
+artifacts/v15/
+# Sealed confirmatory inputs and lifecycle history remain local provenance;
+# the public supplement carries only hash-indexed redacted summaries.
+configs/v15/task_manifest.json
+experiments/v15/confirmatory_lock_history.jsonl
 !results/raw/.gitkeep
 !results/processed/.gitkeep
 !results/figures/.gitkeep

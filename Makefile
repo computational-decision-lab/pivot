@@ -1,4 +1,4 @@
-.PHONY: reproduce-paper test lint typecheck v9-validate v9-analyze v9-figures v9-tables v9-audit v10-finalize
+.PHONY: reproduce-paper test lint typecheck v9-validate v9-analyze v9-figures v9-tables v9-audit v10-finalize v15-reports v15-figures v15-figure-review v15-finalize v15-release
 
 reproduce-paper:
 	.venv/bin/python scripts/reproduce_paper.py
@@ -34,3 +34,19 @@ v9-audit:
 
 v10-finalize:
 	.venv/bin/python -m experiments.v10.finalize --root .
+
+v15-reports:
+	.venv/bin/python -m experiments.v15 reports --root .
+
+v15-figures:
+	.venv/bin/python -m experiments.v15 figures --root .
+
+v15-figure-review:
+	.venv/bin/python -m experiments.v15 approve-figures --root .
+
+v15-finalize:
+	(cd paper/iclr2027 && ./build.sh)
+	.venv/bin/python -m experiments.v15 finalize --root .
+
+v15-release: v15-finalize
+	.venv/bin/python scripts/build_release_assets.py --root . --public-release --force

@@ -159,7 +159,8 @@ def verify_paper(
         name
         for name in sorted(required_assets)
         if not (
-            (source.parent / "figures" / "v10" / name).is_file()
+            (source.parent / "figures" / "release" / name).is_file()
+            or (source.parent / "figures" / "v10" / name).is_file()
             or (source.parent / "figures" / name).is_file()
         )
     ]
