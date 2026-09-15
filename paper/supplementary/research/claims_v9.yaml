@@ -1,0 +1,42 @@
+schema_version: v9.0
+claims:
+  C_OPERATOR_SHIFT:
+    claim_text: Operator concentration can change operator-relative improvement fidelity while global value metrics remain competitive.
+    required_experiment: [E2C]
+    required_status: [HYPOTHESIS_SUPPORTED]
+    required_metric: [chi_square_shift, improvement_fidelity, global_value_metric]
+    allowed_scope: [tested_environment_families, tested_operator_families]
+    forbidden_scope: [all_operators, universal_failure]
+    paper_location: results
+  C_CLOSED_LOOP:
+    claim_text: Transition-aware validation changes recursive self-improvement trajectories in some adaptive environments.
+    required_experiment: [E3C]
+    required_status: [HYPOTHESIS_SUPPORTED]
+    required_metric: [CTI, CISR, final_deployment_value]
+    allowed_scope: [environments_with_valid_response_signal]
+    forbidden_scope: [universal_pivot_superiority]
+    paper_location: results
+  C_EVALUATOR_OOD:
+    claim_text: A learned differential evaluator can preserve operator-conditioned decisions under an OOD split.
+    required_experiment: [E4C]
+    required_status: [HYPOTHESIS_SUPPORTED]
+    required_metric: [ISC, IDE, calibration]
+    allowed_scope: [registered_OOD_splits]
+    forbidden_scope: [all_models, all_domains]
+    paper_location: results
+  C_EFFICIENCY:
+    claim_text: PIVOT-VOI reduces decision regret at a matched high-fidelity budget.
+    required_experiment: [E5C]
+    required_status: [HYPOTHESIS_SUPPORTED]
+    required_metric: [CISR, HF_cost]
+    allowed_scope: [tested_environments_and_budgets]
+    forbidden_scope: [dominates_all_acquisition_methods]
+    paper_location: results
+  C_STRATEGIC:
+    claim_text: Independent strategic adaptation can introduce an additional source of improvement reversal.
+    required_experiment: [E7C]
+    required_status: [HYPOTHESIS_SUPPORTED]
+    required_metric: [SIRR, strategic_effect]
+    allowed_scope: [held_out_opponent_families]
+    forbidden_scope: [general_equilibrium,_market_ecology]
+    paper_location: results

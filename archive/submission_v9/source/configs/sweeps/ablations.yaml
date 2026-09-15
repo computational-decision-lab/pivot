@@ -1,0 +1,30 @@
+world:
+  response_strength: 0.7
+  competition_strength: 0.0
+  noise_scale: 0.05
+  horizon: 12
+  reward_bound: 10.0
+  optimization_strength: 1.0
+  config_id: controlled-ablations-v1
+seeds: [1001, 1002, 1003, 1004, 1005, 1006]
+train_fraction: 0.5
+response_strengths: [0.0, 0.3, 0.7, 0.9]
+candidate_scales: [0.1, 0.2, 0.3, 0.5]
+optimization_strengths: [0.5, 1.0, 1.5]
+calibration_budget: 24
+query_budget: 1
+query_budgets: [0, 1, 2, 3, 4]
+paired_rollouts: 16
+small_update_max: 0.2
+weak_response_max: 0.3
+strong_response_min: 0.7
+single_response_strength: 0.3
+multiple_response_strengths: [0.0, 0.3, 0.7]
+heldout_response_strength: 0.9
+candidate_counts: [2, 4]
+finance_participation: 0.05
+finance:
+  fixture_version: finance-fixture-v1
+  data_source: synthetic_fixture
+  virtual_fills: true
+  ground_truth_for_endogenous_response: false

@@ -1,0 +1,56 @@
+{
+  "claim_boundary": "analytic constructions; not causal market evidence",
+  "config": {
+    "dataset_version": "v6-theory-constructions-1",
+    "epsilons": [
+      0.1,
+      0.01,
+      0.001
+    ],
+    "footprints": [
+      0.01,
+      0.025,
+      0.05,
+      0.1,
+      0.2,
+      0.4
+    ],
+    "improvement_fidelity_losses": [
+      "absolute_delta_error",
+      "sign_error"
+    ],
+    "operator_samples": 128,
+    "policy_counts": [
+      16,
+      32,
+      64,
+      128,
+      256,
+      512,
+      1024
+    ],
+    "q_a_definition": "empirical law induced by adjacent-swap-focused operator",
+    "response_strengths": [
+      0.0,
+      0.1,
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "seeds": [
+      101,
+      102,
+      103,
+      104,
+      105
+    ],
+    "value_lipschitz": 1.7
+  },
+  "git_commit": "1044b64133de4ddb692fd05717af70b832f3d458",
+  "machine": "x86_64",
+  "paired": false,
+  "python_version": "3.10.12",
+  "run_id": "e10-theory-empirical",
+  "timestamp_utc": "2026-08-21T01:22:11.247830+00:00"
+}

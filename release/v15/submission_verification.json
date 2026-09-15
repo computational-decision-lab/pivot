@@ -1,0 +1,50 @@
+{
+  "archive_content_checks": {
+    "assistant_content_hits": [],
+    "credential_content_hits": [],
+    "private_content_hits": [],
+    "valid": true
+  },
+  "blocking_gates": [
+    "manual_gates.openreview_profile",
+    "manual_gates.author_quota_and_reciprocal_review",
+    "manual_gates.final_author_metadata_and_conflicts",
+    "manual_gates.ai_use_disclosure_in_submission_form",
+    "manual_gates.no_parallel_submission_confirmation",
+    "scientific_gates.external_interactive_response",
+    "scientific_gates.external_strategic_validation"
+  ],
+  "decision": "CONDITIONAL GO",
+  "machine_checks": {
+    "archive_has_readme": true,
+    "archive_has_snapshot_manifest": true,
+    "archive_no_private_paths": true,
+    "archive_no_raw_archives": true,
+    "archive_no_sealed_inputs": true,
+    "main_text_within_nine_pages": true,
+    "pdf_ai_use_statement": true,
+    "pdf_anonymous": true,
+    "pdf_exists": true,
+    "pdf_page_count_present": true,
+    "pdf_reproducibility_statement": true,
+    "pdf_text_nonempty": true,
+    "references_before_appendix": true,
+    "source_ai_use_statement": true,
+    "source_no_final_copy": true,
+    "source_no_identity_leak": true,
+    "source_no_private_path": true,
+    "source_official_style": true,
+    "source_paper_topic_tokens": true,
+    "source_reproducibility_statement": true,
+    "style_files_present": true,
+    "style_hashes_match": true,
+    "supplement_archive": true,
+    "supplement_content_clean": true,
+    "supplement_exists": true
+  },
+  "main_pages": 7,
+  "package": "PIVOT ICLR 2027 anonymous submission package",
+  "pdf_pages": 14,
+  "public_release_note": "The confirmatory modern-agent study remains pre-outcome and is not represented as completed evidence.",
+  "submission_ready": false
+}

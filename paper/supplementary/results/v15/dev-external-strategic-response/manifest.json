@@ -1,0 +1,80 @@
+{
+  "agent_review_count": 1,
+  "agent_review_failures": 0,
+  "agent_reviewer_enabled": true,
+  "assessment_accessed": false,
+  "candidate_archive_frozen": false,
+  "completed_record_count": 0,
+  "confirmatory": false,
+  "delta_strategic_available": false,
+  "design_status": "VALIDATED_DEV",
+  "execution_attempted": true,
+  "gate_accessed": true,
+  "identity_blind": true,
+  "independent_unit": "trajectory_or_task_cluster",
+  "leakage_detected": false,
+  "lock_hash": null,
+  "manifest_sha256": "72cf890287545d834069655b31d09c15e12c2173b44987c98b47b21aaadbcba2",
+  "note": "Paired mutation detection is a registered response utility diagnostic. It is reported separately from task success and does not establish deployment-causal strategic utility without an additional causal response model.",
+  "outcome_chasing": false,
+  "phase": "DEV",
+  "provenance": {
+    "agent_review_count": 1,
+    "agent_review_failures": 0,
+    "agent_reviewer_enabled": true,
+    "candidate_record_count": 1,
+    "role_access_log": [
+      {
+        "outcome": "granted",
+        "plane": "proxy",
+        "role": "audit"
+      },
+      {
+        "outcome": "granted",
+        "plane": "gate",
+        "role": "audit"
+      }
+    ],
+    "source_manifest": "<local-root>/research/pivot/results/v15/dev-external-transition-audit/manifest.json",
+    "source_manifest_sha256": "6f499b8132534822b2fcdf10d79804f6559b59d25b4497234817247ad369aa78",
+    "task_count": 8,
+    "task_manifest_sha256": "33a0546b95e8765cdd677b1ee27aaee896bb1c3e2933dce050693f3e27d404bc"
+  },
+  "record_count": 1,
+  "response_families": {
+    "independent_agent_reviewer": "COMPLETED",
+    "non_llm_mutation_property_fuzz": "COMPLETED"
+  },
+  "response_inputs": [
+    "candidate_patch",
+    "changed_interfaces",
+    "execution_trace"
+  ],
+  "response_pair_count": 1,
+  "role_access_log": [
+    {
+      "outcome": "granted",
+      "plane": "proxy",
+      "role": "audit"
+    },
+    {
+      "outcome": "granted",
+      "plane": "gate",
+      "role": "audit"
+    }
+  ],
+  "runtime": {
+    "bwrap_available": true,
+    "pinned_python": "<local-root>/research/pivot/.tools/v15/runtime/bin/python"
+  },
+  "sandbox": {
+    "host_root_exposed": false,
+    "mode": "bubblewrap_explicit_mounts",
+    "network": "disabled"
+  },
+  "schema_version": "pivot-v15-strategic-response-1",
+  "status": "PARTIAL",
+  "strategic_delta_count": 0,
+  "strategic_reversal_count": 0,
+  "terminal_state": "UNDERPOWERED"
+}

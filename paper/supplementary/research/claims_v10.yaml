@@ -1,0 +1,54 @@
+schema_version: v10.0
+primary_contribution: Improvement Fidelity for policy updates in adaptive worlds
+mechanism: operator-relative shift multiplied by environment response sensitivity
+method: PIVOT-VOI (paired differential validation with budgeted intervention)
+evidence_ladder:
+  - observer
+  - actor
+  - strategic
+claim_policy:
+  universal_superiority: forbidden
+  simulator_ground_truth: forbidden
+  causal_finance_impact: forbidden
+  general_equilibrium: forbidden
+claims:
+  improvement_fidelity:
+    status: supported_as_estimand
+    statement: The update transition pi -> pi' is the statistical object for evaluating self-improvement in an adaptive world.
+    evidence: definitions_and_six_propositions
+    scope: formal_definition
+  improvement_reversal:
+    status: supported_in_controlled_worlds
+    statement: A verifier-approved proxy gain can have a negative deployment improvement.
+    evidence: figures/v10/fig1_improvement_reversal
+    scope: two controlled response worlds and registered transition distribution
+  operator_shift:
+    status: supported_scoped
+    statement: Operator-relative distribution shift changes local improvement error while global policy rank remains useful.
+    evidence: results/v9/e2c-confirmatory/scientific_decision.json
+    scope: tested environments, operators, and shift levels
+  closed_loop:
+    status: supported_scoped
+    statement: PIVOT-VOI changes some repeated self-improvement trajectories at the matched registered budget.
+    evidence: results/v9/e3c-confirmatory/scientific_decision.json
+    scope: two controlled worlds; contrasts are non-uniform across baselines
+  ood_evaluator:
+    status: "null"
+    statement: A transition-specific learned evaluator universally outperforms a global value evaluator.
+    evidence: results/v9/e4c-confirmatory/scientific_decision.json
+    scope: powered registered OOD comparison; null is retained
+  efficiency:
+    status: supported_scoped
+    statement: PIVOT-VOI reduces update-selection regret relative to Proxy Only at the registered matched budget.
+    evidence: results/v9/e5c-confirmatory/scientific_decision.json
+    scope: tested environments, candidate counts, and budgets; no universal dominance
+  strategic_reversal:
+    status: supported_scoped
+    statement: Independent adaptive opponents add a strategic improvement-reversal layer after mechanical response.
+    evidence: results/v9/e7c-confirmatory/scientific_decision.json
+    scope: held-out finite opponent mechanisms and opponent-seed clusters
+  finance:
+    status: boundary_only
+    statement: Public historical data provide an observational execution-footprint diagnostic.
+    evidence: results/raw/e6-public-calibration/summary.json
+    scope: virtual fills and depth proxy; causal market response is not identified

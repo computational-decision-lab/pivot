@@ -1,0 +1,70 @@
+{
+  "adapter_contracts": [
+    {
+      "available": true,
+      "container_executions": 0,
+      "control_plane": "Inspect AI",
+      "execution_status": "NOT_RUN",
+      "model_calls_performed": 0
+    },
+    {
+      "available": true,
+      "command": "mini-swe-agent",
+      "container_executions": 0,
+      "execution_status": "NOT_RUN",
+      "import_name": "minisweagent",
+      "model_calls_performed": 0,
+      "reason": "adapter contract is dry-run only; model and sealed tasks are not opened",
+      "scaffold": "mini-SWE-agent"
+    },
+    {
+      "available": true,
+      "bwrap_available": true,
+      "cli_exists": true,
+      "cli_path": "<local-root>/research/pivot/.tools/v15/external/pi/packages/coding-agent/dist/cli.js",
+      "command": "pi",
+      "confirmatory_claim_allowed": false,
+      "container_executions": 0,
+      "execution_status": "NOT_RUN",
+      "extension": "<local-root>/research/pivot/experiments/v15/pi_gateway_extension.ts",
+      "import_name": null,
+      "model_calls_performed": 0,
+      "node_available": true,
+      "node_version": "v22.22.3",
+      "reason": "status probe only; model and sealed tasks are not opened",
+      "scaffold": "Pi",
+      "source_commit": "ccfe79ed238674f760c986e3a61493aab794000a",
+      "source_root": "<local-root>/research/pivot/.tools/v15/external/pi"
+    }
+  ],
+  "confirmatory_execution": false,
+  "control_plane": "Inspect AI when available; adapters remain agent-agnostic",
+  "project_root": "<local-root>/research/pivot",
+  "reason": "No package installation or model invocation is performed by the probe.",
+  "status": [
+    {
+      "available": true,
+      "command": "inspect",
+      "import_name": "inspect_ai",
+      "name": "Inspect AI",
+      "source": "local_probe",
+      "version": "0.1.dev1+g9fa31ccbc"
+    },
+    {
+      "available": true,
+      "command": "mini-swe-agent",
+      "import_name": "minisweagent",
+      "name": "mini-SWE-agent",
+      "source": "local_probe",
+      "version": "2.4.6"
+    },
+    {
+      "available": true,
+      "command": "pi",
+      "import_name": null,
+      "name": "Pi",
+      "source": "project_local_probe",
+      "version": "ccfe79ed238674f760c986e3a61493aab794000a"
+    }
+  ]
+}

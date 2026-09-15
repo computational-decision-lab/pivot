@@ -1,0 +1,39 @@
+{
+  "schema_version": "pivot-v15-external-provenance-1",
+  "checked_utc": "2026-08-28",
+  "control_plane": {
+    "name": "Inspect AI",
+    "repository": "https://github.com/UKGovernmentBEIS/inspect_ai",
+    "commit": "9fa31ccbccd0157bab73b1caa8b03c522470f83d",
+    "license": "MIT",
+    "availability": "installed_in_tools_v15_runtime",
+    "resolved_version": "0.1.dev1+g9fa31ccbc",
+    "runtime_python": ".tools/v15/runtime/bin/python"
+  },
+  "primary_scaffold": {
+    "name": "mini-SWE-agent",
+    "repository": "https://github.com/SWE-agent/mini-swe-agent",
+    "commit": "25941c89cfbc91eb40b3f8756348c91d9977d57e",
+    "license": "MIT",
+    "availability": "installed_in_tools_v15_runtime",
+    "resolved_version": "2.4.6",
+    "runtime_python": ".tools/v15/runtime/bin/python"
+  },
+  "replication_scaffold": {
+    "name": "Pi",
+    "repository": "https://github.com/earendil-works/pi",
+    "commit": "ccfe79ed238674f760c986e3a61493aab794000a",
+    "license": "MIT",
+    "availability": "built_cli_available_dev_smoke_completed",
+    "cli_path": ".tools/v15/external/pi/packages/coding-agent/dist/cli.js",
+    "node_version": "v22.22.3",
+    "gateway_extension": "experiments/v15/pi_gateway_extension.ts",
+    "dev_replication_manifest": "results/v15/dev-pi-replication/manifest.json",
+    "confirmatory_claim_allowed": false,
+    "runtime_path": ".tools/v15/external/pi",
+    "resolved_commit": "ccfe79ed238674f760c986e3a61493aab794000a"
+  },
+  "execution_status": "dev_runtime_available_confirmatory_not_started",
+  "model_calls_performed": 0,
+  "confirmatory_claim_allowed": false
+}

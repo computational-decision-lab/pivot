@@ -1,0 +1,108 @@
+{
+  "config": {
+    "budgets": [
+      0,
+      1,
+      2,
+      4,
+      8,
+      16
+    ],
+    "calibration_seed_start": 9401,
+    "calibration_seeds": 16,
+    "candidate_counts": [
+      4,
+      8,
+      16
+    ],
+    "environments": [
+      {
+        "id": "performative_control",
+        "response_strength": 0.85
+      },
+      {
+        "id": "congestion_resource",
+        "response_strength": 0.75
+      }
+    ],
+    "experiment_id": "E5C",
+    "methods": [
+      "proxy_only",
+      "random_hf",
+      "top_proxy_hf",
+      "uncertainty_hf",
+      "paired_lucb",
+      "global_voi",
+      "pivot_h",
+      "pivot_voi",
+      "all_hf"
+    ],
+    "seed_start": 9501,
+    "statistics": {
+      "bootstrap_draws": 10000,
+      "calibration_max_groups": 24,
+      "cost_multipliers": [
+        0.5,
+        0.75,
+        1.0,
+        1.25,
+        1.5
+      ],
+      "hypothetical_samples": [
+        16,
+        32,
+        64
+      ],
+      "minimum_independent_seeds": 30,
+      "posterior_samples": [
+        128,
+        256,
+        512,
+        1024
+      ],
+      "voi_fantasies": 8,
+      "voi_posterior_samples": 32
+    }
+  },
+  "config_sha256": "ce5027339e2db406487dfe58b11ee48dafaacbedddd99d8680533bd18293c5d5",
+  "created_at_utc": "2026-08-26T05:28:19.365189+00:00",
+  "experiment_id": "E5C",
+  "machine": "x86_64",
+  "paired_context": true,
+  "python": "3.10.12",
+  "raw_outcomes_preserved": true,
+  "schema_version": "pivot-v9-provenance-v1",
+  "seed_list": [
+    9501,
+    9502,
+    9503,
+    9504,
+    9505,
+    9506,
+    9507,
+    9508,
+    9509,
+    9510,
+    9511,
+    9512,
+    9513,
+    9514,
+    9515,
+    9516,
+    9517,
+    9518,
+    9519,
+    9520,
+    9521,
+    9522,
+    9523,
+    9524,
+    9525,
+    9526,
+    9527,
+    9528,
+    9529,
+    9530
+  ],
+  "source_commit": "c5c9496004effefee02324e399621e6bd8970430"
+}

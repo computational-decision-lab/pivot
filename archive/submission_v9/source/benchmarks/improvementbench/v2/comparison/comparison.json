@@ -1,0 +1,284 @@
+{
+  "benchmark_manifest_sha256": "3166949b35539ce3e8069cbbbdda8d952e46b1e947c8cf985d0a68fc11978bc2",
+  "calibration_split": "train",
+  "calibration_transition_count": 27,
+  "evaluation_seeds": [
+    51
+  ],
+  "evaluation_split": "test",
+  "evaluation_transition_count": 27,
+  "hf_queries_per_round": 2,
+  "methods": [
+    "proxy_only",
+    "random_hf",
+    "top_proxy_hf",
+    "pivot_x"
+  ],
+  "results": {
+    "pivot_x": {
+      "actor_curve": [
+        0.0,
+        0.11060878851921996,
+        0.09479155648108073,
+        0.11124611376769356
+      ],
+      "final_policy_id": "fd60050075611fb2",
+      "final_true_performance": 0.1756081172393767,
+      "method": "pivot_x",
+      "n_runs": 1,
+      "proxy_curve": [
+        0.0,
+        -0.47274795907568823,
+        -0.9360680173112408,
+        -0.47949147978248474
+      ],
+      "query_ledger": [
+        {
+          "budget": 2,
+          "method": "pivot_x",
+          "queried_ids": [
+            "f36f7b4136c2f92fbf93",
+            "0e5c45cd48a0812bff94"
+          ],
+          "reason": "pivot_x_decision_preservation",
+          "round_id": 0
+        },
+        {
+          "budget": 2,
+          "method": "pivot_x",
+          "queried_ids": [
+            "9048b12bfca8edecc4ca",
+            "e157425b2c7d71d83f15"
+          ],
+          "reason": "pivot_x_decision_preservation",
+          "round_id": 1
+        },
+        {
+          "budget": 2,
+          "method": "pivot_x",
+          "queried_ids": [
+            "ea1006edabcf160f9245",
+            "d8b86cd13e874d97c8fc"
+          ],
+          "reason": "pivot_x_decision_preservation",
+          "round_id": 2
+        }
+      ],
+      "rounds": 3,
+      "seed": 51,
+      "seeds": [
+        51
+      ],
+      "strategic_curve": [
+        0.0,
+        0.44090141250531756,
+        0.7154228772242734,
+        0.4460304090067577
+      ],
+      "total_hf_queries": 6,
+      "true_curve": [
+        0.0,
+        0.44090141250531756,
+        0.7154228772242734,
+        0.4460304090067577
+      ]
+    },
+    "proxy_only": {
+      "actor_curve": [
+        0.0,
+        -7.921976220146006,
+        -10.885792307498829,
+        -10.885792307498829
+      ],
+      "final_policy_id": "431d84e30aaf81c6",
+      "final_true_performance": -10.0,
+      "method": "proxy_only",
+      "n_runs": 1,
+      "proxy_curve": [
+        0.0,
+        4.224482717944353,
+        7.166829863617813,
+        7.408
+      ],
+      "query_ledger": [
+        {
+          "budget": 0,
+          "method": "proxy_only",
+          "queried_ids": [],
+          "reason": "no_high_fidelity_query",
+          "round_id": 0
+        },
+        {
+          "budget": 0,
+          "method": "proxy_only",
+          "queried_ids": [],
+          "reason": "no_high_fidelity_query",
+          "round_id": 1
+        },
+        {
+          "budget": 0,
+          "method": "proxy_only",
+          "queried_ids": [],
+          "reason": "no_high_fidelity_query",
+          "round_id": 2
+        }
+      ],
+      "rounds": 3,
+      "seed": 51,
+      "seeds": [
+        51
+      ],
+      "strategic_curve": [
+        0.0,
+        -9.729577708232618,
+        -9.729577708232618,
+        -9.729577708232618
+      ],
+      "total_hf_queries": 0,
+      "true_curve": [
+        0.0,
+        -9.729577708232618,
+        -9.729577708232618,
+        -9.729577708232618
+      ]
+    },
+    "random_hf": {
+      "actor_curve": [
+        0.0,
+        -7.921976220146006,
+        -0.43371834719844937,
+        -9.78575553785804
+      ],
+      "final_policy_id": "668f0a9f969634eb",
+      "final_true_performance": -10.0,
+      "method": "random_hf",
+      "n_runs": 1,
+      "proxy_curve": [
+        0.0,
+        4.224482717944353,
+        0.725745601256127,
+        4.70082816548724
+      ],
+      "query_ledger": [
+        {
+          "budget": 2,
+          "method": "random_hf",
+          "queried_ids": [
+            "0e5c45cd48a0812bff94",
+            "dfeb2d7ee19e898e6bcb"
+          ],
+          "reason": "random_hf_decision_preservation",
+          "round_id": 0
+        },
+        {
+          "budget": 2,
+          "method": "random_hf",
+          "queried_ids": [
+            "c37e2a7018320ea1d4d4",
+            "ff8fe84aed0f00191037"
+          ],
+          "reason": "random_hf_decision_preservation",
+          "round_id": 1
+        },
+        {
+          "budget": 2,
+          "method": "random_hf",
+          "queried_ids": [
+            "b25a4fb40208795c1e88",
+            "4bbae73fadb67005e278"
+          ],
+          "reason": "random_hf_decision_preservation",
+          "round_id": 2
+        }
+      ],
+      "rounds": 3,
+      "seed": 51,
+      "seeds": [
+        51
+      ],
+      "strategic_curve": [
+        0.0,
+        -9.729577708232618,
+        -0.9855553598952369,
+        -9.729577708232618
+      ],
+      "total_hf_queries": 6,
+      "true_curve": [
+        0.0,
+        -9.729577708232618,
+        -0.9855553598952369,
+        -9.729577708232618
+      ]
+    },
+    "top_proxy_hf": {
+      "actor_curve": [
+        0.0,
+        -2.7137702020696715,
+        -7.777194263696441,
+        -10.885792307498829
+      ],
+      "final_policy_id": "3b56bb99c0c7053e",
+      "final_true_performance": -10.0,
+      "method": "top_proxy_hf",
+      "n_runs": 1,
+      "proxy_curve": [
+        0.0,
+        2.361598773826575,
+        4.184754607843878,
+        5.733357725242329
+      ],
+      "query_ledger": [
+        {
+          "budget": 2,
+          "method": "top_proxy_hf",
+          "queried_ids": [
+            "92902261f4486a269a1a",
+            "3db452c1d6ab04ad8ff7"
+          ],
+          "reason": "top_proxy_hf_decision_preservation",
+          "round_id": 0
+        },
+        {
+          "budget": 2,
+          "method": "top_proxy_hf",
+          "queried_ids": [
+            "6734e7fbdd6fe1f8aa71",
+            "5b7d2efda521dc36bbdf"
+          ],
+          "reason": "top_proxy_hf_decision_preservation",
+          "round_id": 1
+        },
+        {
+          "budget": 2,
+          "method": "top_proxy_hf",
+          "queried_ids": [
+            "a5acb55e096fa77f3583",
+            "14d7a633f022a0aa54d5"
+          ],
+          "reason": "top_proxy_hf_decision_preservation",
+          "round_id": 2
+        }
+      ],
+      "rounds": 3,
+      "seed": 51,
+      "seeds": [
+        51
+      ],
+      "strategic_curve": [
+        0.0,
+        -4.630784932060155,
+        -9.729577708232618,
+        -9.729577708232618
+      ],
+      "total_hf_queries": 6,
+      "true_curve": [
+        0.0,
+        -4.630784932060155,
+        -9.729577708232618,
+        -9.729577708232618
+      ]
+    }
+  },
+  "rounds": 3,
+  "schema_version": "improve-x-comparison-v1"
+}

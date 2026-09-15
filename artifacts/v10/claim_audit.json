@@ -1,0 +1,90 @@
+{
+  "claims": [
+    {
+      "claim_id": "improvement_fidelity",
+      "scope": "formal_definition",
+      "status": "supported_as_estimand"
+    },
+    {
+      "claim_id": "improvement_reversal",
+      "scope": "two controlled response worlds and registered transition distribution",
+      "status": "supported_in_controlled_worlds"
+    },
+    {
+      "claim_id": "operator_shift",
+      "design_valid": true,
+      "powered": true,
+      "scope": "tested environments, operators, and shift levels",
+      "status": "supported_scoped",
+      "terminal_status": "HYPOTHESIS_SUPPORTED"
+    },
+    {
+      "claim_id": "closed_loop",
+      "design_valid": true,
+      "powered": true,
+      "scope": "two controlled worlds; contrasts are non-uniform across baselines",
+      "status": "supported_scoped",
+      "terminal_status": "HYPOTHESIS_SUPPORTED"
+    },
+    {
+      "claim_id": "ood_evaluator",
+      "design_valid": true,
+      "powered": true,
+      "scope": "powered registered OOD comparison; null is retained",
+      "status": "null",
+      "terminal_status": "HYPOTHESIS_NOT_SUPPORTED"
+    },
+    {
+      "claim_id": "efficiency",
+      "design_valid": true,
+      "powered": true,
+      "scope": "tested environments, candidate counts, and budgets; no universal dominance",
+      "status": "supported_scoped",
+      "terminal_status": "HYPOTHESIS_SUPPORTED"
+    },
+    {
+      "claim_id": "strategic_reversal",
+      "design_valid": true,
+      "powered": true,
+      "scope": "held-out finite opponent mechanisms and opponent-seed clusters",
+      "status": "supported_scoped",
+      "terminal_status": "HYPOTHESIS_SUPPORTED"
+    },
+    {
+      "claim_id": "finance",
+      "scope": "virtual fills and depth proxy; causal market response is not identified",
+      "status": "boundary_only"
+    }
+  ],
+  "errors": [],
+  "proposition_count": 6,
+  "registry": "research/claims_v10.yaml",
+  "required_phrases": {
+    "decision_bound": "Decision Preservation Under Differential Error",
+    "finance_boundary": "does not identify causal market impact",
+    "finite_sample": "Finite-Sample Best-Update Identification",
+    "method": "PIVOT-VOI",
+    "ood_null": "powered null",
+    "operator_shift": "Operator Shift Bound",
+    "paired_rollouts": "common randomness",
+    "primary_estimand": "Improvement Fidelity",
+    "response_bound": "Response--Footprint Bound",
+    "reversal_event": "improvement reversal",
+    "transition_object": "\\tau_t=(\\pi_t,\\pi_{t+1})"
+  },
+  "scientific_body_internal_tokens": [],
+  "scope_contract": {
+    "evidence_ladder": [
+      "observer",
+      "actor",
+      "strategic"
+    ],
+    "method": "PIVOT-VOI (paired differential validation with budgeted intervention)",
+    "primary": "Improvement Fidelity for policy updates in adaptive worlds",
+    "universal_superiority_forbidden": true
+  },
+  "valid": true,
+  "warnings": [
+    "forbidden concepts occur only in scoped-negation sentences: causal market impact, general equilibrium"
+  ]
+}

@@ -1,0 +1,14 @@
+world:
+  response_strength: 0.7
+  competition_strength: 0.5
+  noise_scale: 0.0
+  horizon: 12
+  reward_bound: 10.0
+  config_id: improve-x-trajectory-v1
+seed: 23
+rounds: 4
+candidate_scales: [0.04, 0.1, 0.2]
+initial_policy:
+  intensity: 0.15
+contexts_per_transition: 2
+selection_world: strategic

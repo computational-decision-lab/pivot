@@ -1,0 +1,50 @@
+dataset_id: binance-um-bnbusdt-quarter-v1
+provider: Binance Public Data
+provider_repository: https://github.com/binance/binance-public-data
+license: MIT
+market: futures_um
+symbol: BNBUSDT
+interval: 1m
+scope: predeclared multi-asset quarterly-start observational audit
+ground_truth_for_endogenous_response: false
+sessions:
+  - session_id: bnbusdt-2023-01-01
+    date: '2023-01-01'
+    klines:
+      filename: BNBUSDT-1m-2023-01-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/BNBUSDT/1m/BNBUSDT-1m-2023-01-01.zip
+      sha256: a0b091b97b4906a9d7636f186b8dae9b6760928ac558ecc729d3808c2f782051
+    book_depth:
+      filename: BNBUSDT-bookDepth-2023-01-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/BNBUSDT/BNBUSDT-bookDepth-2023-01-01.zip
+      sha256: 2e1f204de3d9b78d854d95254efcc5ef1f64edfa11399700a5243366cc006ee3
+  - session_id: bnbusdt-2023-04-01
+    date: '2023-04-01'
+    klines:
+      filename: BNBUSDT-1m-2023-04-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/BNBUSDT/1m/BNBUSDT-1m-2023-04-01.zip
+      sha256: 691798fe3b2f1354fe931c805a0054a0b7a00ee689dfcebf9e50d16f47a7dfd2
+    book_depth:
+      filename: BNBUSDT-bookDepth-2023-04-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/BNBUSDT/BNBUSDT-bookDepth-2023-04-01.zip
+      sha256: 428e6f122ce6ec0ace4d8a88a37e84c8c5cb510ea30d3562f0de55ac4085b89e
+  - session_id: bnbusdt-2023-07-01
+    date: '2023-07-01'
+    klines:
+      filename: BNBUSDT-1m-2023-07-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/BNBUSDT/1m/BNBUSDT-1m-2023-07-01.zip
+      sha256: baa82bde47560868625be652fe5cf21fbea0a821affa3302e63893bd4436fc37
+    book_depth:
+      filename: BNBUSDT-bookDepth-2023-07-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/BNBUSDT/BNBUSDT-bookDepth-2023-07-01.zip
+      sha256: 40f748da82ce560f60f5fd00aa9eb2da593e04c1bb2a4cfa767516813009daf6
+  - session_id: bnbusdt-2023-10-01
+    date: '2023-10-01'
+    klines:
+      filename: BNBUSDT-1m-2023-10-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/klines/BNBUSDT/1m/BNBUSDT-1m-2023-10-01.zip
+      sha256: 06315decdbcc96389e09e5c88c898363ee62b2e07ae77f5d6cb9c04b3bf36a74
+    book_depth:
+      filename: BNBUSDT-bookDepth-2023-10-01.zip
+      url: https://data.binance.vision/data/futures/um/daily/bookDepth/BNBUSDT/BNBUSDT-bookDepth-2023-10-01.zip
+      sha256: 5df4d9f21a55ed0d62f91031b3b1f836e3b6e32270fcf95de8440e0a0747227f

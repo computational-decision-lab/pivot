@@ -1,0 +1,43 @@
+{
+  "adapters": [
+    {
+      "available": true,
+      "command": "inspect",
+      "import_name": "inspect_ai",
+      "name": "Inspect AI",
+      "source": "local_probe",
+      "version": "0.1.dev1+g9fa31ccbc"
+    },
+    {
+      "available": true,
+      "command": "mini-swe-agent",
+      "import_name": "minisweagent",
+      "name": "mini-SWE-agent",
+      "source": "local_probe",
+      "version": "2.4.6"
+    },
+    {
+      "available": true,
+      "command": "pi",
+      "import_name": null,
+      "name": "Pi",
+      "source": "project_local_probe",
+      "version": "ccfe79ed238674f760c986e3a61493aab794000a"
+    }
+  ],
+  "confirmatory": false,
+  "container_executions": 0,
+  "execution_attempted": false,
+  "hidden_task_queries": 0,
+  "model_calls_performed": 0,
+  "phase": "PI_REPLICATION",
+  "reason": "unflagged external phases remain an intentional dry-run; use --external --dev for a bounded probe or an explicit confirmatory authorization for the frozen protocol",
+  "required_prerequisites": [
+    "choose the registered execution profile",
+    "pin and authorize a foundation model for external execution",
+    "verify the pinned sandbox image and dependency lock",
+    "retain the existing confirmatory lock hash"
+  ],
+  "status": "NOT_RUN",
+  "terminal_state": null
+}

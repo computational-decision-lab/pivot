@@ -1,0 +1,85 @@
+{
+  "schema_version": "pivot-v15-task-manifest-public-1",
+  "sealed": true,
+  "public_redaction": true,
+  "plane_counts": {
+    "proxy": 4,
+    "gate": 4,
+    "assessment": 4
+  },
+  "planes": {
+    "proxy": [
+      {
+        "task_id": "proxy-bug-001",
+        "task_hash": "dd49726b864a3f3f863ccd6a69131509eacfb0796cfafc9327ec22935d00f994",
+        "family": "bug_fixing"
+      },
+      {
+        "task_id": "proxy-bug-002",
+        "task_hash": "ef1fc0361a2da9918ee19a87fc07ba3e4b69fd1e366322fede9f2c79508cf331",
+        "family": "bug_fixing"
+      },
+      {
+        "task_id": "proxy-tools-001",
+        "task_hash": "9951d3c2dca94e79d63a260023cef793996bf06db6d0408e6fd8c0ae8289ad6c",
+        "family": "tool_context"
+      },
+      {
+        "task_id": "proxy-tools-002",
+        "task_hash": "03dcddac9394ac45ebfa437c78f5e7cd0d0cb54926cc5be0721191ab1cdf42f8",
+        "family": "tool_context"
+      }
+    ],
+    "gate": [
+      {
+        "task_id": "gate-bug-001",
+        "task_hash": "ddf606c03c61f8e75b02d7618b2915923e928b520cf201bdf0fb427f606ffb19",
+        "family": "bug_fixing"
+      },
+      {
+        "task_id": "gate-bug-002",
+        "task_hash": "e075e80c71294079684f9171e19fd70b7c2d1f411891815996196deee0b24947",
+        "family": "bug_fixing"
+      },
+      {
+        "task_id": "gate-tools-001",
+        "task_hash": "baff13ce938e0a48ca45d823771f1607e984f634c369a7a59a6302232704b100",
+        "family": "tool_context"
+      },
+      {
+        "task_id": "gate-tools-002",
+        "task_hash": "0dd2dbe13a14bdbe6864a50399767eb0313bd44088106a45d770c87adcadeadf",
+        "family": "tool_context"
+      }
+    ],
+    "assessment": [
+      {
+        "task_id": "assessment-bug-001",
+        "task_hash": "df5ea23f4cb00d49363ec5c1e1f11424f9fe215bded1cb41974e3377c3e22e2b",
+        "family": "bug_fixing"
+      },
+      {
+        "task_id": "assessment-bug-002",
+        "task_hash": "b9562df315a05d3bf80504b726c05e42b612cce5c96b5b479082bddadcc7ee3b",
+        "family": "bug_fixing"
+      },
+      {
+        "task_id": "assessment-tools-001",
+        "task_hash": "dbdb4b1dd1c1088f96555bf16ee1e93f28eb57d8e0d36a6f95297df9d52cfc24",
+        "family": "tool_context"
+      },
+      {
+        "task_id": "assessment-tools-002",
+        "task_hash": "e89e75b69372a437d3530e6a5a9ca6ecfe9a487f67285e4ab4d429664c74b9ad",
+        "family": "tool_context"
+      }
+    ]
+  },
+  "outcome_visibility": {
+    "operator": ["proxy"],
+    "pivot": ["proxy", "gate"],
+    "promotion": ["proxy", "gate"],
+    "terminal_assessor": ["assessment"]
+  },
+  "source_sha256": "33a0546b95e8765cdd677b1ee27aaee896bb1c3e2933dce050693f3e27d404bc"
+}

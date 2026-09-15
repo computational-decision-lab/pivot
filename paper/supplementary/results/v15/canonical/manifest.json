@@ -1,0 +1,159 @@
+{
+  "confirmatory": false,
+  "note": "Canonical tables are materialized from completed phase artifacts; incomplete phases remain empty and are not treated as scientific evidence.",
+  "outputs": {
+    "autonomous_transitions": {
+      "csv": "<local-root>/research/pivot/results/v15/canonical/autonomous_transitions.csv",
+      "parquet": "<local-root>/research/pivot/results/v15/canonical/autonomous_transitions.parquet"
+    },
+    "closed_loop_results": {
+      "csv": "<local-root>/research/pivot/results/v15/canonical/closed_loop_results.csv",
+      "parquet": "<local-root>/research/pivot/results/v15/canonical/closed_loop_results.parquet"
+    },
+    "hf_queries": {
+      "csv": "<local-root>/research/pivot/results/v15/canonical/hf_queries.csv",
+      "parquet": "<local-root>/research/pivot/results/v15/canonical/hf_queries.parquet"
+    },
+    "promotion_candidates": {
+      "csv": "<local-root>/research/pivot/results/v15/canonical/promotion_candidates.csv",
+      "parquet": "<local-root>/research/pivot/results/v15/canonical/promotion_candidates.parquet"
+    },
+    "promotion_results": {
+      "csv": "<local-root>/research/pivot/results/v15/canonical/promotion_results.csv",
+      "parquet": "<local-root>/research/pivot/results/v15/canonical/promotion_results.parquet"
+    }
+  },
+  "phase": "DEV",
+  "rows": {
+    "autonomous_transitions": 4,
+    "closed_loop_results": 10,
+    "hf_queries": 62,
+    "promotion_candidates": 4,
+    "promotion_results": 42
+  },
+  "schema_version": "pivot-v15-canonical-tables-2",
+  "schemas": {
+    "autonomous_transitions": [
+      "run_id",
+      "scaffold",
+      "operator",
+      "task_family",
+      "round",
+      "transition_id",
+      "incumbent_hash",
+      "candidate_hash",
+      "delta_proxy",
+      "delta_actor",
+      "delta_strategic",
+      "proxy_incumbent_score",
+      "proxy_candidate_score",
+      "actor_incumbent_score",
+      "actor_candidate_score",
+      "proxy_positive",
+      "actor_reversal",
+      "strategic_reversal",
+      "footprint_prompt_token_delta",
+      "footprint_prompt_semantic_distance",
+      "footprint_skill_diff_size",
+      "footprint_skills_added",
+      "footprint_skills_removed",
+      "footprint_tool_schema_change",
+      "footprint_tool_count_delta",
+      "footprint_loop_parameter_delta",
+      "footprint_context_policy_change",
+      "footprint_test_policy_change",
+      "footprint_search_policy_change",
+      "footprint_tool_call_distribution_shift",
+      "footprint_shell_command_distribution_shift",
+      "footprint_test_execution_shift",
+      "footprint_files_read_shift",
+      "footprint_files_written_shift",
+      "footprint_dependency_operation_shift",
+      "footprint_token_usage_shift",
+      "footprint_context_peak_shift",
+      "footprint_wall_clock_shift",
+      "footprint_action_sequence_distance",
+      "resource_tokens",
+      "resource_wall_clock_seconds",
+      "resource_tool_calls",
+      "resource_tests_executed",
+      "resource_files_read",
+      "resource_files_written",
+      "resource_context_peak",
+      "resource_timeouts",
+      "resource_crashes",
+      "resource_dependency_operations",
+      "resource_cpu_seconds",
+      "resource_memory_mb",
+      "footprint",
+      "resource_metrics"
+    ],
+    "closed_loop_results": [
+      "method",
+      "scaffold",
+      "run_id",
+      "round",
+      "proxy_score",
+      "gate_score",
+      "assessment_score_if_terminal",
+      "CISR",
+      "resource_metrics",
+      "logical_hf_queries",
+      "pre_decision_pair_evaluations",
+      "post_decision_truth_evaluations",
+      "post_decision_truth_pair_evaluations"
+    ],
+    "hf_queries": [
+      "method",
+      "run_id",
+      "round",
+      "candidate_id",
+      "query_index",
+      "task_id",
+      "paired_delta",
+      "cost",
+      "posterior_before",
+      "posterior_after",
+      "EVSI",
+      "observed_information_gain",
+      "candidate_batch_hash",
+      "logical_hf_query",
+      "physical_pair_evaluation",
+      "cache_hit"
+    ],
+    "promotion_candidates": [
+      "run_id",
+      "round",
+      "candidate_id",
+      "candidate_hash",
+      "proxy_delta",
+      "operator",
+      "scaffold"
+    ],
+    "promotion_results": [
+      "method",
+      "run_id",
+      "round",
+      "selected_candidate",
+      "true_best_candidate",
+      "ISR",
+      "hf_cost"
+    ]
+  },
+  "sha256": {
+    "parquet": "efcc3a4862a76347106df74184dd243eb54453d7b73283152f32466bbea8a436"
+  },
+  "source_hashes": {
+    "<local-root>/research/pivot/results/v15/dev-external-closed-loop/manifest.json": "05b2b74467ae0ec6d18a75ea3e62a53af6253e85eeaf490fa1ae0bf24ed6cd7d",
+    "<local-root>/research/pivot/results/v15/dev-external-promotion/manifest.json": "7ca02c2a6c9d188357a560f7eedf6b89d26c695c6cdcde70e8fbf20c1b6a4b37",
+    "<local-root>/research/pivot/results/v15/dev-external-strategic-response/manifest.json": "a39e3a2f3119695f4301c0b1f60d193769fa43d9f73706d5dd7a9be7ae91d190",
+    "<local-root>/research/pivot/results/v15/dev-external-transition-audit/manifest.json": "6f499b8132534822b2fcdf10d79804f6559b59d25b4497234817247ad369aa78"
+  },
+  "source_manifests": [
+    "<local-root>/research/pivot/results/v15/dev-external-transition-audit/manifest.json",
+    "<local-root>/research/pivot/results/v15/dev-external-strategic-response/manifest.json",
+    "<local-root>/research/pivot/results/v15/dev-external-promotion/manifest.json",
+    "<local-root>/research/pivot/results/v15/dev-external-closed-loop/manifest.json"
+  ],
+  "strategic_response_rows": 1
+}
