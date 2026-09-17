@@ -1,0 +1,87 @@
+name: Sync paper to Overleaf
+on:
+  push:
+    branches: [master]
+    paths: ['paper/**', '.github/workflows/sync-paper-to-overleaf.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: overleaf-paper
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Sync manuscript safely
+        env:
+          OVERLEAF_TOKEN: ${{ secrets.OVERLEAF_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$OVERLEAF_TOKEN"
+          work=$(mktemp -d)
+          trap 'rm -rf "$work"' EXIT
+          cat > "$work/askpass" <<'ASKPASS'
+          #!/bin/sh
+          case "$1" in
+            *Username*) printf '%s\n' git ;;
+            *) printf '%s\n' "$OVERLEAF_TOKEN" ;;
+          esac
+          ASKPASS
+          chmod 700 "$work/askpass"
+          export GIT_ASKPASS="$work/askpass" GIT_TERMINAL_PROMPT=0
+          git -c credential.helper= clone https://git.overleaf.com/6aab7ef4c95659076d75b579 "$work/overleaf"
+          export SYNC_DEST="$work/overleaf"
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, subprocess
+          root = pathlib.Path(os.environ['SYNC_DEST'])
+          state = root / '.github-sync.json'
+          def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+          if state.exists():
+              old = json.loads(state.read_text())['files']
+              for name, expected in old.items():
+                  p = root / name
+                  if not p.is_file() or digest(p) != expected:
+                      raise SystemExit(f'Overleaf edited {name}; reconcile before syncing.')
+          else:
+              files = [p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file() and '.git' not in p.relative_to(root).parts]
+              if set(files) - {'main.tex'}:
+                  raise SystemExit('Existing Overleaf project is not blank; refusing initial overwrite.')
+              if subprocess.check_output(['git','-C',str(root),'rev-list','--count','HEAD'],text=True).strip() != '1':
+                  raise SystemExit('Existing Overleaf history needs manual reconciliation.')
+              old = {}
+          source = pathlib.Path('paper')
+          assert (source / 'main.tex').is_file()
+          payload = {}
+          for p in source.rglob('*'):
+              rel = p.relative_to(source)
+              if any(x in {'archive','build','supplementary','snapshot'} for x in rel.parts): continue
+              if p.is_file() and p.suffix in {'.tex','.bib','.sty','.bst','.cls','.pdf','.png','.jpg','.jpeg','.eps'} and not p.name.startswith('pivot_iclr2027_submission'):
+                  payload[rel.as_posix()] = p.read_bytes()
+          for name in payload:
+              p = root / name
+              if state.exists() and name not in old and p.exists():
+                  raise SystemExit(f'Unmanaged Overleaf file collision: {name}')
+          for name in old.keys() - payload.keys(): (root / name).unlink()
+          for name, data in payload.items():
+              p = root / name
+              p.parent.mkdir(parents=True, exist_ok=True)
+              p.write_bytes(data)
+          (root / 'latexmkrc').write_text("$ENV{'TEXINPUTS'}='./style//:' . ($ENV{'TEXINPUTS'} // '');\n$ENV{'BSTINPUTS'}='./style//:' . ($ENV{'BSTINPUTS'} // '');\n")
+          hashes = {name: digest(root/name) for name in payload}
+          hashes['latexmkrc'] = digest(root/'latexmkrc')
+          state.write_text(json.dumps({'github_commit':os.environ['GITHUB_SHA'],'files':hashes},indent=2)+'\n')
+          PY
+          cd "$work/overleaf"
+          git config user.name 'GitHub paper sync'
+          git config user.email 'paper-sync@users.noreply.github.com'
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "Sync GitHub paper ${GITHUB_SHA}"
+            git -c credential.helper= push origin HEAD:master
+          fi
+          echo "### Overleaf synchronized" >> "$GITHUB_STEP_SUMMARY"
+          echo "GitHub commit: ${GITHUB_SHA}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Project: https://www.overleaf.com/project/6aab7ef4c95659076d75b579" >> "$GITHUB_STEP_SUMMARY"
