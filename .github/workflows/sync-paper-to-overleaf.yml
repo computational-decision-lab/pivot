@@ -59,7 +59,10 @@ jobs:
               rel = p.relative_to(source)
               if any(x in {'archive','build','supplementary','snapshot'} for x in rel.parts): continue
               if p.is_file() and p.suffix in {'.tex','.bib','.sty','.bst','.cls','.pdf','.png','.jpg','.jpeg','.eps'} and not p.name.startswith('pivot_iclr2027_submission'):
-                  payload[rel.as_posix()] = p.read_bytes()
+                  data = p.read_bytes()
+                  if rel.as_posix() == 'main.tex':
+                      data = data.replace(b'../tables/', b'tables/')
+                  payload[rel.as_posix()] = data
           for name in payload:
               p = root / name
               if state.exists() and name not in old and p.exists():
