@@ -80,7 +80,7 @@ jobs:
           git add -A
           if ! git diff --cached --quiet; then
             git commit -m "Sync GitHub paper ${GITHUB_SHA}"
-            git -c credential.helper= push origin HEAD:master
+            git -c credential.helper= push origin "HEAD:$(git branch --show-current)"
           fi
           echo "### Overleaf synchronized" >> "$GITHUB_STEP_SUMMARY"
           echo "GitHub commit: ${GITHUB_SHA}" >> "$GITHUB_STEP_SUMMARY"
