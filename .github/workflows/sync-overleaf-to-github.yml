@@ -40,28 +40,21 @@ jobs:
           chmod 700 "$work/askpass"
           export GIT_ASKPASS="$work/askpass" GIT_TERMINAL_PROMPT=0
           git -c credential.helper= clone https://git.overleaf.com/6aab7ef4c95659076d75b579 "$work/overleaf"
-          OVERLEAF_DIR="$work/overleaf" python3 - <<'PY'
-          import os, pathlib, shutil
-          root = pathlib.Path(os.environ['OVERLEAF_DIR'])
-          dest = pathlib.Path('paper')
-          allowed = {'.tex','.bib','.sty','.bst','.cls','.pdf','.png','.jpg','.jpeg','.eps'}
-          skip = {'build','archive','supplementary','snapshot'}
-          for p in root.rglob('*'):
-              rel = p.relative_to(root)
-              if '.git' in rel.parts or rel.name in {'.github-sync.json','latexmkrc'} or any(x in skip for x in rel.parts): continue
-              if p.is_file() and p.suffix in allowed:
-                  out = dest / rel
-                  out.parent.mkdir(parents=True, exist_ok=True)
-                  data = p.read_bytes()
-                  if rel.as_posix() == 'main.tex': data = data.replace(b'tables/', b'../tables/')
-                  out.write_bytes(data)
-          PY
-          if git diff --quiet -- paper; then
-            echo 'No Overleaf changes to import.'
-            exit 0
-          fi
+          python3 scripts/import_overleaf.py "$work/overleaf"
           git config user.name 'GitHub paper sync'
           git config user.email 'paper-sync@users.noreply.github.com'
-          git add paper
-          git commit -m 'Sync manuscript changes from Overleaf'
-          git push origin HEAD:master
+          git add -- paper
+          if ! git diff --cached --quiet; then
+            git commit -m 'Sync manuscript changes from Overleaf'
+            git push origin HEAD:master
+          fi
+          # Record acknowledged content only after the GitHub push succeeds.
+          # A retry is safe if either remote changes while the job is running.
+          git -C "$work/overleaf" config user.name 'GitHub paper sync'
+          git -C "$work/overleaf" config user.email 'paper-sync@users.noreply.github.com'
+          git -C "$work/overleaf" add .github-sync.json
+          if ! git -C "$work/overleaf" diff --cached --quiet; then
+            git -C "$work/overleaf" commit -m "Acknowledge import to GitHub $(git rev-parse HEAD)"
+            git -C "$work/overleaf" -c credential.helper= push origin "HEAD:$(git -C "$work/overleaf" branch --show-current)"
+          fi
+          echo 'Overleaf import and synchronization baseline verified.' >> "$GITHUB_STEP_SUMMARY"
