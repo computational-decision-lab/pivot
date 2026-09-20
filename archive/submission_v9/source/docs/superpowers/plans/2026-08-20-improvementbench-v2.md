@@ -83,8 +83,8 @@ Run: `.venv/bin/pytest -q tests/unit/test_improvementbench.py tests/integration/
 **Files:**
 - Modify: `README.md`
 - Modify: `docs/improve-x-v5-status.md`
-- Modify: `paper/iclr2027/supplementary/scripts/build_iclr_supplement.py`
-- Modify: `paper/iclr2027/supplementary/README.md`
+- Modify: `paper/supplementary/scripts/build_iclr_supplement.py`
+- Modify: `paper/supplementary/README.md`
 
 - [x] **Step 1: Document v2 commands and the collection/evidence boundary.**
 

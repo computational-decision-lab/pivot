@@ -316,7 +316,7 @@ def _architecture_bundle(root: Path, output: Path) -> dict[str, Any]:
     metadata = {
         "figure_id": stem,
         "alias_of": "fig3_pivot_architecture",
-        "scientific_question": "How does PIVOT-VOI allocate paired interventional evaluations to preserve update decisions?",
+        "scientific_question": "How does PIVOT-KG allocate paired interventional evaluations to preserve update decisions?",
         "unit_of_inference": "semantic architecture node and directed stage",
         "appendix": False,
         "experiment_sources": [str(source.relative_to(root))],
@@ -659,7 +659,7 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         "proxy_only": "Proxy Only",
         "paired_lucb": "Paired LUCB",
         "global_voi": "Global-VOI",
-        "pivot_voi": "PIVOT-VOI",
+        "pivot_voi": "PIVOT-KG",
     }
     figure = plt.figure(figsize=(7.15, 4.25), constrained_layout=False)
     grid = figure.add_gridspec(2, 2, height_ratios=[1.15, 0.95], hspace=0.48, wspace=0.30)
@@ -753,7 +753,7 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                 ):
                     by_method_seed[(str(row["method"]), int(row["seed"]))] = float(row["CISR"])
             for contrast, method in [
-                ("Proxy - PIVOT-VOI", "pivot_voi"),
+                ("Proxy - PIVOT-KG", "pivot_voi"),
                 ("Proxy - Paired LUCB", "paired_lucb"),
                 ("Proxy - Global-VOI", "global_voi"),
             ]:
@@ -783,7 +783,7 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                 )
     # Only the registered primary PIVOT contrast is displayed in the main
     # forest; other contrasts remain traceable in the source table.
-    primary = [row for row in effect_rows if row["contrast"] == "Proxy - PIVOT-VOI"]
+    primary = [row for row in effect_rows if row["contrast"] == "Proxy - PIVOT-KG"]
     fy = np.arange(len(primary))
     fe = np.asarray([row["estimate"] for row in primary])
     flo = np.asarray([row["ci_low"] for row in primary])
@@ -806,7 +806,7 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         fontsize=6.8,
     )
     forest_axis.invert_yaxis()
-    forest_axis.set_xlabel("CISR reduction: Proxy Only - PIVOT-VOI")
+    forest_axis.set_xlabel("CISR reduction: Proxy Only - PIVOT-KG")
     forest_axis.set_title(
         f"C  registered paired effect at fixed HF budget {fixed_budget}", fontsize=8.3
     )
@@ -852,7 +852,7 @@ def _figure5(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             for source_env in ["external_adaptive_a", "external_adaptive_b"]:
                 for method_label, method_id in [
                     ("Proxy Only", "proxy_only"),
-                    ("PIVOT-VOI", "pivot_voi"),
+                    ("PIVOT-KG", "pivot_voi"),
                 ]:
                     subset = [
                         row
@@ -1410,7 +1410,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         figure,
         posterior + costs,
         source_paths,
-        "Do posterior approximation and cost misspecification materially change PIVOT-VOI decisions?",
+        "Do posterior approximation and cost misspecification materially change PIVOT-KG decisions?",
         "calibration group",
         appendix=True,
     )

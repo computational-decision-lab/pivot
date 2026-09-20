@@ -94,14 +94,14 @@ ledger, not a general superiority claim.
 Build the anonymous submission package from the pinned snapshot:
 
 ```bash
-(cd paper/iclr2027 && ./build.sh)
+(cd paper && ./build.sh)
 .venv/bin/python scripts/bootstrap_opentikz.py
 .venv/bin/python scripts/build_opentikz_architecture.py
 ```
 
 OpenTikZ is locked to commit
 `359befbf8e8af7ce08e7e387b2c2a198e0ca735d`; its adapted architecture source
-is `paper/iclr2027/figures/fig3_pivot_architecture.tex`, and the paper uses
+is `paper/figures/fig3_pivot_architecture.tex`, and the paper uses
 the hash-bound copy under `paper/snapshot/figures/`.
 
 Start with:

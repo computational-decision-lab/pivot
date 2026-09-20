@@ -144,7 +144,7 @@ At the 2026-08-20 checkpoint (after the OpenTikZ architecture integration):
   inspection pass. Feedback is routed through an outer channel, and no edge
   labels are placed on top of nodes or other connectors. W0 is inside the
   world panel, and both lower panel titles are anchored inside their panels.
-- `paper/iclr2027/build.sh` pins `SOURCE_DATE_EPOCH=1787227200` by default;
+- `paper/build.sh` pins `SOURCE_DATE_EPOCH=1787227200` by default;
   two forced clean PDF builds reproduced the same SHA.
 
 ## Remaining V5 work

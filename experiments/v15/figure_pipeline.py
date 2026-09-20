@@ -395,7 +395,9 @@ def bundle_figures(root: Path, *, inspect_stamp: str | None = None) -> dict[str,
         "|---|---|---|",
     ]
     lines.extend(f"| `{item['figure_id']}` | `{item['state']}` | `{item['bundle']}` |" for item in statuses)
-    (root / "docs/archive/v15/V15_FIGURE_STATUS.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    status_path = root / "docs/archive/v15/V15_FIGURE_STATUS.md"
+    status_path.parent.mkdir(parents=True, exist_ok=True)
+    status_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return report
 
 

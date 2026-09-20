@@ -67,6 +67,39 @@ SEALED_MANIFEST_RELATIVE = "configs/v15/task_manifest.json"
 SEALED_LOCK_RELATIVE = "experiments/v15/confirmatory_lock.json"
 PUBLIC_MANIFEST_RELATIVE = "configs/v15/task_manifest.public.json"
 
+# The latest sealed response-world evidence is copied into a small, explicit
+# public subtree. Keep these paths relative to the checkout so the constant
+# is useful both to the builder and to unit tests without exposing machine
+# roots in generated artifacts.
+LATEST_EVIDENCE_SOURCES = {
+    "melting_v4": Path(
+        "artifacts/revision/iclr_20260918/source/07_下一步_PIVOTv2_异质响应/"
+        "server_results/melting_v4_confirm_analysis"
+    ),
+    "leduc_v2b": Path(
+        "artifacts/revision/iclr_20260918/source/07_下一步_PIVOTv2_异质响应/"
+        "server_results/openspiel_v2_20260918/reanalysis_v12/leduc_v2b_confirm"
+    ),
+    "kuhn_v2b": Path(
+        "artifacts/revision/iclr_20260918/source/07_下一步_PIVOTv2_异质响应/"
+        "server_results/openspiel_v2_20260918/reanalysis_v12/kuhn_v2b_confirm"
+    ),
+}
+LATEST_EVIDENCE_FILES = (
+    "summary.json",
+    "seed_results.csv",
+    "decisions_sealed.json",
+    "scored_decisions.json",
+    "posterior_v2_spec.json",
+    "selection_seal.json",
+)
+LATEST_EVIDENCE_AUDIT = Path("paper/revision_evidence_public.json")
+DECISION_RELEVANCE_DIR = Path("artifacts/revision/20260920-manuscript-update")
+SUPPLEMENT_EXCLUDED = {
+    Path("scripts/build_revision_evidence.py"),
+    Path("paper/revision_evidence_manifest.json"),
+}
+
 
 def _is_public_parquet(relative: Path) -> bool:
     """Return whether a generated Parquet table is safe for the release."""
@@ -183,7 +216,10 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
         elif root.is_dir():
             sources = sorted(root.rglob("*"))
         else:
-            raise FileNotFoundError(root)
+            # Historical provenance directories were pruned during the V15
+            # migration. Their absence must not block the current release;
+            # explicit current-paper/evidence copies below are authoritative.
+            continue
         for source in sources:
             if not source.is_file() or any(part in SKIP_PARTS for part in source.parts):
                 continue
@@ -201,6 +237,8 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
                 # in the anonymous release.
                 continue
             relative = source.relative_to(project_root)
+            if relative in SUPPLEMENT_EXCLUDED:
+                continue
             if _is_sealed_public_input(relative):
                 # Historical locks may contain pre-redaction task contents;
                 # and the source task manifest contains gate/assessment
@@ -221,11 +259,15 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
         copied.append(target)
     for name in ("controlled_results.tex", "public_results.tex", "ablation_results.tex"):
         source = project_root / "paper" / "tables" / name
+        if not source.is_file():
+            continue
         target = output_root / "tables" / name
         _copy_sanitized(source, target)
         copied.append(target)
     for relative_path in ("paper/results_macros.tex",):
         source = project_root / relative_path
+        if not source.is_file():
+            continue
         target = output_root / relative_path
         _copy_sanitized(source, target)
         copied.append(target)
@@ -247,9 +289,64 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
         "snapshot/v15_pre_modern_agent/PROVENANCE.txt",
     ):
         source = project_root / relative_path
+        if not source.is_file():
+            continue
         target = output_root / relative_path
         _copy_sanitized(source, target)
         copied.append(target)
+
+    # Current manuscript-facing sources and figures are copied explicitly so
+    # the supplement follows the built PDF rather than a historical allowlist.
+    for relative_path in (
+        "paper/main.tex",
+        "paper/references.bib",
+        "paper/revision_results.tex",
+        "paper/style_manifest.json",
+    ):
+        source = project_root / relative_path
+        if not source.is_file():
+            continue
+        target = output_root / relative_path
+        _copy_sanitized(source, target, Path(relative_path))
+        copied.append(target)
+    for source_root, target_root in (
+        (project_root / "paper/style", output_root / "paper/style"),
+        (project_root / "paper/tables", output_root / "paper/tables"),
+        (project_root / "paper/figures/revision", output_root / "paper/figures/revision"),
+        (project_root / "paper/figures/release", output_root / "paper/figures/release"),
+    ):
+        if not source_root.is_dir():
+            continue
+        for source in sorted(source_root.rglob("*")):
+            if not source.is_file() or any(part in SKIP_PARTS for part in source.parts):
+                continue
+            relative = Path("paper") / source.relative_to(project_root / "paper")
+            target = output_root / relative
+            _copy_sanitized(source, target, relative)
+            copied.append(target)
+
+    # Preserve sealed evidence byte-for-byte: selection seals hash the exact
+    # JSON payload, so the generic sanitizer must not reformat these files.
+    for cohort, relative_source in LATEST_EVIDENCE_SOURCES.items():
+        for name in LATEST_EVIDENCE_FILES:
+            source = project_root / relative_source / name
+            if not source.is_file():
+                raise FileNotFoundError(source)
+            target = output_root / "evidence/latest" / cohort / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, target)
+            copied.append(target)
+    audit_source = project_root / LATEST_EVIDENCE_AUDIT
+    if audit_source.is_file():
+        target = output_root / "evidence/latest/revision_evidence_audit.json"
+        _copy_sanitized(audit_source, target)
+        copied.append(target)
+    for name in ("decision_relevance.json", "decision_relevance_rows.csv"):
+        source = project_root / DECISION_RELEVANCE_DIR / name
+        if source.is_file():
+            target = output_root / "evidence/latest" / name
+            _copy_sanitized(source, target)
+            copied.append(target)
     _rewrite_snapshot_manifest(
         output_root / "snapshot" / "manifest.json",
         original_manifest_sha256,
@@ -267,9 +364,12 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
         """# IMPROVE-X / PIVOT ICLR 2027 Supplementary Artifact
 
 This archive contains the anonymous source, public configurations, tests, the
-controlled ImprovementBench v1/v2 releases, and the hash-indexed paper
-snapshot used for the submission PDF. The sealed V15 task manifest and lock
-history remain local; only the redacted task-membership summary is included.
+controlled ImprovementBench releases, the current manuscript sources, and the
+hash-indexed paper snapshot used for the submission PDF. The three sealed
+response-world cohorts (Leduc, Kuhn, and Melting Pot) are copied byte-for-byte
+under `evidence/latest`; the public audit and decision-relevance bridge are
+included alongside them. Sealed task instructions and lock history remain
+local; only the redacted task-membership summary is included.
 From the
 repository root, install the project in editable mode and run:
 
@@ -308,13 +408,12 @@ analytic checks can be regenerated with:
 They test the constructive Global Fidelity Blindness and Response-Footprint
 Sensitivity claims; they are not causal market evidence.
 
-The frozen confirmatory package is included under `results/v9`; publication
-transforms are under the historical figure/source directories. They do not rerun
-science: they read hash-indexed source rows and emit PDF/SVG/PNG figures plus
-CSV provenance tables. Rebuild and audit the complete package with:
+The evidence archive is a frozen copy, not a rerun. Rebuild the complete
+paper, supplement, and local audit with:
 
 ```bash
-.venv/bin/python -m experiments.v15 reports --root .
+.venv/bin/python scripts/build_revision_evidence.py --root .
+.venv/bin/python scripts/build_iclr_supplement.py   --project-root . --output-root artifacts/revision/supplement_staging   --archive paper/pivot_iclr2027_supplementary.zip
 ```
 
 The manuscript reports the scientific names of the evidence layers. Internal

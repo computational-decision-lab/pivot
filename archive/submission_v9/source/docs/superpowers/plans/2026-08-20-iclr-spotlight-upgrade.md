@@ -4,7 +4,7 @@
 
 **Goal:** Upgrade the anonymous ICLR 2027 PIVOT paper to the supplied Goal v3 standard while preserving its title, central thesis, conservative claims, and reproducible release gates.
 
-**Architecture:** Keep the existing `paper/iclr2027/main.tex` and frozen snapshot contract as the publication surface. Add a small deterministic E4 evaluator-contrast module and figure rendering path, then revise the paper source and verifier invariants around the transition estimand. Rebuild all derived PDF/supplement artifacts from scripts and push only the project subtree.
+**Architecture:** Keep the existing `paper/main.tex` and frozen snapshot contract as the publication surface. Add a small deterministic E4 evaluator-contrast module and figure rendering path, then revise the paper source and verifier invariants around the transition estimand. Rebuild all derived PDF/supplement artifacts from scripts and push only the project subtree.
 
 **Tech Stack:** Python 3.10, NumPy, Matplotlib/Pillow fallback renderer, existing PIVOT transfer models, LaTeX/pdfLaTeX/latexmk, pytest, Ruff, mypy.
 
@@ -44,8 +44,8 @@
 ### Task 3: Revise the paper narrative and theory
 
 **Files:**
-- Modify: `paper/iclr2027/main.tex`
-- Modify: `paper/iclr2027/references.bib` only if a needed active-learning citation already has verified local metadata
+- Modify: `paper/main.tex`
+- Modify: `paper/references.bib` only if a needed active-learning citation already has verified local metadata
 
 - [ ] Rewrite the abstract into the four required paragraphs.
 - [ ] Sharpen the introduction around the replacement operation and “rank policies correctly while ranking improvements incorrectly.”
@@ -74,10 +74,10 @@
 ### Task 5: Rebuild and verify the deliverable
 
 **Files:**
-- Modify: `paper/iclr2027/verification.json`
-- Modify: `paper/iclr2027/submission_verification.json`
-- Modify: `paper/iclr2027/pivot_iclr2027_submission.pdf`
-- Modify: `paper/iclr2027/pivot_iclr2027_supplementary.zip`
+- Modify: `paper/verification.json`
+- Modify: `paper/submission_verification.json`
+- Modify: `paper/pivot_iclr2027_submission.pdf`
+- Modify: `paper/pivot_iclr2027_supplementary.zip`
 - Modify: `docs/improve-x-v5-status.md`
 
 - [ ] Run the new E4 experiment, figure/table/snapshot generation, paper build, full pytest, Ruff, and mypy.

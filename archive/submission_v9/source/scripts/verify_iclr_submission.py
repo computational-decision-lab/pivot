@@ -152,7 +152,7 @@ def _aux_path(pdf: Path, aux: Path | None = None) -> Path:
 
     The release PDF is intentionally copied without build intermediates. When
     no explicit sidecar is supplied, look next to the PDF first and then in
-    the conventional ``build/main.aux`` location used by ``paper/iclr2027``.
+    the conventional ``build/main.aux`` location used by ``paper``.
     """
 
     candidates = [aux] if aux is not None else [pdf.with_suffix(".aux"), pdf.parent / "build" / "main.aux"]

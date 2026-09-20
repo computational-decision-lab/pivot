@@ -13,7 +13,7 @@ claims:
     required_terminal_state: [HYPOTHESIS_SUPPORTED]
     allowed_scope: operator-relative policy-update transitions under the frozen protocol
     forbidden_scope: universal claims about all self-improving agents or environments
-    paper_location: paper/iclr2027/main.tex#Introduction
+    paper_location: paper/main.tex#Introduction
     evidence_required: [paired_transition_table, sealed_assessment, independent_units]
   - id: C2
     claim_id: C2
@@ -23,7 +23,7 @@ claims:
     required_terminal_state: [HYPOTHESIS_SUPPORTED]
     allowed_scope: frozen candidate archives, matched query budgets, and the registered promotion metric
     forbidden_scope: universal dominance over LUCB, Global-VOI, or every acquisition strategy
-    paper_location: paper/iclr2027/main.tex#Method
+    paper_location: paper/main.tex#Method
     evidence_required: [frozen_budget, query_log, paired_deltas, selection_regret]
   - id: C3
     claim_id: C3
@@ -33,7 +33,7 @@ claims:
     required_terminal_state: [HYPOTHESIS_SUPPORTED]
     allowed_scope: the explicitly implemented response layers and registered opponent families
     forbidden_scope: equilibrium, market-causality, or simulator-ground-truth conclusions
-    paper_location: paper/iclr2027/main.tex#Problem-Formulation
+    paper_location: paper/main.tex#Problem-Formulation
     evidence_required: [world_definitions, response_decomposition, opponent_registry]
   - id: C4
     claim_id: C4
@@ -43,7 +43,7 @@ claims:
     required_terminal_state: [HYPOTHESIS_SUPPORTED, HYPOTHESIS_NOT_SUPPORTED]
     allowed_scope: a finite, predeclared task/operator/environment population
     forbidden_scope: requiring reversal, selecting a favorable case, or generalizing to all agents
-    paper_location: paper/iclr2027/main.tex#Introduction
+    paper_location: paper/main.tex#Introduction
     evidence_required: [delta_proxy, delta_actor, delta_strategic, reversal_rate]
   - id: C5
     claim_id: C5
@@ -53,7 +53,7 @@ claims:
     required_terminal_state: [HYPOTHESIS_SUPPORTED]
     allowed_scope: public-data descriptive diagnostics and virtual-fill accounting
     forbidden_scope: live trading, causal market-impact identification, or deployment performance
-    paper_location: paper/iclr2027/main.tex#Finance-Audit
+    paper_location: paper/main.tex#Finance-Audit
     evidence_required: [public_data_manifest, virtual_fill_accounting, boundary_statement]
 forbidden_inference:
   - universal method superiority

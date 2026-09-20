@@ -4,7 +4,7 @@ Date: 2026-08-21 (Asia/Shanghai)
 
 The ICLR bibliography was checked against primary publisher or repository
 metadata before the final paper freeze. All 46 arXiv identifiers cited in
-`paper/iclr2027/references.bib` resolved through the official arXiv API. The
+`paper/references.bib` resolved through the official arXiv API. The
 recent 2025--2026 entries use the title and author metadata returned by those
 records. The M3 entry is checked against the authors and title on the
 project's paper PDF because that work does not expose an arXiv identifier in

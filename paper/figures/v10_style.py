@@ -39,7 +39,7 @@ METHOD_STYLE = {
     },
     "global_voi": {"label": "Global-VOI", "color": COLORS["global"], "marker": "s", "ls": ":"},
     "paired_lucb": {"label": "Paired LUCB", "color": COLORS["lucb"], "marker": "^", "ls": "-."},
-    "pivot_voi": {"label": "PIVOT-VOI", "color": COLORS["pivot"], "marker": "D", "ls": "-"},
+    "pivot_voi": {"label": "PIVOT-KG", "color": COLORS["pivot"], "marker": "D", "ls": "-"},
     "all_hf": {"label": "All-HF oracle", "color": COLORS["oracle"], "marker": "x", "ls": "--"},
 }
 

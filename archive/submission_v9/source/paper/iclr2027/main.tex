@@ -1,0 +1,636 @@
+\documentclass{article} % ICLR 2027 official anonymous submission format
+\usepackage{iclr2027_conference,times}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{csquotes}
+\usepackage[hidelinks]{hyperref}
+\usepackage{cleveref}
+
+\graphicspath{{../snapshot/figures/}}
+
+\hypersetup{
+  pdftitle={When Better Gets Worse: Improvement Fidelity of Self-Improvement Operators in Adaptive Worlds},
+  pdfauthor={}
+}
+
+\setlength{\textfloatsep}{7pt plus 1pt minus 2pt}
+\setlength{\floatsep}{6pt plus 1pt minus 2pt}
+\setlength{\intextsep}{6pt plus 1pt minus 2pt}
+\setlist{nosep,leftmargin=*}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\J}{\mathcal{J}}
+\newcommand{\pii}{\pi}
+\newcommand{\pip}{\pi'}
+\newcommand{\dproxy}{\Delta_V}
+\newcommand{\dtrue}{\Delta_*}
+\newtheorem{proposition}{Proposition}
+
+\title{When Better Gets Worse:\\Improvement Fidelity of Self-Improvement Operators in Adaptive Worlds}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Self-improvement systems repeatedly replace an incumbent policy with a
+candidate that a verifier says is better. The hidden assumption is that this
+verifier-approved improvement transfers after deployment, even when the
+deployment changes the world. This implication can fail even when the
+verifier correctly evaluates every individual policy.
+
+We therefore define \emph{Improvement Fidelity} over the update transition
+$\tau=(\pi_t,\pi_{t+1})$, rather than over isolated policy values. The proxy
+improvement is $\dproxy=J_V(\pi')-J_V(\pi)$ and the deployment-induced
+improvement is $\dtrue=\J(\pi')-\J(\pi)$. An \emph{improvement reversal} is
+$\dproxy>0$ with $\dtrue<0$: a verifier-approved replacement that becomes
+worse after the world responds.
+
+PIVOT (Paired Interventional Validation of Optimization Transitions) is a
+budgeted intervention mechanism that preserves update decisions. It uses
+paired rollouts and a differential correction $\Delta_* - \Delta_V$, then
+queries transitions whose high-fidelity result is most likely to change the
+selected update. It is not generic active learning and does not target global
+world-model error.
+
+Across controlled mechanism and strategic fixture evidence, PIVOT exposes the
+transition-level failure while keeping the external stress test explicitly
+observational: the Binance audit finds no reversal (0/7 primary, 0/5
+holdout). We do not claim causal market reversal, simulator ground truth,
+universal failure, or general multi-agent equilibrium; the contribution is a
+falsifiable evaluation criterion and a first budgeted implementation.
+\end{abstract}
+
+\section{Introduction}
+Self-improvement is often described as a loop: generate a candidate, evaluate
+it, promote it, and repeat. But the central object optimized by the loop is
+not a policy in isolation; it is a \emph{replacement operation}. A verifier
+may rank policies correctly while ranking improvements incorrectly, because
+deployment can change the transition and reward dynamics that define the next
+evaluation. The hidden implication is
+\begin{equation}
+  \text{verifier says candidate is better}
+  \quad\Longrightarrow\quad
+  \text{deployment policy is better},
+\end{equation}
+and this implication need not hold even for a fixed, external, correctly
+implemented verifier.
+
+This failure is distinct from self-authored verification, ordinary dataset
+overfitting, or an incorrect evaluation program. It is a transfer failure for
+the learning update itself: the proxy world evaluates an object that changes
+when the candidate is deployed.
+
+We study the local transition
+\begin{equation}
+    \tau_t=(\pi_t,\pi_{t+1})
+    \qquad\text{rather than only}\qquad J(\pi_t).
+\end{equation}
+Let $V$ be a cheap observer or replay world and let $*$ denote a deployment
+world that may respond to the policy. The proxy and deployment improvements
+are $\dproxy=J_V(\pip)-J_V(\pii)$ and
+$\dtrue=\J(\pip)-\J(\pii)$. An improvement reversal is
+\begin{equation}
+    \dproxy>0\quad\land\quad\dtrue<0.
+\end{equation}
+This definition makes no assumption about whether the proxy is learned,
+hand-coded, or externally audited. It asks whether the object consumed by the
+self-improvement loop transfers.
+
+An improvement operator $\mathcal A$ induces a transition distribution
+$Q_{\mathcal A}$ over the replacements it proposes. We therefore define
+operator-relative Improvement Fidelity for any loss $L$ by
+\begin{equation}
+  \operatorname{IF}(V,\mathcal A;L)
+  =\mathbb E_{(\pi,\pi')\sim Q_{\mathcal A}}
+    \left[L\!\left(\Delta_V,\Delta_*\right)\right].
+\end{equation}
+The absolute-delta choice $L(a,b)=|a-b|$ is operator-conditioned IDE, while
+the sign-error choice is $1-\operatorname{ISC}(Q_{\mathcal A})$ after excluding
+ties. IRR is the corresponding conditional failure probability. Thus the
+relevant population is induced by the self-improvement operator, rather than
+the uniform population of all policy pairs.
+
+Our contributions are deliberately limited to four points:
+\begin{enumerate}
+  \item \textbf{Contribution 1 --- Failure mode.} We identify and formalize
+  \emph{improvement reversal}: a verifier-approved update can reduce deployed
+  performance because deployment induces environmental response.
+  \item \textbf{Contribution 2 --- Evaluation criterion.} We introduce
+  \emph{Improvement Fidelity} as the transfer criterion for self-improvement
+  transitions and report IDE, ISC, IRR, SIRR, ISR, and CTI. The IMPROVE-X
+  contract stores each transition and preserves unavailable world layers as
+  explicit nulls.
+  \item \textbf{Contribution 3 --- Method.} We introduce \textbf{PIVOT}, a
+  paired differential evaluator and budgeted intervention rule that allocates
+  queries to preserve update-selection decisions, not to minimize global
+  prediction error.
+  \item \textbf{Contribution 4 --- Evidence.} We provide controlled
+  mechanism evidence, a strategic response fixture, and an external stress
+  test with a checksum-bound observational finance audit. Nulls and open
+  scientific gates remain explicit.
+\end{enumerate}
+
+\section{Related Work}
+\paragraph{Performative and strategic response.}
+Performative prediction makes deployment part of the data-generating process
+\cite{perdomo2020performative,mandal2022performative}, and recent work derives
+policy gradients or learning dynamics for performative RL and performative
+Markov games~\cite{performativepg2025,performativempg2025,map2025,multiagentperformative2022}.
+These papers study stable policies, equilibria, or convergence. They do not
+ask whether a particular replacement $\pi\!\to\!\pi'$ is still an improvement
+after the response is realized. \textbf{Gap:} PIVOT treats the update, not
+the fixed point, as the estimand.
+
+\paragraph{World-model and simulator fidelity.}
+WorldGym and policy-aware simulator learning evaluate policy values, rankings,
+or simulator objectives~\cite{worldgym2025,policyaware2026,tdmpc22024}. Recent market
+simulators improve the realism of endogenous order flow and liquidity through
+interactive LOB feedback or generative state--event models
+\cite{lobreality2026,m3market2026,tradefm2026}. These advances still report
+policy-level fidelity or trajectory realism. \textbf{Gap:} they do not measure
+the sign or magnitude of the differential
+$J(\pi')-J(\pi)$ under a policy-induced world, so good global ranking can
+coexist with wrong local update ordering.
+
+\paragraph{Self-improvement and verification.}
+EVOQUANT, EvoPolicyGym, Darwin Godel Machine, and Evo-Harness make iterative
+policy or harness evolution executable~\cite{evoquant2026,evopolicygym2026,dgm2025,evoharness2026};
+FinEvo-Bench extends evaluation to longitudinal financial workflows
+\cite{finevobench2026}. ICLR benchmarks such as AgentBench, WebArena, and
+SWE-bench make agent evaluation executable across interactive tasks
+\cite{agentbench2024,webarena2024,swebench2024}. SEAL identifies the
+verifier--deployment gap when an agent authors its own tests, while recent stress tests expose variance,
+task-order, and execution-interface failures~\cite{selfauthored2026,fragility2026,auditingfinagents2026,sbco2026}.
+Those works either protect acceptance with a sealed oracle or benchmark the
+resulting agent. \textbf{Gap:} even a fixed external verifier can be correct
+about the wrong world; PIVOT validates transfer of the proposed update itself.
+
+\paragraph{Decision-preserving queries and finance testbeds.}
+Active learning and value-of-information provide the ancestry for allocating
+expensive queries~\cite{settles2009active,lindley1956information}; paired
+rollouts additionally exploit shared exogenous randomness. PIVOT changes the
+target from global prediction error to update-selection regret. ABIDES-MARL,
+FinEvo, and the NeurIPS FinRL-Meta benchmark, together with recent execution
+and market-impact simulators, supply increasingly endogenous finance testbeds
+~\cite{abidesmarl2025,finevo2026,finrlmeta2022,byrd2019abides,cont2010price,nevmyvaka2006execution}.
+\textbf{Gap:} these environments can reveal response mechanisms, but none
+defines improvement consistency or a budgeted transition-level validator that
+separates observer, actor, and strategic reversals.
+
+\section{Problem Formulation}
+\paragraph{Policy-induced worlds.}
+Deployment can alter transitions, rewards, liquidity, or other agents'
+behavior. We write this response as $\M[\pi]$ and define the deployment value
+\begin{equation}
+    \J(\pi)=J(\pi;\M[\pi]).
+\end{equation}
+For exposition, three layers separate mechanisms rather than assert that they
+are always identifiable:
+\begin{align}
+ \Delta_{\mathrm{direct}} &= J(\pip;\M[\pii])-J(\pii;\M[\pii]),\\
+ \Delta_{\mathrm{actor}} &= J(\pip;\M[\pip])-J(\pii;\M[\pii]),\\
+ \Delta_{\mathrm{strategic}} &= J_i(\pip,BR_{-i}(\pip))
+                              -J_i(\pii,BR_{-i}(\pii)).
+\end{align}
+The first ignores response, the second includes the focal agent's mechanical
+footprint, and the third includes adaptation by competitors. In experiments we
+report these as separate worlds and do not label a learned or observational
+proxy as ground truth.
+
+\paragraph{Improvement fidelity metrics.}
+For $n$ transitions, IDE is
+$n^{-1}\sum_k|(\dproxy)_k-(\dtrue)_k|$. ISC is the fraction of non-tied
+transitions whose signs agree. IRR is
+$P(\dtrue<0\mid\dproxy>0)$, while SIRR is
+$P(\Delta_{\mathrm{strategic}}<0\mid\Delta_{\mathrm{actor}}>0)$.
+When the rows are draws from $Q_{\mathcal A}$, IDE and $1-\mathrm{ISC}$ are
+the two empirical losses in $\operatorname{IF}(V,\mathcal A;L)$ above; the
+operator label is therefore part of the estimand, not merely metadata.
+For a candidate set $C_t$, the update-selection regret is
+\begin{equation}
+ \mathrm{ISR}_t=\max_{j\in C_t}(\dtrue)_{t,j}-(\dtrue)_{t,\hat j},
+\end{equation}
+where $\hat j$ is selected by the proxy or corrected estimate. CTI sums the
+true improvements of promoted updates over a trajectory. We call this metric
+the cumulative true improvement (CTI). All estimates below
+retain query counts, seeds, and confidence intervals in the artifact snapshot.
+
+\section{PIVOT}
+PIVOT stands for Paired Interventional Validation of Optimization
+Transitions. Given an incumbent and $K$ candidates, it first computes cheap
+proxy deltas and pre-query features. The features include proxy delta,
+response strength, competition strength, candidate index, and an update
+footprint. The generic footprint records policy-distance and action/support
+shifts; the finance footprint records size, participation, urgency, holding,
+turnover, liquidity consumption, and spread crossing.
+
+\paragraph{Paired differential correction.}
+For a queried transition, incumbent and candidate are evaluated on the same
+initial state, exogenous path, seed, and opponent initialization. PIVOT fits
+\begin{equation}
+ g_\theta(z_\Delta)\ \approx\ \Delta_* - \Delta_V,
+ \qquad \widehat\Delta_* = \Delta_V+g_\theta(z_\Delta).
+\end{equation}
+Pairing subtracts common-mode noise before aggregation. The unpaired ablation
+uses disjoint context seeds and the standard independent-sample standard error.
+
+\paragraph{Active query rule.}
+Let $\widehat\Delta_j$ and $u_j$ be a corrected estimate and uncertainty. A
+transparent PIVOT score is
+\begin{equation}
+ q_j=\frac{u_j(0.5+r_j)(1+o_j)}{c_j},
+\end{equation}
+where $r_j$ is predicted sign risk, $o_j$ is opportunity relative to the
+current best candidate, and $c_j$ is high-fidelity cost. The rule is a
+decision-change heuristic, not a Bayesian optimality claim. Queried values
+replace predictions; unqueried candidates retain proxy/model estimates.
+
+\paragraph{Why Transition Validation Differs from Active Learning.}
+Traditional active learning asks which label will reduce a global prediction
+loss for $y$. PIVOT asks which paired intervention can change the ordering or
+sign of an update. Its target is the differential correction
+$\Delta_* - \Delta_V$, and its loss is update-selection regret rather than
+global world-model error. In short, \textbf{PIVOT is not designed to minimize
+global world-model error; it targets the smallest intervention budget required
+to preserve optimization decisions.} This distinction is operational: an
+uncertain transition whose high-fidelity value cannot change the selected
+candidate has lower priority than an otherwise similar transition near the
+selection margin.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig1_when_better_gets_worse.png}
+  \caption{Controlled proxy versus deployment improvement. The upper-right
+  region is correct improvement, the upper-left region is a hidden gain, the
+  lower-left region is correct failure, and the lower-right region is the
+  highlighted false improvement (improvement reversal). Each point is a
+  transition in the frozen response--footprint grid.}
+  \label{fig:reversal}
+\end{figure}
+
+\section{Theory}
+We state four results that motivate the differential estimand. They are
+not claims about a particular simulator architecture.
+
+\begin{proposition}[Global fidelity is sufficient]
+Suppose $\sup_\pi|J_V(\pi)-J_*(\pi)|\leq\varepsilon$. Then every transition
+satisfies $|\dproxy-\dtrue|\leq2\varepsilon$. In particular, the sign is
+preserved whenever $|\dtrue|>2\varepsilon$.
+\end{proposition}
+\begin{proof}
+By adding and subtracting the two policy values,
+$\dproxy-\dtrue=[J_V(\pip)-J_*(\pip)]-[J_V(\pii)-J_*(\pii)]$.
+The triangle inequality gives the bound. If $|\dtrue|>2\varepsilon$, the
+perturbation cannot cross zero.
+\end{proof}
+
+\begin{proposition}[Global Fidelity Blindness]
+For every $\varepsilon>0$, there is a finite policy family, a deployment value
+function $J_*$, a verifier $V$, a policy distribution $P$, and an update
+operator $\mathcal A$ such that
+\[
+  \operatorname{MAE}_{P}(J_V,J_*)<\varepsilon,\qquad
+  \operatorname{Spearman}(J_V,J_*)>1-\varepsilon,
+\]
+while, for the transition law $Q_{\mathcal A}$,
+\[
+  \operatorname{IRR}(Q_{\mathcal A})=1,
+  \qquad
+  \operatorname{ISC}(Q_{\mathcal A})=0.
+\]
+\end{proposition}
+\begin{proof}
+Take $n$ policies with uniform $P$ and $J_*(i)=i/(n-1)$, and let $V$ swap the
+values of one adjacent pair. Then $\operatorname{MAE}_{P}=2/[n(n-1)]$ and the only nonzero rank
+displacements are $+1$ and $-1$, so
+$1-\operatorname{Spearman}=12/[n(n^2-1)]$. Choose $n$ large enough that both
+quantities are below $\varepsilon$. Let $\mathcal A$ sample only the swapped
+directed transition (so $Q_{\mathcal A}$ has unit mass there) and propose the
+lower-valued true policy as a replacement for the higher-valued incumbent. The
+proxy delta is positive and the deployment delta is negative on every sampled
+transition, giving $\operatorname{IRR}(Q_{\mathcal A})=1$ and
+$\operatorname{ISC}(Q_{\mathcal A})=0$.
+\end{proof}
+
+\begin{proposition}[Response--footprint bound]
+Let $d(\pii,\pip)$ be an update footprint and define the direct comparison in
+the incumbent response world, $\Delta_{\mathrm{direct}}=
+J(\pip;\M[\pii])-J(\pii;\M[\pii])$. Assume the environment response
+satisfies $D(\M[\pip],\M[\pii])\leq L_Md(\pii,\pip)$ and the value functional is
+$L_J$-Lipschitz in its world argument. Then
+\begin{equation}
+ |\Delta_{\mathrm{actor}}-\Delta_{\mathrm{direct}}|
+ \leq L_JL_Md(\pii,\pip).
+\end{equation}
+\end{proposition}
+\begin{proof}
+The incumbent term cancels because both comparisons use $\M[\pii]$ as the
+reference world. The remaining candidate term is bounded by
+$L_JD(\M[\pip],\M[\pii])\leq L_JL_Md(\pii,\pip)$. The result is local; it does
+not assert that strategic best responses are globally Lipschitz.
+\end{proof}
+
+\begin{proposition}[Decision Preservation Under Differential Error]
+Consider two candidates $i$ and $j$ evaluated from the same incumbent, and
+suppose the true improvement margin is
+$m=\Delta_{*,i}-\Delta_{*,j}>0$. If estimates satisfy
+$|\widehat\Delta_i-\Delta_{*,i}|<m/2$ and
+$|\widehat\Delta_j-\Delta_{*,j}|<m/2$, then
+$\widehat\Delta_i>\widehat\Delta_j$ and the selected update is unchanged.
+\end{proposition}
+\begin{proof}
+The estimated margin obeys
+$\widehat\Delta_i-\widehat\Delta_j
+=m+(\widehat\Delta_i-\Delta_{*,i})-(\widehat\Delta_j-\Delta_{*,j})$.
+The two error terms have absolute sum strictly less than $m$, so the
+estimated margin remains positive. This is a local decision guarantee; it
+does not claim that PIVOT is globally optimal or that all candidates satisfy
+the margin condition.
+\end{proof}
+
+The first proposition explains why global value accuracy is sufficient but
+unnecessarily strong: a policy-independent offset can be arbitrarily large
+without changing any improvement difference. The Global Fidelity Blindness
+construction shows that the converse fails even for excellent global MAE and
+rank correlation: the update distribution can concentrate on a locally swapped
+transition. The response--footprint result motivates targeted fidelity: high
+footprint and high response sensitivity are the transitions most likely to
+change a decision. The final proposition connects differential error to the
+selection decision that PIVOT must preserve. In strategic environments, small policy changes
+can still cause large competitor responses, so the bound should be treated as a
+diagnostic hypothesis rather than a universal smoothness assumption.
+
+\section{Controlled Experiments}
+\paragraph{Setup.}
+The controlled world has finite horizon 12, bounded rewards, Gaussian
+exogenous noise, and a tunable response strength. Candidate policies change one
+intensity component. P2 uses three independent registered run groups and a
+response grid $\{0,0.3,0.7,0.9\}$, footprint scales
+$\{0.1,0.2,0.3,0.5\}$, and optimization strengths
+$\{0.5,1,1.5\}$. All primary comparisons use disjoint registered seeds and
+paired high-fidelity transitions.
+
+We also run the registered V6 analytic checks in the supplementary artifact.
+The Global Fidelity Blindness grid
+contains 105 rows: all three targets $\varepsilon\in\{10^{-1},10^{-2},10^{-3}\}$
+are covered, the minimum Spearman correlation is $0.9971$, and the minimum
+operator-conditioned IRR is $1.0$. The response--footprint grid contains 180
+rows and satisfies the stated bound on every row, with maximum observed/bound
+ratio $1+3.3\times10^{-15}$. These values are exact-construction checks and
+are kept separate from the controlled adaptive-world and finance evidence.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig2_reversal_phase_diagram.png}
+  \caption{Continuous reversal-rate heatmap over response strength and update
+  footprint. Bilinear display interpolation makes the registered grid's
+  zero-to-positive reversal boundary visible; the structure is a controlled
+  mechanism result, not a universal market law.}
+  \label{fig:phase}
+\end{figure}
+
+The resulting decision-preserving data flow is summarized in
+\cref{fig:pivot-architecture}. The diagram treats a policy replacement as the
+unit of validation: cheap proxy scores screen the candidate set, while paired
+high-fidelity interventions are reserved for transitions that can change the
+selection decision.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig3_pivot_architecture.pdf}
+  \caption{PIVOT validates the replacement operation rather than isolated
+  policy values. A cheap verifier produces proxy improvements and update
+  footprints; a decision-change score selects paired high-fidelity
+  interventions under common state, seed, and opponent conditions. The
+  differential correction ranks candidates for promotion and feeds the next
+  self-improvement round.}
+  \label{fig:pivot-architecture}
+\end{figure}
+
+\paragraph{Improvement reversal.}
+Across 240 transitions per registered run, overall IRR is $0.7292$ and the
+high-response IRR is $0.9722$; low-response IRR is zero. The phase diagram in
+\cref{fig:phase} shows the intended response--footprint interaction.
+These results establish that a correct observer verifier can approve harmful
+updates in a world with policy-induced response.
+
+\paragraph{Global versus differential fidelity.}
+The matched-budget E4 comparison trains a global value model and a transition
+differential model on the same number of high-fidelity transition queries.
+Local-minus-global ISC is $0.1204$; local-minus-global IDE is $-1.7536$.
+Update-selection regret is tied in this particular fixture, so we do not claim
+that a differential model dominates every policy-value baseline.
+
+\paragraph{Value Fidelity versus Improvement Fidelity.}
+We add a controlled evaluator contrast to isolate the estimand. Evaluator A
+has slightly lower isolated policy-value MAE ($0.5489$ versus $0.6000$) and
+near-perfect policy ranking ($0.9781$ versus $1.0000$), but its candidate-side
+bias grows with response and footprint. Evaluator B has a policy-independent
+value offset that is worse for isolated values but cancels in paired deltas.
+On the same 216 held-out transitions, A has IDE $1.0978$, ISC $0.9444$, IRR
+$0.1714$, and ISR $0.2548$, whereas B has IDE $0$, ISC $1$, IRR $0$, ISR $0$,
+and CTI $-45.7229$. A's CTI is $-61.0081$ (higher is better). This is a
+constructive controlled contrast, not a learned-model claim: similar
+policy-value accuracy does not determine local transition fidelity.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig4_policy_vs_improvement_fidelity.png}
+  \caption{Policy-value and transition-differential predictions under matched
+  high-fidelity budget. The estimands are related but not interchangeable.}
+  \label{fig:fidelity}
+\end{figure}
+
+\paragraph{Budget frontier.}
+At one high-fidelity query, PIVOT reduces ISR relative to Random by $4.7245$
+and relative to Top Proxy by $3.1301$ in the registered fixture. \cref{fig:budget}
+shows the full frontier. The twelve-ablation suite retains a non-monotonic
+PIVOT curve across budgets; this is a robustness boundary, not a claim of
+monotonic benefit.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig5_pivot_budget_frontier.png}
+  \caption{Matched-budget selection frontier. PIVOT spends queries on
+  decision-sensitive transitions; All-HF is an oracle reference.}
+  \label{fig:budget}
+\end{figure}
+
+\paragraph{A required null.}
+The E3 closed-loop fixture does not show proxy/true divergence: both curves
+increase together and reach the reward bound. We therefore report E3 as a
+negative stress test of the current fixture, not as evidence for
+\enquote{optimizing the wrong world}. This distinction is important because a paper
+can otherwise manufacture its central phenomenon by selecting a pathological
+environment after observing results.
+
+\section{Stress Tests Beyond Controlled Environments}
+\paragraph{Strategic response.}
+Only the focal policy self-improves. Competitors are fixed, reactive, or finite-
+step adaptive. In the registered fixture, actor improvement is positive before
+adaptation, while adaptive competition produces SIRR $1.0$ and competition
+effects of $-0.0514$ (E7) and $-0.0405$ (E8). The sensitivity contrast is
+$-0.1082$.
+
+The same update is evaluated in observer, actor, and strategic worlds; the
+layer diagnostic is deferred to Appendix \cref{fig:layers} to preserve the
+main-text page budget. The opponent-mode sweep is reported in Appendix
+\cref{fig:strategic}.
+These results are mechanism evidence for the strategic layer, not a claim of
+general equilibrium or realistic market ecology. External strategic
+validation remains open.
+
+\paragraph{Finance audit.}
+The finance ladder is F0 historical path, F1 execution replay, F2 interactive
+virtual fills, and F4 strategic response. We additionally audit 12 sessions
+covering BTCUSDT, ETHUSDT, and BNBUSDT at four 2023 quarter starts using
+Binance's public one-minute klines and percentage book depth~\cite{binancepublicdata}. The archive
+checksums are frozen in the project manifests. The depth world is an
+observational execution proxy: it cannot identify replenishment, hidden
+liquidity, post-trade response, or strategic adaptation.
+
+At primary participation, seven sessions have positive F1 improvement and
+depth-proxy reversal is 0/7; the frozen holdout has 0/5 reversals. The pooled
+depth mechanical effect is $-4.1554\times10^{-7}$ with 95\% bootstrap interval
+$[-5.3969,-2.9638]\times10^{-7}$. Thus finance supplies a plausibility and
+boundary test, not causal confirmation of improvement reversal.
+
+\section{Ablations and Robustness}
+The frozen suite contains twelve required comparisons. \cref{tab:ablation}
+shows the compact main-text subset; the full aggregate, raw rows, and failure
+ledgers are included in the artifact snapshot.
+
+\begin{table}[t]
+\centering\scriptsize
+\caption{Selected controlled ablations. Values are descriptive estimates over
+three independent registered runs; slash-separated values compare variants.}
+\label{tab:ablation}
+\resizebox{\linewidth}{!}{\input{../tables/ablation_results.tex}}
+\end{table}
+
+Pairing reduces standard error (0.0433 versus 0.0676). Multiple response levels
+improve held-out differential error relative to a single response level.
+However, footprint features are nearly tied with no-footprint features in this
+grid (IDE 2.0668 versus 2.0669), and candidate-count/HF-budget effects are
+small or non-monotonic. These nulls constrain the method claim: PIVOT is a
+budgeted transition-validation mechanism, not proof that every feature or
+budget increase helps.
+
+\section{Limitations and Claim Boundary}
+First, the controlled world is intentionally small and its response law is
+known. It establishes falsifiability of the estimand, not realism. Second, the
+public finance data are observational and use virtual fills; no live orders,
+broker connection, or private L2 data were used. Third, the strategic fixture
+is deterministic and requires validation in an independently calibrated
+competitive environment. Fourth, the current public typed update was selected
+exploratorily; a confirmatory update-generation and regime/holdout rule must be
+frozen before a new external claim. Fifth, E3's null means the current fixture
+does not demonstrate performative overoptimization. Finally, LLM/EvoQuant and
+M3/world-model adapters are intentionally deferred and are not needed for the
+core estimand.
+
+The claim boundary is therefore precise: we validate learning progress at the
+policy-transition level in controlled adaptive worlds, demonstrate a
+strategic mechanism in a fixture, and report a negative observational finance
+audit. We do not certify actions, solve general multi-agent equilibrium, or
+claim that a learned simulator is ground truth.
+
+\section{Reproducibility and Conclusion}
+The paper snapshot contains 33 hash-indexed artifacts, seven figure/source-table
+pairs, one editable OpenTikZ architecture bundle, the controlled evaluator-contrast rows, controlled gate summaries, the
+public expansion summary, and the full twelve-ablation aggregate. Three
+disjoint ablation runs reproduce with zero failed runs. The repository's full
+test suite and static checks are recorded in the release manifest. The IMPROVE-X transition contracts and controlled
+ImprovementBench smoke artifact are separately hash-bound in the repository.
+The build records the source commit and PDF verification metadata. No
+credentials or raw vendor archives enter the paper package.
+
+The central lesson is simple: a self-improving agent should not be judged only
+by whether its new policy performs better in the world used to verify it. It
+should be judged by whether the update remains better in the world---and among
+the agents---that deployment causes to exist. PIVOT operationalizes this as
+paired, transition-level, budgeted interventional validation. The controlled
+evidence supports the need for that estimand; the external audits state exactly
+where evidence is still missing.
+
+\begingroup\scriptsize
+\noindent\textbf{AI Use Statement.} AI tools provided limited assistance with
+language editing and code/figure formatting; the authors verified all claims,
+computations, and artifacts and take full responsibility.
+\par\noindent\textbf{Reproducibility Statement.} The anonymous supplement
+contains source, deterministic configurations, hash-indexed snapshot,
+table/figure inputs, and rebuild commands. The public-data audit uses virtual
+fills only and includes no credentials, private data, raw vendor archives, or
+live orders.
+\par\noindent\textbf{Ethics Statement.} Public market data and controlled
+virtual environments only; no human subjects, personal data, live trading, or
+external authorization.
+\endgroup
+
+% ICLR excludes the bibliography from the main-text page limit.  Keep it on
+% a fresh page and expose a machine-readable boundary for the release checks.
+\clearpage
+\phantomsection\label{refs:start}
+\bibliographystyle{iclr2027_conference}
+\bibliography{references}
+
+\clearpage
+\appendix
+\section{Artifact and Full Result Notes}\label{app:artifact}
+The frozen artifact manifest is \path{../snapshot/manifest.json}. Its
+controlled summary hashes are inherited from the clean-room reproduction. The
+ablation aggregate is identified by the manifest hash prefix
+\texttt{e081f87f}; the public expansion remains marked
+\texttt{causal\_impact\_identified=false} and \texttt{live\_orders=false}.
+Re-running the snapshot and table scripts from a new output directory is
+required before changing any result table.
+
+\begin{table}[h]
+\centering\scriptsize
+\caption{Controlled and public evidence summary.}
+\input{../tables/controlled_results.tex}
+\end{table}
+
+\begin{table}[h]
+\centering\scriptsize
+\caption{Public expansion boundary.}
+\input{../tables/public_results.tex}
+\end{table}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{fig6_observer_actor_strategic.png}
+  \caption{The same update evaluated in observer, actor, and strategic worlds.
+  This diagnostic separates mechanical response from competitor adaptation;
+  it is fixture evidence rather than a general-equilibrium claim.}
+  \label{fig:layers}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{fig3_optimizing_wrong_world.png}
+  \caption{Required E3 null: proxy and true values overlap and saturate at the
+  reward bound. The current closed-loop fixture therefore does not establish
+  performative overoptimization.}
+  \label{fig:e3-null}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.92\linewidth]{fig7_strategic_reversal.png}
+  \caption{Strategic response effect across opponent modes and sensitivities.
+  This appendix diagnostic is fixture evidence, not a general-equilibrium
+  claim.}
+  \label{fig:strategic}
+\end{figure}
+
+\end{document}

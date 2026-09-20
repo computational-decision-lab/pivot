@@ -27,7 +27,7 @@ def test_aux_path_falls_back_to_build_sidecar_for_copied_submission(tmp_path: Pa
 
 def test_portable_path_avoids_machine_absolute_prefix() -> None:
     rendered = _portable_path(Path.cwd() / "paper" / "iclr2027" / "main.tex")
-    assert rendered == "paper/iclr2027/main.tex"
+    assert rendered == "paper/main.tex"
     assert "/opt/projects/" not in rendered
 
 
@@ -119,7 +119,7 @@ def test_audit_style_hashes_detects_modified_official_file(tmp_path: Path) -> No
 
 
 def test_spotlight_upgrade_source_contains_transition_first_narrative() -> None:
-    source = Path("paper/iclr2027/main.tex").read_text(encoding="utf-8")
+    source = Path("paper/main.tex").read_text(encoding="utf-8")
     required = (
         "replacement operation",
         "rank policies correctly while ranking improvements incorrectly",

@@ -100,7 +100,7 @@
 - Modify: `README.md`
 - Modify: `docs/implementation-status.md`
 - Create: `docs/improve-x-v5-status.md`
-- Modify: `paper/iclr2027/submission_checklist.md`
+- Modify: `paper/submission_checklist.md`
 
 - [x] **Step 1: Document** the new platform commands, schema, and explicit boundary that no V5 benchmark result is a paper claim yet.
 - [x] **Step 2: Run** `.venv/bin/pytest -q`, `.venv/bin/ruff check .`, `.venv/bin/mypy src scripts`, both commands, paper verifier, and supplementary auditor.

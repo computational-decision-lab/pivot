@@ -1,22 +1,18 @@
 # PIVOT ICLR 2027 Curated Release
 
 This directory contains the anonymous manuscript and the deterministic
-supplementary archive. The local release/audit layer is complete, while
-the registered confirmatory modern-agent phases remain pre-outcome and
-must not be read as completed scientific evidence.
+supplementary archive and the 2026-09-18 sealed experiment update.
+The release preserves positive, null, and negative response-world results
+and the decision-relevance bridge derived from the sealed roots.
 
 ## Files
 
 - `paper.pdf`: anonymous manuscript.
 - `supplementary.zip`: sanitized source, figures, tables, and audit artifacts.
-- `confirmatory_lock.json`: immutable pre-outcome protocol lock.
+- `revision_evidence_audit.json`: reviewer-safe hashes, seals, and recomputation checks.
 - `submission_verification.json`: compact machine audit summary.
-- `V15_FINAL_REPORT.md`: explicit status and remaining gates.
 - `SHA256SUMS`: hashes for every release file except the checksum file.
 
 No raw Inspect traces, sandbox trees, candidate archives, private paths,
 credentials, or local runtime installations are included. Rebuild the
-paper and supplement with `make v15-finalize` from the repository root.
-Figure metadata uses the tracked build provenance anchor in
-`configs/v15/build_provenance.json` so clean rebuilds preserve the
-hash-bound visual review.
+paper, supplement, and audit with `make v15-finalize` from the repository root.

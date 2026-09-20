@@ -10,8 +10,8 @@ import pytest
 from scripts.bootstrap_opentikz import bootstrap_opentikz
 
 PROJECT = Path(__file__).parents[2]
-FIGURE = PROJECT / "paper/iclr2027/figures/fig3_pivot_architecture.tex"
-META = PROJECT / "paper/iclr2027/figures/fig3_pivot_architecture.meta.json"
+FIGURE = PROJECT / "paper/figures/fig3_pivot_architecture.tex"
+META = PROJECT / "paper/figures/fig3_pivot_architecture.meta.json"
 LOCK = PROJECT / "configs/tooling/opentikz.json"
 
 
@@ -174,7 +174,7 @@ def test_architecture_is_standalone_compilable(tmp_path: Path) -> None:
 
 
 def test_paper_places_architecture_before_contrast_and_moves_stress_diagnostic_to_appendix() -> None:
-    source = (PROJECT / "paper/iclr2027/main.tex").read_text(encoding="utf-8")
+    source = (PROJECT / "paper/main.tex").read_text(encoding="utf-8")
     assert source.index("fig2_reversal_phase_diagram.png") < source.index("fig3_pivot_architecture.pdf")
     assert source.index("fig3_pivot_architecture.pdf") < source.index("fig4_policy_vs_improvement_fidelity.png")
     appendix = source.index("\\appendix")

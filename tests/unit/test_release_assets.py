@@ -45,12 +45,18 @@ def test_public_release_contains_only_curated_artifacts(tmp_path: Path) -> None:
         ),
         encoding="utf-8",
     )
-    lock = tmp_path / "experiments/v15/confirmatory_lock.json"
-    lock.parent.mkdir(parents=True)
-    lock.write_text('{"confirmatory_execution":"NOT_RUN"}\n', encoding="utf-8")
-    report = tmp_path / "docs/archive/v15/V15_FINAL_REPORT.md"
-    report.parent.mkdir(parents=True, exist_ok=True)
-    report.write_text("BLOCKED\n", encoding="utf-8")
+    audit = paper / "revision_evidence_public.json"
+    audit.write_text(
+        json.dumps(
+            {
+                "archive_sha256": "a" * 64,
+                "review_sha256": "b" * 64,
+                "manifest": {"entries": 687, "verified": 685, "private_omissions": 2},
+                "recomputation_checks": {"headline": True},
+            }
+        ),
+        encoding="utf-8",
+    )
 
     output = tmp_path / "release/v15"
     paths = build_public_release(tmp_path, output)
@@ -58,8 +64,7 @@ def test_public_release_contains_only_curated_artifacts(tmp_path: Path) -> None:
     assert names == {
         "paper.pdf",
         "supplementary.zip",
-        "confirmatory_lock.json",
-        "V15_FINAL_REPORT.md",
+        "revision_evidence_audit.json",
         "submission_verification.json",
         "README.md",
         "SHA256SUMS",
@@ -68,4 +73,7 @@ def test_public_release_contains_only_curated_artifacts(tmp_path: Path) -> None:
     assert "archive_members" not in summary
     assert "/opt/projects" not in (output / "submission_verification.json").read_text(encoding="utf-8")
     checksum_lines = (output / "SHA256SUMS").read_text(encoding="utf-8").splitlines()
-    assert len(checksum_lines) == 6
+    assert len(checksum_lines) == 5
+    readme = (output / "README.md").read_text(encoding="utf-8")
+    assert "2026-09-18 sealed experiment update" in readme
+    assert "pre-outcome" not in readme

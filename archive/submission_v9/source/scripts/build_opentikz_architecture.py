@@ -94,7 +94,7 @@ def main() -> None:
     parser.add_argument(
         "--source",
         type=Path,
-        default=project_root / "paper/iclr2027/figures/fig3_pivot_architecture.tex",
+        default=project_root / "paper/figures/fig3_pivot_architecture.tex",
     )
     parser.add_argument("--output-pdf", type=Path)
     parser.add_argument("--output-svg", type=Path)

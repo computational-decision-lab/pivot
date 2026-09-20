@@ -40,10 +40,10 @@
 ### Task 2: Editable OpenTikZ Architecture
 
 **Files:**
-- Create: `paper/iclr2027/figures/fig3_pivot_architecture.tex`
-- Create: `paper/iclr2027/figures/fig3_pivot_architecture.meta.json`
-- Create: `paper/iclr2027/figures/fig3_pivot_architecture.pdf`
-- Create: `paper/iclr2027/figures/fig3_pivot_architecture.svg`
+- Create: `paper/figures/fig3_pivot_architecture.tex`
+- Create: `paper/figures/fig3_pivot_architecture.meta.json`
+- Create: `paper/figures/fig3_pivot_architecture.pdf`
+- Create: `paper/figures/fig3_pivot_architecture.svg`
 - Test: `tests/unit/test_opentikz_architecture.py`
 
 **Interfaces:**
@@ -60,9 +60,9 @@
 
 **Files:**
 - Modify: `scripts/freeze_paper_snapshot.py`
-- Modify: `paper/iclr2027/main.tex`
-- Modify: `paper/iclr2027/build.sh`
-- Modify: `paper/iclr2027/README.md`
+- Modify: `paper/main.tex`
+- Modify: `paper/build.sh`
+- Modify: `paper/README.md`
 - Modify: `scripts/build_iclr_supplement.py`
 - Modify: `tests/integration/test_paper_snapshot.py`
 - Modify: `tests/unit/test_iclr_submission.py`

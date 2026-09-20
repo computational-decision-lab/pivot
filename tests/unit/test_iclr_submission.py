@@ -4,16 +4,114 @@ import hashlib
 import json
 from pathlib import Path
 
-from scripts.build_iclr_supplement import ALLOWLIST, _copy_sanitized
+from scripts.build_iclr_supplement import (
+    ALLOWLIST,
+    LATEST_EVIDENCE_SOURCES,
+    _copy_sanitized,
+)
+from scripts.build_revision_evidence import public_audit
 from scripts.verify_iclr_submission import (
     _aux_path,
     _portable_path,
     audit_archive_contents,
     audit_archive_members,
+    audit_revision_evidence_archive,
     audit_source_text,
     audit_style_hashes,
     build_decision,
 )
+
+
+def test_latest_supplement_inventory_contains_three_sealed_cohorts() -> None:
+    assert set(LATEST_EVIDENCE_SOURCES) == {"melting_v4", "leduc_v2b", "kuhn_v2b"}
+    for relative in LATEST_EVIDENCE_SOURCES.values():
+        assert relative.is_dir()
+        for name in (
+            "summary.json",
+            "seed_results.csv",
+            "decisions_sealed.json",
+            "scored_decisions.json",
+            "posterior_v2_spec.json",
+            "selection_seal.json",
+        ):
+            assert (relative / name).is_file()
+
+
+def test_public_revision_audit_redacts_private_omission_names() -> None:
+    source = {
+        "archive_sha256": "archive-hash",
+        "review_sha256": "review-hash",
+        "manifest": {
+            "entries": 687,
+            "verified": 685,
+            "missing": ["connection.json", "private-account.md"],
+            "expected_missing": ["connection.json", "private-account.md"],
+        },
+        "seals": {},
+        "recomputed_from_scored_rows": {},
+        "recomputation_checks": {"headline": True},
+        "summaries": {},
+        "status_boundary": {},
+    }
+
+    rendered = json.dumps(public_audit(source), sort_keys=True)
+
+    assert "connection.json" not in rendered
+    assert "private-account.md" not in rendered
+    assert public_audit(source)["manifest"] == {
+        "entries": 687,
+        "verified": 685,
+        "private_omissions": 2,
+    }
+
+
+def test_revision_archive_audit_accepts_three_consistent_sealed_cohorts(tmp_path: Path) -> None:
+    import zipfile
+
+    archive = tmp_path / "supplement.zip"
+    checks = {
+        "melting_v4_primary": True,
+        "melting_v4_interaction": True,
+        "melting_v4_one_query": True,
+        "melting_v4_short": True,
+        "leduc_primary": True,
+        "kuhn_primary": True,
+    }
+    public = {
+        "archive_sha256": "a" * 64,
+        "review_sha256": "b" * 64,
+        "manifest": {"entries": 687, "verified": 685, "private_omissions": 2},
+        "seals": {},
+        "recomputation_checks": checks,
+    }
+    with zipfile.ZipFile(archive, "w") as output:
+        for cohort in ("melting_v4", "leduc_v2b", "kuhn_v2b"):
+            decisions = [{"root": 7, "method": "pivot_kg"}]
+            scored = [{"root": 7, "method": "pivot_kg", "gain": 1.0}]
+            decision_bytes = json.dumps(decisions).encode()
+            seal = {
+                "decisions_sha256": hashlib.sha256(decision_bytes).hexdigest(),
+                "n_decisions": 1,
+                "test_roots": [7],
+            }
+            public["seals"][cohort] = {
+                "decisions_sha256": seal["decisions_sha256"],
+                "n_decisions": 1,
+                "roots": [7],
+            }
+            prefix = f"evidence/latest/{cohort}"
+            output.writestr(f"{prefix}/decisions_sealed.json", decision_bytes)
+            output.writestr(f"{prefix}/scored_decisions.json", json.dumps(scored))
+            output.writestr(f"{prefix}/selection_seal.json", json.dumps(seal))
+        output.writestr(
+            "evidence/latest/revision_evidence_audit.json",
+            json.dumps(public),
+        )
+
+    result = audit_revision_evidence_archive(archive)
+
+    assert result["valid"] is True
+    assert result["cohorts_verified"] == 3
 
 
 def test_finalizer_normalizes_intermediate_supplement_digests() -> None:

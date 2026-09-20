@@ -4,14 +4,14 @@ Date: 2026-08-21 (Asia/Shanghai)
 
 ## Current ICLR 2027 package
 
-The current anonymous ICLR package is the `paper/iclr2027/` tree, not the
+The current anonymous ICLR package is the `paper/` tree, not the
 historical working-paper build below. It is locally verified as **CONDITIONAL
 GO** with 9 main-text pages and 14 total pages. The bibliography starts on
 page 10 and is excluded from the ICLR main-text limit through the explicit
 `refs:start` boundary; the appendix follows the bibliography:
 
-- PDF: `paper/iclr2027/pivot_iclr2027_submission.pdf`
-- Supplement: `paper/iclr2027/pivot_iclr2027_supplementary.zip`
+- PDF: `paper/pivot_iclr2027_submission.pdf`
+- Supplement: `paper/pivot_iclr2027_supplementary.zip`
 - Snapshot: `paper/snapshot/manifest.json` (33 hash-indexed files)
 - Architecture: `paper/snapshot/figures/fig3_pivot_architecture.pdf`
 - PDF SHA-256: `7442ed58a77d6c7d95b1e70e28bcfc7b82921685c72ed3db763cecacdd7f4c45`

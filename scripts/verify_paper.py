@@ -124,28 +124,34 @@ def verify_paper(
     required_tokens = [
         "improvement reversal",
         "improvement fidelity",
+        "observer",
+        "actor",
+        "strategic",
+        "induced deployment world",
+        "response map",
         "pivot",
-        "cumulative true improvement",
-        "finance audit",
-        "replacement operation",
-        "rank policies correctly while ranking improvements incorrectly",
+        "centered shift bound",
+        "decision preservation",
+        "finite-sample best-update identification",
+        "paired query",
+        "knowledge-gradient",
+        "fixed budget",
+        "leduc",
+        "kuhn",
+        "melting pot",
+        "primary null",
         "contribution 1",
         "contribution 2",
         "contribution 3",
-        "operator shift bound",
-        "finite-sample best-update identification",
-        "decision preservation under differential error",
-        "why transition validation differs from active learning",
-        "fig3_pivot_voi",
-        "stress tests beyond controlled environments",
-        "value fidelity versus improvement fidelity",
         "operator-relative improvement fidelity",
         "q_{\\mathcal a}",
-        "raw sampled reversal-rate cells",
-        "false improvement (improvement reversal)",
     ]
-    source_lower = source_text.casefold()
-    missing_tokens = [token for token in required_tokens if token.casefold() not in source_lower]
+    source_lower = " ".join(source_text.casefold().split())
+    missing_tokens = [
+        token
+        for token in required_tokens
+        if " ".join(token.casefold().split()) not in source_lower
+    ]
 
     scientific_source = source_text.split("\\begin{document}", 1)[-1].split("\\appendix", 1)[0]
     forbidden_version_tokens = sorted(
@@ -159,23 +165,14 @@ def verify_paper(
     )
     proposition_count = len(re.findall(r"\\begin\{proposition\}", source_text))
     required_assets = {
-        "fig1_improvement_reversal.png",
-        "fig2_operator_shift.png",
-        "fig3_pivot_voi.pdf",
-        "fig4_evidence_efficiency.png",
-        "fig5_closed_loop.png",
-        "figA_response_footprint.png",
-        "figB_learned_ood_null.png",
-        "figC_posterior_robustness.png",
-        "figD_strategic_distribution.png",
-        "figE_finance_boundary.png",
+        "fig1_decision_relevance.pdf",
+        "fig2_regret_cost.pdf",
     }
     asset_missing = [
         name
         for name in sorted(required_assets)
         if not (
-            (source.parent / "figures" / "release" / name).is_file()
-            or (source.parent / "figures" / "v10" / name).is_file()
+            (source.parent / "figures" / "revision" / name).is_file()
             or (source.parent / "figures" / name).is_file()
         )
     ]

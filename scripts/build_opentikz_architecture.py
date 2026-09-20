@@ -148,7 +148,7 @@ def build_architecture(
         }
     metadata = {
         "figure_id": "fig3_pivot_architecture",
-        "scientific_question": "How does PIVOT-VOI allocate paired interventional evaluations to preserve update decisions?",
+        "scientific_question": "How does PIVOT-KG allocate paired interventional evaluations to preserve update decisions?",
         "unit_of_inference": "semantic architecture node and directed stage",
         "appendix": False,
         "experiment_sources": [str(source.relative_to(project_root))],

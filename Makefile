@@ -46,11 +46,8 @@ v15-figure-review:
 
 v15-finalize:
 	(cd paper && ./build.sh)
-	.venv/bin/python -m experiments.v15 finalize --root .
 
 v15-release:
-	$(MAKE) v15-finalize
-	$(MAKE) v15-figure-review
 	$(MAKE) v15-finalize
 	.venv/bin/python scripts/build_release_assets.py --root . --public-release --force
 

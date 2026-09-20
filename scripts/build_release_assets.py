@@ -121,9 +121,8 @@ def build_public_release(root: Path, output: Path | None = None, *, force: bool 
     pdf = root / "paper/pivot_iclr2027_submission.pdf"
     supplement = root / "paper/pivot_iclr2027_supplementary.zip"
     verification = root / "paper/submission_verification.json"
-    lock = root / "experiments/v15/confirmatory_lock.json"
-    final_report = root / "docs/archive/v15/V15_FINAL_REPORT.md"
-    for path in (pdf, supplement, verification, lock, final_report):
+    evidence_audit = root / "paper/revision_evidence_public.json"
+    for path in (pdf, supplement, verification, evidence_audit):
         if not path.is_file():
             raise FileNotFoundError(path)
 
@@ -131,8 +130,7 @@ def build_public_release(root: Path, output: Path | None = None, *, force: bool 
     mapping = {
         pdf: destination / "paper.pdf",
         supplement: destination / "supplementary.zip",
-        lock: destination / "confirmatory_lock.json",
-        final_report: destination / "V15_FINAL_REPORT.md",
+        evidence_audit: destination / "revision_evidence_audit.json",
     }
     for source, target in mapping.items():
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -151,7 +149,8 @@ def build_public_release(root: Path, output: Path | None = None, *, force: bool 
         "main_pages": raw_verification.get("main_pages"),
         "machine_checks": raw_verification.get("machine_checks", {}),
         "archive_content_checks": raw_verification.get("archive_content_checks", {}),
-        "public_release_note": "The confirmatory modern-agent study remains pre-outcome and is not represented as completed evidence.",
+        "revision_evidence_checks": raw_verification.get("revision_evidence_checks", {}),
+        "public_release_note": "Includes the sealed 2026-09-18 response-world evidence and decision-relevance analysis.",
     }
     verification_target = destination / "submission_verification.json"
     verification_target.write_text(json.dumps(public_verification, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -161,22 +160,18 @@ def build_public_release(root: Path, output: Path | None = None, *, force: bool 
     readme.write_text(
         "# PIVOT ICLR 2027 Curated Release\n\n"
         "This directory contains the anonymous manuscript and the deterministic\n"
-        "supplementary archive. The local release/audit layer is complete, while\n"
-        "the registered confirmatory modern-agent phases remain pre-outcome and\n"
-        "must not be read as completed scientific evidence.\n\n"
+        "supplementary archive and the 2026-09-18 sealed experiment update.\n"
+        "The release preserves positive, null, and negative response-world results\n"
+        "and the decision-relevance bridge derived from the sealed roots.\n\n"
         "## Files\n\n"
         "- `paper.pdf`: anonymous manuscript.\n"
         "- `supplementary.zip`: sanitized source, figures, tables, and audit artifacts.\n"
-        "- `confirmatory_lock.json`: immutable pre-outcome protocol lock.\n"
+        "- `revision_evidence_audit.json`: reviewer-safe hashes, seals, and recomputation checks.\n"
         "- `submission_verification.json`: compact machine audit summary.\n"
-        "- `docs/archive/v15/V15_FINAL_REPORT.md`: explicit status and remaining gates.\n"
         "- `SHA256SUMS`: hashes for every release file except the checksum file.\n\n"
         "No raw Inspect traces, sandbox trees, candidate archives, private paths,\n"
         "credentials, or local runtime installations are included. Rebuild the\n"
-        "paper and supplement with `make v15-finalize` from the repository root.\n"
-        "Figure metadata uses the tracked build provenance anchor in\n"
-        "`configs/v15/build_provenance.json` so clean rebuilds preserve the\n"
-        "hash-bound visual review.\n",
+        "paper, supplement, and audit with `make v15-finalize` from the repository root.\n",
         encoding="utf-8",
     )
     copied.append(readme)

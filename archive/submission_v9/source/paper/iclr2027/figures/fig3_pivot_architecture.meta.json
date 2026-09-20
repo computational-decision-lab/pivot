@@ -1,0 +1,43 @@
+{
+  "id": "pivot-architecture",
+  "name": "PIVOT decision-preservation architecture",
+  "type": "template",
+  "domain": ["ml", "systems", "pipeline"],
+  "tags": ["PIVOT", "policy transition", "improvement fidelity", "paired intervention", "adaptive world", "feedback loop"],
+  "venue": ["ICLR", "NeurIPS", "ICML"],
+  "author": "PIVOT project, adapted from OpenTikZ contributors",
+  "license": "CC0-1.0",
+  "requires": ["graphicx", "tikz", "positioning", "arrows.meta", "shapes.geometric", "fit", "backgrounds", "calc"],
+  "preview": "fig3_pivot_architecture.svg",
+  "description": "A detailed ICLR-style overview of PIVOT from candidate generation through adaptive-world evaluation, differential transfer, and evidence reporting.",
+  "composed_of": ["system-block-diagram"],
+  "edit_contract": {
+    "parameters": [
+      {"name": "\\rowsep", "type": "length-cm", "meaning": "reference vertical spacing between architecture layers", "default": "1.45"},
+      {"name": "\\colsep", "type": "length-cm", "meaning": "reference horizontal spacing between stages", "default": "1.10"},
+      {"name": "\\boxminw", "type": "length-cm", "meaning": "base width for process and external nodes", "default": "2.15"},
+      {"name": "\\boxminh", "type": "length-cm", "meaning": "base height for process and external nodes", "default": "0.78"},
+      {"name": "\\figurewidth", "type": "length", "meaning": "render width before venue scaling", "default": "15.8cm"}
+    ],
+    "node_naming": "fixed semantic nodes: generation (incumbent, operator, candidates, proxy), PIVOT (footprint, score, paired, correction, promote, decomposition), worlds (world0-world3), reports (metrics, evidence)",
+    "styles": ["base", "stage", "external", "process", "query", "intervention", "promotion", "world", "decomposition", "metric", "evidence", "arrow", "dashedarrow", "hfarrow", "edgeLabel", "panel", "paneltitle"],
+    "operations": [
+      {"id": "rename-stage", "summary": "edit the corresponding label macro while preserving the node name"},
+      {"id": "add-stage", "summary": "add a semantic node relative to an existing stage, connect it with an arrow, and include it in the appropriate fixed panel"},
+      {"id": "change-role", "summary": "switch a node between process, query, intervention, promotion, or world styles"},
+      {"id": "resize-column", "summary": "adjust figurewidth or named spacing parameters for a venue column"},
+      {"id": "edit-world-layer", "summary": "change a W0-W3 world label while preserving the observer-to-strategic ladder"},
+      {"id": "recolor", "summary": "use only the named OpenTikZ palette colors and their tints/shades"}
+    ],
+    "invariants": [
+      "the standalone document must compile without the paper preamble",
+      "the three fixed panels must remain behind all nodes and titles",
+      "semantic node names, world ladder, and feedback edge must remain intact",
+      "world0 must remain inside the adaptive-world panel",
+      "the feedback edge must remain inside the PIVOT panel boundary",
+      "world and reporting titles must remain inside their own panel boundaries",
+      "labels must not be placed on top of node text or other labels",
+      "colors must use only the five OpenTikZ palette names"
+    ]
+  }
+}
