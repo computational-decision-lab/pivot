@@ -157,7 +157,7 @@ def build_architecture(
             for path in (source, output_pdf, output_svg, output_png)
         },
         "analysis_script": "scripts/build_opentikz_architecture.py",
-        "style_version": "pivot-v10-publication-style-1",
+        "style_version": "pivot-v10-scientific-figure-suite-1",
         "generated_at": _generated_at(),
         "config_hashes": config_hashes,
         "git_commit": _git_commit(project_root),

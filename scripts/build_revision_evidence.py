@@ -12,6 +12,7 @@ import hashlib
 import json
 import math
 import shutil
+import sys
 import tarfile
 from pathlib import Path
 from typing import Any
@@ -19,7 +20,16 @@ from typing import Any
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy as np
+
+# Keep the standalone ``python scripts/...`` entry point importable without
+# relying on the paper build wrapper to export PYTHONPATH.
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from paper.figures.v10_style import COLORS, apply
 
 ARCHIVE_SHA256 = "9bef1bdc271b8953603b14da83442cc9b219b51f78212e8974fe94a3203dbccf"
 REVIEW_SHA256 = "80b261ea7853704bf1ac0d5ce7dd07500cd669cefbf43763cbe0aa5598a9630b"
@@ -602,6 +612,7 @@ def macro(name: str, value: str) -> str:
 
 
 def build(root: Path, evidence: Path) -> dict[str, Any]:
+    apply()
     root = root.resolve()
     evidence = evidence.resolve()
     archive = root / "PIVOT_ICLR_实验全包_20260918.zip"
@@ -893,14 +904,18 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
     (tables / "revision_method_results.tex").write_text(method_table + "\n", encoding="utf-8")
 
     cohorts = ("Leduc", "Kuhn", "Melting Pot")
-    palette = {"Leduc": "#0B5D66", "Kuhn": "#5B6BA8", "Melting Pot": "#B65C3A"}
+    palette = {
+        "Leduc": COLORS["cohort_leduc"],
+        "Kuhn": COLORS["cohort_kuhn"],
+        "Melting Pot": COLORS["cohort_melting_pot"],
+    }
     fig = plt.figure(figsize=(7.0, 5.35))
     grid = fig.add_gridspec(2, 6, height_ratios=[0.85, 1.75], hspace=0.44, wspace=0.48)
 
     ax_gap = fig.add_subplot(grid[0, 0:2])
     ax_gap.axis("off")
-    ax_gap.set_title("A  Response magnitude", loc="left", fontsize=9, fontweight="bold")
-    ax_gap.text(0.0, 0.82, "within-root normalized gap [95% CI]", fontsize=6.5, color="#555555")
+    ax_gap.set_title("a  Response magnitude", loc="left", fontsize=8.5, fontweight="bold")
+    ax_gap.text(0.0, 0.82, "within-root normalized gap [95% CI]", fontsize=6.5, color=COLORS["direct"])
     for y_value, cohort in zip((0.61, 0.36, 0.11), cohorts):
         item = decision_relevance["cohorts"][cohort]["normalized_response_gap"]
         ax_gap.text(0.0, y_value, cohort, color=palette[cohort], fontsize=7.5, fontweight="bold")
@@ -914,7 +929,7 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
 
     y = np.arange(len(cohorts))
     ax_flip = fig.add_subplot(grid[0, 2:4])
-    ax_flip.set_title("B  Top-1 ranking flips", loc="left", fontsize=9, fontweight="bold")
+    ax_flip.set_title("b  Top-1 ranking flips", loc="left", fontsize=8.5, fontweight="bold")
     rates = [decision_relevance["cohorts"][cohort]["top1_flip_rate"] for cohort in cohorts]
     means = np.asarray([item["mean"] for item in rates])
     lows = np.asarray([item["lo"] for item in rates])
@@ -924,7 +939,7 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
         y,
         xerr=[means - lows, highs - means],
         fmt="none",
-        ecolor="#333333",
+        ecolor=COLORS["text"],
         capsize=2,
         linewidth=0.8,
     )
@@ -937,7 +952,7 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
     ax_flip.invert_yaxis()
 
     ax_value = fig.add_subplot(grid[0, 4:6])
-    ax_value.set_title("C  Allocation value", loc="left", fontsize=9, fontweight="bold")
+    ax_value.set_title("c  Allocation value", loc="left", fontsize=8.5, fontweight="bold")
     all_gain = []
     for index, cohort in enumerate(cohorts):
         values = [
@@ -949,13 +964,13 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
     means = np.asarray([item["mean"] for item in all_gain])
     lows = np.asarray([item["lo"] for item in all_gain])
     highs = np.asarray([item["hi"] for item in all_gain])
-    ax_value.axvline(0, color="#333333", linewidth=0.7)
+    ax_value.axvline(0, color=COLORS["text"], linewidth=0.7)
     ax_value.errorbar(
         means,
         y,
         xerr=[means - lows, highs - means],
         fmt="none",
-        ecolor="#333333",
+        ecolor=COLORS["text"],
         capsize=2,
         linewidth=0.8,
     )
@@ -967,7 +982,7 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
     ax_value.invert_yaxis()
 
     ax_scatter = fig.add_subplot(grid[1, 0:3])
-    ax_scatter.set_title("D  Root-level decision relevance", loc="left", fontsize=9, fontweight="bold")
+    ax_scatter.set_title("d  Root-level decision relevance", loc="left", fontsize=8.5, fontweight="bold")
     for cohort in cohorts:
         cohort_rows = [row for row in decision_relevance["rows"] if row["cohort"] == cohort]
         ax_scatter.scatter(
@@ -980,48 +995,135 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
             edgecolor="white",
             linewidth=0.35,
         )
-    ax_scatter.axvline(1.0, color="#333333", linestyle="--", linewidth=0.8, label="top-1 flip boundary")
-    ax_scatter.axhline(0.0, color="#333333", linewidth=0.7)
+    ax_scatter.axvline(1.0, color=COLORS["text"], linestyle="--", linewidth=0.8, label="top-1 flip boundary")
+    ax_scatter.axhline(0.0, color=COLORS["text"], linewidth=0.7)
     ax_scatter.set_xscale("symlog", linthresh=1.0, linscale=0.6)
     ax_scatter.set_xlabel("pairwise correction / deployment margin", fontsize=8)
     ax_scatter.set_ylabel("(Uniform ISR - PIVOT-KG ISR) / deployment range", fontsize=8)
     ax_scatter.tick_params(labelsize=7)
     ax_scatter.grid(alpha=0.16)
-    ax_scatter.legend(ncol=4, fontsize=6.5, loc="upper center", frameon=False)
+    ax_scatter.legend(
+        ncol=2,
+        fontsize=5.5,
+        loc="lower left",
+        frameon=True,
+        framealpha=0.88,
+        facecolor="white",
+        edgecolor="none",
+        borderpad=0.25,
+        labelspacing=0.25,
+        handlelength=1.2,
+    )
 
     ax_resolve = fig.add_subplot(grid[1, 3:6])
-    ax_resolve.set_title("E  HF resolvability", loc="left", fontsize=9, fontweight="bold")
+    ax_resolve.set_title("e  HF resolvability", loc="left", fontsize=8.5, fontweight="bold")
     for cohort in cohorts:
         cohort_rows = [row for row in decision_relevance["rows"] if row["cohort"] == cohort]
-        for hit, marker, face in ((True, "o", "filled"), (False, "x", "open")):
+        for hit, marker in ((True, "o"), (False, "D")):
             points = [row for row in cohort_rows if bool(row["query_hits_decision_pair"]) == hit]
             if not points:
                 continue
             kwargs = {
                 "marker": marker,
                 "color": palette[cohort],
-                "alpha": 0.78,
-                "s": 24,
-                "label": f"{cohort} / {'hit' if hit else 'miss'}",
+                "alpha": 0.90,
+                "s": 28 if hit else 34,
+                "zorder": 5 if hit else 6,
             }
-            if marker == "o":
+            if hit:
                 kwargs["edgecolor"] = "white"
-                kwargs["linewidth"] = 0.35
+                kwargs["linewidth"] = 0.45
+            else:
+                # Open diamonds remain visible when they share the zero line
+                # with filled hits and do not visually merge with cohort dots.
+                kwargs["facecolors"] = "none"
+                kwargs["edgecolor"] = palette[cohort]
+                kwargs["linewidth"] = 1.05
             ax_resolve.scatter(
                 [row["query_noise_to_proxy_margin"] for row in points],
                 [row["normalized_allocation_gain"] for row in points],
                 **kwargs,
             )
-    ax_resolve.axvline(1.0, color="#333333", linestyle="--", linewidth=0.8)
-    ax_resolve.axhline(0.0, color="#333333", linewidth=0.7)
+    ax_resolve.axvline(1.0, color=COLORS["text"], linestyle="--", linewidth=0.8)
+    ax_resolve.axhline(0.0, color=COLORS["text"], linewidth=0.7)
     ax_resolve.set_xscale("symlog", linthresh=1.0, linscale=0.6)
     ax_resolve.set_xlabel("queried HF noise / proxy top-2 margin", fontsize=7.5)
     ax_resolve.set_ylabel("normalized ISR reduction", fontsize=7.5)
     ax_resolve.tick_params(labelsize=6.5)
     ax_resolve.grid(alpha=0.16)
-    ax_resolve.legend(ncol=2, fontsize=5.6, loc="upper center", frameon=False)
+    cohort_handles = [
+        Line2D(
+            [0],
+            [0],
+            marker="o",
+            linestyle="none",
+            markerfacecolor=palette[cohort],
+            markeredgecolor="white",
+            markeredgewidth=0.45,
+            markersize=5.2,
+            label=cohort,
+        )
+        for cohort in cohorts
+    ]
+    state_handles = [
+        Line2D(
+            [0],
+            [0],
+            marker="o",
+            linestyle="none",
+            markerfacecolor=COLORS["text"],
+            markeredgecolor="white",
+            markeredgewidth=0.45,
+            markersize=5.0,
+            label="query hits decision pair",
+        ),
+        Line2D(
+            [0],
+            [0],
+            marker="D",
+            linestyle="none",
+            markerfacecolor="none",
+            markeredgecolor=COLORS["text"],
+            markeredgewidth=1.0,
+            markersize=5.0,
+            label="query misses decision pair",
+        ),
+    ]
+    cohort_legend = ax_resolve.legend(
+        handles=cohort_handles,
+        title="cohort",
+        ncol=1,
+        fontsize=5.4,
+        title_fontsize=5.4,
+        loc="upper left",
+        bbox_to_anchor=(0.015, 0.985),
+        frameon=True,
+        framealpha=0.92,
+        facecolor="white",
+        edgecolor="none",
+        borderpad=0.28,
+        labelspacing=0.18,
+        handletextpad=0.35,
+    )
+    ax_resolve.add_artist(cohort_legend)
+    ax_resolve.legend(
+        handles=state_handles,
+        title="query status",
+        ncol=1,
+        fontsize=5.2,
+        title_fontsize=5.2,
+        loc="lower left",
+        bbox_to_anchor=(0.015, 0.02),
+        frameon=True,
+        framealpha=0.92,
+        facecolor="white",
+        edgecolor="none",
+        borderpad=0.28,
+        labelspacing=0.18,
+        handletextpad=0.35,
+    )
     fig.savefig(figures / "fig1_decision_relevance.pdf", bbox_inches="tight")
-    fig.savefig(figures / "fig1_decision_relevance.png", dpi=240, bbox_inches="tight")
+    fig.savefig(figures / "fig1_decision_relevance.png", dpi=320, bbox_inches="tight")
     plt.close(fig)
 
     point_rows = [
@@ -1037,18 +1139,21 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
         ("Melting Pot v4", "all HF", rows["v4_all"]),
     ]
     fig, axes = plt.subplots(1, 2, figsize=(6.8, 2.8))
-    colors = {"Leduc": "#0B5D66", "Melting Pot v4": "#B65C3A"}
+    colors = {
+        "Leduc": COLORS["cohort_leduc"],
+        "Melting Pot v4": COLORS["cohort_melting_pot"],
+    }
     for ax, cohort in zip(axes, ("Leduc", "Melting Pot v4")):
         for _, label, row in [item for item in point_rows if item[0] == cohort]:
             ax.scatter(row["mean_hf_episode_cost"], row["mean_isr"], color=colors[cohort], s=26)
             ax.annotate(label, (row["mean_hf_episode_cost"], row["mean_isr"]), xytext=(3, 3), textcoords="offset points", fontsize=6)
-        ax.set_title(cohort, fontsize=8)
+        ax.set_title(cohort, fontsize=8.5)
         ax.set_xlabel("HF cost")
         ax.grid(alpha=0.2)
     axes[0].set_ylabel("Selection regret")
     fig.tight_layout()
     fig.savefig(figures / "fig2_regret_cost.pdf", bbox_inches="tight")
-    fig.savefig(figures / "fig2_regret_cost.png", dpi=220, bbox_inches="tight")
+    fig.savefig(figures / "fig2_regret_cost.png", dpi=320, bbox_inches="tight")
     plt.close(fig)
 
     architecture = paper / "snapshot/figures/fig3_pivot_architecture.pdf"

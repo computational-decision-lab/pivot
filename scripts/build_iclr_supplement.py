@@ -41,6 +41,7 @@ ALLOWLIST = (
     "benchmarks/improvementbench/v2",
     "benchmarks/improvementbench/v7",
     "paper/figures/v10_style.py",
+    "paper/figures/scientific_figure_style.json",
 )
 TEXT_SUFFIXES = {".py", ".yaml", ".yml", ".json", ".jsonl", ".ndjson", ".md", ".tex", ".bib", ".txt", ".csv"}
 SKIP_PARTS = {
