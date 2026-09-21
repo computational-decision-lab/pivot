@@ -435,8 +435,10 @@ rollouts and 30 independent seeds. The seed, trajectory, opponent-seed cluster,
 or held-out root is the inferential unit; transition rows are retained for audit
 and are not treated as independent replicates. The supplied sealed archive
 contains 30 held-out roots in each of Leduc, Kuhn, and Melting Pot, with 1,800
-sealed decisions per cohort. Manuscript generation verifies hashes, seals, and
-scored-row preservation; it does not rerun an episode.
+sealed decisions per cohort. We use Leduc and Kuhn poker through
+OpenSpiel~\cite{lanctot2019openspiel} and the Melting Pot multi-agent
+suite~\cite{leibo2021meltingpot}. Manuscript generation verifies hashes, seals,
+and scored-row preservation; it does not rerun an episode.
 
 \subsection{What breaks improvement fidelity?}
 The observer/direct, actor, and strategic layers isolate progressively stronger
@@ -460,7 +462,7 @@ operator or every update fails.
 \end{figure}
 
 \subsection{When does fidelity error change the decision?}
-Proposition~5 gives the bridge: if differential error is below half the true
+Lemma~1 gives the bridge: if differential error is below half the true
 candidate margin, the ordering is preserved. For each sealed root we therefore
 compute the deployment top-1 margin, the proxy-to-deployment correction, and
 the largest pairwise correction-to-margin ratio. A ratio at least one marks a
@@ -562,18 +564,10 @@ fixture adds an independent adaptive layer and yields
 \StrategicSIRR{}. These results show why an update-level estimand does not
 require a particular transition learner to dominate.
 
-\subsection{Stress Tests Beyond Controlled Environments}
-The public finance audit uses historical paths, virtual fills, and a
-participation/depth proxy. It has 0/7 depth-proxy reversals in the expanded
-primary sessions and 0/5 in the holdout; the pooled depth-minus-replay effect
-is approximately $-4.16\times10^{-7}$ in native session units. This is a
-boundary diagnostic, not causal market impact. The strategic mechanisms are
-finite fixtures rather than general equilibrium, and external adaptive worlds
-are endpoint evidence rather than connected trajectories.
-
 \subsection{Reactive HighwayEnv validation}
-We added a physically reactive HighwayEnv stress test to examine whether the
-allocation result survives outside the controlled and sealed cohorts. The
+We added a physically reactive HighwayEnv~\cite{highwayenv2018} stress test to
+examine whether the allocation result survives outside the controlled and
+sealed cohorts. The
 candidate panel is fixed before evaluation and contains five available
 meta-actions (slower, lane-left, idle, lane-right, and faster). We use
 \HighwayCalibrationSeeds{} disjoint calibration seeds to fit the PIVOT-KG
@@ -618,6 +612,15 @@ sealed primary cohorts.
   \label{fig:highway-budget}
 \end{figure}
 
+\subsection{Stress Tests Beyond Controlled Environments}
+The public finance audit uses historical paths, virtual fills, and a
+participation/depth proxy. It has 0/7 depth-proxy reversals in the expanded
+primary sessions and 0/5 in the holdout; the pooled depth-minus-replay effect
+is approximately $-4.16\times10^{-7}$ in native session units. This is a
+boundary diagnostic, not causal market impact. The strategic mechanisms are
+finite fixtures rather than general equilibrium, and external adaptive worlds
+are endpoint evidence rather than connected trajectories.
+
 \section{Discussion and scope}
 The evidence supports a conditional claim. Deployment response can increase
 proxy--deployment error; an error changes the update only when it is large
@@ -633,8 +636,8 @@ causality, or equilibrium behavior.
 The reactive HighwayEnv extension makes the same boundary visible in a
 physically responsive environment: one high-fidelity query is unfavorable, the
 primary two-query comparison is inconclusive, and four queries produce a
-positive contrast. We therefore treat it as external development evidence for
-the budget-sufficiency mechanism, not as a new universal benchmark claim.
+positive contrast. We therefore treat it as external evidence consistent with
+a budget-dependent interpretation, not as a new universal benchmark claim.
 
 \section{Conclusion}
 An agent can be correct about the wrong world. The relevant statistical object
@@ -656,16 +659,13 @@ negative. The claims remain bounded by fixed response worlds, held-out sealed
 roots, and finite HF budgets; strategic fixtures are not equilibrium results,
 and the finance audit is not causal market evidence.
 
-The broader implication is that evaluation of self-improvement should validate
-consequences under the response induced by the proposed update. The resulting
-evidence ladder is
+The broader implication is to validate consequences under the response induced
+by the proposed update. The resulting evidence ladder is
 \begin{equation}
   \text{observer} \longrightarrow \text{actor} \longrightarrow \text{strategic},
 \end{equation}
-with each arrow an additional intervention, not an assumed truth claim.
-Valid progress in adaptive worlds means validating consequences, not merely
-certifying actions; the value of an HF budget depends on whether that validation
-can change the update decision.
+Each arrow is an additional intervention, not an assumed truth claim; an HF
+budget matters only when it can change the update decision.
 
 \begingroup\scriptsize
 \noindent\textbf{AI Use Statement.} Generative AI tools were used for language
