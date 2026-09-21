@@ -61,7 +61,7 @@ def audit_source_text(source: str) -> dict[str, bool]:
                 "improvement fidelity",
                 "pivot",
                 "replacement operation",
-                "decision preservation under differential error",
+                "decision preservation",
             )
         ),
     }
@@ -80,7 +80,7 @@ def audit_archive_members(members: Iterable[str]) -> dict[str, Any]:
         name
         for name in names
         if name.casefold().endswith(".parquet")
-        and name.casefold().startswith(("results/v15/", "figures/v15/", "artifacts/v15/"))
+        and name.casefold().startswith(("results/v15/", "figures/v15/", "artifacts/v15/", "paper/figures/release/"))
     ]
     raw = [
         name
@@ -333,6 +333,14 @@ def _references_page(pdf: Path, aux: Path | None = None) -> int:
     return int(match.group(1))
 
 
+def parse_main_end_page(aux_text: str) -> int:
+    """Read the final body page instead of assuming references start a new page."""
+    match = re.search(r"\\newlabel\{main:end\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
+    if match is None:
+        raise ValueError("main text label main:end is missing from LaTeX aux")
+    return int(match.group(1))
+
+
 def audit_submission(
     *,
     pdf: Path,
@@ -359,7 +367,7 @@ def audit_submission(
     aux_path = _aux_path(pdf, aux)
     references_page = _references_page(pdf, aux_path)
     appendix_page = _appendix_page(pdf, aux_path)
-    main_pages = references_page - 1
+    main_pages = parse_main_end_page(aux_path.read_text(encoding="utf-8"))
     style_manifest = style_dir.parent / "style_manifest.json"
     machine_checks = {
         "pdf_exists": pdf.is_file() and pdf.stat().st_size > 0,

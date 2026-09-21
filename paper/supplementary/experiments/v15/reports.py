@@ -42,33 +42,33 @@ from .scientific_analysis import (
 )
 
 REQUIRED_REPORTS = (
-    "V15_BASELINE_SNAPSHOT.md",
-    "V15_REPO_AUDIT.md",
-    "V15_RESOURCE_PLAN.md",
-    "V15_CONSTRUCT_VALIDITY.md",
-    "V15_CONFIRMATORY_PREREGISTRATION.md",
-    "V15_TRANSITION_AUDIT.md",
-    "V15_SCIENTIFIC_SUMMARY.md",
-    "V15_OPERATOR_RELATIVE_ANALYSIS.md",
-    "V15_FOOTPRINT_ANALYSIS.md",
-    "V15_PROMOTION_RESULTS.md",
-    "V15_PAIRED_ABLATION.md",
-    "V15_PIVOT_ABLATIONS.md",
-    "V15_CLOSED_LOOP_RESULTS.md",
-    "V15_PI_REPLICATION.md",
-    "V15_STRATEGIC_RESULTS.md",
-    "V15_FALSIFICATION_REPORT.md",
-    "V15_FIGURE_STATUS.md",
-    "V15_PAPER_CONTEXT_AUDIT.md",
-    "V15_NUMBER_AUDIT.md",
-    "V15_CLAIM_AUDIT.md",
-    "V15_REFERENCE_AUDIT.md",
-    "V15_ANONYMITY_AUDIT.md",
-    "V15_LANGUAGE_AUDIT.md",
-    "V15_REPRODUCIBILITY_AUDIT.md",
-    "V15_REVIEWER_ATTACK_AUDIT.md",
-    "V15_OUTSTANDING_PROFILE.md",
-    "V15_FINAL_REPORT.md",
+    "docs/archive/v15/V15_BASELINE_SNAPSHOT.md",
+    "docs/archive/v15/V15_REPO_AUDIT.md",
+    "docs/archive/v15/V15_RESOURCE_PLAN.md",
+    "docs/archive/v15/V15_CONSTRUCT_VALIDITY.md",
+    "docs/archive/v15/V15_CONFIRMATORY_PREREGISTRATION.md",
+    "docs/archive/v15/V15_TRANSITION_AUDIT.md",
+    "docs/archive/v15/V15_SCIENTIFIC_SUMMARY.md",
+    "docs/archive/v15/V15_OPERATOR_RELATIVE_ANALYSIS.md",
+    "docs/archive/v15/V15_FOOTPRINT_ANALYSIS.md",
+    "docs/archive/v15/V15_PROMOTION_RESULTS.md",
+    "docs/archive/v15/V15_PAIRED_ABLATION.md",
+    "docs/archive/v15/V15_PIVOT_ABLATIONS.md",
+    "docs/archive/v15/V15_CLOSED_LOOP_RESULTS.md",
+    "docs/archive/v15/V15_PI_REPLICATION.md",
+    "docs/archive/v15/V15_STRATEGIC_RESULTS.md",
+    "docs/archive/v15/V15_FALSIFICATION_REPORT.md",
+    "docs/archive/v15/V15_FIGURE_STATUS.md",
+    "docs/archive/v15/V15_PAPER_CONTEXT_AUDIT.md",
+    "docs/archive/v15/V15_NUMBER_AUDIT.md",
+    "docs/archive/v15/V15_CLAIM_AUDIT.md",
+    "docs/archive/v15/V15_REFERENCE_AUDIT.md",
+    "docs/archive/v15/V15_ANONYMITY_AUDIT.md",
+    "docs/archive/v15/V15_LANGUAGE_AUDIT.md",
+    "docs/archive/v15/V15_REPRODUCIBILITY_AUDIT.md",
+    "docs/archive/v15/V15_REVIEWER_ATTACK_AUDIT.md",
+    "docs/archive/v15/V15_OUTSTANDING_PROFILE.md",
+    "docs/archive/v15/V15_FINAL_REPORT.md",
 )
 
 
@@ -432,7 +432,7 @@ def generate_reports(root: Path) -> dict[str, Any]:
 
     _write(
         root,
-        "V15_BASELINE_SNAPSHOT.md",
+        "docs/archive/v15/V15_BASELINE_SNAPSHOT.md",
         f"""# Baseline Snapshot
 
 Status: **{'PASS' if snapshot_ok else 'BLOCKED'}**
@@ -449,7 +449,7 @@ Provenance file: `{_sha256(snapshot) if snapshot.is_file() else 'missing'}`
     )
     _write(
         root,
-        "V15_REPO_AUDIT.md",
+        "docs/archive/v15/V15_REPO_AUDIT.md",
         f"""# Repository Audit
 
 Status: **PASS** for the local protocol layer.
@@ -468,7 +468,7 @@ Existing frozen terminal states:
     cfg = _load_protocol_config(root)
     _write(
         root,
-        "V15_RESOURCE_PLAN.md",
+        "docs/archive/v15/V15_RESOURCE_PLAN.md",
         f"""# Resource Plan
 
 This is the locked resource plan.  The registered primary design is two
@@ -497,7 +497,7 @@ outcomes to obtain a preferred result is forbidden.
     )
     _write(
         root,
-        "V15_CONSTRUCT_VALIDITY.md",
+        "docs/archive/v15/V15_CONSTRUCT_VALIDITY.md",
         f"""# Construct-Validity Audit
 
 Status: **PASS for DEV interface smoke; confirmatory status NOT_RUN**.
@@ -514,7 +514,7 @@ The smoke is not evidence for the paper's modern-agent hypotheses.
     )
     _write(
         root,
-        "V15_CONFIRMATORY_PREREGISTRATION.md",
+        "docs/archive/v15/V15_CONFIRMATORY_PREREGISTRATION.md",
         f"""# Confirmatory Protocol Lock
 
 Lock status: **FROZEN PRE-OUTCOME**
@@ -530,7 +530,7 @@ observed outcomes.
     )
     _write(
         root,
-        "V15_TRANSITION_AUDIT.md",
+        "docs/archive/v15/V15_TRANSITION_AUDIT.md",
         f"""# Transition Audit
 
 Existing controlled evidence remains frozen under `results/v9` with states:
@@ -551,7 +551,7 @@ than evidence for the manuscript.
     )
     _write(
         root,
-        "V15_OPERATOR_RELATIVE_ANALYSIS.md",
+        "docs/archive/v15/V15_OPERATOR_RELATIVE_ANALYSIS.md",
         f"""# Operator-Relative Analysis
 
 DEV operator counts are retained separately: `{modern['transition'].get('trajectory_count', 0) and 2 or dev.get('operator_count', 0)}`
@@ -562,7 +562,7 @@ is made from the DEV rows.
     )
     _write(
         root,
-        "V15_FOOTPRINT_ANALYSIS.md",
+        "docs/archive/v15/V15_FOOTPRINT_ANALYSIS.md",
         f"""# Footprint Analysis
 
 Status: **{footprint.get('status', 'NOT_RUN')}**; phase: **{footprint.get('phase', 'DEV')}**.
@@ -587,7 +587,7 @@ DEV-only diagnostic, not a paper claim.
     )
     _write(
         root,
-        "V15_PROMOTION_RESULTS.md",
+        "docs/archive/v15/V15_PROMOTION_RESULTS.md",
         f"""# Promotion Replay
 
 The external replay is **DEV-only**: `{modern['promotion'].get('promotion_result_count', modern['promotion'].get('result_count', 0))}`
@@ -608,7 +608,7 @@ Confirmatory promotion results: **NOT_RUN**.
     )
     _write(
         root,
-        "V15_PAIRED_ABLATION.md",
+        "docs/archive/v15/V15_PAIRED_ABLATION.md",
         f"""# Paired Ablation
 
 The DEV paired-versus-unpaired audit is **{modern['ablations'].get('status', 'NOT_RUN')}** with
@@ -621,7 +621,7 @@ it is never relabelled as a failure.""",
     )
     _write(
         root,
-        "V15_PIVOT_ABLATIONS.md",
+        "docs/archive/v15/V15_PIVOT_ABLATIONS.md",
         f"""# PIVOT Ablations
 
 Registered no-pairing, no-footprint, no-VOI, and baseline comparisons are
@@ -633,7 +633,7 @@ effect claim and is retained only as an execution/contract check.""",
     )
     _write(
         root,
-        "V15_CLOSED_LOOP_RESULTS.md",
+        "docs/archive/v15/V15_CLOSED_LOOP_RESULTS.md",
         f"""# Closed-Loop Results
 
 The existing controlled closed-loop evidence remains frozen.  The modern DEV
@@ -657,7 +657,7 @@ Confirmatory closed loop and untouched assessment: **NOT_RUN**.""",
     )
     _write(
         root,
-        "V15_PI_REPLICATION.md",
+        "docs/archive/v15/V15_PI_REPLICATION.md",
         f"""# Second-Scaffold Replication
 
 The Pi source is pinned and its built CLI is available.  The registered
@@ -672,7 +672,7 @@ Cross-scaffold confirmatory replication remains
     )
     _write(
         root,
-        "V15_STRATEGIC_RESULTS.md",
+        "docs/archive/v15/V15_STRATEGIC_RESULTS.md",
         f"""# Strategic Response
 
 The prior finite controlled opponent-family evidence remains scoped and
@@ -686,11 +686,11 @@ The paired mutation-detection difference is recorded as a response-utility
 diagnostic (`delta_strategic`) and is kept separate from task success and any
 deployment-causal claim.  Confirmatory strategic response: **NOT_RUN**.""",
     )
-    _write(root, "V15_FALSIFICATION_REPORT.md", f"# Falsification Report\n\nThe protocol permits every terminal state, including a valid null. No branch changes tasks, response strength, budget, or operators because a result is unfavorable. Modern-agent hypotheses are currently **NOT_RUN**.\n\n{_falsification_table(cfg)}")
+    _write(root, "docs/archive/v15/V15_FALSIFICATION_REPORT.md", f"# Falsification Report\n\nThe protocol permits every terminal state, including a valid null. No branch changes tasks, response strength, budget, or operators because a result is unfavorable. Modern-agent hypotheses are currently **NOT_RUN**.\n\n{_falsification_table(cfg)}")
     pdf_summary = _pdf_summary(root)
     _write(
         root,
-        "V15_PAPER_CONTEXT_AUDIT.md",
+        "docs/archive/v15/V15_PAPER_CONTEXT_AUDIT.md",
         f"""# Paper Context Audit
 
 The manuscript is rebuilt from the neutral release figure aliases and semantic
@@ -708,7 +708,7 @@ machine-verification gates.
     )
     _write(
         root,
-        "V15_NUMBER_AUDIT.md",
+        "docs/archive/v15/V15_NUMBER_AUDIT.md",
         f"""# Number Audit
 
 Status: **{'PASS' if numbers['valid'] else 'BLOCKED'}** for the frozen manuscript macros.
@@ -719,10 +719,10 @@ families and matched seed clusters in the source artifact; no manually typed
 modern-agent number is present.
 """,
     )
-    _write(root, "V15_CLAIM_AUDIT.md", f"# Claim Audit\n\nStatus: **{'PASS' if claim_audit.get('valid', False) else 'BLOCKED'}** for scope preservation and evidence-contract fields.\n\n```json\n{json.dumps(claim_audit, indent=2, sort_keys=True)}\n```\n\nClaims remain limited to Improvement Fidelity, controlled response layers, finite opponent mechanisms, and the existing observational finance boundary. Modern-agent claims are registered but not promoted while their confirmatory state is NOT_RUN.")
+    _write(root, "docs/archive/v15/V15_CLAIM_AUDIT.md", f"# Claim Audit\n\nStatus: **{'PASS' if claim_audit.get('valid', False) else 'BLOCKED'}** for scope preservation and evidence-contract fields.\n\n```json\n{json.dumps(claim_audit, indent=2, sort_keys=True)}\n```\n\nClaims remain limited to Improvement Fidelity, controlled response layers, finite opponent mechanisms, and the existing observational finance boundary. Modern-agent claims are registered but not promoted while their confirmatory state is NOT_RUN.")
     _write(
         root,
-        "V15_REFERENCE_AUDIT.md",
+        "docs/archive/v15/V15_REFERENCE_AUDIT.md",
         f"""# Reference Audit
 
 Status: **{'PASS' if reference_audit.get('valid', False) else 'BLOCKED'}**.
@@ -735,10 +735,10 @@ Recent preprints remain labelled as preprints; this local key audit does not
 claim that every external metadata record is a peer-reviewed venue record.
 """,
     )
-    _write(root, "V15_ANONYMITY_AUDIT.md", "# Anonymity Audit\n\nThe manuscript author field is empty and the preserved PDF has anonymous metadata. Local absolute paths, credentials, private runtime endpoints, and author identifiers are excluded from reviewer-facing artifacts. Public tool URLs are provenance references, not author identity. A final platform-side profile/conflict check remains manual.")
+    _write(root, "docs/archive/v15/V15_ANONYMITY_AUDIT.md", "# Anonymity Audit\n\nThe manuscript author field is empty and the preserved PDF has anonymous metadata. Local absolute paths, credentials, private runtime endpoints, and author identifiers are excluded from reviewer-facing artifacts. Public tool URLs are provenance references, not author identity. A final platform-side profile/conflict check remains manual.")
     _write(
         root,
-        "V15_LANGUAGE_AUDIT.md",
+        "docs/archive/v15/V15_LANGUAGE_AUDIT.md",
         f"""# Language and Paper-Facing Token Audit
 
 Status: **{'PASS' if language['valid'] else 'BLOCKED'}**
@@ -756,12 +756,12 @@ claims.
     )
     _write(
         root,
-        "V15_REPRODUCIBILITY_AUDIT.md",
+        "docs/archive/v15/V15_REPRODUCIBILITY_AUDIT.md",
         f"# Reproducibility Audit\n\nProtocol objects, task-plane hashes, paired sandbox manifests, candidate archive hashes, CSV/Parquet writers, and the pre-modern-agent fallback are implemented and tested. External status: **{external_status}**. Terminal-state audit: **{terminal_audit.get('status', 'BLOCKED')}**. DEV artifacts are explicitly non-confirmatory; the pre-outcome lock remains immutable until an authorized confirmation opens it.",
     )
     _write(
         root,
-        "V15_REVIEWER_ATTACK_AUDIT.md",
+        "docs/archive/v15/V15_REVIEWER_ATTACK_AUDIT.md",
         f"""# Reviewer Attack Audit
 
 The following 25 predeclared attacks are checked against the protocol and its
@@ -771,9 +771,9 @@ it is reported as `NOT_RUN` rather than hidden.
 {_reviewer_attack_table()}
 """,
     )
-    _write(root, "V15_OUTSTANDING_PROFILE.md", "# Evidence Profile\n\n" + _outstanding_profile_table())
+    _write(root, "docs/archive/v15/V15_OUTSTANDING_PROFILE.md", "# Evidence Profile\n\n" + _outstanding_profile_table())
 
-    (root / "V15_VISUAL_DEFECT_LEDGER.jsonl").touch()
+    (root / "docs/archive/v15/V15_VISUAL_DEFECT_LEDGER.jsonl").touch()
     final_blockers = []
     if not snapshot_ok:
         final_blockers.append("baseline snapshot")
@@ -797,7 +797,7 @@ it is reported as `NOT_RUN` rather than hidden.
     final_status = "BLOCKED" if final_blockers else "READY_WITH_MINOR_MANUAL_CHECKS"
     _write(
         root,
-        "V15_FINAL_REPORT.md",
+        "docs/archive/v15/V15_FINAL_REPORT.md",
         f"""# Final Report
 
 Evidence profile: **LEVEL_E** (bounded external DEV evidence exists; confirmatory modern-agent study is not opened).

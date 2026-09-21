@@ -1,0 +1,186 @@
+{
+  "action_hold_steps": 1,
+  "audit_excluded_from_query_budget": true,
+  "budget_contrasts": [
+    {
+      "budget": 2,
+      "ci95": [
+        -0.014274372717196268,
+        0.01449775880428232
+      ],
+      "estimand": "ISR_uniform_minus_calibrated-pivot-kg",
+      "mean": -0.0006482588827807964,
+      "n_seed_pairs": 60,
+      "positive_favors": "Calibrated PIVOT-KG"
+    },
+    {
+      "budget": 4,
+      "ci95": [
+        -0.0007397028676147888,
+        0.00993103929352329
+      ],
+      "estimand": "ISR_uniform_minus_calibrated-pivot-kg",
+      "mean": 0.003373186522450539,
+      "n_seed_pairs": 60,
+      "positive_favors": "Calibrated PIVOT-KG"
+    }
+  ],
+  "calibration_seed_count": 20,
+  "center_lane_action_panel": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "failures": [],
+  "method_summaries": [
+    {
+      "ISR_ci95": [
+        0.0,
+        0.0
+      ],
+      "budget": 5,
+      "mean_ISR": 0.0,
+      "mean_hf_queries": 5.0,
+      "method": "All-HF Oracle",
+      "n_seeds": 60,
+      "selected_counts": {
+        "faster": 7,
+        "incumbent": 17,
+        "lane_left": 8,
+        "lane_right": 22,
+        "slower": 6
+      }
+    },
+    {
+      "ISR_ci95": [
+        0.011146646053292355,
+        0.04503867470640829
+      ],
+      "budget": 2,
+      "mean_ISR": 0.026070441518133248,
+      "mean_hf_queries": 2.0,
+      "method": "Calibrated PIVOT-KG",
+      "n_seeds": 60,
+      "selected_counts": {
+        "faster": 9,
+        "idle": 10,
+        "incumbent": 10,
+        "lane_left": 10,
+        "lane_right": 13,
+        "slower": 8
+      }
+    },
+    {
+      "ISR_ci95": [
+        0.0,
+        0.0011095543014221832
+      ],
+      "budget": 4,
+      "mean_ISR": 0.0003698514338073944,
+      "mean_hf_queries": 4.0,
+      "method": "Calibrated PIVOT-KG",
+      "n_seeds": 60,
+      "selected_counts": {
+        "faster": 7,
+        "idle": 10,
+        "incumbent": 8,
+        "lane_left": 8,
+        "lane_right": 21,
+        "slower": 6
+      }
+    },
+    {
+      "ISR_ci95": [
+        0.01703592316587869,
+        0.047323862187586364
+      ],
+      "budget": 2,
+      "mean_ISR": 0.03156059292512052,
+      "mean_hf_queries": 2.0,
+      "method": "Proxy Only",
+      "n_seeds": 60,
+      "selected_counts": {
+        "faster": 6,
+        "incumbent": 27,
+        "lane_left": 8,
+        "lane_right": 6,
+        "slower": 13
+      }
+    },
+    {
+      "ISR_ci95": [
+        0.0,
+        0.006616113744075819
+      ],
+      "budget": 4,
+      "mean_ISR": 0.002205371248025273,
+      "mean_hf_queries": 4.0,
+      "method": "Proxy Only",
+      "n_seeds": 60,
+      "selected_counts": {
+        "faster": 6,
+        "incumbent": 18,
+        "lane_left": 8,
+        "lane_right": 22,
+        "slower": 6
+      }
+    },
+    {
+      "ISR_ci95": [
+        0.008885775269511035,
+        0.046625716862457686
+      ],
+      "budget": 2,
+      "mean_ISR": 0.025422182635352453,
+      "mean_hf_queries": 2.0,
+      "method": "Uniform HF",
+      "n_seeds": 60,
+      "selected_counts": {
+        "faster": 7,
+        "incumbent": 22,
+        "lane_left": 10,
+        "lane_right": 16,
+        "slower": 5
+      }
+    },
+    {
+      "ISR_ci95": [
+        0.0,
+        0.010061298594348537
+      ],
+      "budget": 4,
+      "mean_ISR": 0.003743037956257933,
+      "mean_hf_queries": 4.0,
+      "method": "Uniform HF",
+      "n_seeds": 60,
+      "selected_counts": {
+        "faster": 7,
+        "incumbent": 17,
+        "lane_left": 7,
+        "lane_right": 21,
+        "slower": 8
+      }
+    }
+  ],
+  "primary_contrast": {
+    "budget": 2,
+    "ci95": [
+      -0.014274372717196268,
+      0.01449775880428232
+    ],
+    "estimand": "ISR_uniform_minus_calibrated-pivot-kg",
+    "mean": -0.0006482588827807964,
+    "n_seed_pairs": 60,
+    "positive_favors": "Calibrated PIVOT-KG"
+  },
+  "promotion_row_count": 420,
+  "promotion_status": "DEV_EVIDENCE_COMPLETE",
+  "protocol_id": "highway-physical-reactive-calibrated-replication-v1",
+  "proxy_row_count": 300,
+  "query_row_count": 1380,
+  "status": "DEV_EXTERNAL_REPLICATION",
+  "test_seed_count": 60,
+  "truth_audit_row_count": 2100
+}

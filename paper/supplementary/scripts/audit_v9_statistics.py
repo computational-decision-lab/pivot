@@ -59,7 +59,7 @@ def audit(root: Path) -> dict[str, Any]:
         checks.append({"run": directory.name, "status": decision.get("status"), "row_kind": row_kind, "row_count": len(rows), "seed_count": seed_count, "cluster_count": grouped, "finite": finite})
     report = {"valid": not errors, "checks": checks, "errors": errors, "bootstrap_unit": "seed_or_trajectory_cluster"}
     write_json(root / "artifacts/v9/statistical_audit.json", report)
-    (root / "V9_STATISTICAL_AUDIT.md").write_text(_markdown(report), encoding="utf-8")
+    (root / "docs/archive/v9/V9_STATISTICAL_AUDIT.md").write_text(_markdown(report), encoding="utf-8")
     return report
 
 

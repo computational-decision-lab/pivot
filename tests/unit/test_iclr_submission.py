@@ -7,6 +7,7 @@ from pathlib import Path
 from scripts.build_iclr_supplement import (
     ALLOWLIST,
     LATEST_EVIDENCE_SOURCES,
+    _copy_hash_bound_tree,
     _copy_sanitized,
 )
 from scripts.build_revision_evidence import public_audit
@@ -20,6 +21,15 @@ from scripts.verify_iclr_submission import (
     audit_style_hashes,
     build_decision,
 )
+
+
+def test_hash_bound_tree_preserves_json_bytes(tmp_path: Path) -> None:
+    source = tmp_path / "source"
+    source.mkdir()
+    content = b'{ "b": 1, "a": 2 }\n'
+    (source / "rows.json").write_bytes(content)
+    _copy_hash_bound_tree(source, tmp_path / "export")
+    assert (tmp_path / "export/rows.json").read_bytes() == content
 
 
 def test_latest_supplement_inventory_contains_three_sealed_cohorts() -> None:
@@ -366,6 +376,12 @@ def test_audit_archive_members_allows_generated_v15_parquet_sources() -> None:
     assert checks["generated_parquet_members"] == ["results/v15/canonical/table.parquet"]
 
 
+def test_archive_accepts_paper_figure_tables_but_rejects_raw_parquet() -> None:
+    checks = audit_archive_members(["paper/figures/release/figure.parquet", "README.md"])
+    assert checks["no_raw_archives"]
+    assert not audit_archive_members(["data/raw/vendor.parquet"])["no_raw_archives"]
+
+
 def test_generated_parquet_inventory_is_not_a_submission_gate() -> None:
     report = {
         "machine_checks": {
@@ -437,16 +453,16 @@ def test_spotlight_upgrade_source_contains_transition_first_narrative() -> None:
         "Contribution 2",
         "Contribution 3",
         "Operator Shift Bound",
-        "Finite-Sample Best-Update Identification",
-        "Decision Preservation Under Differential Error",
-        "Why Transition Validation Differs from Active Learning",
+        "Paired variance",
+        "Decision preservation",
+        "\\section{PIVOT-KG}",
         "Stress Tests Beyond Controlled Environments",
-        "Value Fidelity versus Improvement Fidelity",
+        "Uniform value fidelity is sufficient",
         "Q_{\\mathcal A}",
         "operator-relative Improvement Fidelity",
         "\\operatorname{IF}(V,\\mathcal A;L)",
         "raw sampled reversal-rate cells",
-        "false improvement (improvement reversal)",
+        "improvement reversal",
         "CTI",
         "0/7",
         "0/5",

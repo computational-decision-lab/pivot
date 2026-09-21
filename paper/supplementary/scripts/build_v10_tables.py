@@ -132,17 +132,17 @@ Public-data boundary & Value \\
     e3_effects = e3["effects"]
     ablation_rows = [
         (
-            "PIVOT-VOI vs Proxy",
+            "PIVOT-KG vs Proxy",
             _fmt(e3_effects["pivot_voi_minus_proxy_only"]["mean"]),
             "CISR reduction",
         ),
         (
-            "PIVOT-VOI vs Global-VOI",
+            "PIVOT-KG vs Global-VOI",
             _fmt(e3_effects["pivot_voi_minus_global_voi"]["mean"]),
             "CISR reduction",
         ),
         (
-            "PIVOT-VOI vs Paired LUCB",
+            "PIVOT-KG vs Paired LUCB",
             _fmt(e3_effects["pivot_voi_minus_paired_lucb"]["mean"]),
             "CISR reduction",
         ),

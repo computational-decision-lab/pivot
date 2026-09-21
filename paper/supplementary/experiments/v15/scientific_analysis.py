@@ -1581,7 +1581,7 @@ def analyze_all(
             "All decisions use the frozen terminal-state vocabulary. Development results remain underpowered and no unfavorable outcome triggers protocol changes.",
         ]
     )
-    (root / "V15_SCIENTIFIC_SUMMARY.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (root / "docs/archive/v15/V15_SCIENTIFIC_SUMMARY.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     return summary
 
 

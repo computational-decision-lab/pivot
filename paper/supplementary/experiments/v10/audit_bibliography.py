@@ -186,7 +186,7 @@ def audit(root: Path) -> dict[str, Any]:
         "verification_scope": "title/author/year/identifier were checked against arXiv or publisher pages; venue labels are used only where explicitly recorded. Conference submissions are not presented as accepted proceedings papers.",
     }
     write_json(root, "artifacts/v10/bibliography_audit.json", report)
-    write_markdown(root, "V10_BIBLIOGRAPHY_AUDIT.md", _markdown(report))
+    write_markdown(root, "docs/archive/v10/V10_BIBLIOGRAPHY_AUDIT.md", _markdown(report))
     return report
 
 

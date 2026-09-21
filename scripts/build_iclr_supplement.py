@@ -208,6 +208,8 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
                 path.rmdir()
     output_root.mkdir(parents=True, exist_ok=True)
     original_manifest = project_root / "paper" / "snapshot" / "manifest.json"
+    if not original_manifest.is_file():
+        original_manifest = project_root / "snapshot" / "manifest.json"
     original_manifest_sha256 = hashlib.sha256(original_manifest.read_bytes()).hexdigest()
     copied: list[Path] = []
     for root_name in ALLOWLIST:
@@ -251,10 +253,11 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
             target = output_root / relative
             _copy_sanitized(source, target, relative)
             copied.append(target)
-    for source in sorted((project_root / "paper" / "snapshot").rglob("*")):
+    snapshot_root = original_manifest.parent
+    for source in sorted(snapshot_root.rglob("*")):
         if not source.is_file():
             continue
-        relative = Path("snapshot") / source.relative_to(project_root / "paper" / "snapshot")
+        relative = Path("snapshot") / source.relative_to(snapshot_root)
         target = output_root / relative
         _copy_sanitized(source, target)
         copied.append(target)
@@ -302,7 +305,11 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
         "paper/main.tex",
         "paper/references.bib",
         "paper/revision_results.tex",
+        "paper/highway_results.tex",
+        "paper/highway_reproduction_audit.json",
+        "paper/build_frozen.sh",
         "paper/style_manifest.json",
+        "pyproject.toml",
     ):
         source = project_root / relative_path
         if not source.is_file():
@@ -332,22 +339,30 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
         for name in LATEST_EVIDENCE_FILES:
             source = project_root / relative_source / name
             if not source.is_file():
+                source = project_root / "evidence/latest" / cohort / name
+            if not source.is_file():
                 raise FileNotFoundError(source)
             target = output_root / "evidence/latest" / cohort / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, target)
             copied.append(target)
     audit_source = project_root / LATEST_EVIDENCE_AUDIT
+    if not audit_source.is_file():
+        audit_source = project_root / "evidence/latest/revision_evidence_audit.json"
     if audit_source.is_file():
         target = output_root / "evidence/latest/revision_evidence_audit.json"
         _copy_sanitized(audit_source, target)
         copied.append(target)
     for name in ("decision_relevance.json", "decision_relevance_rows.csv"):
         source = project_root / DECISION_RELEVANCE_DIR / name
+        if not source.is_file():
+            source = project_root / "evidence/latest" / name
         if source.is_file():
             target = output_root / "evidence/latest" / name
             _copy_sanitized(source, target)
             copied.append(target)
+    for relative in ("evidence/highway", "reproduction/highway"):
+        copied.extend(_copy_hash_bound_tree(project_root / relative, output_root / relative))
     _rewrite_snapshot_manifest(
         output_root / "snapshot" / "manifest.json",
         original_manifest_sha256,
@@ -371,13 +386,17 @@ response-world cohorts (Leduc, Kuhn, and Melting Pot) are copied byte-for-byte
 under `evidence/latest`; the public audit and decision-relevance bridge are
 included alongside them. Sealed task instructions and lock history remain
 local; only the redacted task-membership summary is included.
-From the
-repository root, install the project in editable mode and run:
+The HighwayEnv evidence and frozen simulator source are under
+`evidence/highway` and `reproduction/highway`. The latter README documents the
+seed cohorts, exact dependency lock, budgets, smoke exposure, and simulator
+rerun command. From the extracted artifact root, install Python 3.12 and the
+locked dependencies, then recompute the Highway table and figure:
 
 ```bash
-.venv/bin/pytest -q
-.venv/bin/ruff check .
-.venv/bin/python scripts/build_paper_tables.py --snapshot paper/snapshot --output paper/tables
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r reproduction/highway/requirements-lock.txt
+.venv/bin/python scripts/build_highway_evidence.py --root .
+.venv/bin/python reproduction/highway/run.py --check-only
 ```
 
 The public finance audit uses virtual fills and observational depth
@@ -409,12 +428,12 @@ analytic checks can be regenerated with:
 They test the constructive Global Fidelity Blindness and Response-Footprint
 Sensitivity claims; they are not causal market evidence.
 
-The evidence archive is a frozen copy, not a rerun. Rebuild the complete
-paper, supplement, and local audit with:
+The evidence archive is a frozen copy, not a rerun. Rebuild the current paper
+from this archive using TeX Live (including latexmk) and Poppler (pdfinfo,
+pdftotext, pdffonts, and pdftoppm):
 
 ```bash
-.venv/bin/python scripts/build_revision_evidence.py --root .
-.venv/bin/python scripts/build_iclr_supplement.py   --project-root . --output-root artifacts/revision/supplement_staging   --archive paper/pivot_iclr2027_supplementary.zip
+PIVOT_PYTHON="$PWD/.venv/bin/python" bash paper/build_frozen.sh
 ```
 
 The manuscript reports the scientific names of the evidence layers. Internal
@@ -428,6 +447,28 @@ checkout with `scripts/bootstrap_opentikz.py` and
         encoding="utf-8",
     )
     copied.append(readme)
+    return copied
+
+
+def _copy_hash_bound_tree(source_root: Path, target_root: Path) -> list[Path]:
+    """Preserve audited hashes; reject private content rather than rewriting it."""
+    if not source_root.is_dir() or source_root.is_symlink():
+        raise ValueError("hash-bound source tree must be a directory")
+    copied = []
+    for source in sorted(source_root.rglob("*")):
+        if any(part in SKIP_PARTS for part in source.relative_to(source_root).parts):
+            continue
+        if source.is_symlink():
+            raise ValueError("hash-bound tree contains a symlink")
+        if not source.is_file():
+            continue
+        data = source.read_bytes()
+        if re.search(rb"(?i)/(?:opt/projects|home/ubuntu|tmp)/|\bcodex\b", data):
+            raise ValueError(f"private content in hash-bound file: {source.name}")
+        target = target_root / source.relative_to(source_root)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(data)
+        copied.append(target)
     return copied
 
 

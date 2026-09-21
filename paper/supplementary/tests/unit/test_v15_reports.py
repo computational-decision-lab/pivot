@@ -8,8 +8,8 @@ import pytest
 def test_required_report_names_are_closed_and_include_finalizer() -> None:
     from experiments.v15.reports import REQUIRED_REPORTS
 
-    assert "V15_FINAL_REPORT.md" in REQUIRED_REPORTS
-    assert "V15_FIGURE_STATUS.md" in REQUIRED_REPORTS
+    assert "docs/archive/v15/V15_FINAL_REPORT.md" in REQUIRED_REPORTS
+    assert "docs/archive/v15/V15_FIGURE_STATUS.md" in REQUIRED_REPORTS
     assert len(REQUIRED_REPORTS) == len(set(REQUIRED_REPORTS))
 
 
@@ -190,7 +190,7 @@ def test_report_generation_materializes_footprint_diagnostic() -> None:
 
     assert result["status"] == "BLOCKED"
     artifact = Path("artifacts/v15/footprint_analysis.json")
-    report = Path("V15_FOOTPRINT_ANALYSIS.md")
+    report = Path("docs/archive/v15/V15_FOOTPRINT_ANALYSIS.md")
     assert artifact.is_file()
     assert report.is_file()
     assert "DEV_ONLY" in report.read_text(encoding="utf-8") or "NOT_RUN" in report.read_text(encoding="utf-8")

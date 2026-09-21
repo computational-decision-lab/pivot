@@ -34,7 +34,7 @@ def audit(root: Path) -> dict[str, Any]:
         records.append({"figure_id": stem, "missing": missing, "main_text": bool(metadata.get("main_text")), "valid": not missing})
     report = {"valid": not errors, "figure_count": len(records), "records": records, "errors": errors}
     write_json(root / "artifacts/v9/figure_audit.json", report)
-    (root / "V9_FIGURE_AUDIT.md").write_text(_markdown(report), encoding="utf-8")
+    (root / "docs/archive/v9/V9_FIGURE_AUDIT.md").write_text(_markdown(report), encoding="utf-8")
     return report
 
 

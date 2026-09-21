@@ -3,7 +3,7 @@
 
 The verifier intentionally checks the rendered artifact rather than trusting a
 successful LaTeX exit code.  In particular, the nine-page ICLR main-text gate
-is read from the references and appendix labels in the generated ``.aux``
+is read from the explicit end-of-main-text label in the generated ``.aux``
 file, while the complete PDF may contain a bibliography and appendix after
 that boundary.
 """
@@ -39,6 +39,14 @@ def parse_references_start_page(aux_text: str) -> int:
     match = re.search(r"\\newlabel\{refs:start\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
     if match is None:
         raise ValueError("references label refs:start is missing from LaTeX aux")
+    return int(match.group(1))
+
+
+def parse_main_end_page(aux_text: str) -> int:
+    """Count the actual last body page, including body sharing a reference page."""
+    match = re.search(r"\\newlabel\{main:end\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
+    if match is None:
+        raise ValueError("main text label main:end is missing from LaTeX aux")
     return int(match.group(1))
 
 
@@ -116,36 +124,41 @@ def verify_paper(
     aux_text = aux_path.read_text(encoding="utf-8", errors="replace")
     references_page = parse_references_start_page(aux_text)
     appendix_page = parse_appendix_start_page(aux_text)
-    main_pages = references_page - 1
+    main_pages = parse_main_end_page(aux_text)
 
     log = pdf.with_suffix(".log")
     log_scan = scan_log(log.read_text(encoding="utf-8", errors="replace")) if log.is_file() else {}
     source_text = source.read_text(encoding="utf-8")
+    # Keep this list aligned with the current manuscript vocabulary.  Older
+    # V10 checks required phrases and theorem counts that no longer exist in
+    # the revised paper and therefore produced false failures.
     required_tokens = [
         "improvement reversal",
         "improvement fidelity",
+        "observer",
+        "actor",
+        "strategic",
+        "response layers",
         "pivot",
-        "cumulative true improvement",
-        "finance audit",
-        "replacement operation",
-        "rank policies correctly while ranking improvements incorrectly",
+        "decision preservation",
+        "paired high-fidelity",
+        "knowledge-gradient",
+        "fixed high-fidelity budget",
+        "leduc",
+        "kuhn",
+        "melting pot",
         "contribution 1",
         "contribution 2",
         "contribution 3",
-        "operator shift bound",
-        "finite-sample best-update identification",
-        "decision preservation under differential error",
-        "why transition validation differs from active learning",
-        "fig3_pivot_voi",
-        "stress tests beyond controlled environments",
-        "value fidelity versus improvement fidelity",
         "operator-relative improvement fidelity",
         "q_{\\mathcal a}",
-        "raw sampled reversal-rate cells",
-        "false improvement (improvement reversal)",
     ]
-    source_lower = source_text.casefold()
-    missing_tokens = [token for token in required_tokens if token.casefold() not in source_lower]
+    source_lower = " ".join(source_text.casefold().split())
+    missing_tokens = [
+        token
+        for token in required_tokens
+        if " ".join(token.casefold().split()) not in source_lower
+    ]
 
     scientific_source = source_text.split("\\begin{document}", 1)[-1].split("\\appendix", 1)[0]
     forbidden_version_tokens = sorted(
@@ -158,24 +171,16 @@ def verify_paper(
         )
     )
     proposition_count = len(re.findall(r"\\begin\{proposition\}", source_text))
+    lemma_count = len(re.findall(r"\\begin\{lemma\}", source_text))
     required_assets = {
-        "fig1_improvement_reversal.png",
-        "fig2_operator_shift.png",
-        "fig3_pivot_voi.pdf",
-        "fig4_evidence_efficiency.png",
-        "fig5_closed_loop.png",
-        "figA_response_footprint.png",
-        "figB_learned_ood_null.png",
-        "figC_posterior_robustness.png",
-        "figD_strategic_distribution.png",
-        "figE_finance_boundary.png",
+        "fig1_decision_relevance.pdf",
+        "fig2_regret_cost.pdf",
     }
     asset_missing = [
         name
         for name in sorted(required_assets)
         if not (
-            (source.parent / "figures" / "release" / name).is_file()
-            or (source.parent / "figures" / "v10" / name).is_file()
+            (source.parent / "figures" / "revision" / name).is_file()
             or (source.parent / "figures" / name).is_file()
         )
     ]
@@ -190,7 +195,7 @@ def verify_paper(
         "anonymous_author": author in {"", "-", "Anonymous", "Anonymous Authors"},
         "embedded_fonts": bool(fonts) and all(font["embedded"] for font in fonts),
         "required_source_tokens": not missing_tokens,
-        "six_propositions": proposition_count == 6,
+        "current_theorem_structure": proposition_count == 3 and lemma_count == 2,
         "no_internal_version_language_in_main": not forbidden_version_tokens,
         "required_figure_assets": not asset_missing,
         "no_undefined_references": not log_scan.get("undefined_references", False),
@@ -213,6 +218,7 @@ def verify_paper(
         "missing_source_tokens": missing_tokens,
         "forbidden_version_tokens": forbidden_version_tokens,
         "proposition_count": proposition_count,
+        "lemma_count": lemma_count,
         "missing_figure_assets": asset_missing,
         "preview": _portable_path(preview_path) if preview_path else None,
         "checks": checks,

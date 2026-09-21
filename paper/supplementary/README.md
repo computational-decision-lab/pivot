@@ -1,16 +1,23 @@
 # IMPROVE-X / PIVOT ICLR 2027 Supplementary Artifact
 
 This archive contains the anonymous source, public configurations, tests, the
-controlled ImprovementBench v1/v2 releases, and the hash-indexed paper
-snapshot used for the submission PDF. The sealed V15 task manifest and lock
-history remain local; only the redacted task-membership summary is included.
-From the
-repository root, install the project in editable mode and run:
+controlled ImprovementBench releases, the current manuscript sources, and the
+hash-indexed paper snapshot used for the submission PDF. The three sealed
+response-world cohorts (Leduc, Kuhn, and Melting Pot) are copied byte-for-byte
+under `evidence/latest`; the public audit and decision-relevance bridge are
+included alongside them. Sealed task instructions and lock history remain
+local; only the redacted task-membership summary is included.
+The HighwayEnv evidence and frozen simulator source are under
+`evidence/highway` and `reproduction/highway`. The latter README documents the
+seed cohorts, exact dependency lock, budgets, smoke exposure, and simulator
+rerun command. From the extracted artifact root, install Python 3.12 and the
+locked dependencies, then recompute the Highway table and figure:
 
 ```bash
-.venv/bin/pytest -q
-.venv/bin/ruff check .
-.venv/bin/python scripts/build_paper_tables.py --snapshot paper/snapshot --output paper/tables
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r reproduction/highway/requirements-lock.txt
+.venv/bin/python scripts/build_highway_evidence.py --root .
+.venv/bin/python reproduction/highway/run.py --check-only
 ```
 
 The public finance audit uses virtual fills and observational depth
@@ -42,13 +49,12 @@ analytic checks can be regenerated with:
 They test the constructive Global Fidelity Blindness and Response-Footprint
 Sensitivity claims; they are not causal market evidence.
 
-The frozen confirmatory package is included under `results/v9`; publication
-transforms are under the historical figure/source directories. They do not rerun
-science: they read hash-indexed source rows and emit PDF/SVG/PNG figures plus
-CSV provenance tables. Rebuild and audit the complete package with:
+The evidence archive is a frozen copy, not a rerun. Rebuild the current paper
+from this archive using TeX Live (including latexmk) and Poppler (pdfinfo,
+pdftotext, pdffonts, and pdftoppm):
 
 ```bash
-.venv/bin/python -m experiments.v15 reports --root .
+PIVOT_PYTHON="$PWD/.venv/bin/python" bash paper/build_frozen.sh
 ```
 
 The manuscript reports the scientific names of the evidence layers. Internal

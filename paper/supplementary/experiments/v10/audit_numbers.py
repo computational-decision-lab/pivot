@@ -79,7 +79,7 @@ def audit(root: Path) -> dict[str, Any]:
     if errors:
         report = {"valid": False, "errors": errors, "warnings": warnings}
         write_json(root, "artifacts/v10/number_audit.json", report)
-        write_markdown(root, "V10_NUMBER_AUDIT.md", _markdown(report))
+        write_markdown(root, "docs/archive/v10/V10_NUMBER_AUDIT.md", _markdown(report))
         return report
 
     e2, e3, e4, e5, e7 = (_decision(root, name) for name in ("e2c", "e3c", "e4c", "e5c", "e7c"))
@@ -240,7 +240,7 @@ def audit(root: Path) -> dict[str, Any]:
         },
     }
     write_json(root, "artifacts/v10/number_audit.json", report)
-    write_markdown(root, "V10_NUMBER_AUDIT.md", _markdown(report))
+    write_markdown(root, "docs/archive/v10/V10_NUMBER_AUDIT.md", _markdown(report))
     return report
 
 

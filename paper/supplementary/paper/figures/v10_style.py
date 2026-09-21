@@ -12,21 +12,26 @@ from typing import Any
 
 import matplotlib as mpl
 
-STYLE_VERSION = "pivot-v10-publication-style-1"
+# These tokens mirror paper/figures/scientific_figure_style.json, a checked-in
+# snapshot of the scientific-figure-skills universal high-impact profile.
+STYLE_VERSION = "pivot-v10-scientific-figure-suite-1"
 COLORS = {
     "proxy": "#6B7280",
-    "global": "#2F6DAE",
-    "lucb": "#9467BD",
-    "pivot": "#007C83",
-    "oracle": "#1F2937",
-    "direct": "#8C8C8C",
-    "actor": "#2F6DAE",
-    "strategic": "#B23A48",
-    "positive": "#2E8B57",
-    "negative": "#B23A48",
+    "global": "#0072B2",
+    "lucb": "#CC79A7",
+    "pivot": "#009E73",
+    "oracle": "#2F2F2F",
+    "direct": "#6C757D",
+    "actor": "#0072B2",
+    "strategic": "#D55E00",
+    "positive": "#009E73",
+    "negative": "#D55E00",
+    "cohort_leduc": "#0072B2",
+    "cohort_kuhn": "#CC79A7",
+    "cohort_melting_pot": "#D55E00",
     "text": "#202124",
-    "grid": "#D6D9DE",
-    "shade": "#F2F4F7",
+    "grid": "#D9E2E8",
+    "shade": "#F4F6F8",
 }
 
 METHOD_STYLE = {
@@ -39,8 +44,8 @@ METHOD_STYLE = {
     },
     "global_voi": {"label": "Global-VOI", "color": COLORS["global"], "marker": "s", "ls": ":"},
     "paired_lucb": {"label": "Paired LUCB", "color": COLORS["lucb"], "marker": "^", "ls": "-."},
-    "pivot_voi": {"label": "PIVOT-VOI", "color": COLORS["pivot"], "marker": "D", "ls": "-"},
-    "all_hf": {"label": "All-HF oracle", "color": COLORS["oracle"], "marker": "x", "ls": "--"},
+    "pivot_voi": {"label": "PIVOT-KG", "color": COLORS["pivot"], "marker": "D", "ls": "-"},
+        "all_hf": {"label": "All-HF reference", "color": COLORS["oracle"], "marker": "x", "ls": "--"},
 }
 
 
@@ -50,27 +55,30 @@ def apply() -> None:
     mpl.rcParams.update(
         {
             "font.family": "DejaVu Sans",
-            "font.size": 8.5,
-            "axes.labelsize": 8.5,
-            "axes.titlesize": 9,
-            "xtick.labelsize": 7.5,
-            "ytick.labelsize": 7.5,
-            "legend.fontsize": 7,
-            "axes.linewidth": 0.8,
+            "font.size": 8,
+            "axes.labelsize": 8,
+            "axes.titlesize": 8.5,
+            "xtick.labelsize": 7,
+            "ytick.labelsize": 7,
+            "legend.fontsize": 6.5,
+            "axes.linewidth": 0.7,
             "axes.edgecolor": COLORS["text"],
             "axes.spines.top": False,
             "axes.spines.right": False,
             "axes.grid": True,
             "grid.color": COLORS["grid"],
             "grid.linewidth": 0.45,
-            "grid.alpha": 0.7,
+            "grid.alpha": 0.55,
             "legend.frameon": False,
-            "lines.linewidth": 1.2,
-            "lines.markersize": 4.5,
+            "lines.linewidth": 1.25,
+            "lines.markersize": 4.2,
+            "axes.axisbelow": True,
+            "xtick.major.width": 0.6,
+            "ytick.major.width": 0.6,
             "svg.fonttype": "none",
             # Matplotlib otherwise generates random SVG element identifiers,
             # which makes byte-identical figure rebuilds impossible.
-            "svg.hashsalt": "pivot-v10-publication-style-1",
+            "svg.hashsalt": "pivot-v10-scientific-figure-suite-1",
             "pdf.fonttype": 42,
             "savefig.bbox": "tight",
             "savefig.pad_inches": 0.04,

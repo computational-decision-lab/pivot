@@ -3,7 +3,7 @@
 
 The verifier intentionally checks the rendered artifact rather than trusting a
 successful LaTeX exit code.  In particular, the nine-page ICLR main-text gate
-is read from the references and appendix labels in the generated ``.aux``
+is read from the explicit end-of-main-text label in the generated ``.aux``
 file, while the complete PDF may contain a bibliography and appendix after
 that boundary.
 """
@@ -39,6 +39,14 @@ def parse_references_start_page(aux_text: str) -> int:
     match = re.search(r"\\newlabel\{refs:start\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
     if match is None:
         raise ValueError("references label refs:start is missing from LaTeX aux")
+    return int(match.group(1))
+
+
+def parse_main_end_page(aux_text: str) -> int:
+    """Count the actual last body page, including body sharing a reference page."""
+    match = re.search(r"\\newlabel\{main:end\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
+    if match is None:
+        raise ValueError("main text label main:end is missing from LaTeX aux")
     return int(match.group(1))
 
 
@@ -116,30 +124,29 @@ def verify_paper(
     aux_text = aux_path.read_text(encoding="utf-8", errors="replace")
     references_page = parse_references_start_page(aux_text)
     appendix_page = parse_appendix_start_page(aux_text)
-    main_pages = references_page - 1
+    main_pages = parse_main_end_page(aux_text)
 
     log = pdf.with_suffix(".log")
     log_scan = scan_log(log.read_text(encoding="utf-8", errors="replace")) if log.is_file() else {}
     source_text = source.read_text(encoding="utf-8")
+    # Keep this list aligned with the current manuscript vocabulary.  Older
+    # V10 checks required phrases and theorem counts that no longer exist in
+    # the revised paper and therefore produced false failures.
     required_tokens = [
         "improvement reversal",
         "improvement fidelity",
         "observer",
         "actor",
         "strategic",
-        "induced deployment world",
-        "response map",
+        "response layers",
         "pivot",
-        "centered shift bound",
         "decision preservation",
-        "finite-sample best-update identification",
-        "paired query",
+        "paired high-fidelity",
         "knowledge-gradient",
-        "fixed budget",
+        "fixed high-fidelity budget",
         "leduc",
         "kuhn",
         "melting pot",
-        "primary null",
         "contribution 1",
         "contribution 2",
         "contribution 3",
@@ -164,6 +171,7 @@ def verify_paper(
         )
     )
     proposition_count = len(re.findall(r"\\begin\{proposition\}", source_text))
+    lemma_count = len(re.findall(r"\\begin\{lemma\}", source_text))
     required_assets = {
         "fig1_decision_relevance.pdf",
         "fig2_regret_cost.pdf",
@@ -187,7 +195,7 @@ def verify_paper(
         "anonymous_author": author in {"", "-", "Anonymous", "Anonymous Authors"},
         "embedded_fonts": bool(fonts) and all(font["embedded"] for font in fonts),
         "required_source_tokens": not missing_tokens,
-        "six_propositions": proposition_count == 6,
+        "current_theorem_structure": proposition_count == 3 and lemma_count == 2,
         "no_internal_version_language_in_main": not forbidden_version_tokens,
         "required_figure_assets": not asset_missing,
         "no_undefined_references": not log_scan.get("undefined_references", False),
@@ -210,6 +218,7 @@ def verify_paper(
         "missing_source_tokens": missing_tokens,
         "forbidden_version_tokens": forbidden_version_tokens,
         "proposition_count": proposition_count,
+        "lemma_count": lemma_count,
         "missing_figure_assets": asset_missing,
         "preview": _portable_path(preview_path) if preview_path else None,
         "checks": checks,

@@ -9,9 +9,23 @@ from scripts.verify_paper import (
     _portable_path,
     _resolve_aux,
     parse_appendix_start_page,
+    parse_main_end_page,
     parse_references_start_page,
     scan_log,
 )
+
+
+def test_main_text_on_references_page_still_counts() -> None:
+    from scripts.verify_iclr_submission import parse_main_end_page as submission_main_end
+
+    aux = r"\newlabel{main:end}{{9}{10}{}{section.9}{}}" + "\n" + r"\newlabel{refs:start}{{}{10}}"
+    assert parse_main_end_page(aux) == 10
+    assert submission_main_end(aux) == 10
+
+
+def test_main_end_label_is_required() -> None:
+    with pytest.raises(ValueError, match="main:end"):
+        parse_main_end_page(r"\newlabel{refs:start}{{}{10}}")
 
 
 def test_portable_path_avoids_machine_absolute_prefix() -> None:

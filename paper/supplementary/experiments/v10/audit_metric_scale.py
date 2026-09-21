@@ -119,7 +119,7 @@ def audit(root: Path) -> dict[str, Any]:
         },
     }
     write_json(root, "artifacts/v10/metric_scale_audit.json", report)
-    write_markdown(root, "V10_METRIC_SCALE_AUDIT.md", _markdown(report))
+    write_markdown(root, "docs/archive/v10/V10_METRIC_SCALE_AUDIT.md", _markdown(report))
     return report
 
 

@@ -35,7 +35,7 @@ def audit(root: Path) -> dict[str, Any]:
             claims.append({"claim_id": claim_id, "allowed": True, "decisions": decisions, "reason": "registered powered decision supports scoped claim"})
     report = {"valid": not errors, "claims": claims, "errors": errors, "universal_claims_forbidden": True}
     write_json(root / "artifacts/v9/claim_audit.json", report)
-    (root / "V9_CLAIM_AUDIT.md").write_text(_markdown(report), encoding="utf-8")
+    (root / "docs/archive/v9/V9_CLAIM_AUDIT.md").write_text(_markdown(report), encoding="utf-8")
     return report
 
 

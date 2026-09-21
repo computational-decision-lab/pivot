@@ -61,7 +61,7 @@ def dev_construct(root: Path) -> dict[str, Any]:
 
 
 def dev_resource_plan(root: Path) -> dict[str, Any]:
-    return {"status": "PASS", "phase": "DEV", "resource_plan": "V15_RESOURCE_PLAN.md"}
+    return {"status": "PASS", "phase": "DEV", "resource_plan": "docs/archive/v15/V15_RESOURCE_PLAN.md"}
 
 
 def master_loop(root: Path) -> dict[str, Any]:

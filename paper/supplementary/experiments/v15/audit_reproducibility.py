@@ -23,7 +23,7 @@ REQUIRED = (
     "figures/v15/visual_review_manifest.json",
     "artifacts/v15/scientific_summary.json",
     "artifacts/v15/terminal_state_audit.json",
-    "V15_SCIENTIFIC_SUMMARY.md",
+    "docs/archive/v15/V15_SCIENTIFIC_SUMMARY.md",
     "snapshot/v15_pre_modern_agent/PROVENANCE.txt",
 )
 

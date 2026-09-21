@@ -144,7 +144,7 @@ def pre_final_audit(root: Path) -> dict[str, Any]:
         ],
     }
     write_json(root, "artifacts/v10/pre_final_audit.json", report)
-    write_markdown(root, "V10_PRE_FINAL_AUDIT.md", _pre_final_markdown(report))
+    write_markdown(root, "docs/archive/v10/V10_PRE_FINAL_AUDIT.md", _pre_final_markdown(report))
     return report
 
 
@@ -284,7 +284,7 @@ def reviewer_audit(root: Path) -> dict[str, Any]:
     ]
     report = {"valid": not errors and len(records) == 13, "errors": errors, "attacks": records}
     write_json(root, "artifacts/v10/reviewer_attack_audit.json", report)
-    write_markdown(root, "V10_REVIEWER_ATTACK_AUDIT.md", _reviewer_markdown(report))
+    write_markdown(root, "docs/archive/v10/V10_REVIEWER_ATTACK_AUDIT.md", _reviewer_markdown(report))
     return report
 
 

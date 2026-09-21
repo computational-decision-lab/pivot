@@ -172,7 +172,7 @@ def _bundle(
             str(path.relative_to(root)): _sha256(path) for path in source_paths if path.is_file()
         },
         "analysis_script": "experiments/v10/figures.py",
-        "style_version": "pivot-v10-publication-style-1",
+        "style_version": "pivot-v10-scientific-figure-suite-1",
         "generated_at": generated_at,
         "config_hashes": config_hashes,
         "git_commit": _commit(root),
@@ -316,7 +316,7 @@ def _architecture_bundle(root: Path, output: Path) -> dict[str, Any]:
     metadata = {
         "figure_id": stem,
         "alias_of": "fig3_pivot_architecture",
-        "scientific_question": "How does PIVOT-VOI allocate paired interventional evaluations to preserve update decisions?",
+        "scientific_question": "How does PIVOT-KG allocate paired interventional evaluations to preserve update decisions?",
         "unit_of_inference": "semantic architecture node and directed stage",
         "appendix": False,
         "experiment_sources": [str(source.relative_to(root))],
@@ -324,7 +324,7 @@ def _architecture_bundle(root: Path, output: Path) -> dict[str, Any]:
             str(path.relative_to(root)): _sha256(path) for path in (source, source_pdf, source_svg)
         },
         "analysis_script": "scripts/build_opentikz_architecture.py",
-        "style_version": "pivot-v10-publication-style-1",
+        "style_version": "pivot-v10-scientific-figure-suite-1",
         "generated_at": _generated_at(),
         "config_hashes": _config_hashes(root),
         "git_commit": _commit(root),
@@ -448,7 +448,7 @@ def build(root: Path) -> list[dict[str, Any]]:
         )
         built.append(metadata)
     manifest = {
-        "style_version": "pivot-v10-publication-style-1",
+        "style_version": "pivot-v10-scientific-figure-suite-1",
         "generated_at": built[0].get("generated_at") if built else None,
         "config_hashes": built[0].get("config_hashes", {}) if built else {},
         "figures": built,
@@ -628,9 +628,9 @@ def _figure2(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[0].set_xlabel(r"$\log(1+\chi^2)$")
     axes[1].set_xlabel(r"$\log(1+\chi^2)$")
     axes[2].set_xlabel(r"$\log(1+\chi^2)$")
-    axes[0].set_title("A  update error")
-    axes[1].set_title("B  global fidelity")
-    axes[2].set_title("C  decision failure")
+    axes[0].set_title("a  update error")
+    axes[1].set_title("b  global fidelity")
+    axes[2].set_title("c  decision failure")
     axes[0].legend(fontsize=5.8, loc="upper left")
     figure.suptitle("Operator-relative shift changes update fidelity", fontsize=9.5)
     figure.tight_layout(w_pad=1.0)
@@ -659,7 +659,7 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         "proxy_only": "Proxy Only",
         "paired_lucb": "Paired LUCB",
         "global_voi": "Global-VOI",
-        "pivot_voi": "PIVOT-VOI",
+        "pivot_voi": "PIVOT-KG",
     }
     figure = plt.figure(figsize=(7.15, 4.25), constrained_layout=False)
     grid = figure.add_gridspec(2, 2, height_ratios=[1.15, 0.95], hspace=0.48, wspace=0.30)
@@ -677,7 +677,7 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         if oracle_rows:
             oracle_mean = float(np.mean([float(row["mean_CISR"]) for row in oracle_rows]))
             axis.axhline(
-                oracle_mean, color=COLORS["oracle"], lw=0.7, ls="--", label="All-HF oracle"
+                oracle_mean, color=COLORS["oracle"], lw=0.7, ls="--", label="All-HF reference"
             )
             source_rows.extend(
                 {**row, "figure_panel": environment, "K_primary": 8, "oracle_reference": True}
@@ -712,7 +712,7 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                 )
             elif method == "all_hf":
                 axis.axhline(
-                    float(y[-1]), color=COLORS["oracle"], lw=0.7, ls="--", label="All-HF oracle"
+                    float(y[-1]), color=COLORS["oracle"], lw=0.7, ls="--", label="All-HF reference"
                 )
             else:
                 axis.errorbar(
@@ -753,7 +753,7 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                 ):
                     by_method_seed[(str(row["method"]), int(row["seed"]))] = float(row["CISR"])
             for contrast, method in [
-                ("Proxy - PIVOT-VOI", "pivot_voi"),
+                ("Proxy - PIVOT-KG", "pivot_voi"),
                 ("Proxy - Paired LUCB", "paired_lucb"),
                 ("Proxy - Global-VOI", "global_voi"),
             ]:
@@ -783,7 +783,7 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                 )
     # Only the registered primary PIVOT contrast is displayed in the main
     # forest; other contrasts remain traceable in the source table.
-    primary = [row for row in effect_rows if row["contrast"] == "Proxy - PIVOT-VOI"]
+    primary = [row for row in effect_rows if row["contrast"] == "Proxy - PIVOT-KG"]
     fy = np.arange(len(primary))
     fe = np.asarray([row["estimate"] for row in primary])
     flo = np.asarray([row["ci_low"] for row in primary])
@@ -806,9 +806,9 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         fontsize=6.8,
     )
     forest_axis.invert_yaxis()
-    forest_axis.set_xlabel("CISR reduction: Proxy Only - PIVOT-VOI")
+    forest_axis.set_xlabel("CISR reduction: Proxy Only - PIVOT-KG")
     forest_axis.set_title(
-        f"C  registered paired effect at fixed HF budget {fixed_budget}", fontsize=8.3
+        f"c  registered paired effect at fixed HF budget {fixed_budget}", fontsize=8.3
     )
     forest_axis.text(
         0.01,
@@ -852,7 +852,7 @@ def _figure5(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             for source_env in ["external_adaptive_a", "external_adaptive_b"]:
                 for method_label, method_id in [
                     ("Proxy Only", "proxy_only"),
-                    ("PIVOT-VOI", "pivot_voi"),
+                    ("PIVOT-KG", "pivot_voi"),
                 ]:
                     subset = [
                         row
@@ -1127,7 +1127,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[0].axhline(0, color=COLORS["text"], lw=0.6, ls="--")
     axes[0].set_xticks(x, ["Proxy/direct\n(observer)", "Actor", "Strategic"])
     axes[0].set_ylabel(r"paired improvement $\Delta$")
-    axes[0].set_title("A  response layers")
+    axes[0].set_title("a  response layers")
     axes[0].text(
         0.03,
         0.04,
@@ -1177,7 +1177,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[1].axhline(0, color=COLORS["text"], lw=0.6, ls="--")
     axes[1].set_xticks([0, 1], ["Actor\n- direct", "Strategic\n- actor"])
     axes[1].set_ylabel("layer effect")
-    axes[1].set_title("B  response-effect distribution")
+    axes[1].set_title("b  response-effect distribution")
     axes[1].text(
         0.03,
         0.04,
@@ -1219,7 +1219,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[2].set_ylim(lim)
     axes[2].set_xlabel(r"actor $\Delta$")
     axes[2].set_ylabel(r"strategic $\Delta$")
-    axes[2].set_title("C  strategic reversal plane")
+    axes[2].set_title("c  strategic reversal plane")
     # Use the registered cluster-level SIRR (the same estimand reported in the
     # manuscript), rather than pooling transition rows with unequal eligibility.
     summary = _json(source_paths[1])["by_mode"]
@@ -1281,8 +1281,8 @@ def _figure7(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     )
     y = np.arange(len(SPLIT_ORDER))
     for axis, metric, title, xlabel in [
-        (axes[0], "isc_effect", "A  ISC effect", r"$ISC_{transition}-ISC_{global}$"),
-        (axes[1], "ide_gain", "B  IDE gain", r"$IDE_{global}-IDE_{transition}$"),
+        (axes[0], "isc_effect", "a  ISC effect", r"$ISC_{transition}-ISC_{global}$"),
+        (axes[1], "ide_gain", "b  IDE gain", r"$IDE_{global}-IDE_{transition}$"),
     ]:
         subset = [row for row in split_rows if row["metric"] == metric]
         estimates = np.asarray([row["estimate"] for row in subset])
@@ -1329,7 +1329,7 @@ def _figure7(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[2].set_ylim(limits)
     axes[2].set_xlabel(r"$ISC_{global}$")
     axes[2].set_ylabel(r"$ISC_{transition}$")
-    axes[2].set_title("C  paired OOD reports")
+    axes[2].set_title("c  paired OOD reports")
     axes[2].legend(fontsize=5.8, loc="upper left")
     figure.tight_layout(w_pad=1.0)
     return _bundle(
@@ -1369,7 +1369,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     )
     axes[0].set_xlabel("posterior samples")
     axes[0].set_ylabel("query-set Jaccard\nvs 1024-sample reference", fontsize=7.4)
-    axes[0].set_title("A  Monte Carlo stability")
+    axes[0].set_title("a  Monte Carlo stability")
     axes[0].set_ylim(0, 1)
     axes[0].text(
         0.03,
@@ -1385,7 +1385,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[1].axvline(1, color=COLORS["grid"], lw=0.8, ls=":")
     axes[1].set_xlabel(r"assumed cost $\hat c/c$")
     axes[1].set_ylabel(r"$\Delta$CISR vs correct cost")
-    axes[1].set_title("B  decision degradation")
+    axes[1].set_title("b  decision degradation")
     axes[1].text(
         0.03, 0.05, f"group N={int(costs[0]['groups'])}", transform=axes[1].transAxes, fontsize=6.5
     )
@@ -1393,7 +1393,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[2].plot(c, p2, marker="s", color=COLORS["global"])
     axes[2].set_xlabel(r"assumed cost $\hat c/c$")
     axes[2].set_ylabel("query agreement")
-    axes[2].set_title("C  query stability")
+    axes[2].set_title("c  query stability")
     axes[2].set_ylim(0, 1)
     axes[2].text(
         0.03,
@@ -1410,7 +1410,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         figure,
         posterior + costs,
         source_paths,
-        "Do posterior approximation and cost misspecification materially change PIVOT-VOI decisions?",
+        "Do posterior approximation and cost misspecification materially change PIVOT-KG decisions?",
         "calibration group",
         appendix=True,
     )
@@ -1492,7 +1492,7 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[0].set_xticks(positions, [short_labels[m] for m, _ in valid], fontsize=5.5)
     axes[0].tick_params(axis="x", pad=2)
     axes[0].set_ylabel(r"$\Delta_{strategic}-\Delta_{actor}$")
-    axes[0].set_title("A  effect distribution")
+    axes[0].set_title("a  effect distribution")
     # Forest panel includes a numeric effect, CI, and SIRR annotation in the source table.
     summary = _json(source_paths[1])["by_mode"]
     summary = [row for row in summary if row["opponent_mode"] in MODE_ORDER]
@@ -1514,7 +1514,7 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[1].set_yticks(ys, [MODE_LABEL[str(row["opponent_mode"])] for row in summary], fontsize=6.8)
     axes[1].invert_yaxis()
     axes[1].set_xlabel(r"mean strategic effect")
-    axes[1].set_title("B  opponent-family forest")
+    axes[1].set_title("b  opponent-family forest")
     for y_, row in zip(ys, summary):
         axes[1].text(
             0.99,
@@ -1569,7 +1569,7 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[2].set_ylim(lim)
     axes[2].set_xlabel(r"actor $\Delta$")
     axes[2].set_ylabel(r"strategic $\Delta$")
-    axes[2].set_title("C  strategic reversal plane")
+    axes[2].set_title("c  strategic reversal plane")
     axes[2].text(
         0.04,
         0.06,

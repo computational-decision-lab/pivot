@@ -4,12 +4,15 @@
 \ifdefined\pdftrailerid
   \pdftrailerid{5049564f542d415243482d3030303031}
 \fi
-\definecolor{pblue}{HTML}{1F5A94}
-\definecolor{pteal}{HTML}{007C83}
-\definecolor{porange}{HTML}{B36B00}
-\definecolor{ppurple}{HTML}{7B3F83}
-\definecolor{pgray}{HTML}{56616D}
-\definecolor{plight}{HTML}{F7F9FB}
+
+% Shared scientific-figure-suite tokens: Okabe-Ito semantic palette.
+\definecolor{pblue}{HTML}{0072B2}
+\definecolor{pteal}{HTML}{009E73}
+\definecolor{porange}{HTML}{D55E00}
+\definecolor{ppurple}{HTML}{CC79A7}
+\definecolor{pgray}{HTML}{6B7280}
+\definecolor{plight}{HTML}{F4F6F8}
+
 \begin{document}
 \begin{tikzpicture}[
   x=1cm,y=1cm,>=Latex,
@@ -27,8 +30,8 @@
   band/.style={draw=pgray!38,dashed,rounded corners=4pt,fill=plight,line width=.55pt}
 ]
 
-% The main figure contains only the decision-critical path.  World-layer
-% taxonomy and reporting definitions are documented in the appendix.
+% The main figure contains the decision-critical path; world-layer taxonomy
+% and reporting definitions are documented in the appendix.
 \begin{scope}[on background layer]
   \path[band] (.20,2.55) rectangle (16.15,5.55);
   \path[band] (.20,-1.05) rectangle (16.15,1.95);
@@ -57,8 +60,7 @@
 \node[query] (cost) at (7.95,.70) {cost-aware acquisition\\$A_j=\mathrm{EVSI}_j/c_j$};
 \node[hf] (paired) at (11.00,.70) {paired HF rollout\\same state, noise,\\opponent initialization};
 \node[promote] (stop) at (14.25,.70) {posterior update + stop\\$P(j=j^*\mid D)\ge1-\delta$};
-% Route the footprint signal through the clear left-side channel between bands;
-% it never crosses the section label or another node.
+% Route the footprint signal through the clear left-side channel between bands.
 \draw[queryarrow] (batch.south) -- (6.65,2.38) -- (.27,2.38) -- (.27,1.35) -- (foot.west);
 \draw[arrow] (foot) -- (evsi);
 \draw[arrow] (evsi) -- (cost);

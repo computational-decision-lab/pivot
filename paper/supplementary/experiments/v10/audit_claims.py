@@ -27,7 +27,7 @@ def audit(root: Path) -> dict[str, Any]:
     if errors:
         report = {"valid": False, "errors": errors, "warnings": warnings}
         write_json(root, "artifacts/v10/claim_audit.json", report)
-        write_markdown(root, "V10_CLAIM_AUDIT.md", _markdown(report))
+        write_markdown(root, "docs/archive/v10/V10_CLAIM_AUDIT.md", _markdown(report))
         return report
     source = source_path.read_text(encoding="utf-8")
     source_flat = re.sub(r"\s+", " ", source)
@@ -141,7 +141,7 @@ def audit(root: Path) -> dict[str, Any]:
         },
     }
     write_json(root, "artifacts/v10/claim_audit.json", report)
-    write_markdown(root, "V10_CLAIM_AUDIT.md", _markdown(report))
+    write_markdown(root, "docs/archive/v10/V10_CLAIM_AUDIT.md", _markdown(report))
     return report
 
 

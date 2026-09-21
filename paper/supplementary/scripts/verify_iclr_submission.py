@@ -61,7 +61,7 @@ def audit_source_text(source: str) -> dict[str, bool]:
                 "improvement fidelity",
                 "pivot",
                 "replacement operation",
-                "decision preservation under differential error",
+                "decision preservation",
             )
         ),
     }
@@ -80,7 +80,7 @@ def audit_archive_members(members: Iterable[str]) -> dict[str, Any]:
         name
         for name in names
         if name.casefold().endswith(".parquet")
-        and name.casefold().startswith(("results/v15/", "figures/v15/", "artifacts/v15/"))
+        and name.casefold().startswith(("results/v15/", "figures/v15/", "artifacts/v15/", "paper/figures/release/"))
     ]
     raw = [
         name
@@ -138,6 +138,93 @@ def audit_archive_contents(archive_path: Path) -> dict[str, Any]:
         "credential_content_hits": sorted(credential_hits),
         "assistant_content_hits": sorted(assistant_hits),
     }
+
+
+def audit_revision_evidence_archive(archive_path: Path) -> dict[str, Any]:
+    """Verify the public copies of the three sealed response-world cohorts.
+
+    The check is deliberately content-addressed: it validates each copied
+    decision file against its selection seal, checks that scored rows preserve
+    every sealed decision field, and compares the cohort-level public audit
+    entries.  It does not embed private source hashes, paths, or omission
+    names, so the same validator also works on a synthetic fixture.
+    """
+
+    cohorts = ("melting_v4", "leduc_v2b", "kuhn_v2b")
+    result: dict[str, Any] = {
+        "valid": False,
+        "cohorts_verified": 0,
+        "cohorts": {},
+        "errors": [],
+    }
+    try:
+        with zipfile.ZipFile(archive_path) as archive:
+            names = set(archive.namelist())
+            audit_name = "evidence/latest/revision_evidence_audit.json"
+            if audit_name not in names:
+                result["errors"].append("missing public revision evidence audit")
+                return result
+            public_audit = json.loads(archive.read(audit_name).decode("utf-8"))
+            public_seals = public_audit.get("seals", {})
+            for cohort in cohorts:
+                prefix = f"evidence/latest/{cohort}"
+                required = {
+                    f"{prefix}/decisions_sealed.json",
+                    f"{prefix}/scored_decisions.json",
+                    f"{prefix}/selection_seal.json",
+                }
+                missing = sorted(required - names)
+                if missing:
+                    result["errors"].append(f"{cohort}: missing {missing}")
+                    continue
+                decisions_bytes = archive.read(f"{prefix}/decisions_sealed.json")
+                decisions = json.loads(decisions_bytes.decode("utf-8"))
+                scored = json.loads(archive.read(f"{prefix}/scored_decisions.json").decode("utf-8"))
+                seal = json.loads(archive.read(f"{prefix}/selection_seal.json").decode("utf-8"))
+                if not isinstance(decisions, list) or not isinstance(scored, list):
+                    result["errors"].append(f"{cohort}: decision/scored payload is not a list")
+                    continue
+                digest = hashlib.sha256(decisions_bytes).hexdigest()
+                if seal.get("decisions_sha256") != digest:
+                    result["errors"].append(f"{cohort}: decision hash mismatch")
+                    continue
+                row_roots = [row.get("root") for row in decisions if isinstance(row, dict)]
+                roots = list(dict.fromkeys(row_roots))
+                if len(row_roots) != len(decisions) or seal.get("n_decisions") != len(decisions):
+                    result["errors"].append(f"{cohort}: decision count mismatch")
+                    continue
+                if seal.get("test_roots") != roots:
+                    result["errors"].append(f"{cohort}: root order mismatch")
+                    continue
+                if len(scored) != len(decisions):
+                    result["errors"].append(f"{cohort}: scored row count mismatch")
+                    continue
+                preserved = all(
+                    isinstance(d, dict)
+                    and isinstance(s, dict)
+                    and all(s.get(key) == value for key, value in d.items())
+                    for d, s in zip(decisions, scored)
+                )
+                if not preserved:
+                    result["errors"].append(f"{cohort}: scored rows do not preserve decisions")
+                    continue
+                public = public_seals.get(cohort, {})
+                if public.get("decisions_sha256") != digest:
+                    result["errors"].append(f"{cohort}: public audit hash mismatch")
+                    continue
+                if public.get("n_decisions") != len(decisions) or public.get("roots") != roots:
+                    result["errors"].append(f"{cohort}: public audit counts mismatch")
+                    continue
+                result["cohorts"][cohort] = {
+                    "n_decisions": len(decisions),
+                    "roots": roots,
+                    "decisions_sha256": digest,
+                }
+            result["cohorts_verified"] = len(result["cohorts"])
+            result["valid"] = result["cohorts_verified"] == len(cohorts) and not result["errors"]
+    except (OSError, zipfile.BadZipFile, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        result["errors"].append(str(exc))
+    return result
 
 
 def audit_style_hashes(style_dir: Path, manifest_path: Path) -> bool:
@@ -246,6 +333,14 @@ def _references_page(pdf: Path, aux: Path | None = None) -> int:
     return int(match.group(1))
 
 
+def parse_main_end_page(aux_text: str) -> int:
+    """Read the final body page instead of assuming references start a new page."""
+    match = re.search(r"\\newlabel\{main:end\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
+    if match is None:
+        raise ValueError("main text label main:end is missing from LaTeX aux")
+    return int(match.group(1))
+
+
 def audit_submission(
     *,
     pdf: Path,
@@ -267,11 +362,12 @@ def audit_submission(
         members = archive.namelist()
     archive_checks = audit_archive_members(members)
     archive_content_checks = audit_archive_contents(supplement)
+    revision_evidence_checks = audit_revision_evidence_archive(supplement)
     page_count = _pdf_pages(pdf)
     aux_path = _aux_path(pdf, aux)
     references_page = _references_page(pdf, aux_path)
     appendix_page = _appendix_page(pdf, aux_path)
-    main_pages = references_page - 1
+    main_pages = parse_main_end_page(aux_path.read_text(encoding="utf-8"))
     style_manifest = style_dir.parent / "style_manifest.json"
     machine_checks = {
         "pdf_exists": pdf.is_file() and pdf.stat().st_size > 0,
@@ -297,6 +393,7 @@ def audit_submission(
             )
         ),
         "supplement_content_clean": bool(archive_content_checks.get("valid", False)),
+        "revision_evidence_archive": bool(revision_evidence_checks.get("valid", False)),
     }
     machine_checks.update({f"source_{name}": value for name, value in source_checks.items()})
     machine_checks.update(
@@ -333,6 +430,7 @@ def audit_submission(
         },
         "archive_members": members,
         "archive_content_checks": archive_content_checks,
+        "revision_evidence_checks": revision_evidence_checks,
     }
     report.update(build_decision(report))
     output.parent.mkdir(parents=True, exist_ok=True)

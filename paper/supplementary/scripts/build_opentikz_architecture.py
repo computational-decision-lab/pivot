@@ -148,7 +148,7 @@ def build_architecture(
         }
     metadata = {
         "figure_id": "fig3_pivot_architecture",
-        "scientific_question": "How does PIVOT-VOI allocate paired interventional evaluations to preserve update decisions?",
+        "scientific_question": "How does PIVOT-KG allocate paired interventional evaluations to preserve update decisions?",
         "unit_of_inference": "semantic architecture node and directed stage",
         "appendix": False,
         "experiment_sources": [str(source.relative_to(project_root))],
@@ -157,7 +157,7 @@ def build_architecture(
             for path in (source, output_pdf, output_svg, output_png)
         },
         "analysis_script": "scripts/build_opentikz_architecture.py",
-        "style_version": "pivot-v10-publication-style-1",
+        "style_version": "pivot-v10-scientific-figure-suite-1",
         "generated_at": _generated_at(),
         "config_hashes": config_hashes,
         "git_commit": _git_commit(project_root),

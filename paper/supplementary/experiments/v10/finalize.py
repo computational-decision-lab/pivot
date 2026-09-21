@@ -292,7 +292,7 @@ def _write_final_report(
 ) -> Path:
     return write_markdown(
         root,
-        "V10_FINAL_REPORT.md",
+        "docs/archive/v10/V10_FINAL_REPORT.md",
         _final_markdown(
             status=status,
             source_validation=source_validation,
