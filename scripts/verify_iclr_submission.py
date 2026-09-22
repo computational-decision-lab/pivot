@@ -60,8 +60,15 @@ def audit_source_text(source: str) -> dict[str, bool]:
             for token in (
                 "improvement fidelity",
                 "pivot",
-                "replacement operation",
                 "decision preservation",
+            )
+        )
+        and any(
+            token in lowered
+            for token in (
+                "replacement operation",
+                "policy replacement",
+                "proposed replacement",
             )
         ),
     }
@@ -318,7 +325,18 @@ def _appendix_page(pdf: Path, aux: Path | None = None) -> int:
     text = aux_file.read_text(encoding="utf-8", errors="replace")
     match = re.search(r"\\newlabel\{app:artifact\}\{\{[^{}]*\}\{(\d+)\}", text)
     if match is None:
-        raise ValueError("appendix label app:artifact is missing from LaTeX aux")
+        # The latest Overleaf manuscript labels appendix sections directly.
+        appendix_pages = []
+        for appendix_line in text.splitlines():
+            if "newlabel{app:" not in appendix_line:
+                continue
+            try:
+                appendix_pages.append(int(appendix_line.rsplit("}{", 1)[-1].rstrip("}")))
+            except ValueError:
+                continue
+        if appendix_pages:
+            return min(appendix_pages)
+        raise ValueError("no appendix section label is present in LaTeX aux")
     return int(match.group(1))
 
 

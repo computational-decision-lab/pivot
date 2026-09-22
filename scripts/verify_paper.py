@@ -29,7 +29,19 @@ def parse_appendix_start_page(aux_text: str) -> int:
 
     match = re.search(r"\\newlabel\{app:artifact\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
     if match is None:
-        raise ValueError("appendix label app:artifact is missing from LaTeX aux")
+        # The latest Overleaf manuscript uses an unnumbered Appendix heading.
+        # Fall back to the first directly labelled appendix section.
+        appendix_pages = []
+        for appendix_line in aux_text.splitlines():
+            if "newlabel{app:" not in appendix_line:
+                continue
+            try:
+                appendix_pages.append(int(appendix_line.rsplit("}{", 1)[-1].rstrip("}")))
+            except ValueError:
+                continue
+        if appendix_pages:
+            return min(appendix_pages)
+        raise ValueError("no appendix section label is present in LaTeX aux")
     return int(match.group(1))
 
 
@@ -135,7 +147,6 @@ def verify_paper(
     required_tokens = [
         "improvement reversal",
         "improvement fidelity",
-        "observer",
         "actor",
         "strategic",
         "response layers",
@@ -159,6 +170,8 @@ def verify_paper(
         for token in required_tokens
         if " ".join(token.casefold().split()) not in source_lower
     ]
+    if "observer" not in source_lower and "verifier" not in source_lower:
+        missing_tokens.append("observer|verifier")
 
     scientific_source = source_text.split("\\begin{document}", 1)[-1].split("\\appendix", 1)[0]
     forbidden_version_tokens = sorted(

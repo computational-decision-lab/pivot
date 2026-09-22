@@ -320,8 +320,11 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
     for source_root, target_root in (
         (project_root / "paper/style", output_root / "paper/style"),
         (project_root / "paper/tables", output_root / "paper/tables"),
-        (project_root / "paper/figures/revision", output_root / "paper/figures/revision"),
-        (project_root / "paper/figures/release", output_root / "paper/figures/release"),
+        # Copy the complete manuscript figure tree.  The current Overleaf
+        # manuscript keeps figures at paper/figures/ (with revision/release
+        # subtrees retained for reproducibility), so copying only the legacy
+        # subtrees silently omitted collaborator-owned root assets.
+        (project_root / "paper/figures", output_root / "paper/figures"),
     ):
         if not source_root.is_dir():
             continue
@@ -329,6 +332,13 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
             if not source.is_file() or any(part in SKIP_PARTS for part in source.parts):
                 continue
             relative = Path("paper") / source.relative_to(project_root / "paper")
+            # The current manuscript uses PDF/PNG assets at the root. Older
+            # v9/v10 figure subtrees contain raw Parquet tables that are not
+            # needed to rebuild the manuscript and would fail the public
+            # archive audit; retain curated release/v15 Parquet paths handled
+            # by the allowlist.
+            if source.suffix.casefold() == ".parquet" and relative.parts[2:3] in (("v9",), ("v10",)):
+                continue
             target = output_root / relative
             _copy_sanitized(source, target, relative)
             copied.append(target)
@@ -361,7 +371,11 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
             target = output_root / "evidence/latest" / name
             _copy_sanitized(source, target)
             copied.append(target)
-    for relative in ("evidence/highway", "reproduction/highway"):
+    for relative in (
+        "evidence/highway",
+        "reproduction/highway",
+        "reproduction/highway_redesign",
+    ):
         copied.extend(_copy_hash_bound_tree(project_root / relative, output_root / relative))
     _rewrite_snapshot_manifest(
         output_root / "snapshot" / "manifest.json",
@@ -386,11 +400,12 @@ response-world cohorts (Leduc, Kuhn, and Melting Pot) are copied byte-for-byte
 under `evidence/latest`; the public audit and decision-relevance bridge are
 included alongside them. Sealed task instructions and lock history remain
 local; only the redacted task-membership summary is included.
-The HighwayEnv evidence and frozen simulator source are under
-`evidence/highway` and `reproduction/highway`. The latter README documents the
-seed cohorts, exact dependency lock, budgets, smoke exposure, and simulator
-rerun command. From the extracted artifact root, install Python 3.12 and the
-locked dependencies, then recompute the Highway table and figure:
+The HighwayEnv evidence and frozen simulator sources are under
+`evidence/highway`, `reproduction/highway`, and
+`reproduction/highway_redesign`. The README files document the seed cohorts,
+exact dependency locks, budgets, smoke exposure, and simulator rerun commands.
+From the extracted artifact root, install Python 3.12 and the locked
+dependencies, then recompute the Highway table and figure:
 
 ```bash
 python3.12 -m venv .venv

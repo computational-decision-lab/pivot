@@ -40,7 +40,15 @@ jobs:
           import hashlib, json, os, pathlib, subprocess
           root = pathlib.Path(os.environ['SYNC_DEST'])
           state = root / '.github-sync.json'
+          expected_baseline = '221c2602e4826a86b274e70eeeefc22c405a9dd9'
           def digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+          def eligible(path):
+              return (
+                  path.is_file()
+                  and '.git' not in path.relative_to(root).parts
+                  and path.suffix in {'.tex', '.bib', '.sty', '.bst', '.cls', '.pdf', '.png', '.jpg', '.jpeg', '.eps'}
+                  and not path.name.startswith('pivot_iclr2027_submission')
+              )
           if state.exists():
               old = json.loads(state.read_text())['files']
               for name, expected in old.items():
@@ -48,28 +56,57 @@ jobs:
                   if not p.is_file() or digest(p) != expected:
                       raise SystemExit(f'Overleaf edited {name}; reconcile before syncing.')
           else:
-              files = [p.relative_to(root).as_posix() for p in root.rglob('*') if p.is_file() and '.git' not in p.relative_to(root).parts]
-              if set(files) - {'main.tex'}:
-                  raise SystemExit('Existing Overleaf project is not blank; refusing initial overwrite.')
-              if subprocess.check_output(['git','-C',str(root),'rev-list','--count','HEAD'],text=True).strip() != '1':
-                  raise SystemExit('Existing Overleaf history needs manual reconciliation.')
-              old = {}
+              remote_head = subprocess.check_output(['git', '-C', str(root), 'rev-parse', 'HEAD'], text=True).strip()
+              if remote_head != expected_baseline:
+                  raise SystemExit(
+                      f'Overleaf sync state is missing and remote HEAD is {remote_head}; '
+                      f'expected reviewed collaborator baseline {expected_baseline}.'
+                  )
+              # The collaborator's current project intentionally has no
+              # state file. Treat the reviewed 221c260 tree as the immutable
+              # baseline and initialize state only after the payload is
+              # applied below.
+              old = {
+                  p.relative_to(root).as_posix(): digest(p)
+                  for p in root.rglob('*')
+                  if eligible(p)
+              }
           source = pathlib.Path('paper')
           assert (source / 'main.tex').is_file()
           payload = {}
-          for p in source.rglob('*'):
-              rel = p.relative_to(source)
-              if any(x in {'archive','build','supplementary','snapshot'} for x in rel.parts): continue
-              if p.is_file() and p.suffix in {'.tex','.bib','.sty','.bst','.cls','.pdf','.png','.jpg','.jpeg','.eps'} and not p.name.startswith('pivot_iclr2027_submission'):
-                  data = p.read_bytes()
-                  if rel.as_posix() == 'main.tex':
-                      data = data.replace(b'../tables/', b'tables/')
-                  payload[rel.as_posix()] = data
+          def add(rel, destination):
+              path = source / rel
+              if not path.is_file():
+                  return
+              data = path.read_bytes()
+              if destination == 'main.tex':
+                  data = data.replace(b'../tables/', b'tables/')
+              payload[destination] = data
+          add(pathlib.Path('main.tex'), 'main.tex')
+          for name in ('references.bib', 'results_macros.tex', 'revision_results.tex', 'highway_results.tex'):
+              add(pathlib.Path(name), name)
+          for name in ('fancyhdr.sty', 'iclr2027_conference.sty', 'natbib.sty', 'iclr2027_conference.bst'):
+              candidate = pathlib.Path('style') / name
+              if (source / candidate).is_file():
+                  add(candidate, name)
+              else:
+                  add(pathlib.Path(name), name)
+          for name in ('controlled_results.tex', 'highway_results.tex', 'public_results.tex', 'revision_main_results.tex'):
+              add(pathlib.Path('tables') / name, f'tables/{name}')
+          figures = source / 'figures'
+          if figures.is_dir():
+              for path in sorted(figures.iterdir()):
+                  if path.is_file() and path.suffix in {'.pdf', '.png', '.jpg', '.jpeg', '.eps'}:
+                      add(path.relative_to(source), f'figures/{path.name}')
           for name in payload:
               p = root / name
-              if state.exists() and name not in old and p.exists():
+              if name not in old and p.exists():
                   raise SystemExit(f'Unmanaged Overleaf file collision: {name}')
-          for name in old.keys() - payload.keys(): (root / name).unlink()
+          if state.exists():
+              for name in old.keys() - payload.keys():
+                  p = root / name
+                  if p.exists():
+                      p.unlink()
           for name, data in payload.items():
               p = root / name
               p.parent.mkdir(parents=True, exist_ok=True)

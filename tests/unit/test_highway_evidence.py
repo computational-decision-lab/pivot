@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.build_highway_evidence import audit_cohort, paired_contrast
+from scripts.build_highway_evidence import audit_cohort, audit_redesign, paired_contrast
 
 
 def _rows() -> list[dict]:
@@ -61,3 +61,13 @@ def test_rehashed_promotion_still_has_to_match_candidate_truth(tmp_path: Path) -
     manifest_path.write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match="candidate truth"):
         audit_cohort(root)
+
+
+def test_redesign_evidence_recomputes_the_primary_contrast() -> None:
+    audit = audit_redesign(Path("evidence/highway/redesign"))
+    primary = next(row for row in audit["contrasts"] if row["budget"] == 4)
+    assert primary["mean"] == pytest.approx(0.038038521190802026)
+    assert primary["ci95"] == pytest.approx([0.030023240629899212, 0.04744786302898247])
+    assert audit["promotion_rows"] == 600
+    assert audit["query_rows"] == 720
+    assert audit["truth_rows"] == 1080

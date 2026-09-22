@@ -173,8 +173,261 @@ def audit_cohort(root: Path) -> dict[str, Any]:
     }
 
 
+def audit_redesign(root: Path) -> dict[str, Any]:
+    """Audit the eight-candidate external redesign without reusing old schema."""
+
+    manifest = json.loads((root / "manifest.json").read_text())
+    for name, record in manifest["files"].items():
+        path = root / name
+        if Path(name).is_absolute() or ".." in Path(name).parts:
+            raise ValueError("invalid redesign manifest path")
+        data = path.read_bytes()
+        if len(data) != record["bytes"] or hashlib.sha256(data).hexdigest() != record["sha256"]:
+            raise ValueError(f"Highway redesign checksum mismatch: {root.name}/{name}")
+
+    def load(name: str) -> Any:
+        if name not in manifest["files"]:
+            raise ValueError(f"unbound redesign evidence file: {name}")
+        return json.loads((root / name).read_text())
+
+    identity = load("identity.json")
+    config = identity["config"]
+    calibration = [int(seed) for seed in config["calibration_seeds"]]
+    seeds = [int(seed) for seed in config["test_seeds"]]
+    if (
+        len(calibration) != 40
+        or len(set(calibration)) != 40
+        or len(seeds) != 120
+        or len(set(seeds)) != 120
+        or set(calibration) & set(seeds)
+    ):
+        raise ValueError("redesign requires 40 calibration and 120 disjoint test seeds")
+    if config["candidate_count"] != 8 or config["budgets"] != [2, 4] or config["primary_budget"] != 4:
+        raise ValueError("redesign candidate or budget contract failed")
+    if config["subset_counts"] != {"2": 28, "4": 70}:
+        raise ValueError("redesign subset contract failed")
+
+    model = load("calibration-model.json")
+    candidates = tuple(model["candidate_ids"])
+    if len(candidates) != 8 or len(set(candidates)) != 8:
+        raise ValueError("redesign calibration model does not define eight unique candidates")
+    decision = load("decision-identity.json")
+    if (
+        decision["base_config_hash"] != _digest(config)
+        or decision["calibration_model"] != model
+        or decision["decision_config_hash"] != _digest({"config": config, "calibration_model": model})
+        or identity["source"]["source_hash"] != _digest(identity["source"]["files"])
+    ):
+        raise ValueError("redesign source or decision identity does not match its seal")
+
+    summary = load("summary.json")
+    if summary["failures"] or not summary["convergence_ok"]:
+        raise ValueError("failed redesign cannot supply paper evidence")
+    if summary["status"] != "DEV_EXTERNAL_REDESIGN":
+        raise ValueError("redesign evidence has an unexpected status")
+
+    promotion = load("promotion-results.json")["rows"]
+    methods = ("Uniform HF", "Calibrated PIVOT-KG", "All-HF Oracle")
+    expected_cells = {
+        (seed, method, budget)
+        for seed in seeds
+        for method, budgets in (
+            ("Uniform HF", (2, 4)),
+            ("Calibrated PIVOT-KG", (2, 4)),
+            ("All-HF Oracle", (8,)),
+        )
+        for budget in budgets
+    }
+    actual_cells = [(int(row["seed"]), row["method"], int(row["budget"])) for row in promotion]
+    if len(actual_cells) != len(expected_cells) or set(actual_cells) != expected_cells:
+        raise ValueError("redesign promotion cells are incomplete or duplicated")
+    if any(
+        row["outcome_chasing"]
+        or row.get("analysis_truth_reused", False)
+        or int(row["candidate_count"]) != len(candidates)
+        for row in promotion
+    ):
+        raise ValueError("redesign promotion rows violate the fixed protocol")
+
+    truth = load("truth-audit.json")["rows"]
+    truth_map = {(int(row["seed"]), row["candidate_id"]): row for row in truth}
+    truth_candidates = (*candidates, "incumbent")
+    expected_truth = {(seed, candidate) for seed in seeds for candidate in truth_candidates}
+    if len(truth_map) != len(truth) or set(truth_map) != expected_truth:
+        raise ValueError("redesign truth audit is incomplete or duplicated")
+    if any(
+        not row["audit_only"]
+        or row["logical_hf_query"]
+        or row["method"] != "Truth Audit"
+        or row["outcome_chasing"]
+        for row in truth
+    ):
+        raise ValueError("redesign truth audit contains logical query outcomes")
+
+    promotion_by_cell = {
+        (int(row["seed"]), row["method"], int(row["budget"])): row for row in promotion
+    }
+    for row in promotion:
+        if row["method"] not in methods:
+            raise ValueError("unexpected redesign promotion method")
+        if row["method"] == "Calibrated PIVOT-KG":
+            values = {
+                candidate: float(truth_map[(int(row["seed"]), candidate)]["paired_delta"])
+                for candidate in truth_candidates
+            }
+            if not np.isclose(row["actor_best_delta"], max(values.values()), atol=1e-12, rtol=0):
+                raise ValueError("redesign PIVOT actor best differs from truth audit")
+            if not np.isclose(
+                row["selected_actor_delta"], values[row["selected_candidate"]], atol=1e-12, rtol=0
+            ):
+                raise ValueError("redesign PIVOT selected value differs from truth audit")
+            if int(row["hf_queries"]) != int(row["budget"]):
+                raise ValueError("redesign PIVOT budget mismatch")
+        elif row["method"] == "All-HF Oracle":
+            values = [
+                float(truth_map[(int(row["seed"]), candidate)]["paired_delta"])
+                for candidate in truth_candidates
+            ]
+            if not np.isclose(row["actor_best_delta"], max(values), atol=1e-12, rtol=0):
+                raise ValueError("redesign oracle best differs from truth audit")
+
+    rows = load("rows.json")["rows"]
+    paired = {(int(row["seed"]), int(row["budget"])): row for row in rows}
+    expected_pairs = {(seed, budget) for seed in seeds for budget in (2, 4)}
+    if len(paired) != len(rows) or set(paired) != expected_pairs:
+        raise ValueError("redesign paired rows are incomplete or duplicated")
+    for key, row in paired.items():
+        uniform = promotion_by_cell[(key[0], "Uniform HF", key[1])]
+        pivot = promotion_by_cell[(key[0], "Calibrated PIVOT-KG", key[1])]
+        if not np.isclose(row["uniform_expected_ISR"], uniform["ISR"], atol=1e-12, rtol=0):
+            raise ValueError("redesign Uniform row differs from promotion record")
+        if not np.isclose(row["pivot_ISR"], pivot["pivot_ISR"], atol=1e-12, rtol=0):
+            raise ValueError("redesign PIVOT row differs from promotion record")
+
+    queries = load("query-ledger.json")["rows"]
+    query_groups: dict[tuple[int, int], list[dict[str, Any]]] = {}
+    for row in queries:
+        if (
+            row["method"] != "Calibrated PIVOT-KG"
+            or not row["physical_pair_evaluation"]
+            or row["analysis_truth_reused"]
+            or not row["logical_hf_query"]
+            or row["outcome_chasing"]
+        ):
+            raise ValueError("redesign query ledger contains a nonphysical or reused query")
+        key = (int(row["seed"]), int(row["budget"]))
+        query_groups.setdefault(key, []).append(row)
+        audited = truth_map[(key[0], row["candidate_id"])]
+        if not np.isclose(row["paired_delta"], audited["paired_delta"], atol=1e-12, rtol=0):
+            raise ValueError("redesign query value differs from post-decision audit")
+    if set(query_groups) != expected_pairs:
+        raise ValueError("redesign query groups differ from registered cells")
+    for key, group in query_groups.items():
+        budget = key[1]
+        if len(group) != budget or sorted(row["query_index"] for row in group) != list(range(budget)):
+            raise ValueError("redesign logical query budget mismatch")
+        if len({row["candidate_id"] for row in group}) != budget:
+            raise ValueError("redesign query selected a candidate twice")
+
+    subset_rows = load("subset-ledger.json")["rows"]
+    subset_groups: dict[tuple[int, int], list[dict[str, Any]]] = {}
+    for row in subset_rows:
+        key = (int(row["seed"]), len(row["queried_candidates"]))
+        subset_groups.setdefault(key, []).append(row)
+    for key, group in subset_groups.items():
+        expected_count = {2: 28, 4: 70}.get(key[1])
+        if expected_count is None or len(group) != expected_count:
+            raise ValueError("redesign Uniform subset count mismatch")
+        if {int(row["subset_index"]) for row in group} != set(range(expected_count)):
+            raise ValueError("redesign Uniform subset indices are incomplete")
+        expected_isr = paired[key]["uniform_expected_ISR"]
+        if not np.isclose(
+            np.mean([row["ISR"] for row in group]), expected_isr, atol=1e-12, rtol=0
+        ):
+            raise ValueError("redesign subset ledger differs from Uniform expectation")
+    if set(subset_groups) != expected_pairs:
+        raise ValueError("redesign subset groups are incomplete")
+
+    costs = load("cost-summary.json")
+    phase_counts = {
+        "calibration_proxy": 360,
+        "calibration_actor": 360,
+        "proxy": 1080,
+        "hf_query": 960,
+        "truth_audit": 1080,
+    }
+    if (
+        not costs["cost_complete"]
+        or costs["failed_evaluations"]
+        or costs["unresolved_evaluations"]
+        or costs["unmeasured_evaluations"]
+        or costs["completed_evaluations"] != sum(phase_counts.values())
+        or costs["phase_counts"] != phase_counts
+    ):
+        raise ValueError("redesign physical evaluation accounting is incomplete")
+    notes = load("execution-notes.json")
+    if (
+        not notes["truth_audit_after_all_decisions"]
+        or notes["analysis_truth_reused"]
+        or not notes["all_logical_queries_physical"]
+    ):
+        raise ValueError("redesign execution ordering or query provenance is not sealed")
+
+    contrasts: list[dict[str, Any]] = []
+    paired_rows: list[dict[str, Any]] = []
+    for budget in (2, 4):
+        values = np.asarray(
+            [paired[(seed, budget)]["uniform_expected_ISR"] - paired[(seed, budget)]["pivot_ISR"] for seed in seeds],
+            dtype=float,
+        )
+        rng = np.random.default_rng(20260927 + budget)
+        bootstrap = rng.choice(values, size=(4000, len(values)), replace=True).mean(axis=1)
+        lo, hi = np.percentile(bootstrap, [2.5, 97.5])
+        contrast = {
+            "budget": budget,
+            "n_seed_pairs": len(seeds),
+            "mean": float(values.mean()),
+            "ci95": [float(lo), float(hi)],
+            "uniform_ISR": float(np.mean([paired[(seed, budget)]["uniform_expected_ISR"] for seed in seeds])),
+            "pivot_ISR": float(np.mean([paired[(seed, budget)]["pivot_ISR"] for seed in seeds])),
+            "bootstrap_draws": 4000,
+            "bootstrap_seed": 20260927 + budget,
+            "conclusion": "supported" if lo > 0 else "not_supported" if hi < 0 else "unresolved",
+        }
+        recorded = next(row for row in summary["budget_contrasts"] if row["budget"] == budget)
+        for name in ("mean", "ci95", "n_seed_pairs"):
+            if not np.allclose(contrast[name], recorded[name], atol=1e-12, rtol=0):
+                raise ValueError(f"redesign summary differs from paired recomputation: {budget}/{name}")
+        contrasts.append(contrast)
+        paired_rows.extend(
+            {
+                "seed": seed,
+                "budget": budget,
+                "uniform_ISR": paired[(seed, budget)]["uniform_expected_ISR"],
+                "pivot_ISR": paired[(seed, budget)]["pivot_ISR"],
+                "uniform_minus_pivot": paired[(seed, budget)]["uniform_expected_ISR"] - paired[(seed, budget)]["pivot_ISR"],
+            }
+            for seed in seeds
+        )
+    return {
+        "valid": True,
+        "protocol_id": config["protocol_id"],
+        "config": config,
+        "source": identity["source"],
+        "dependencies": identity["dependencies"],
+        "manifest_sha256": hashlib.sha256((root / "manifest.json").read_bytes()).hexdigest(),
+        "contrasts": contrasts,
+        "paired_rows": paired_rows,
+        "promotion_rows": len(promotion),
+        "query_rows": len(queries),
+        "truth_rows": len(truth),
+        "physical_evaluations": costs["completed_evaluations"],
+    }
+
+
 def build(root: Path) -> dict[str, Any]:
     audits = {name: audit_cohort(root / "evidence/highway" / name) for name in ("original", "replication")}
+    redesign = audit_redesign(root / "evidence/highway" / "redesign")
     original, replication = audits.values()
     from reproduction.highway.run import verify_source
     verify_source(root / "reproduction/highway")
@@ -184,6 +437,11 @@ def build(root: Path) -> dict[str, Any]:
             data = (root / "reproduction/highway/source" / exported).read_bytes()
             if hashlib.sha256(data).hexdigest() != expected_hash:
                 raise ValueError(f"frozen source differs from the executed {cohort} code")
+    redesign_source_root = root / "reproduction/highway_redesign/source"
+    for name, expected_hash in redesign["source"]["files"].items():
+        data = (redesign_source_root / name).read_bytes()
+        if hashlib.sha256(data).hexdigest() != expected_hash:
+            raise ValueError(f"frozen source differs from the executed redesign code: {name}")
     original_seeds = set(original["config"]["test_seeds"] + original["config"]["calibration_seeds"])
     replication_seeds = set(replication["config"]["test_seeds"] + replication["config"]["calibration_seeds"])
     if original_seeds & replication_seeds or replication["config"]["budgets"] != [2, 4]:
@@ -193,18 +451,30 @@ def build(root: Path) -> dict[str, Any]:
     table = [r"\begin{tabular}{@{}llrrrrl@{}}", r"\toprule",
              r"Cohort & HF budget & $n$ & Uniform ISR & PIVOT ISR & Contrast & 95\% CI \\", r"\midrule"]
     pairs = []
-    for name, audit in audits.items():
-        prefix = "Highway" if name == "original" else "HighwayReplication"
-        for key, value in {"CalibrationSeeds": 20, "Seeds": 60, "CandidateCount": 5,
-                           "QueryRows": audit["query_rows"], "TruthRows": audit["truth_rows"]}.items():
+    all_audits = {**audits, "redesign": redesign}
+    for name, audit in all_audits.items():
+        prefix = {"original": "Highway", "replication": "HighwayReplication", "redesign": "HighwayRedesign"}[name]
+        seed_count = 60 if name != "redesign" else 120
+        calibration_count = 20 if name != "redesign" else 40
+        candidate_count = 5 if name != "redesign" else 8
+        for key, value in {
+            "CalibrationSeeds": calibration_count,
+            "Seeds": seed_count,
+            "CandidateCount": candidate_count,
+            "QueryRows": audit["query_rows"],
+            "TruthRows": audit["truth_rows"],
+        }.items():
             macros.append(f"\\newcommand{{\\{prefix}{key}}}{{{value}}}")
         for c in audit["contrasts"]:
             budget, mean, (lo, hi) = c["budget"], c["mean"], c["ci95"]
             macros += [f"\\newcommand{{\\{prefix}Budget{word[budget]}Contrast}}{{${mean:.4f}$}}",
                        f"\\newcommand{{\\{prefix}Budget{word[budget]}CI}}{{$[{lo:.4f},{hi:.4f}]$}}"]
-            label = "Original" if name == "original" else "Replication"
-            budget_label = "2 (primary)" if budget == 2 else str(budget)
-            table.append(f"{label} & {budget_label} & 60 & {c['uniform_ISR']:.4f} & {c['pivot_ISR']:.4f} & ${mean:.4f}$ & $[{lo:.4f},{hi:.4f}]$ " + r"\\")
+            label = {"original": "Original", "replication": "Replication", "redesign": "Redesign (8)"}[name]
+            budget_label = ("4 (primary)" if name == "redesign" and budget == 4
+                            else "2 (primary)" if name != "redesign" and budget == 2
+                            else "2 (secondary)" if name == "redesign" and budget == 2
+                            else str(budget))
+            table.append(f"{label} & {budget_label} & {seed_count} & {c['uniform_ISR']:.4f} & {c['pivot_ISR']:.4f} & ${mean:.4f}$ & $[{lo:.4f},{hi:.4f}]$ " + r"\\")
         pairs.extend({"cohort": name, **r} for r in audit.pop("paired_rows"))
     table.extend([r"\bottomrule", r"\end{tabular}"])
     (root / "paper/highway_results.tex").write_text("% Generated from hash-checked paired seed evidence.\n" + "\n".join(macros) + "\n")
@@ -213,11 +483,13 @@ def build(root: Path) -> dict[str, Any]:
         writer = csv.DictWriter(handle, fieldnames=list(pairs[0]))
         writer.writeheader()
         writer.writerows(pairs)
-    _figure(root, audits)
-    report = {"valid": True, "cohorts": audits, "no_seed_exclusions": True,
-              "primary_budget": 2, "secondary_budget": 4, "bootstrap_draws": BOOTSTRAP_DRAWS,
+    _figure(root, all_audits)
+    report = {"valid": True, "cohorts": all_audits, "no_seed_exclusions": True,
+              "primary_budget_by_cohort": {"original": 2, "replication": 2, "redesign": 4},
+              "secondary_budget_by_cohort": {"original": 4, "replication": 4, "redesign": 2},
+              "bootstrap_draws": BOOTSTRAP_DRAWS, "redesign_bootstrap_draws": 4000,
               "bootstrap_seed_base": BOOTSTRAP_SEED_BASE,
-              "scope": "external DEV replication; technical smoke exposed two retained test roots",
+              "scope": "external DEV replication and registered redesign; technical smoke exposed two retained redesign test roots",
               "interval_scope": "test-seed bootstrap conditional on fitted calibration model; no simultaneous guarantee"}
     (root / "paper/highway_reproduction_audit.json").write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     return report
@@ -229,22 +501,33 @@ def _figure(root: Path, audits: dict[str, Any]) -> None:
     import matplotlib.pyplot as plt
     plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "pdf.fonttype": 42})
     fig, ax = plt.subplots(figsize=(6.2, 2.4), layout="constrained")
-    for index, (name, audit) in enumerate(audits.items()):
+    styles = {
+        "original": ("Original", "#0072B2", "o", -0.08),
+        "replication": ("Replication", "#D55E00", "s", 0.0),
+        "redesign": ("Redesign (8)", "#009E73", "^", 0.08),
+    }
+    for name, audit in audits.items():
         values = audit["contrasts"]
         y = np.array([c["mean"] for c in values])
         ci = np.array([c["ci95"] for c in values])
-        x = np.array([c["budget"] for c in values]) + (-0.04 if index == 0 else 0.04)
-        ax.errorbar(x, y, yerr=[y-ci[:, 0], ci[:, 1]-y], label=name.title(),
-                    color=("#0072B2", "#D55E00")[index], fmt=("o", "s")[index],
+        label, color, marker, offset = styles[name]
+        x = np.array([c["budget"] for c in values]) + offset
+        ax.errorbar(x, y, yerr=[y-ci[:, 0], ci[:, 1]-y], label=label,
+                    color=color, fmt=marker,
                     capsize=3, markersize=4, linewidth=1.2)
     ax.axhline(0, color="#666666", linewidth=0.8, linestyle="--")
     ax.set(xticks=[1, 2, 4], xticklabels=["1", "2 (primary)", "4 (secondary)"],
            xlabel="Paired HF queries per decision", ylabel="Uniform ISR − PIVOT-KG ISR")
     ax.spines[["top", "right"]].set_visible(False)
     ax.legend(frameon=False, fontsize=8)
-    target = root / "paper/figures/revision/fig4_highway_budget"
-    fig.savefig(target.with_suffix(".pdf"), metadata={"CreationDate": None, "ModDate": None})
-    fig.savefig(target.with_suffix(".png"), dpi=220)
+    targets = (
+        root / "paper/figures/revision/fig4_highway_budget",
+        root / "paper/figures/fig4_highway_budget",
+    )
+    for target in targets:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(target.with_suffix(".pdf"), metadata={"CreationDate": None, "ModDate": None})
+        fig.savefig(target.with_suffix(".png"), dpi=220)
     plt.close(fig)
 
 

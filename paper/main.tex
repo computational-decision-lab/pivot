@@ -6,25 +6,16 @@
 \usepackage{graphicx}
 \usepackage{microtype}
 \usepackage{xcolor}
-\usepackage{enumitem}
 \usepackage{url}
-\usepackage{csquotes}
-\usepackage[hidelinks]{hyperref}
-\usepackage{cleveref}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{flafter}
 
-\graphicspath{{figures/revision/}{figures/release/}{figures/}{../snapshot/figures/}}
-
-\hypersetup{
-  pdftitle={When Better Gets Worse: Improvement Fidelity for Self-Improving Agents in Adaptive Worlds},
-  pdfauthor={}
-}
+\graphicspath{{figures/}}
 
 \setlength{\textfloatsep}{7pt plus 1pt minus 2pt}
 \setlength{\floatsep}{6pt plus 1pt minus 2pt}
 \setlength{\intextsep}{6pt plus 1pt minus 2pt}
-\setlist{nosep,leftmargin=*}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\M}{\mathcal{M}}
@@ -47,30 +38,7 @@
 \maketitle
 
 \begin{abstract}
-Self-improving agents choose replacement operations with cheap verifiers, yet
-deployment can change transitions, rewards, and other agents' behavior. We
-define \emph{Improvement Fidelity} for an update
-$\tau=(\pi_t,\pi_{t+1})$: proxy improvement $\Delta_V$ should preserve the
-sign and ordering of deployment improvement $\Delta_*$. PIVOT (Paired
-Interventional Validation of Optimization Transitions) estimates the
-differential correction $\Delta_*-\Delta_V$ with paired high-fidelity (HF)
-interventions and allocates a fixed query budget by a one-step
-knowledge-gradient rule per unit cost.
-
-Across controlled and sealed response worlds, we separate three phenomena
-that are often conflated: deployment response, update-level fidelity error,
-and decision-changing error. Large response can sharply increase
-proxy--deployment discrepancy without creating an allocation advantage. In
-90 sealed Leduc, Kuhn, and Melting Pot roots, proxy and deployment top-1
-updates differ in 51 roots; nevertheless, the descriptive normalized
-PIVOT--Uniform gain is not larger on flipped roots. The primary allocation
-contrast is positive in Leduc (0.036, 95\% CI [0.014, 0.064]), near-null in
-Kuhn, and unresolved in Melting Pot, with mixed secondary conditions. A
-sealed-query audit finds that PIVOT's query set intersects the proxy/deployment
-top-1 pair in most roots, but the queried noise relative to the proxy top-2
-margin can remain large. Thus response magnitude is not decision relevance,
-and decision relevance is not validation value: PIVOT-KG can help when HF
-evidence resolves uncertainty that matters for the update decision.
+Self-improving agents often select policy updates using cheap verifiers, but deploying an update can change the environment and the behavior of other agents. We formalize this mismatch through \emph{Improvement Fidelity}, which asks whether proxy improvement preserves the sign and ordering of deployment improvement over the updates an improvement process actually proposes. Our analysis shows that strong global policy evaluation need not imply reliable update evaluation: operator shift and deployment response can create local fidelity errors, while only errors large relative to candidate margins can change the selected update. We introduce PIVOT-KG, a paired differential validator that estimates the correction between proxy and deployment improvement and allocates a fixed high-fidelity evaluation budget by expected reduction in update-selection regret per unit cost. Across controlled response worlds and 90 held-out decision roots, global policy ranking can remain stable as update-level fidelity deteriorates, and proxy and deployment top-1 updates disagree in 51 of 90 roots. Yet response magnitude and ranking flips alone do not predict validation value: PIVOT-KG helps when high-fidelity evidence can resolve uncertainty that matters for the update decision. These results identify Improvement Fidelity and decision-relevant validation as central to reliable self-improvement in adaptive worlds.
 \end{abstract}
 
 
@@ -85,13 +53,12 @@ can therefore rank policies correctly while ranking improvements incorrectly.
 High-fidelity deployment tests can expose the error, but they are often too
 costly to run on every candidate.
 
-We study the transition $\tau_t=(\pi_t,\pi_{t+1})$. Let $V$ be a cheap
-observer or replay world and let $*$ denote the policy-induced deployment
-world. Define
-\begin{equation}
+We study a proposed transition $\tau=(\pi,\pi')$. Let $V$ denote the cheap
+verifier world and let $*$ denote the policy-induced deployment world. Define
+\[
   \Delta_V=J_V(\pi')-J_V(\pi),\qquad
   \Delta_*=\mathcal J(\pi')-\mathcal J(\pi).
-\end{equation}
+\]
 An improvement reversal, $\Delta_V>0$ but $\Delta_*<0$, is one salient
 failure mode. More generally, deployment can change the sign or ordering of
 candidate improvements, and a fidelity error matters to selection when it
@@ -139,6 +106,8 @@ Our contributions are:
   validation reduces selection regret.
 \end{description}
 
+Together, these contributions provide a direct way to diagnose when self-improvement survives deployment and to spend scarce validation effort where it can affect the update decision.
+
 \section{Related Work}
 \paragraph{Performative and strategic response.}
 Performative prediction and reinforcement learning make deployment part of
@@ -174,17 +143,14 @@ rollouts to cancel common-mode variation.
 
 \paragraph{Policy-induced worlds and response levels.}
 Let $\M[\pi]$ denote the deployment world induced by policy $\pi$, including
-any environment response to that policy. The corresponding deployment value is
-\begin{equation}
-  \J(\pi)=J(\pi;\M[\pi]).
-\end{equation}
-We consider three response levels:
-\begin{align}
+any environment response to that policy, and write
+$\J(\pi)=J(\pi;\M[\pi])$. We consider three response levels:
+\begin{align*}
  \Delta_{\mathrm{direct}} &= J(\pip;\M[\pii])-J(\pii;\M[\pii]),\\
  \Delta_{\mathrm{actor}} &= J(\pip;\M[\pip])-J(\pii;\M[\pii]),\\
  \Delta_{\mathrm{strategic}} &=
  J_i(\pip,R_{-i}(\pip))-J_i(\pii,R_{-i}(\pii)).
-\end{align}
+\end{align*}
 The direct level holds the incumbent world fixed, the actor level allows the
 environment to respond to the candidate, and the strategic level additionally
 allows other agents to adapt. Here $R_{-i}$ denotes a general response map for
@@ -198,6 +164,7 @@ define operator-relative Improvement Fidelity as
   \operatorname{IF}(V,\mathcal A;L)=
   \E_{(\pi,\pi')\sim Q_{\mathcal A}}
   [L(\Delta_V,\Delta_*)].
+  \label{eq:if}
 \end{equation}
 The relevant population is therefore the updates the agent actually proposes,
 rather than the policy space in general. Improvement Fidelity is an
@@ -205,26 +172,20 @@ update-level quantity: accurate policy values or rankings do not by themselves
 guarantee accurate improvement estimates.
 
 \paragraph{Core metrics.}
-For transition rows, we measure the magnitude of fidelity error by
+For transition rows, we measure fidelity-error magnitude by
+$\mathrm{IDE}=n^{-1}\sum_k|\Delta_{V,k}-\Delta_{*,k}|$ and let
+$\mathrm{ISC}$ denote sign agreement after removing ties. A salient sign
+failure is the improvement reversal rate
+$\mathrm{IRR}=P(\Delta_*<0\mid\Delta_V>0)$. For a candidate set $C$, the
+decision consequence is measured by improvement-selection regret,
 \begin{equation}
-  \mathrm{IDE}=
-  \frac{1}{n}\sum_k |\Delta_{V,k}-\Delta_{*,k}|,
-\end{equation}
-and let $\mathrm{ISC}$ denote sign agreement after removing ties. A salient
-sign failure is the improvement reversal rate
-\begin{equation}
-  \mathrm{IRR}=P(\Delta_*<0\mid\Delta_V>0).
-\end{equation}
-For a candidate set $C_t$, the decision consequence is measured by
-improvement-selection regret,
-\begin{equation}
-  \mathrm{ISR}_t=
-  \max_{j\in C_t}\Delta_{*,t,j}-\Delta_{*,t,\hat j},
+  \mathrm{ISR}=
+  \max_{j\in C}\Delta_{*,j}-\Delta_{*,\hat j},
+  \label{eq:isr}
 \end{equation}
 where $\hat j$ is the selected candidate. Thus IDE measures error magnitude,
 ISC and IRR measure sign preservation, and ISR measures the consequence for
 update selection.
-
 \section{Properties of Improvement Fidelity}
 
 The following results characterize when policy-level evaluation controls
@@ -248,14 +209,14 @@ below $\varepsilon$, but $\mathrm{IRR}=1$ and $\mathrm{ISC}=0$ on the
 operator's transition law.
 \end{proposition}
 \begin{proof}
-Take $n$ policies with $\J(i)=i/(n-1)$ and swap one adjacent pair in $V$.
+Take policies $\pi_0,\ldots,\pi_{n-1}$ with $\J(\pi_k)=k/(n-1)$ and swap one adjacent pair in $V$.
 Then $\mathrm{MAE}=2/[n(n-1)]$ and
 $1-\mathrm{Spearman}=12/[n(n^2-1)]$, both tending to zero. Let the operator
 sample only the swapped directed transition and propose the lower-valued true
 policy. Its proxy sign is positive and its deployment sign is negative.
 \end{proof}
 
-\begin{proposition}[Operator Shift Bound]
+\begin{proposition}[Operator Shift Bound]\label{prop:operator-shift}
 Let $P$ be a calibration law, let $Q_{\mathcal A}\ll P$ have density ratio
 $w=q_{\mathcal A}/p$, and let $\ell(\tau)=L(\Delta_V,\Delta_*)$ have finite
 variance under $P$. Then
@@ -265,6 +226,7 @@ variance under $P$. Then
  \E_P[\ell]
  +\sqrt{\operatorname{Var}_P(\ell)\,
  \chi^2(Q_{\mathcal A}\Vert P)}.
+ \label{eq:operator-shift}
 \end{equation}
 \end{proposition}
 \begin{proof}
@@ -278,19 +240,19 @@ give the result.
 
 Deployment response provides a second source of update-level error. From the
 definitions in the previous section,
-\begin{equation}
+\[
  \Delta_{\mathrm{actor}}-\Delta_{\mathrm{direct}}
  =
  J(\pip;\M[\pip])-J(\pip;\M[\pii]).
-\end{equation}
+\]
 Thus the actor--direct gap is exactly the change in the candidate's value
 caused by the world it induces. The strategic level extends this response to
 adaptive opponents through $R_{-i}$.
 
 \begin{lemma}[Decision preservation]\label{lem:decision-preservation}
-For candidates $i,j$ with true margin
-$m=\Delta_{*,i}-\Delta_{*,j}>0$, if each estimated improvement has absolute
-error below $m/2$, then the estimated ordering of $i$ and $j$ is unchanged.
+For candidates $j,k$ with true margin
+$m=\Delta_{*,j}-\Delta_{*,k}>0$, if each estimated improvement has absolute
+error below $m/2$, then the estimated ordering of $j$ and $k$ is unchanged.
 \end{lemma}
 \begin{proof}
 The perturbation of the estimated margin has absolute value below $m$, so the
@@ -299,13 +261,13 @@ estimated margin remains positive.
 
 \begin{lemma}[Paired variance]
 For a paired rollout difference $Y'-Y$,
-\begin{equation}
+\[
   \operatorname{Var}(Y'-Y)
   =
   \operatorname{Var}(Y')
   +\operatorname{Var}(Y)
   -2\operatorname{Cov}(Y',Y).
-\end{equation}
+\]
 When shared randomness induces positive covariance, paired evaluation has
 lower variance than independent evaluation with the same marginal variances.
 \end{lemma}
@@ -319,7 +281,6 @@ update. Paired high-fidelity rollouts reduce the variance of estimating these
 differences when common randomness induces positive covariance. This motivates
 PIVOT-KG: allocate a limited high-fidelity budget to update uncertainty that
 can affect selection.
-
 \section{PIVOT-KG}
 
 The preceding results suggest a simple validation principle: spend expensive
@@ -330,51 +291,52 @@ $\{\Delta_{V,j}\}_{j=1}^K$.
 
 Rather than model deployment improvement from scratch, PIVOT-KG models the
 differential correction
-\begin{equation}
+\[
   G_j=\Delta_{*,j}-\Delta_{V,j}.
-\end{equation}
-At the candidate level, we place a joint Gaussian prior over the correction
-vector,
-\begin{equation}
-  G\sim\mathcal N(\mu,K_{\mathrm{prior}}),\qquad
+\]
+Writing $G=(G_1,\ldots,G_K)$, $\Delta_V=(\Delta_{V,1},\ldots,\Delta_{V,K})$,
+and $\Delta_*=(\Delta_{*,1},\ldots,\Delta_{*,K})$, we place a joint Gaussian
+prior over the correction vector,
+\[
+  G\sim\mathcal N(\mu,\Sigma_G),\qquad
   \Delta_*\mid\Delta_V\sim
-  \mathcal N(\Delta_V+\mu,K_{\mathrm{prior}}).
-\end{equation}
-The prior mean, covariance, and observation variances are estimated once from
-a disjoint calibration set of paired proxy/high-fidelity transitions. Thus a
-new held-out decision root starts from the calibrated posterior
-$\Delta_V+\mu$, without using its high-fidelity outcomes.
+  \mathcal N(\Delta_V+\mu,\Sigma_G).
+\]
+The prior mean, covariance, and observation variances are estimated from a
+disjoint calibration set of paired proxy/high-fidelity transitions before
+held-out evaluation. Thus a new held-out decision root starts from the
+calibrated posterior $\Delta_V+\mu$ without using its high-fidelity outcomes.
 
 For a queried candidate $j$, let $Y_j$ denote its paired high-fidelity
 improvement observation,
-\begin{equation}
+\[
   Y_j=\Delta_{*,j}+\epsilon_j,
   \qquad
-  \epsilon_j\sim\mathcal N(0,s_j^2),
-\end{equation}
-where $s_j^2$ is estimated from the calibration data. The incumbent and
-candidate are evaluated under the same initial state, exogenous randomness,
-and opponent initialization. Each query updates the joint posterior by
-Gaussian conditioning; with a non-diagonal $K_{\mathrm{prior}}$, evidence can
-also update correlated unqueried candidates.
+  \epsilon_j\sim\mathcal N(0,s_j^2)
+\]
+where $s_j^2$ is estimated from calibration data. The incumbent and candidate
+are evaluated under the same initial state, exogenous randomness, and opponent
+initialization. Each query updates the joint posterior by Gaussian
+conditioning; with non-diagonal $\Sigma_G$, evidence can also update correlated
+unqueried candidates.
 
 We augment the candidate set with a no-update action,
 $C^+=\{0,1,\ldots,K\}$, where $\Delta_{*,0}=0$ denotes retaining the
 incumbent. Let $D$ denote the paired high-fidelity evidence collected at the
 current decision root. The current decision is
-\begin{equation}
+\[
   a(D)=\arg\max_{j\in C^+}
   \E[\Delta_{*,j}\mid D].
-\end{equation}
+\]
 Its posterior expected simple regret is
-\begin{equation}
+\[
   \mathcal R(D)=
   \E\left[
     \max_{j\in C^+}\Delta_{*,j}
     -\Delta_{*,a(D)}
     \,\middle|\,D
   \right].
-\end{equation}
+\]
 For a hypothetical high-fidelity observation $Y_j$, define
 \begin{equation}
   \mathrm{EVSI}_j
@@ -385,14 +347,15 @@ For a hypothetical high-fidelity observation $Y_j$, define
   \bigl[\mathcal R(D\cup\{Y_j\})\bigr],
   \qquad
   A_j=\frac{\mathrm{EVSI}_j}{c_j}.
+  \label{eq:acquisition}
 \end{equation}
-Thus $\mathrm{EVSI}_j$ measures how much querying candidate $j$ is expected to
-reduce update-selection regret, while dividing by $c_j$ favors the largest
-expected decision improvement per unit of high-fidelity evaluation cost.
-This one-step expected value of sample information gives the
-knowledge-gradient acquisition used by PIVOT-KG.
+Thus $\mathrm{EVSI}_j$ measures the expected reduction in update-selection
+regret from querying candidate $j$, while dividing by $c_j$ prioritizes the
+largest expected regret reduction per unit HF cost. This one-step expected
+value of sample information gives the knowledge-gradient acquisition used by
+PIVOT-KG.
 
-\begin{algorithm}[t]
+\begin{algorithm}[H]
 \caption{PIVOT-KG under a fixed high-fidelity budget}
 \label{alg:pivot-kg}
 \begin{algorithmic}[1]
@@ -400,22 +363,20 @@ knowledge-gradient acquisition used by PIVOT-KG.
 calibrated correction prior $p(G)$; query costs $\{c_j\}_{j=1}^K$;
 HF budget $B$
 \ENSURE Selected candidate or incumbent
-\STATE Evaluate each candidate with the cheap verifier to obtain
+\STATE Evaluate candidates with the cheap verifier to obtain
 $\{\Delta_{V,j}\}_{j=1}^K$
 \STATE Initialize $D\leftarrow\emptyset$, queried set
-$Q\leftarrow\emptyset$, and remaining budget $b\leftarrow B$
+$Q\leftarrow\emptyset$, remaining budget $b\leftarrow B$, and the calibrated
+posterior over $\Delta_*$
 \STATE Include the no-update action $j=0$ with $\Delta_{*,0}=0$
 \WHILE{there exists $j\notin Q$ with $c_j\leq b$}
-  \STATE Update $p(\Delta_*\mid\Delta_V,D)$ by Gaussian conditioning
   \FOR{each feasible unqueried candidate $j$}
-    \STATE Compute $\mathrm{EVSI}_j$ and
-    $A_j\leftarrow\mathrm{EVSI}_j/c_j$
+    \STATE Compute $\mathrm{EVSI}_j$ and $A_j\leftarrow\mathrm{EVSI}_j/c_j$
   \ENDFOR
   \STATE $j_q\leftarrow\arg\max_j A_j$
   \STATE Obtain paired HF observation $Y_{j_q}$ under matched randomness
-  \STATE $D\leftarrow D\cup\{Y_{j_q}\}$,
-         $Q\leftarrow Q\cup\{j_q\}$,
-         $b\leftarrow b-c_{j_q}$
+  \STATE $D\leftarrow D\cup\{Y_{j_q}\}$ and update the posterior by Gaussian conditioning
+  \STATE $Q\leftarrow Q\cup\{j_q\}$ and $b\leftarrow b-c_{j_q}$
 \ENDWHILE
 \STATE \RETURN
 $\displaystyle a(D)=\arg\max_{j\in C^+}\E[\Delta_{*,j}\mid D]$
@@ -426,33 +387,41 @@ The primary comparison uses this fixed-budget rule; posterior-based early
 stopping is a secondary variant. Unlike global label acquisition, PIVOT-KG
 values a high-fidelity query by its expected reduction in update-selection
 regret.
-
 \section{Experiments}
-\subsection{Experimental protocol}
-The experiments answer four questions rather than treating each benchmark as a
-separate win report. Controlled response worlds use paired common-random-number
-rollouts and 30 independent seeds. The seed, trajectory, opponent-seed cluster,
-or held-out root is the inferential unit; transition rows are retained for audit
-and are not treated as independent replicates. The supplied sealed archive
-contains 30 held-out roots in each of Leduc, Kuhn, and Melting Pot, with 1,800
-sealed decisions per cohort. We use Leduc and Kuhn poker through
-OpenSpiel~\cite{lanctot2019openspiel} and the Melting Pot multi-agent
-suite~\cite{leibo2021meltingpot}. Manuscript generation verifies hashes, seals,
-and scored-row preservation; it does not rerun an episode.
+The evaluation follows the progression from update-level fidelity error, to
+its consequences for update selection, to the value of targeted high-fidelity
+validation. We first test when global evaluation fails on proposed updates,
+then whether those errors alter the selected update, and finally whether
+PIVOT-KG can use limited high-fidelity evidence to reduce selection regret.
 
-\subsection{What breaks improvement fidelity?}
-The observer/direct, actor, and strategic layers isolate progressively stronger
-response mechanisms. The operator-shift study is a complementary failure
-source: its high-minus-low shift contrast in operator-relative IDE is
-\OperatorShiftEffect{} with bootstrap interval \OperatorShiftEffectCI{}
-across \OperatorShiftSeeds{} seeds and \OperatorShiftRows{} paired rows
-(Figure~\ref{fig:operator-shift}). Local update error rises while global
-policy rank remains comparatively stable. Together these results distinguish
-distributional operator shift from policy-induced deployment response; either
-can separate proxy and deployment improvement without implying that every
-operator or every update fails.
+\subsection{Experimental Setup}
+Controlled response worlds use paired common-random-number rollouts and 30
+independent seeds. The seed, trajectory, opponent-seed cluster, or held-out
+root is the inferential unit; transition rows are retained for audit and are
+not treated as independent replicates. The sealed study contains 30 held-out
+roots in each of Leduc, Kuhn, and Melting Pot, with 1,800 sealed decisions per
+cohort. We use Leduc and Kuhn poker through OpenSpiel~\cite{lanctot2019openspiel}
+and the Melting Pot multi-agent suite~\cite{leibo2021meltingpot}. Primary
+sealed comparisons allocate a fixed HF query budget and compare PIVOT-KG with
+Uniform; matched-cost analyses additionally include Proxy Only, Global-VOI,
+Paired LUCB, and an all-HF reference where applicable. HighwayEnv is evaluated
+separately as a physically reactive external setting. Reported bootstrap
+intervals resample the corresponding inferential unit. Additional statistical
+and reproducibility details appear in Appendix~\ref{app:stats-repro}.
 
-\begin{figure}[t]
+\subsection{Improvement Fidelity under Operator Shift and Deployment Response}
+Two mechanisms can break update-level fidelity. Operator shift changes the
+transition distribution induced by the improvement process, while deployment
+response changes the world in which the candidate is evaluated. In the
+operator-shift study, the high-minus-low shift contrast in operator-relative
+IDE is \OperatorShiftEffect{} with bootstrap interval
+\OperatorShiftEffectCI{} across \OperatorShiftSeeds{} seeds and
+\OperatorShiftRows{} paired rows (Figure~\ref{fig:operator-shift}). Local
+update error and reversal rates increase while global policy rank remains
+comparatively stable, showing that strong global evaluation can mask failure
+on the updates an operator actually proposes.
+
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{fig2_operator_shift.png}
   \caption{Operator-relative shift diagnostic. Local improvement error rises
@@ -461,332 +430,381 @@ operator or every update fails.
   \label{fig:operator-shift}
 \end{figure}
 
-\subsection{When does fidelity error change the decision?}
-\Cref{lem:decision-preservation} gives the bridge: if differential error is below half the true
-candidate margin, the ordering is preserved. For each sealed root we therefore
-compute the deployment top-1 margin, the proxy-to-deployment correction, and
-the largest pairwise correction-to-margin ratio. A ratio at least one marks a
-proxy/deployment top-1 flip; it is a decision-relevance diagnostic, not an
-allocation outcome.
+Deployment response provides a distinct source of error. The direct, actor,
+and strategic levels progressively expose mechanical environment response and
+adaptive opponents. In the strategic fixture, the strategic-minus-actor
+effect is \StrategicEffect{} \StrategicEffectCI{}, with a family-balanced
+strategic reversal rate of \StrategicSIRR{}. Extended world-response
+decompositions and opponent-family results appear in
+Appendix~\ref{app:fidelity-response}. Together, these experiments identify two
+distinct sources of update-level fidelity error: operator shift and
+policy-induced deployment response.
+
+\subsection{From Fidelity Error to Update Decisions}
+Lemma~\ref{lem:decision-preservation} connects update error to selection: an error
+changes an ordering only when it is large relative to the candidate margin.
+For each sealed root we therefore compute the deployment top-1 margin, the
+proxy-to-deployment correction, and the largest pairwise
+correction-to-margin ratio. A ratio at least one marks a proxy/deployment
+top-1 flip.
 
 Across the \RevisionDecisionRoots{} sealed roots, \RevisionDecisionFlips{}
-have a top-1 flip (\RevisionLeducFlips{} Leduc, \RevisionKuhnFlips{} Kuhn, and
-\RevisionMeltingFlips{} Melting Pot). To avoid comparing reward scales across
-worlds, Figure~\ref{fig:decision-relevance} reports each root's squared
-response gap after division by the square of its largest candidate range across
-proxy and long/short deployment deltas. The resulting within-root normalized
-gaps are \RevisionLeducNormalizedResponseGap{}
-\RevisionLeducNormalizedResponseGapCI{} for Leduc,
-\RevisionKuhnNormalizedResponseGap{} \RevisionKuhnNormalizedResponseGapCI{}
-for Kuhn, and \RevisionVFourNormalizedResponseGap{}
-\RevisionVFourNormalizedResponseGapCI{} for Melting Pot; native-unit gaps
-remain in the audit.
-Yet flip status alone does not predict validation value: normalized allocation
-gain is \RevisionFlippedNormalizedGain{} \RevisionFlippedNormalizedGainCI{}
-on flipped roots and \RevisionStableNormalizedGain{}
-\RevisionStableNormalizedGainCI{} on stable roots. Figure~\ref{fig:decision-relevance}
-therefore supports the sharper claim: response can create decision-relevant
-error, but decision relevance is not sufficient for an allocation advantage.
+have a top-1 flip (\RevisionLeducFlips{} Leduc, \RevisionKuhnFlips{} Kuhn,
+and \RevisionMeltingFlips{} Melting Pot). To compare across reward scales,
+Figure~\ref{fig:decision-relevance} reports each root's squared response gap
+normalized by the square of its largest candidate range across proxy and
+long/short deployment deltas. Top-1 flips alone do not predict validation
+value: normalized allocation gain is \RevisionFlippedNormalizedGain{}
+\RevisionFlippedNormalizedGainCI{} on flipped roots and
+\RevisionStableNormalizedGain{} \RevisionStableNormalizedGainCI{} on stable
+roots. Thus response magnitude and decision relevance are not the same as
+allocation value.
 
-We then ask whether the sealed HF queries could resolve the fragile decision.
-For each root, the ex-post decision-critical pair is the union of the proxy and
-deployment top-1 candidates, while the proxy top-2 margin measures how much
-uncertainty separates the leading proxy candidates. At the primary long
-budget, the PIVOT query set intersects this pair in
-\RevisionCriticalQueryRate{} \RevisionCriticalQueryRateCI{} of roots
-(\RevisionLeducCriticalQueryRate{} Leduc, \RevisionKuhnCriticalQueryRate{}
-Kuhn, and \RevisionMeltingCriticalQueryRate{} Melting Pot). The descriptive
-normalized gain is \RevisionCriticalQueryHitGain{}
-\RevisionCriticalQueryHitGainCI{} among 87 hit roots and
-\RevisionCriticalQueryMissGain{} \RevisionCriticalQueryMissGainCI{} among
-the three misses. The mean queried HF noise divided by the proxy top-2 margin
-is \RevisionCriticalNoiseMargin{} \RevisionCriticalNoiseMarginCI{}, and the
-final sealed estimate separation is \RevisionPostQuerySeparation{}
-\RevisionPostQuerySeparationCI{} after root scaling. These are observable
-resolvability diagnostics, not posterior selection probabilities or an EVSI
-estimate: sequential posterior states are not part of the sealed decision
-rows.
+The next question is whether available HF evidence can resolve the fragile
+decision. For each root, the ex-post decision-critical pair is the union of
+the proxy and deployment top-1 candidates, while the proxy top-2 margin
+measures the separation of the leading proxy candidates. At the primary long
+budget, the PIVOT query set intersects the decision-critical pair in
+\RevisionCriticalQueryRate{} \RevisionCriticalQueryRateCI{} of roots, but the
+mean queried HF noise is \RevisionCriticalNoiseMargin{}
+\RevisionCriticalNoiseMarginCI{} times the proxy top-2 margin. Thus targeting
+a decision-critical candidate does not by itself guarantee that the available
+HF evidence can resolve the ordering. Additional root-level diagnostics appear
+in Appendix~\ref{app:pivot-ext}.
 
-\begin{figure}[t]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.96\linewidth]{fig1_decision_relevance.pdf}
-  \caption{Response magnitude is not allocation value. a reports within-root
-  normalized response gaps; b reports proxy/deployment top-1 flips; c reports
-  normalized ISR reduction; d relates correction-to-margin ratio to normalized
-  gain; e relates queried HF noise to the proxy top-2 margin, with filled
-  circles for queries intersecting the ex-post decision-critical pair and open
-  diamonds for queries that miss it.}
+  \caption{Response magnitude is not allocation value. Panel a reports
+  within-root normalized response gaps; b reports proxy/deployment top-1
+  flips; c reports normalized ISR reduction; d relates correction-to-margin
+  ratio to normalized gain; e relates queried HF noise to the proxy top-2
+  margin. Filled circles denote queries intersecting the ex-post
+  decision-critical pair and open diamonds denote misses.}
   \label{fig:decision-relevance}
 \end{figure}
 
-\subsection{Can targeted HF validation reduce selection regret?}
-Table~\ref{tab:latest-main} reports the sealed fixed-budget PIVOT-KG versus
-Uniform comparison. Leduc is the only cohort with a primary interval strictly
-above zero: \RevisionLeducHtwo{} \RevisionLeducHtwoCI{}. Kuhn is near-null:
-\RevisionKuhnHtwo{} \RevisionKuhnHtwoCI{}. Melting Pot is unresolved in the
-primary long/two-query condition (\RevisionVFourHtwo{}
-\RevisionVFourHtwoCI{}); its one-query secondary condition is positive
-(\RevisionVFourOneQuery{} \RevisionVFourOneQueryCI{}) and its
-short/five-query condition is negative (\RevisionVFourShort{}
-\RevisionVFourShortCI{}). Its much larger response gap therefore does not
-imply a positive allocation contrast.
+Together, the sealed analysis shows that fidelity error creates validation
+value only when it threatens the update decision and the available HF evidence
+can resolve that uncertainty.
 
-\begin{table}[t]
+\subsection{PIVOT-KG under Limited High-Fidelity Budgets}
+Table~\ref{tab:latest-main} reports the sealed fixed-budget PIVOT-KG versus
+Uniform comparison. Leduc has a positive primary contrast, Kuhn is near-null,
+and the Melting Pot primary condition is unresolved with mixed secondary
+conditions. The pattern is consistent with the preceding mechanism analysis:
+a larger response gap does not by itself create allocation value.
+
+\begin{table}[H]
   \centering\scriptsize
   \caption{Sealed response-world allocation contrasts. Entries are paired
-  PIVOT-KG minus Uniform gains with root-bootstrap intervals. Primary null and
-  negative conditions are retained as evidence.}\label{tab:latest-main}
+  PIVOT-KG minus Uniform gains with root-bootstrap 95\% intervals; primary and
+  secondary conditions are shown together.}\label{tab:latest-main}
   \input{tables/revision_main_results.tex}
 \end{table}
 
-The closed-loop study is consistent with this scoped interpretation. Across
-\ClosedLoopRounds{} rounds, PIVOT-KG versus Proxy Only reduces paired CISR by
-\ClosedLoopEffect{} \ClosedLoopEffectCI{}, while contrasts against Global-VOI
-and Paired LUCB are not uniformly favorable. The evidence-efficiency frontier
-therefore measures a decision rule under matched costs, not universal method
-ordering.
+For iterative self-improvement, we report cumulative improvement-selection
+regret, $\mathrm{CISR}=\sum_{t=1}^{T}\mathrm{ISR}_t$. Across
+\ClosedLoopRounds{} rounds, PIVOT-KG reduces paired CISR relative to Proxy
+Only by \ClosedLoopEffect{} \ClosedLoopEffectCI{}. Matched-cost comparisons
+with Global-VOI and Paired LUCB vary across settings; Figure~\ref{fig:efficiency}
+shows the resulting evidence-efficiency frontier together with an all-HF
+reference. Detailed closed-loop trajectories and robustness analyses appear in
+Appendix~\ref{app:pivot-ext}.
 
-\begin{figure}[t]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{fig4_evidence_efficiency.png}
-  \caption{Evidence-efficiency frontier. Matched-cost curves and the fixed-budget
-  forest report selection-regret reduction; the all-HF line is a reference.
-  Intervals are seed bootstraps and no uniform ordering is asserted.}
+  \caption{Evidence-efficiency frontier. Matched-cost curves and the
+  fixed-budget forest report selection-regret reduction; the all-HF line is a
+  reference. Intervals are seed bootstraps.}
   \label{fig:efficiency}
 \end{figure}
 
-\subsection{Boundary results and non-dominance}
-The powered OOD transition-evaluator comparison is a negative result rather
-than a superiority result: transition-minus-global ISC is
-\OODGain{} \OODGainCI{}, with the interval entirely below zero. The strategic
-fixture adds an independent adaptive layer and yields
-\StrategicEffect{} \StrategicEffectCI{}, with family-balanced SIRR
-\StrategicSIRR{}. These results show why an update-level estimand does not
-require a particular transition learner to dominate.
+Overall, PIVOT-KG is useful when the available HF evidence can resolve
+uncertainty that matters for the update decision, rather than whenever
+deployment response is large.
 
-\subsection{Reactive HighwayEnv validation}
+\subsection{External Validation in HighwayEnv}
 We evaluate physically reactive HighwayEnv~\cite{highwayenv2018} with a fixed
-panel of five meta-actions (slower, lane-left, idle, lane-right, and faster).
-Each cohort fits PIVOT-KG on 20 calibration seeds and evaluates 60 test seeds.
-A budget counts candidate paired HF queries available at one decision root;
-calibration and post-decision truth audits are accounted for separately.
-Table~\ref{tab:highway-budget} reports
-$\mathrm{ISR}_{\mathrm{Uniform}}-\mathrm{ISR}_{\mathrm{PIVOT\text{-}KG}}$,
-so positive values favor PIVOT-KG. This compares complete selection rules,
-including query allocation and calibrated estimates used for selection.
+panel of five meta-actions. Each cohort fits PIVOT-KG on 20 calibration seeds
+and evaluates 60 disjoint test seeds. A budget counts candidate paired HF
+queries available at one decision root.
 
-The original two-query contrast is unresolved (\HighwayBudgetTwoContrast{}
-\HighwayBudgetTwoCI{}); four queries are positive (\HighwayBudgetFourContrast{}
-\HighwayBudgetFourCI{}), while one query is negative
-(\HighwayBudgetOneContrast{} \HighwayBudgetOneCI{}).
-We then froze one replication with new, disjoint calibration/test cohorts,
-$B=2$ primary and $B=4$ secondary, without retuning or seed exclusions.
-The replication contrasts are \HighwayReplicationBudgetTwoContrast{}
-\HighwayReplicationBudgetTwoCI{} at $B=2$ and
-\HighwayReplicationBudgetFourContrast{} \HighwayReplicationBudgetFourCI{}
-at $B=4$; both intervals cross zero. The replication does not establish a
-four-query advantage. This is external DEV evidence; the technical smoke exposure and
-reproduction protocol are disclosed in \cref{app:highway-replication}.
-The secondary budget cannot replace the primary conclusion or establish a
-general allocation guarantee.
-
-\begin{table}[t]
-  \centering\scriptsize
-  \caption{Original HighwayEnv study and fresh-seed DEV replication, each
-  with 60 test seeds. $B$ counts candidate paired HF queries per decision.
-  Positive contrasts favor PIVOT-KG; intervals are paired 95\% bootstrap
-  intervals. $B=2$ is primary and $B=4$ secondary in the replication.}
-  \label{tab:highway-budget}
-  \input{tables/highway_results.tex}
-\end{table}
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.88\linewidth]{fig4_highway_budget.pdf}
-  \caption{HighwayEnv paired allocation contrasts in two disjoint cohorts.
-  Positive Uniform-minus-PIVOT ISR favors PIVOT-KG. Error bars are individual
-  95\% bootstrap intervals over 60 seeds per cohort; $B=2$ is primary.}
-  \label{fig:highway-budget}
-\end{figure}
-
-\subsection{Stress Tests Beyond Controlled Environments}
-The public finance audit uses historical paths, virtual fills, and a
-participation/depth proxy. It has 0/7 depth-proxy reversals in the expanded
-primary sessions and 0/5 in the holdout; the pooled depth-minus-replay effect
-is approximately $-4.16\times10^{-7}$ in native session units. This is a
-boundary diagnostic, not causal market impact. The strategic mechanisms are
-finite fixtures rather than general equilibrium, and external adaptive worlds
-are endpoint evidence rather than connected trajectories.
-
-\section{Discussion and scope}
-The evidence supports a conditional claim. Deployment response can increase
-proxy--deployment error; an error changes the update only when it is large
-relative to the candidate margin; and PIVOT-KG can help when limited HF queries
-resolve that decision-relevant uncertainty. The sealed-query audit makes the
-last condition testable at the level of observable query criticality and
-residual separation, while stopping short of an unrecorded posterior or EVSI
-claim. A large response gap, a top-1 flip, or a positive result in one cohort
-is not by itself an allocation guarantee.
-The study does not claim universal superiority, simulator ground truth, market
-causality, or equilibrium behavior.
-
-HighwayEnv reinforces the scope limit: the original one-query contrast is
-unfavorable, and the primary two-query comparison is unresolved in both
-cohorts. The original four-query advantage is also unresolved in the
-fresh-seed replication. The budget-dependent pattern is thus exploratory;
-these data establish neither a reproducible four-query advantage nor a
-budget-sufficiency mechanism.
+In the original cohort, the two-query primary contrast is unresolved, while
+the four-query secondary contrast is positive. A fresh-seed replication uses
+new disjoint calibration/test cohorts with $B=2$ primary and $B=4$ secondary;
+both registered contrasts are unresolved. The external setting therefore
+reinforces the conditional nature of allocation gains rather than a uniform
+advantage. We then ran a separately registered redesign with eight distinct
+candidates, formed by crossing the four non-idle actions with early and late
+half-horizon windows. It uses 40 calibration and 120 disjoint test seeds,
+exact Uniform subset expectations, and exact affine-normal Gaussian KG; $B=4$
+is primary and $B=2$ is secondary. The redesign contrast is
+\HighwayRedesignBudgetFourContrast{} \HighwayRedesignBudgetFourCI{} at $B=4$
+and \HighwayRedesignBudgetTwoContrast{} \HighwayRedesignBudgetTwoCI{} at
+$B=2$, with every logical query implemented as a physical actor rollout and
+the full truth audit delayed until after each adaptive decision. This is
+external DEV evidence for the expanded candidate panel, not a universal
+advantage or a retroactive correction of the five-action result. Full results
+and both protocols are reported in
+Appendices~\ref{app:highway-replication} and \ref{app:highway-redesign}.
+Additional OOD-evaluator and public-data boundary analyses appear in
+Appendix~\ref{app:boundary}.
 
 \section{Conclusion}
-An agent can be correct about the wrong world. The relevant statistical object
-for self-improvement is therefore the transition $\pi\to\pi'$, and the core
-question is whether its sign and ordering survive deployment-induced response.
-Across controlled and sealed worlds, deployment response separates proxy and
-deployment improvements, but the size of that separation does not by itself
-predict a ranking flip or an allocation gain. In the sealed study, 51 of 90
-roots changed their proxy/deployment top-1, yet flipped roots did not have a
-larger normalized PIVOT--Uniform gain.
+An agent can be correct about the wrong world. This paper argues that reliable
+self-improvement requires evaluating proposed policy replacements at the
+update level, under the response they induce. Improvement Fidelity formalizes
+whether proxy improvement preserves deployment improvement on the updates an
+agent actually proposes, and the analysis shows how operator shift,
+deployment response, and candidate margins determine when policy-level
+accuracy is insufficient. PIVOT-KG targets the resulting decision problem by
+allocating limited paired HF evidence according to its expected reduction in
+update-selection regret. Across controlled, sealed, and external settings,
+response magnitude alone does not determine either ranking failure or the
+value of additional validation.
 
-PIVOT-KG targets the next link in this chain: whether limited HF evidence can
-resolve a decision-relevant uncertainty before an update is promoted. Its
-positive Leduc contrast, near-null Kuhn result, and mixed or unresolved Melting
-Pot conditions support a conditional claim rather than universal superiority.
-The no-update action and paired evidence are part of the decision problem, so
-the method can retain the incumbent when all estimated improvements are weak or
-negative. The claims remain bounded by fixed response worlds, held-out sealed
-roots, and finite HF budgets; strategic fixtures are not equilibrium results,
-and the finance audit is not causal market evidence.
+Several boundaries remain. The direct, actor, and strategic response worlds
+cover selected forms of adaptation rather than all deployment dynamics, and
+the finite strategic fixtures are not equilibrium characterizations. PIVOT-KG
+also depends on the informativeness of HF evidence: limited budgets or noisy
+measurements can leave decision-relevant uncertainty unresolved. Finally, the
+fresh HighwayEnv replication is unresolved at its registered budgets, while
+the public-finance analysis is observational and does not identify a causal
+deployment response. The eight-candidate HighwayEnv redesign has a positive
+primary $B=4$ contrast, but its claim is limited to that registered panel and
+budget allocation.
 
-The broader implication is to validate consequences under the response induced
-by the proposed update. The resulting evidence ladder is
-\begin{equation}
-  \text{observer} \longrightarrow \text{actor} \longrightarrow \text{strategic},
-\end{equation}
-Each arrow is an additional intervention, not an assumed truth claim; an HF
-budget matters only when it can change the update decision.\label{main:end}
+These boundaries point to richer response models, repeated settings in which
+the response itself evolves with the agent, and intervention-based HF evidence
+in more realistic deployment systems. More broadly, self-improvement should
+be judged not only by whether a candidate scores better under its verifier,
+but by whether the proposed replacement remains better in the world it
+creates. Reliable self-improvement therefore requires fidelity of
+improvements, not merely accuracy of policy evaluations.\label{main:end}
 
-\begingroup\scriptsize
-\noindent\textbf{AI Use Statement.} Generative AI tools were used for language
-editing, code and figure-formatting assistance, limited assistance in developing
-experimental infrastructure, and literature discovery.  All experimental
-designs, mathematical claims, generated code, numerical results, cited sources,
-and manuscript claims were reviewed and verified by the authors, who take full
-responsibility for the work.
-\par\noindent\textbf{Reproducibility Statement.} The anonymous supplement
-contains deterministic configurations, hash-indexed source evidence, figure
-tables, and rebuild commands.  The public finance audit uses virtual fills and
-contains no credentials, private data, raw vendor archives, or live orders.
-\par\noindent\textbf{Ethics Statement.} The study uses controlled virtual
-environments and public market data only; it involves no human subjects,
-personal data, live trading, or external authorization.
-\endgroup
+\section*{AI Use Statement}
+The original version of this manuscript was written entirely by the authors.
+The research questions, conceptual framing, mathematical development, and
+experimental design were developed by the authors. Generative AI tools were
+used only during manuscript revision for language and presentation polishing;
+they were not used to formulate the research ideas, design the experiments, or
+generate numerical results. All reported experimental results were produced by
+the authors' executed research code and were checked and verified by the
+authors. The authors reviewed the final manuscript and take full responsibility
+for its contents.
 
-\phantomsection\label{refs:start}
+\paragraph{Reproducibility Statement.}
+The anonymous supplement contains deterministic configurations, hash-indexed
+source evidence, figure tables, and rebuild commands. The public-finance audit
+uses virtual fills and contains no credentials, private data, raw vendor
+archives, or live orders.
+
+\paragraph{Ethics Statement.}
+The study uses controlled virtual environments and public market data only; it
+involves no human subjects, personal data, live trading, or external
+authorization.
+
+\label{refs:start}
 \bibliographystyle{iclr2027_conference}
 \bibliography{references}
 
 \clearpage
 \appendix
-\section{Extended Figures and Artifact Notes}\label{app:artifact}
-The release includes frozen source snapshots, result manifests, figure assets,
-source tables, and analysis scripts. The metadata records the unit of inference
-and distinguishes descriptive spans from bootstrap intervals.
+\section*{Appendix}
+The appendix follows the main evaluation. Appendix~\ref{app:fidelity-response}
+extends the response analyses from Section~6.2; Appendix~\ref{app:pivot-ext}
+contains detailed PIVOT-KG and robustness results supporting Sections~6.3--6.4;
+Appendix~\ref{app:highway-replication} collects the HighwayEnv replication;
+Appendix~\ref{app:boundary} reports boundary analyses; and
+Appendix~\ref{app:stats-repro} summarizes statistical and reproducibility
+details.
 
-\paragraph{HighwayEnv replication protocol.}\label{app:highway-replication}
+\section{Extended Fidelity and Response Analyses}\label{app:fidelity-response}
+The main text separates operator shift from policy-induced deployment response.
+Here we expand the response side of that analysis. The world-response
+decomposition traces matched observations through the direct, actor, and
+strategic levels, while the opponent-family analysis shows how the strategic
+effect varies across adaptive mechanisms. For the latter, the reported
+family-balanced strategic reversal rate is the unweighted mean across the
+three adaptive opponent families.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figA_response_footprint.png}
+  \caption{World-response decomposition. Panel a traces
+  \StrategicAllFamilySeedTraces{} family-by-seed observations (five opponent
+  families $\times$ 30 matched seeds) through direct, actor, and strategic
+  worlds; summary intervals use the 30 matched seeds. Panel b separates
+  mechanical and strategic effects; panel c marks the strategic reversal
+  quadrant.}
+  \label{fig:layers}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figD_strategic_distribution.png}
+  \caption{Strategic generalization across opponent mechanisms. Raincloud and
+  forest views show family-specific effects and reversal rates over 30 matched
+  opponent-seed clusters. The reversal plane labels the unweighted mean across
+  the three adaptive families and uses both color and marker shape for
+  grayscale legibility.}
+  \label{fig:strategic}
+\end{figure}
+
+\section{Extended PIVOT-KG Evaluation}\label{app:pivot-ext}
+The main text reports the sealed allocation results and the matched-cost
+frontier. Here we provide additional decision-resolvability diagnostics,
+trajectory-level results, and numerical-robustness views. The within-root
+normalized response gaps are \RevisionLeducNormalizedResponseGap{}
+\RevisionLeducNormalizedResponseGapCI{} for Leduc,
+\RevisionKuhnNormalizedResponseGap{} \RevisionKuhnNormalizedResponseGapCI{}
+for Kuhn, and \RevisionVFourNormalizedResponseGap{}
+\RevisionVFourNormalizedResponseGapCI{} for Melting Pot. At the primary long
+budget, the decision-critical query-hit rates are
+\RevisionLeducCriticalQueryRate{} in Leduc, \RevisionKuhnCriticalQueryRate{}
+in Kuhn, and \RevisionMeltingCriticalQueryRate{} in Melting Pot. The
+descriptive normalized gain is \RevisionCriticalQueryHitGain{}
+\RevisionCriticalQueryHitGainCI{} among the 87 hit roots and
+\RevisionCriticalQueryMissGain{} \RevisionCriticalQueryMissGainCI{} among the
+three misses; the final sealed estimate separation is
+\RevisionPostQuerySeparation{} \RevisionPostQuerySeparationCI{} after root
+scaling. For the closed-loop plots, CTI denotes cumulative true improvement and
+CISR denotes cumulative improvement-selection regret.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{fig5_closed_loop.png}
+  \caption{Closed-loop validator outcomes. The top row reports cumulative true
+  improvement (CTI) and the bottom row cumulative improvement-selection regret
+  (CISR); thin curves show seed-level trajectories and markers summarize the
+  compared decision rules.}
+  \label{fig:closed-loop}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{figC_posterior_robustness.png}
+  \caption{PIVOT-KG sensitivity to posterior sample count and cost
+  misspecification across the registered calibration groups.}
+  \label{fig:robustness}
+\end{figure}
+
+\section{HighwayEnv Validation and Replication}\label{app:highway-replication}
 The original and replication cohorts each contain 20 calibration and 60 test
 roots, with no overlap between cohorts. The replication freezes the five-action
 panel, four lanes, 20 traffic vehicles, horizon 20, and covariance shrinkage
 0.5. It refits the correction prior on its own calibration cohort before
 opening the full test cohort. The primary contrast is Uniform minus PIVOT-KG
-ISR at $B=2$; $B=4$ is secondary. We retain every registered root and use 4,000
-paired bootstrap resamples with fixed RNG seeds. Individual 95\% intervals
-condition on each fitted calibration model; they do not include calibration
-sampling uncertainty or form a simultaneous confidence statement.
-A technical smoke run exposed
-the first two replication test roots before the full run; those roots are
-retained without subsequent tuning or exclusions. This is therefore an
-external DEV replication, not a wholly blinded confirmatory test. The
-supplement includes the execution note, complete seed records, query and truth
-ledgers, dependency lock, frozen simulator code, and a standalone table/figure
+ISR at $B=2$; $B=4$ is secondary. We retain every registered root and use
+4,000 paired bootstrap resamples with fixed RNG seeds. Individual 95\%
+intervals condition on each fitted calibration model and do not include
+calibration sampling uncertainty.
+
+A technical smoke run exposed the first two replication test roots before the
+full run; those roots are retained without subsequent tuning or exclusions.
+The supplement contains the execution note, complete seed records, query and
+truth ledgers, dependency lock, frozen simulator code, and a standalone
 recomputation command. Calibration and post-decision truth audits are outside
 the logical query budget and are included in physical evaluation accounting.
 Uniform HF retains proxy estimates for unqueried candidates, whereas PIVOT-KG
-uses its calibrated posterior. The contrast therefore includes calibration
-and final selection as well as acquisition; it does not isolate an acquisition
-mechanism.
+uses its calibrated posterior; the comparison therefore evaluates the complete
+selection rules rather than acquisition alone.
 
-\begin{figure}[h]
+\paragraph{Eight-candidate redesign.}\label{app:highway-redesign}
+The redesign freezes eight distinct scheduled candidates, crossing the four
+non-idle HighwayEnv actions with early and late half-horizon windows. It fits a
+joint correction model on 40 calibration roots and evaluates 120 disjoint test
+roots. The primary budget is $B=4$; $B=2$ is secondary. Uniform is the exact
+average over all $\binom{8}{B}$ queried subsets (70 at $B=4$, 28 at $B=2$),
+whereas PIVOT-KG uses sequential exact affine-normal Gaussian KG updates.
+Each selected query is a physical paired actor rollout. All candidate truth
+outcomes, including the shared incumbent, are evaluated only after the
+adaptive decisions and are excluded from the logical query budget. The audit
+checks all 3,840 physical evaluations and uses 4,000 paired bootstrap
+resamples with fixed seeds. Two test roots were exposed during technical
+smoke; they remain in the formal cohort without retuning or exclusion, so this
+is external DEV evidence rather than a wholly blinded confirmatory test.
+The supplement contains the hash-indexed evidence, frozen redesign source,
+query/truth ledgers, and independent table/figure audit.
+
+\begin{table}[H]
+  \centering\scriptsize
+  \caption{Original HighwayEnv study, fresh-seed replication, and the
+  eight-candidate redesign. $B$ counts candidate paired HF queries per
+  decision. Positive contrasts favor PIVOT-KG; intervals are paired 95\%
+  bootstrap intervals. $B=2$ is primary in the original/replication cohorts;
+  $B=4$ is primary in the redesign.}
+  \label{tab:highway-budget}
+  \input{tables/highway_results.tex}
+\end{table}
+
+\begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figA_response_footprint.png}
-  \caption{World-response decomposition.  Panel a traces
-  \StrategicAllFamilySeedTraces{} family-by-seed observations (five opponent families $\times$ 30 matched
-  seeds) through proxy/direct observer, actor, and strategic worlds; its summary
-  intervals use the 30 matched seeds.  Panel b separates mechanical and
-  strategic effects; Panel c marks the strategic reversal quadrant.}
-  \label{fig:layers}
+  \includegraphics[width=0.88\linewidth]{fig4_highway_budget.pdf}
+  \caption{HighwayEnv paired allocation contrasts across the historical,
+  fresh-seed, and eight-candidate redesign cohorts. Positive
+  Uniform-minus-PIVOT ISR favors PIVOT-KG; error bars are individual 95\%
+  bootstrap intervals over the registered test seeds.}
+  \label{fig:highway-budget}
 \end{figure}
 
-\begin{figure}[h]
+\section{Boundary Analyses}\label{app:boundary}
+\paragraph{OOD evaluator comparison.}
+The powered OOD transition-evaluator comparison gives transition-minus-global
+ISC of \OODGain{} \OODGainCI{}. This result separates the update-level
+estimand from any claim that a transition-specific learner must dominate a
+global learner.
+
+\begin{figure}[H]
   \centering
   \includegraphics[width=\linewidth]{figB_learned_ood_null.png}
-  \caption{Powered OOD negative result.  Forest horizontal ranges are descriptive spans
-  across the two fitted model families in each split, not confidence intervals;
-  the scatter retains the paired reports and the diagonal indicates equal ISC.}
+  \caption{OOD evaluator comparison. Forest horizontal ranges are descriptive
+  spans across the two fitted model families in each split; the scatter
+  retains paired reports and the diagonal indicates equal ISC.}
   \label{fig:ood-null}
 \end{figure}
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{figC_posterior_robustness.png}
-  \caption{PIVOT-KG robustness to posterior sample count and cost
-  misspecification.  The curves report means over the registered calibration
-  groups; they are numerical-stability diagnostics, not additional superiority
-  claims.}
-  \label{fig:robustness}
-\end{figure}
+\paragraph{Public-finance diagnostic.}
+The public-data audit uses historical paths, virtual fills, and a
+participation/depth proxy. It has 0/7 depth-proxy reversals in the expanded
+primary sessions and 0/5 in the holdout; the pooled depth-minus-replay effect
+is approximately $-4.16\times10^{-7}$ in native session units. Historical
+paths do not identify the counterfactual market response to deploying a
+different policy, so this analysis serves as an observational boundary check.
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=\linewidth]{figD_strategic_distribution.png}
-  \caption{Strategic generalization across opponent mechanisms.  Raincloud and
-  forest views show family-specific effects and SIRR, each over 30 matched
-  opponent-seed clusters.  The reversal plane labels the unweighted mean over
-  the three adaptive family-level SIRRs; it uses both color and marker shape so
-  the failure is legible in grayscale.}
-  \label{fig:strategic}
-\end{figure}
-
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.86\linewidth]{figE_finance_boundary.png}
-  \caption{Initial single-asset public finance boundary diagnostic over
-  participation.  Shading is a seven-session descriptive interval; fills are
-  virtual and the figure does not identify causal impact.  The separate
-  12-session, three-asset expansion is summarized in the public-data table.}
+  \caption{Initial single-asset public-finance boundary diagnostic over
+  participation. Shading is a seven-session descriptive interval; fills are
+  virtual. The separate 12-session, three-asset expansion is summarized in
+  Table~\ref{tab:public-boundary}.}
   \label{fig:finance}
 \end{figure}
 
-\begin{table}[h]
+\begin{table}[H]
 \centering\scriptsize
-\caption{Controlled and public evidence summary.}
-\input{tables/controlled_results.tex}
-\end{table}
-
-\begin{table}[h]
-\centering\scriptsize
-\caption{Public-data boundary summary.}
+\caption{Public-data boundary summary.}\label{tab:public-boundary}
 \input{tables/public_results.tex}
 \end{table}
 
-\paragraph{Metric and claim boundary.}
-The canonical metric implementation is the frozen statistics module.  The
-closed-loop CTI/CISR values sum over rounds; the budget frontier is a one-set
-($T=1$) selection problem.  Their scales are therefore reported separately.
-The external adaptive and finance artifacts remain
-bounded evidence; no claim is promoted merely because a plot is visually
-strong.  Internal experiment identifiers, configuration digests, and exact
-source hashes are retained in the supplement and figure metadata for audit.  The
-raw sampled reversal-rate cells used in the operator-shift display remain
-available alongside the complete compressed transition stream.
+\section{Statistical and Reproducibility Details}\label{app:stats-repro}
+The release includes frozen source snapshots, result manifests, figure assets,
+source tables, and analysis scripts. Metadata record the unit of inference and
+distinguish descriptive spans from bootstrap intervals. The canonical metric
+implementation is the frozen statistics module. Closed-loop CTI/CISR values
+sum over rounds, whereas the budget frontier is a one-set ($T=1$) selection
+problem, so their scales are reported separately. Internal experiment
+identifiers, configuration digests, exact source hashes, and raw sampled
+operator-shift cells are retained in the supplement and figure metadata for
+audit.
+
+\begin{table}[H]
+\centering\scriptsize
+\caption{Controlled evidence summary.}\label{tab:controlled-summary}
+\input{tables/controlled_results.tex}
+\end{table}
 
 \end{document}
