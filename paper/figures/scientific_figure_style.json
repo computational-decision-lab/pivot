@@ -1,28 +1,32 @@
 {
-  "schema_version": "scientific-figure-style-2",
+  "schema_version": "scientific-figure-style-3",
   "source_repository": "https://github.com/enesgul23/scientific-figure-skills",
   "source_profile": "universal_high_impact",
-  "source_status": "ESTIMATED",
-  "style_version": "pivot-v11-scientific-figure-suite-1",
+  "source_status": "adapted to checked-in official ICLR style",
+  "style_version": "pivot-v12-scientific-figure-suite-1",
   "venue": "ICLR",
   "figure_width_mm": {
-    "single": 89,
-    "double": 180
+    "single": 85.09,
+    "full_text": 139.7
   },
   "font": {
-    "preferred": ["DejaVu Sans"],
-    "fallback": ["DejaVu Sans"],
+    "preferred": [
+      "DejaVu Sans"
+    ],
+    "fallback": [
+      "DejaVu Sans"
+    ],
     "selected": "DejaVu Sans"
   },
   "text_size_pt": {
     "base": 8,
-    "preferred_min": 6.5,
+    "preferred_min": 7.0,
     "preferred_max": 9,
-    "panel_label": 8.2,
-    "axis": 7.6,
+    "panel_label": 8.0,
+    "axis": 7.4,
     "tick": 7.0,
-    "legend": 6.8,
-    "annotation": 6.6
+    "legend": 7.0,
+    "annotation": 7.0
   },
   "panel_labels": {
     "case": "lowercase",
@@ -30,12 +34,23 @@
     "style": "upright"
   },
   "export": {
-    "vector": ["pdf", "svg"],
-    "raster": ["png"],
+    "vector": [
+      "pdf",
+      "svg"
+    ],
+    "raster": [
+      "png"
+    ],
     "min_dpi": 300
   },
   "palette": {
-    "categorical": ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00"],
+    "categorical": [
+      "#0072B2",
+      "#D55E00",
+      "#009E73",
+      "#CC79A7",
+      "#E69F00"
+    ],
     "sequential": "viridis",
     "diverging": "cividis"
   },
@@ -44,17 +59,17 @@
     "global_voi": "#0072B2",
     "paired_lucb": "#CC79A7",
     "pivot_kg": "#009E73",
-    "all_hf_reference": "#2F2F2F",
+    "all_hf_reference": "#1F2937",
     "cohort_leduc": "#0072B2",
     "cohort_kuhn": "#CC79A7",
-    "cohort_melting_pot": "#D55E00",
-    "observer": "#6C757D",
+    "cohort_melting_pot": "#E69F00",
+    "observer": "#56B4E9",
     "actor": "#0072B2",
     "strategic": "#D55E00",
     "positive": "#009E73",
     "negative": "#D55E00",
-    "text": "#202124",
-    "grid": "#D9E2E8",
-    "shade": "#F4F6F8"
+    "text": "#1F2937",
+    "grid": "#D7DEE5",
+    "shade": "#F7F9FB"
   }
 }

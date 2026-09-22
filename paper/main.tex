@@ -45,7 +45,7 @@ Self-improving agents often select policy updates using cheap verifiers, but dep
 \section{Introduction}
 
 Self-improvement is usually written as a loop: generate candidates, score
-them, promote one, and repeat. A self-improving agent ultimately deploys a
+them, promote one, and repeat.
 A self-improvement update is a replacement operation, not an isolated policy
 value. In a trading system, a
 larger order changes liquidity; in an auction, a bid changes rivals'
@@ -68,7 +68,7 @@ Figure~\ref{fig:reversal} shows the basic sign failure.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\linewidth]{fig1_improvement_reversal.png}
+  \includegraphics[width=\linewidth]{fig1_improvement_reversal.pdf}
   \caption{Paired proxy and deployment improvements in the two controlled
   worlds. The lower-right quadrant is an improvement reversal. Points are a
   deterministic display subsample; IRR is computed on all transition rows.}
@@ -424,7 +424,7 @@ on the updates an operator actually proposes.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{fig2_operator_shift.png}
+  \includegraphics[width=\linewidth]{fig2_operator_shift.pdf}
   \caption{Operator-relative shift diagnostic. Local improvement error rises
   with registered shift while global policy rank remains comparatively stable.
   The same environment-by-shift cells show error, rank, and reversal rate.}
@@ -475,12 +475,13 @@ in Appendix~\ref{app:pivot-ext}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.96\linewidth]{fig1_decision_relevance.pdf}
+  \includegraphics[width=\linewidth]{fig1_decision_relevance.pdf}
   \caption{Response magnitude is not allocation value. Panel a reports
   within-root normalized response gaps; b reports proxy/deployment top-1
   flips; c reports normalized ISR reduction; d relates correction-to-margin
-  ratio to normalized gain; e relates queried HF noise to the proxy top-2
-  margin. Filled circles denote queries intersecting the ex-post
+  ratio to normalized ISR reduction; e relates queried HF noise to the proxy
+  top-2 margin. ISR reductions are divided by the within-root deployment
+  range. In e, filled circles denote queries intersecting the ex-post
   decision-critical pair and open diamonds denote misses.}
   \label{fig:decision-relevance}
 \end{figure}
@@ -497,12 +498,13 @@ conditions. The pattern is consistent with the preceding mechanism analysis:
 a larger response gap does not by itself create allocation value.
 
 \begin{table}[H]
-  \centering\scriptsize
-  \caption{Sealed response-world allocation contrasts. Uniform ISR and
-  PIVOT-KG ISR are mean improvement-selection regrets; Gain is Uniform ISR
-  minus PIVOT-KG ISR, so positive values favor PIVOT-KG. Intervals are
-  root-bootstrap 95\% intervals. Primary/secondary identify preregistered
-  priority, not a separate significance test.}\label{tab:latest-main}
+  \centering\footnotesize
+  \caption{Sealed response-world allocation contrasts ($n=30$ paired roots per row). Uniform ISR and
+  PIVOT-KG ISR are mean improvement-selection regrets; Uniform $-$ PIVOT is
+  the ISR reduction from targeted validation, so positive values favor
+  PIVOT-KG. Intervals are
+  root-bootstrap 95\% intervals. Group headings identify preregistered
+  primary and secondary comparisons.}\label{tab:latest-main}
   \input{tables/revision_main_results.tex}
 \end{table}
 
@@ -517,7 +519,7 @@ Appendix~\ref{app:pivot-ext}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{fig4_evidence_efficiency.png}
+  \includegraphics[width=\linewidth]{fig4_evidence_efficiency.pdf}
   \caption{Evidence-efficiency frontier. Matched-cost curves and the
   fixed-budget forest report selection-regret reduction; the all-HF line is a
   reference. Intervals are bootstrap intervals over trajectory seeds.}
@@ -629,7 +631,7 @@ three adaptive opponent families.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figA_response_footprint.png}
+  \includegraphics[width=\linewidth]{figA_response_footprint.pdf}
   \caption{World-response decomposition. Panel a traces
   \StrategicAllFamilySeedTraces{} family-by-seed observations (five opponent
   families $\times$ 30 matched seeds) through direct, actor, and strategic
@@ -641,9 +643,9 @@ three adaptive opponent families.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figD_strategic_distribution.png}
+  \includegraphics[width=\linewidth]{figD_strategic_distribution.pdf}
   \caption{Strategic generalization across opponent mechanisms. Raincloud and
-  forest views show family-specific effects and reversal rates over 30 matched
+  forest views show family-specific effects over 30 matched
   opponent-seed clusters. The reversal plane labels the unweighted mean across
   the three adaptive families and uses both color and marker shape for
   grayscale legibility.}
@@ -672,7 +674,7 @@ CISR denotes cumulative improvement-selection regret.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{fig5_closed_loop.png}
+  \includegraphics[width=\linewidth]{fig5_closed_loop.pdf}
   \caption{Closed-loop validator outcomes. The top row reports cumulative true
   improvement (CTI) and the bottom row cumulative improvement-selection regret
   (CISR); thin curves show seed-level trajectories and markers summarize the
@@ -682,7 +684,7 @@ CISR denotes cumulative improvement-selection regret.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figC_posterior_robustness.png}
+  \includegraphics[width=\linewidth]{figC_posterior_robustness.pdf}
   \caption{PIVOT-KG sensitivity to posterior sample count and cost
   misspecification across the registered calibration groups.}
   \label{fig:robustness}
@@ -727,20 +729,21 @@ The supplement contains the hash-indexed evidence, frozen redesign source,
 query/truth ledgers, and independent table/figure audit.
 
 \begin{table}[H]
-  \centering\scriptsize
+  \centering\footnotesize
   \caption{Original HighwayEnv study, fresh-seed replication, and the
   eight-candidate redesign. $B$ counts candidate paired HF queries per
-  decision. Gain is Uniform ISR minus PIVOT-KG ISR, so positive values favor
+  decision; roots are independent paired test seeds. Uniform $-$ PIVOT is
+  the ISR reduction from targeted validation, so positive values favor
   PIVOT-KG; intervals are paired 95\%
-  bootstrap intervals. $B=2$ is primary in the original/replication cohorts;
-  $B=4$ is primary in the redesign.}
+  bootstrap intervals. Bold budgets mark the registered primary comparison:
+  $B=2$ in the original/replication cohorts and $B=4$ in the redesign.}
   \label{tab:highway-budget}
   \input{tables/highway_results.tex}
 \end{table}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.88\linewidth]{fig4_highway_budget.pdf}
+  \includegraphics[width=\linewidth]{fig4_highway_budget.pdf}
   \caption{HighwayEnv paired allocation contrasts across the historical,
   fresh-seed, and eight-candidate redesign cohorts. Positive
   Uniform-minus-PIVOT ISR favors PIVOT-KG; error bars are paired 95\%
@@ -757,7 +760,7 @@ global learner.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\linewidth]{figB_learned_ood_null.png}
+  \includegraphics[width=\linewidth]{figB_learned_ood_null.pdf}
   \caption{OOD evaluator comparison. Forest horizontal ranges are descriptive
   spans across the two fitted model families in each split; the scatter
   retains paired reports and the diagonal indicates equal ISC.}
@@ -774,7 +777,7 @@ different policy, so this analysis serves as an observational boundary check.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.86\linewidth]{figE_finance_boundary.png}
+  \includegraphics[width=\linewidth]{figE_finance_boundary.pdf}
   \caption{Initial single-asset public-finance boundary diagnostic over
   participation. Shading is a seven-session descriptive interval; fills are
   virtual. The separate 12-session, three-asset expansion is summarized in

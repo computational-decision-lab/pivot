@@ -20,15 +20,19 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from matplotlib.lines import Line2D
 
 from paper.figures.v10_style import (
     COLORS,
     STYLE_VERSION,
     TEXT_SIZES,
     apply,
+    figure_legend,
     figure_size,
     method_style,
+    panel_title,
     save,
+    style_axes,
 )
 
 MODE_ORDER = ["fixed", "reactive", "best_response", "gradient_adaptive", "rl_evolutionary"]
@@ -456,7 +460,7 @@ def build(root: Path) -> list[dict[str, Any]]:
         )
         built.append(metadata)
     manifest = {
-        "style_version": "pivot-v10-scientific-figure-suite-1",
+        "style_version": STYLE_VERSION,
         "generated_at": built[0].get("generated_at") if built else None,
         "config_hashes": built[0].get("config_hashes", {}) if built else {},
         "figures": built,
@@ -484,7 +488,8 @@ def build(root: Path) -> list[dict[str, Any]]:
         "figE_finance_boundary",
     )
     for stem in submission_stems:
-        shutil.copyfile(output / f"{stem}.png", root / "paper/figures" / f"{stem}.png")
+        for suffix in ("pdf", "svg", "png"):
+            shutil.copyfile(output / f"{stem}.{suffix}", root / "paper/figures" / f"{stem}.{suffix}")
     return built
 
 
@@ -505,6 +510,7 @@ def _figure1(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes_flat = list(axes[0])
     plot_rows: list[dict[str, Any]] = []
     for axis, environment in zip(axes_flat, environments):
+        style_axes(axis, grid_axis="both")
         all_subset = [row for row in rows if str(row["environment_id"]) == environment]
         # Deterministic display subsample; all source rows remain in the CSV.
         stride = max(1, len(all_subset) // 4200)
@@ -512,9 +518,6 @@ def _figure1(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         proxy = np.asarray([float(row["delta_proxy"]) for row in subset])
         true = np.asarray([float(row["delta_true"]) for row in subset])
         reversal = (proxy > 0) & (true < 0)
-        all_proxy = np.asarray([float(row["delta_proxy"]) for row in all_subset])
-        all_true = np.asarray([float(row["delta_true"]) for row in all_subset])
-        all_reversal = (all_proxy > 0) & (all_true < 0)
         axis.scatter(
             proxy[~reversal],
             true[~reversal],
@@ -522,7 +525,7 @@ def _figure1(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             alpha=0.20,
             color=COLORS["actor"],
             edgecolors="none",
-            label="other",
+            rasterized=True,
         )
         axis.scatter(
             proxy[reversal],
@@ -531,7 +534,7 @@ def _figure1(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             alpha=0.72,
             color=COLORS["negative"],
             edgecolors="none",
-            label="reversal",
+            rasterized=True,
         )
         low, high = _safe_range([*proxy, *true], pad=0.08)
         axis.plot([low, high], [low, high], color=COLORS["grid"], ls=":", lw=0.9)
@@ -539,15 +542,8 @@ def _figure1(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         axis.axvline(0, color=COLORS["text"], lw=0.55, ls="--")
         axis.set_xlim(low, high)
         axis.set_ylim(low, high)
-        axis.set_title(environment.replace("_", " ").title(), fontsize=TEXT_SIZES["panel"])
+        panel_title(axis, "a" if axis is axes_flat[0] else "b", environment.replace("_", " ").title())
         axis.set_xlabel(r"proxy improvement $\Delta_V$")
-        axis.text(
-            0.04,
-            0.05,
-            f"display n={len(subset)}\nIRR={np.mean(all_reversal):.2f} (all)",
-            transform=axis.transAxes,
-            fontsize=TEXT_SIZES["annotation"],
-        )
         displayed_ids = {id(row) for row in subset}
         # Keep every source transition in the auditable table.  The explicit
         # flag records the deterministic display subsample used for rendering.
@@ -562,9 +558,19 @@ def _figure1(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             for row in all_subset
         )
     axes_flat[0].set_ylabel(r"deployment improvement $\Delta_*$")
-    axes_flat[0].legend(fontsize=TEXT_SIZES["legend"], loc="upper left")
-    figure.suptitle("Improvement reversal: proxy gains can fail after deployment", fontsize=TEXT_SIZES["title"])
-    figure.tight_layout(w_pad=1.0)
+    figure_legend(
+        figure,
+        [
+            Line2D([0], [0], marker="o", color="none", markerfacecolor=COLORS["actor"],
+                   markeredgecolor="none", markersize=4.5, label="non-reversal"),
+            Line2D([0], [0], marker="o", color="none", markerfacecolor=COLORS["negative"],
+                   markeredgecolor="none", markersize=4.5, label="improvement reversal"),
+        ],
+        ["non-reversal", "improvement reversal"],
+        ncol=2,
+        y=1.01,
+    )
+    figure.subplots_adjust(top=0.84, bottom=0.18, left=0.08, right=0.99, wspace=0.28)
     return _bundle(
         root,
         output,
@@ -621,6 +627,8 @@ def _figure2(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             }
         )
     figure, axes = plt.subplots(1, 3, figsize=figure_size("wide"), sharex=True)
+    for axis in axes:
+        style_axes(axis, grid_axis="y")
     colors = {"performative_control": COLORS["actor"], "congestion_resource": COLORS["strategic"]}
     for environment in sorted({str(row["environment_id"]) for row in rows}):
         subset = sorted(
@@ -652,12 +660,12 @@ def _figure2(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[0].set_xlabel(r"$\log(1+\chi^2)$")
     axes[1].set_xlabel(r"$\log(1+\chi^2)$")
     axes[2].set_xlabel(r"$\log(1+\chi^2)$")
-    axes[0].set_title("a  update error")
-    axes[1].set_title("b  global fidelity")
-    axes[2].set_title("c  decision failure")
-    axes[0].legend(fontsize=TEXT_SIZES["legend"], loc="upper left")
-    figure.suptitle("Operator-relative shift changes update fidelity", fontsize=TEXT_SIZES["title"])
-    figure.tight_layout(w_pad=1.0)
+    panel_title(axes[0], "a", "update error")
+    panel_title(axes[1], "b", "global fidelity")
+    panel_title(axes[2], "c", "decision failure")
+    handles, labels_ = axes[0].get_legend_handles_labels()
+    figure_legend(figure, handles, labels_, ncol=2, y=1.01)
+    figure.subplots_adjust(top=0.80, bottom=0.22, left=0.10, right=0.99, wspace=0.60)
     return _bundle(
         root,
         output,
@@ -686,9 +694,13 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         "pivot_voi": "PIVOT-KG",
     }
     figure = plt.figure(figsize=figure_size("wide_tall"), constrained_layout=False)
-    grid = figure.add_gridspec(2, 2, height_ratios=[1.15, 0.95], hspace=0.48, wspace=0.30)
-    axes = [figure.add_subplot(grid[0, 0]), figure.add_subplot(grid[0, 1])]
-    forest_axis = figure.add_subplot(grid[1, :])
+    grid = figure.add_gridspec(2, 1, height_ratios=[1.0, 1.15], hspace=0.74)
+    upper = grid[0].subgridspec(1, 2, wspace=0.34)
+    lower = grid[1].subgridspec(1, 2, width_ratios=[0.20, 0.80], wspace=0.0)
+    axes = [figure.add_subplot(upper[0, 0]), figure.add_subplot(upper[0, 1])]
+    forest_axis = figure.add_subplot(lower[0, 1])
+    for axis in [*axes, forest_axis]:
+        style_axes(axis, grid_axis="y")
     source_rows: list[dict[str, Any]] = []
     for axis, environment in zip(axes, ["performative_control", "congestion_resource"]):
         # The oracle is a reference, not an acquisition curve; keep it out of
@@ -754,12 +766,12 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             source_rows.extend(
                 {**row, "figure_panel": environment, "K_primary": 8} for row in subset
             )
-        axis.set_title(environment.replace("_", " ").title(), fontsize=TEXT_SIZES["panel"])
+        panel_title(axis, "a" if environment == "performative_control" else "b", environment.replace("_", " ").title())
         axis.set_xlabel("mean HF cost")
         axis.set_ylabel("CISR")
-        axis.grid(alpha=0.65)
+        axis.grid(axis="y", alpha=0.42)
     handles, labels_ = axes[1].get_legend_handles_labels()
-    axes[1].legend(handles, labels_, fontsize=TEXT_SIZES["legend"], loc="upper right")
+    figure_legend(figure, handles, labels_, ncol=5, y=0.995)
     # Lower panel: paired, fixed-budget effects across candidate counts.  Each
     # interval is bootstrapped over trajectory seeds; no heterogeneous cells
     # are connected by a line.
@@ -826,20 +838,16 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     forest_axis.axvline(0, color=COLORS["text"], lw=0.65, ls="--")
     forest_axis.set_yticks(
         fy,
-        [f"{row['environment_id'].replace('_', ' ').title()}, K={row['K']}" for row in primary],
+        [f"{'Control' if row['environment_id'] == 'performative_control' else 'Congestion'} · K={row['K']}" for row in primary],
         fontsize=TEXT_SIZES["tick"],
     )
     forest_axis.invert_yaxis()
     forest_axis.set_xlabel("CISR reduction: Proxy Only - PIVOT-KG")
-    forest_axis.set_title(
-        f"c  registered paired effect at fixed HF budget {fixed_budget}",
-        fontsize=TEXT_SIZES["panel"],
-    )
+    panel_title(forest_axis, "c", f"paired CISR reduction at HF budget {fixed_budget}")
     # The bootstrap unit is stated in the caption rather than inside the
     # forest panel, where it competed with the y labels and x-axis.
     source_rows.extend({**row, "figure_panel": "forest"} for row in effect_rows)
-    figure.suptitle("Evidence efficiency varies by environment and candidate set", fontsize=TEXT_SIZES["title"])
-    figure.subplots_adjust(top=0.88, bottom=0.13, left=0.09, right=0.98)
+    figure.subplots_adjust(top=0.82, bottom=0.14, left=0.10, right=0.98)
     return _bundle(
         root,
         output,
@@ -864,6 +872,9 @@ def _figure5(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         _jsonl_gz(source_paths[3]) if len(source_paths) > 3 and source_paths[3].is_file() else []
     )
     figure, axes = plt.subplots(2, 3, figsize=figure_size("wide_tall"), squeeze=False)
+    for row_axes in axes:
+        for axis in row_axes:
+            style_axes(axis, grid_axis="y")
     methods = ["proxy_only", "global_voi", "pivot_voi", "all_hf"]
     source_rows: list[dict[str, Any]] = []
     for col, environment in enumerate(environments):
@@ -914,22 +925,11 @@ def _figure5(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                         "source_status": frozen.get("status", "null"),
                     }
                 )
-            axes[0, col].text(
-                0.04, 0.05, "frozen external null", transform=axes[0, col].transAxes, fontsize=TEXT_SIZES["annotation"]
-            )
-            axes[0, col].set_title("MPE2 (frozen external null)", fontsize=TEXT_SIZES["panel"])
-            axes[1, col].set_title("MPE2 (frozen external null)", fontsize=TEXT_SIZES["panel"])
+            panel_title(axes[0, col], chr(ord("a") + col), "frozen external null")
             for axis in axes[:, col]:
                 axis.set_xticks([0], ["endpoint"])
                 axis.grid(axis="y", alpha=0.65)
             axes[1, col].set_ylim(-0.01, 0.01)
-            axes[1, col].text(
-                0.04,
-                0.82,
-                "CISR = 0 for both methods",
-                transform=axes[1, col].transAxes,
-                fontsize=TEXT_SIZES["annotation"],
-            )
             continue
         # The confirmatory transition stream retains one selected row per
         # seed/round.  Reconstruct cumulative trajectories from those rows,
@@ -1059,16 +1059,15 @@ def _figure5(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                         "frozen_external_null": False,
                     }
                 )
+        panel_title(axes[0, col], chr(ord("a") + col), environment.replace("_", " ").title())
+        axes[1, col].set_xlabel("round")
         for axis in axes[:, col]:
-            axis.set_xlabel("round")
-            axis.set_title(environment.replace("_", " ").title(), fontsize=TEXT_SIZES["panel"])
-            axis.grid(axis="y", alpha=0.65)
-    axes[0, 0].set_ylabel("cumulative true improvement (CTI)")
-    axes[1, 0].set_ylabel("cumulative selection regret (CISR)")
+            axis.grid(axis="y", alpha=0.42)
+    axes[0, 0].set_ylabel("Cumulative true\nimprovement (CTI)")
+    axes[1, 0].set_ylabel("Cumulative selection\nregret (CISR)")
     handles, labels_ = axes[0, 2].get_legend_handles_labels()
-    axes[0, 2].legend(handles, labels_, fontsize=TEXT_SIZES["legend"], loc="best")
-    figure.suptitle("Closed-loop validator outcomes: trajectory-level evidence", fontsize=TEXT_SIZES["title"])
-    figure.tight_layout(h_pad=1.0, w_pad=0.9)
+    figure_legend(figure, handles, labels_, ncol=4, y=1.01)
+    figure.subplots_adjust(top=0.84, bottom=0.14, left=0.14, right=0.99, hspace=0.36, wspace=0.42)
     return _bundle(
         root,
         output,
@@ -1119,6 +1118,8 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     figure, axes = plt.subplots(
         1, 3, figsize=figure_size("wide"), gridspec_kw={"width_ratios": [1.05, 0.9, 1.15]}
     )
+    for axis in axes:
+        style_axes(axis, grid_axis="y")
     # A: one light line per family-by-seed trace; summaries use matched seeds.
     x = np.arange(3)
     for row in cluster:
@@ -1147,14 +1148,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[0].axhline(0, color=COLORS["text"], lw=0.6, ls="--")
     axes[0].set_xticks(x, ["Proxy/direct\n(observer)", "Actor", "Strategic"])
     axes[0].set_ylabel(r"paired improvement $\Delta$")
-    axes[0].set_title("a  response layers")
-    axes[0].text(
-        0.03,
-        0.04,
-        f"{len(cluster)} family-seed traces\nsummary N={len(matched_seed_summary)} matched seeds",
-        transform=axes[0].transAxes,
-        fontsize=TEXT_SIZES["legend"],
-    )
+    panel_title(axes[0], "a", "response layers")
     # B: raw family-by-seed distributions with matched-seed summary intervals.
     effects = [
         np.asarray([row["delta_actor"] - row["delta_direct"] for row in cluster]),
@@ -1180,6 +1174,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             alpha=0.38,
             color=color,
             edgecolors="none",
+            rasterized=True,
         )
         low, high = _ci(summary_values, 610 + pos)
         mean = float(np.mean(summary_values))
@@ -1197,14 +1192,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[1].axhline(0, color=COLORS["text"], lw=0.6, ls="--")
     axes[1].set_xticks([0, 1], ["Actor\n- direct", "Strategic\n- actor"])
     axes[1].set_ylabel("layer effect")
-    axes[1].set_title("b  response-effect distribution")
-    axes[1].text(
-        0.03,
-        0.04,
-        "points: family-seed traces\nintervals: matched-seed bootstrap",
-        transform=axes[1].transAxes,
-        fontsize=TEXT_SIZES["annotation"],
-    )
+    panel_title(axes[1], "b", "response-effect distribution")
     # C: cluster-level strategic reversal plane.
     family_style = {
         "fixed": (COLORS["direct"], "o"),
@@ -1226,6 +1214,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             label=MODE_LABEL[mode],
             color=color,
             marker=marker,
+            rasterized=True,
         )
     lim = _safe_range(
         [*(row["delta_actor"] for row in cluster), *(row["delta_strategic"] for row in cluster)],
@@ -1239,7 +1228,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[2].set_ylim(lim)
     axes[2].set_xlabel(r"actor $\Delta$")
     axes[2].set_ylabel(r"strategic $\Delta$")
-    axes[2].set_title("c  strategic reversal plane")
+    panel_title(axes[2], "c", "Reversal plane")
     # Use the registered cluster-level SIRR (the same estimand reported in the
     # manuscript), rather than pooling transition rows with unequal eligibility.
     summary = _json(source_paths[1])["by_mode"]
@@ -1259,7 +1248,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     # Family identity is intentionally shown in the more expansive strategic
     # generalization figure.  A second legend here would overlap this panel's
     # title at two-column width.
-    figure.tight_layout(w_pad=1.0)
+    figure.subplots_adjust(top=0.86, bottom=0.19, left=0.08, right=0.99, wspace=0.38)
     out_rows = [{**row, "figure_panel": "cluster_layers"} for row in cluster]
     return _bundle(
         root,
@@ -1299,10 +1288,12 @@ def _figure7(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     figure, axes = plt.subplots(
         1, 3, figsize=figure_size("wide"), gridspec_kw={"width_ratios": [1.05, 1.05, 1.0]}
     )
+    for axis in axes:
+        style_axes(axis, grid_axis="y")
     y = np.arange(len(SPLIT_ORDER))
-    for axis, metric, title, xlabel in [
-        (axes[0], "isc_effect", "a  ISC effect", r"$ISC_{transition}-ISC_{global}$"),
-        (axes[1], "ide_gain", "b  IDE gain", r"$IDE_{global}-IDE_{transition}$"),
+    for axis, metric, label, title, xlabel in [
+        (axes[0], "isc_effect", "a", "ISC effect", r"$ISC_{transition}-ISC_{global}$"),
+        (axes[1], "ide_gain", "b", "IDE gain", r"$IDE_{global}-IDE_{transition}$"),
     ]:
         subset = [row for row in split_rows if row["metric"] == metric]
         estimates = np.asarray([row["estimate"] for row in subset])
@@ -1320,10 +1311,10 @@ def _figure7(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             ms=4.5,
         )
         axis.axvline(0, color=COLORS["text"], lw=0.65, ls="--")
-        axis.set_yticks(y, [SPLIT_LABEL[s] for s in SPLIT_ORDER])
+        axis.set_yticks(y, [SPLIT_LABEL[s] for s in SPLIT_ORDER] if axis is axes[0] else [""] * len(SPLIT_ORDER))
         axis.invert_yaxis()
         axis.set_xlabel(xlabel)
-        axis.set_title(title)
+        panel_title(axis, label, title)
     # C: direct paired scatter exposes the null heterogeneity without using a
     # bar chart or pretending the two families are independent seed draws.
     colors = {"bayesian_linear": COLORS["global"], "bootstrap_ensemble": COLORS["lucb"]}
@@ -1336,6 +1327,7 @@ def _figure7(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             color=colors.get(family, COLORS["proxy"]),
             marker=("o" if family == "bayesian_linear" else "s"),
             label=family.replace("_", " "),
+            rasterized=True,
         )
     limits = _safe_range(
         [
@@ -1349,9 +1341,10 @@ def _figure7(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[2].set_ylim(limits)
     axes[2].set_xlabel(r"$ISC_{global}$")
     axes[2].set_ylabel(r"$ISC_{transition}$")
-    axes[2].set_title("c  paired OOD reports")
-    axes[2].legend(fontsize=TEXT_SIZES["legend"], loc="upper left")
-    figure.tight_layout(w_pad=1.0)
+    panel_title(axes[2], "c", "OOD reports")
+    handles, labels_ = axes[2].get_legend_handles_labels()
+    figure_legend(figure, handles, labels_, ncol=2, y=1.01)
+    figure.subplots_adjust(top=0.81, bottom=0.22, left=0.18, right=0.99, wspace=0.55)
     return _bundle(
         root,
         output,
@@ -1377,6 +1370,8 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     for row in costs:
         row["delta_CISR"] = float(row["mean_CISR"]) - float(baseline["mean_CISR"])
     figure, axes = plt.subplots(1, 3, figsize=figure_size("wide"))
+    for axis in axes:
+        style_axes(axis, grid_axis="y")
     # Only aggregate group means were frozen for this robustness check.  Draw
     # the observed means, not pseudo-binomial intervals for a Jaccard score.
     p = np.asarray([float(row["selected_set_jaccard"]) for row in posterior])
@@ -1389,12 +1384,12 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     )
     axes[0].set_xlabel("posterior samples")
     axes[0].set_ylabel("query-set Jaccard\nvs 1024-sample reference", fontsize=TEXT_SIZES["axis"])
-    axes[0].set_title("a  Monte Carlo stability")
+    panel_title(axes[0], "a", "MC stability")
     axes[0].set_ylim(0, 1)
     axes[0].text(
         0.03,
         0.05,
-        f"mean across {int(posterior[0]['groups'])} calibration groups",
+        f"{int(posterior[0]['groups'])} calibration\ngroups",
         transform=axes[0].transAxes,
         fontsize=TEXT_SIZES["annotation"],
     )
@@ -1405,7 +1400,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[1].axvline(1, color=COLORS["grid"], lw=0.8, ls=":")
     axes[1].set_xlabel(r"assumed cost $\hat c/c$")
     axes[1].set_ylabel(r"$\Delta$CISR vs correct cost")
-    axes[1].set_title("b  decision degradation")
+    panel_title(axes[1], "b", "Regret sensitivity")
     axes[1].text(
         0.03, 0.05, f"group N={int(costs[0]['groups'])}", transform=axes[1].transAxes, fontsize=TEXT_SIZES["annotation"]
     )
@@ -1413,16 +1408,16 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[2].plot(c, p2, marker="s", color=COLORS["global"])
     axes[2].set_xlabel(r"assumed cost $\hat c/c$")
     axes[2].set_ylabel("query agreement")
-    axes[2].set_title("c  query stability")
+    panel_title(axes[2], "c", "query stability")
     axes[2].set_ylim(0, 1)
     axes[2].text(
         0.03,
         0.05,
-        f"mean across {int(costs[0]['groups'])} calibration groups",
+        f"{int(costs[0]['groups'])} calibration\ngroups",
         transform=axes[2].transAxes,
         fontsize=TEXT_SIZES["annotation"],
     )
-    figure.tight_layout(w_pad=1.0)
+    figure.subplots_adjust(top=0.81, bottom=0.22, left=0.13, right=0.99, wspace=0.65)
     return _bundle(
         root,
         output,
@@ -1460,6 +1455,8 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     figure, axes = plt.subplots(
         1, 3, figsize=figure_size("wide"), gridspec_kw={"width_ratios": [0.95, 1.0, 1.18]}
     )
+    for axis in axes:
+        style_axes(axis, grid_axis="y")
     distributions = [
         np.asarray([row["strategic_effect"] for row in clusters if row["opponent_mode"] == mode])
         for mode in MODE_ORDER
@@ -1512,7 +1509,7 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[0].set_xticks(positions, [short_labels[m] for m, _ in valid], fontsize=TEXT_SIZES["tick"])
     axes[0].tick_params(axis="x", pad=2)
     axes[0].set_ylabel(r"$\Delta_{strategic}-\Delta_{actor}$")
-    axes[0].set_title("a  effect distribution")
+    panel_title(axes[0], "a", "Effect distribution")
     # Forest panel includes a numeric effect, CI, and SIRR annotation in the source table.
     summary = _json(source_paths[1])["by_mode"]
     summary = [row for row in summary if row["opponent_mode"] in MODE_ORDER]
@@ -1531,20 +1528,11 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         lw=1.2,
     )
     axes[1].axvline(0, color=COLORS["text"], lw=0.6, ls="--")
-    axes[1].set_yticks(ys, [MODE_LABEL[str(row["opponent_mode"])] for row in summary], fontsize=TEXT_SIZES["tick"])
+    axes[1].set_yticks(ys, [short_labels[str(row["opponent_mode"])].replace("\n", " ") for row in summary], fontsize=TEXT_SIZES["tick"])
     axes[1].invert_yaxis()
-    axes[1].set_xlabel(r"mean strategic effect")
-    axes[1].set_title("b  opponent-family forest")
-    for y_, row in zip(ys, summary):
-        axes[1].text(
-            0.99,
-            y_,
-            f"SIRR {float(row['SIRR']):.2f} | N={int(row['cluster_n'])}",
-            transform=axes[1].get_yaxis_transform(),
-            ha="right",
-            va="center",
-            fontsize=TEXT_SIZES["legend"],
-        )
+    style_axes(axes[1], grid_axis="x")
+    axes[1].set_xlabel("Mean strategic effect")
+    panel_title(axes[1], "b", "Mean effect")
     # Reversal plane: color and marker encode opponent family without relying on color alone.
     family_style = {
         "fixed": (COLORS["direct"], "o"),
@@ -1566,6 +1554,7 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             label=MODE_LABEL[mode],
             color=color,
             marker=marker,
+            rasterized=True,
         )
     adaptive_summary = [
         row
@@ -1589,7 +1578,7 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[2].set_ylim(lim)
     axes[2].set_xlabel(r"actor $\Delta$")
     axes[2].set_ylabel(r"strategic $\Delta$")
-    axes[2].set_title("c  strategic reversal plane")
+    panel_title(axes[2], "c", "Reversal plane")
     axes[2].text(
         0.04,
         0.06,
@@ -1597,8 +1586,9 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         transform=axes[2].transAxes,
         fontsize=TEXT_SIZES["annotation"],
     )
-    axes[2].legend(fontsize=TEXT_SIZES["legend"], loc="upper left")
-    figure.tight_layout(w_pad=1.0)
+    handles, labels_ = axes[2].get_legend_handles_labels()
+    figure_legend(figure, handles, labels_, ncol=3, y=1.01)
+    figure.subplots_adjust(top=0.73, bottom=0.25, left=0.10, right=0.99, wspace=0.62)
     out_rows = clusters + [{**row, "figure_panel": "forest"} for row in summary]
     return _bundle(
         root,
@@ -1645,6 +1635,7 @@ def _figure_finance(root: Path, output: Path, source_paths: list[Path]) -> dict[
             }
         )
     figure, axis = plt.subplots(figsize=figure_size("wide"))
+    style_axes(axis, grid_axis="y")
     x = np.asarray(levels)
     mean_array = np.asarray(means)
     axis.plot(x, mean_array, marker="o", color=COLORS["actor"], lw=1.4, label="depth - replay")
@@ -1652,19 +1643,9 @@ def _figure_finance(root: Path, output: Path, source_paths: list[Path]) -> dict[
     axis.axhline(0, color=COLORS["text"], lw=0.6, ls="--")
     axis.set_xlabel("participation rate")
     axis.set_ylabel(r"mechanical effect $\Delta_{depth}-\Delta_{replay}$", labelpad=5)
-    axis.set_title("Finance boundary: observational footprint diagnostic", fontsize=TEXT_SIZES["title"])
-    axis.text(
-        0.98,
-        0.88,
-        "virtual fills; causal reversal\nnot identified",
-        transform=axis.transAxes,
-        fontsize=TEXT_SIZES["annotation"],
-        va="top",
-        ha="right",
-        bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.82, "pad": 1.5},
-    )
-    axis.legend(fontsize=TEXT_SIZES["legend"], loc="lower left", bbox_to_anchor=(0.01, 0.01))
-    figure.tight_layout(pad=0.9)
+    panel_title(axis, "", "observational footprint diagnostic")
+    figure_legend(figure, *axis.get_legend_handles_labels(), ncol=1, y=1.01)
+    figure.subplots_adjust(top=0.82, bottom=0.22, left=0.10, right=0.99)
     return _bundle(
         root,
         output,

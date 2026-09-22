@@ -17,7 +17,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from paper.figures.v10_style import COLORS, TEXT_SIZES, apply, figure_size
+from paper.figures.v10_style import COLORS, apply, figure_legend, figure_size, save, style_axes
 
 COMPARATORS = ("Uniform HF", "Calibrated PIVOT-KG")
 BOOTSTRAP_DRAWS = 4000
@@ -454,8 +454,8 @@ def build(root: Path) -> dict[str, Any]:
         raise ValueError("replication seed or budget contract failed")
     macros = []
     word = {1: "One", 2: "Two", 4: "Four"}
-    table = [r"\begin{tabular}{@{}llrrrrl@{}}", r"\toprule",
-             r"Cohort & HF budget & $n$ & Uniform ISR & PIVOT-KG ISR & Gain & 95\% CI \\", r"\midrule"]
+    table = [r"\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lcrrrl@{}}", r"\toprule",
+             r"Cohort & $B$ & Roots & Uniform ISR & PIVOT-KG ISR & \shortstack[l]{Uniform $-$ PIVOT\\{[95\% CI]}} \\", r"\midrule"]
     pairs = []
     all_audits = {**audits, "redesign": redesign}
     for name, audit in all_audits.items():
@@ -476,13 +476,13 @@ def build(root: Path) -> dict[str, Any]:
             macros += [f"\\newcommand{{\\{prefix}Budget{word[budget]}Contrast}}{{${mean:.4f}$}}",
                        f"\\newcommand{{\\{prefix}Budget{word[budget]}CI}}{{$[{lo:.4f},{hi:.4f}]$}}"]
             label = {"original": "Original", "replication": "Replication", "redesign": "Redesign (8)"}[name]
-            budget_label = ("4 (primary)" if name == "redesign" and budget == 4
-                            else "2 (primary)" if name != "redesign" and budget == 2
-                            else "2 (secondary)" if name == "redesign" and budget == 2
-                            else str(budget))
-            table.append(f"{label} & {budget_label} & {seed_count} & {c['uniform_ISR']:.4f} & {c['pivot_ISR']:.4f} & ${mean:.4f}$ & $[{lo:.4f},{hi:.4f}]$ " + r"\\")
+            is_primary = budget == (4 if name == "redesign" else 2)
+            budget_label = rf"\textbf{{{budget}}}" if is_primary else str(budget)
+            table.append(f"{label} & {budget_label} & {seed_count} & {c['uniform_ISR']:.4f} & {c['pivot_ISR']:.4f} & ${mean:.4f}$ $[{lo:.4f},{hi:.4f}]$ " + r"\\")
+        if name != "redesign":
+            table.append(r"\addlinespace[3pt]")
         pairs.extend({"cohort": name, **r} for r in audit.pop("paired_rows"))
-    table.extend([r"\bottomrule", r"\end{tabular}"])
+    table.extend([r"\bottomrule", r"\end{tabular*}"])
     (root / "paper/highway_results.tex").write_text("% Generated from hash-checked paired seed evidence.\n" + "\n".join(macros) + "\n")
     (root / "paper/tables/highway_results.tex").write_text("\n".join(table) + "\n")
     with (root / "paper/tables/highway_paired_contrasts.csv").open("w", newline="") as handle:
@@ -506,7 +506,8 @@ def _figure(root: Path, audits: dict[str, Any]) -> None:
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
     apply()
-    fig, ax = plt.subplots(figsize=figure_size("wide"), layout="constrained")
+    fig, ax = plt.subplots(figsize=figure_size("wide"))
+    style_axes(ax, grid_axis="y")
     styles = {
         "original": ("Original", COLORS["global"], "o", -0.08),
         "replication": ("Replication", COLORS["strategic"], "s", 0.0),
@@ -522,18 +523,20 @@ def _figure(root: Path, audits: dict[str, Any]) -> None:
                     color=color, fmt=marker,
                     capsize=3, markersize=4, linewidth=1.2)
     ax.axhline(0, color="#666666", linewidth=0.8, linestyle="--")
-    ax.set(xticks=[1, 2, 4], xticklabels=["1", "2 (primary)", "4 (secondary)"],
-           xlabel="Paired HF queries per decision", ylabel="Uniform ISR − PIVOT-KG ISR")
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(frameon=False, fontsize=TEXT_SIZES["legend"])
+    ax.set(
+        xticks=[1, 2, 4],
+        xticklabels=["B=1", "B=2", "B=4"],
+        xlabel="Paired HF queries per decision (B)",
+        ylabel="Uniform ISR − PIVOT-KG ISR",
+    )
+    figure_legend(fig, *ax.get_legend_handles_labels(), ncol=3, y=1.01)
+    fig.subplots_adjust(top=0.82, bottom=0.22, left=0.10, right=0.99)
     targets = (
         root / "paper/figures/revision/fig4_highway_budget",
         root / "paper/figures/fig4_highway_budget",
     )
     for target in targets:
-        target.parent.mkdir(parents=True, exist_ok=True)
-        fig.savefig(target.with_suffix(".pdf"), metadata={"CreationDate": None, "ModDate": None})
-        fig.savefig(target.with_suffix(".png"), dpi=220)
+        save(fig, target)
     plt.close(fig)
 
 
