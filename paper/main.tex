@@ -526,31 +526,24 @@ uncertainty that matters for the update decision, rather than whenever
 deployment response is large.
 
 \subsection{External Validation in HighwayEnv}
-We evaluate physically reactive HighwayEnv~\cite{highwayenv2018} with a fixed
-panel of five meta-actions. Each cohort fits PIVOT-KG on 20 calibration seeds
-and evaluates 60 disjoint test seeds. A budget counts candidate paired HF
-queries available at one decision root.
-
-In the original cohort, the two-query primary contrast is unresolved, while
-the four-query secondary contrast is positive. A fresh-seed replication uses
-new disjoint calibration/test cohorts with $B=2$ primary and $B=4$ secondary;
-both registered contrasts are unresolved. The external setting therefore
-reinforces the conditional nature of allocation gains rather than a uniform
-advantage. We then ran a separately registered redesign with eight distinct
-candidates, formed by crossing the four non-idle actions with early and late
-half-horizon windows. It uses 40 calibration and 120 disjoint test seeds,
-exact Uniform subset expectations, and exact affine-normal Gaussian KG; $B=4$
-is primary and $B=2$ is secondary. The redesign contrast is
-\HighwayRedesignBudgetFourContrast{} \HighwayRedesignBudgetFourCI{} at $B=4$
-and \HighwayRedesignBudgetTwoContrast{} \HighwayRedesignBudgetTwoCI{} at
-$B=2$, with every logical query implemented as a physical actor rollout and
-the full truth audit delayed until after each adaptive decision. This is
-external DEV evidence for the expanded candidate panel, not a universal
-advantage or a retroactive correction of the five-action result. Full results
-and both protocols are reported in
-Appendices~\ref{app:highway-replication} and \ref{app:highway-redesign}.
-Additional OOD-evaluator and public-data boundary analyses appear in
-Appendix~\ref{app:boundary}.
+To test PIVOT-KG in a physically reactive setting where high-fidelity
+evaluation is genuinely scarce relative to the candidate set, we use a
+separately registered HighwayEnv redesign with eight distinct scheduled
+candidates, formed by crossing four non-idle actions with early and late
+half-horizon windows. The redesign fits the correction model on 40 calibration
+roots and evaluates 120 disjoint test roots. At the preregistered primary
+budget $B=4$, PIVOT-KG reduces ISR relative to exact Uniform allocation by
+\HighwayRedesignBudgetFourContrast{} \HighwayRedesignBudgetFourCI{}; the
+secondary $B=2$ contrast is
+\HighwayRedesignBudgetTwoContrast{} \HighwayRedesignBudgetTwoCI{}. Uniform
+is averaged exactly over all feasible queried subsets, and each PIVOT query
+corresponds to a physical paired actor rollout. Earlier five-action cohorts
+were unresolved at their registered primary budgets and are reported in
+Appendix~\ref{app:highway-replication}. We therefore treat the redesign as
+external evidence that targeted validation can help when candidate-set
+structure creates a meaningful allocation problem, not as a universal
+HighwayEnv advantage. Additional OOD-evaluator and public-data boundary
+analyses appear in Appendix~\ref{app:boundary}.
 
 \section{Conclusion}
 An agent can be correct about the wrong world. This paper argues that reliable
@@ -569,12 +562,13 @@ Several boundaries remain. The direct, actor, and strategic response worlds
 cover selected forms of adaptation rather than all deployment dynamics, and
 the finite strategic fixtures are not equilibrium characterizations. PIVOT-KG
 also depends on the informativeness of HF evidence: limited budgets or noisy
-measurements can leave decision-relevant uncertainty unresolved. Finally, the
-fresh HighwayEnv replication is unresolved at its registered budgets, while
-the public-finance analysis is observational and does not identify a causal
-deployment response. The eight-candidate HighwayEnv redesign has a positive
-primary $B=4$ contrast, but its claim is limited to that registered panel and
-budget allocation.
+measurements can leave decision-relevant uncertainty unresolved. Finally,
+earlier five-action HighwayEnv cohorts are unresolved at their registered
+primary budgets, while the public-finance analysis is observational and does
+not identify a causal deployment response. The eight-candidate HighwayEnv
+redesign has a positive primary $B=4$ contrast in a panel deliberately large
+enough to create a nontrivial allocation problem, but its claim is limited to
+that registered panel and budget allocation.
 
 These boundaries point to richer response models, repeated settings in which
 the response itself evolves with the agent, and intervention-based HF evidence
@@ -616,7 +610,8 @@ authorization.
 The appendix follows the main evaluation. Appendix~\ref{app:fidelity-response}
 extends the response analyses from Section~6.2; Appendix~\ref{app:pivot-ext}
 contains detailed PIVOT-KG and robustness results supporting Sections~6.3--6.4;
-Appendix~\ref{app:highway-replication} collects the HighwayEnv replication;
+Appendix~\ref{app:highway-replication} collects the complete HighwayEnv
+historical-cohort and redesign audit;
 Appendix~\ref{app:boundary} reports boundary analyses; and
 Appendix~\ref{app:stats-repro} summarizes statistical and reproducibility
 details.
@@ -691,7 +686,7 @@ CISR denotes cumulative improvement-selection regret.
   \label{fig:robustness}
 \end{figure}
 
-\section{HighwayEnv Validation and Replication}\label{app:highway-replication}
+\section{HighwayEnv Validation, Replication, and Redesign}\label{app:highway-replication}
 The original and replication cohorts each contain 20 calibration and 60 test
 roots, with no overlap between cohorts. The replication freezes the five-action
 panel, four lanes, 20 traffic vehicles, horizon 20, and covariance shrinkage
