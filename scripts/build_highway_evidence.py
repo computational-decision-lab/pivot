@@ -13,6 +13,12 @@ from typing import Any
 
 import numpy as np
 
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from paper.figures.v10_style import COLORS, TEXT_SIZES, apply, figure_size
+
 COMPARATORS = ("Uniform HF", "Calibrated PIVOT-KG")
 BOOTSTRAP_DRAWS = 4000
 BOOTSTRAP_SEED_BASE = 20260922
@@ -449,7 +455,7 @@ def build(root: Path) -> dict[str, Any]:
     macros = []
     word = {1: "One", 2: "Two", 4: "Four"}
     table = [r"\begin{tabular}{@{}llrrrrl@{}}", r"\toprule",
-             r"Cohort & HF budget & $n$ & Uniform ISR & PIVOT ISR & Contrast & 95\% CI \\", r"\midrule"]
+             r"Cohort & HF budget & $n$ & Uniform ISR & PIVOT-KG ISR & Gain & 95\% CI \\", r"\midrule"]
     pairs = []
     all_audits = {**audits, "redesign": redesign}
     for name, audit in all_audits.items():
@@ -499,12 +505,12 @@ def _figure(root: Path, audits: dict[str, Any]) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    plt.rcParams.update({"font.family": "DejaVu Sans", "font.size": 9, "pdf.fonttype": 42})
-    fig, ax = plt.subplots(figsize=(6.2, 2.4), layout="constrained")
+    apply()
+    fig, ax = plt.subplots(figsize=figure_size("wide"), layout="constrained")
     styles = {
-        "original": ("Original", "#0072B2", "o", -0.08),
-        "replication": ("Replication", "#D55E00", "s", 0.0),
-        "redesign": ("Redesign (8)", "#009E73", "^", 0.08),
+        "original": ("Original", COLORS["global"], "o", -0.08),
+        "replication": ("Replication", COLORS["strategic"], "s", 0.0),
+        "redesign": ("Redesign (8)", COLORS["pivot"], "^", 0.08),
     }
     for name, audit in audits.items():
         values = audit["contrasts"]
@@ -519,7 +525,7 @@ def _figure(root: Path, audits: dict[str, Any]) -> None:
     ax.set(xticks=[1, 2, 4], xticklabels=["1", "2 (primary)", "4 (secondary)"],
            xlabel="Paired HF queries per decision", ylabel="Uniform ISR − PIVOT-KG ISR")
     ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(frameon=False, fontsize=8)
+    ax.legend(frameon=False, fontsize=TEXT_SIZES["legend"])
     targets = (
         root / "paper/figures/revision/fig4_highway_budget",
         root / "paper/figures/fig4_highway_budget",

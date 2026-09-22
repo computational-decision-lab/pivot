@@ -21,7 +21,15 @@ from typing import Any
 
 import numpy as np
 
-from paper.figures.v10_style import COLORS, apply, method_style, save
+from paper.figures.v10_style import (
+    COLORS,
+    STYLE_VERSION,
+    TEXT_SIZES,
+    apply,
+    figure_size,
+    method_style,
+    save,
+)
 
 MODE_ORDER = ["fixed", "reactive", "best_response", "gradient_adaptive", "rl_evolutionary"]
 MODE_LABEL = {
@@ -172,7 +180,7 @@ def _bundle(
             str(path.relative_to(root)): _sha256(path) for path in source_paths if path.is_file()
         },
         "analysis_script": "experiments/v10/figures.py",
-        "style_version": "pivot-v10-scientific-figure-suite-1",
+        "style_version": STYLE_VERSION,
         "generated_at": generated_at,
         "config_hashes": config_hashes,
         "git_commit": _commit(root),
@@ -324,7 +332,7 @@ def _architecture_bundle(root: Path, output: Path) -> dict[str, Any]:
             str(path.relative_to(root)): _sha256(path) for path in (source, source_pdf, source_svg)
         },
         "analysis_script": "scripts/build_opentikz_architecture.py",
-        "style_version": "pivot-v10-scientific-figure-suite-1",
+        "style_version": STYLE_VERSION,
         "generated_at": _generated_at(),
         "config_hashes": _config_hashes(root),
         "git_commit": _commit(root),
@@ -461,6 +469,22 @@ def build(root: Path) -> list[dict[str, Any]]:
     if paper_output.exists():
         shutil.rmtree(paper_output)
     shutil.copytree(output, paper_output)
+    # main.tex resolves its canonical submission assets directly from
+    # paper/figures. Mirror the generated V10/appendix aliases there so
+    # a rebuild cannot silently leave an older root-level PNG in the paper.
+    submission_stems = (
+        "fig1_improvement_reversal",
+        "fig2_operator_shift",
+        "fig4_evidence_efficiency",
+        "fig5_closed_loop",
+        "figA_response_footprint",
+        "figB_learned_ood_null",
+        "figC_posterior_robustness",
+        "figD_strategic_distribution",
+        "figE_finance_boundary",
+    )
+    for stem in submission_stems:
+        shutil.copyfile(output / f"{stem}.png", root / "paper/figures" / f"{stem}.png")
     return built
 
 
@@ -477,7 +501,7 @@ def _figure1(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         for environment in ("performative_control", "congestion_resource")
         if any(str(row["environment_id"]) == environment for row in rows)
     ]
-    figure, axes = plt.subplots(1, len(environments), figsize=(7.15, 2.35), squeeze=False)
+    figure, axes = plt.subplots(1, len(environments), figsize=figure_size("wide"), squeeze=False)
     axes_flat = list(axes[0])
     plot_rows: list[dict[str, Any]] = []
     for axis, environment in zip(axes_flat, environments):
@@ -515,14 +539,14 @@ def _figure1(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         axis.axvline(0, color=COLORS["text"], lw=0.55, ls="--")
         axis.set_xlim(low, high)
         axis.set_ylim(low, high)
-        axis.set_title(environment.replace("_", " ").title(), fontsize=8.3)
+        axis.set_title(environment.replace("_", " ").title(), fontsize=TEXT_SIZES["panel"])
         axis.set_xlabel(r"proxy improvement $\Delta_V$")
         axis.text(
             0.04,
             0.05,
             f"display n={len(subset)}\nIRR={np.mean(all_reversal):.2f} (all)",
             transform=axis.transAxes,
-            fontsize=6.3,
+            fontsize=TEXT_SIZES["annotation"],
         )
         displayed_ids = {id(row) for row in subset}
         # Keep every source transition in the auditable table.  The explicit
@@ -538,8 +562,8 @@ def _figure1(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             for row in all_subset
         )
     axes_flat[0].set_ylabel(r"deployment improvement $\Delta_*$")
-    axes_flat[0].legend(fontsize=6, loc="upper left")
-    figure.suptitle("Improvement reversal: proxy gains can fail after deployment", fontsize=9.5)
+    axes_flat[0].legend(fontsize=TEXT_SIZES["legend"], loc="upper left")
+    figure.suptitle("Improvement reversal: proxy gains can fail after deployment", fontsize=TEXT_SIZES["title"])
     figure.tight_layout(w_pad=1.0)
     return _bundle(
         root,
@@ -596,7 +620,7 @@ def _figure2(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                 "cell_n": len(subset),
             }
         )
-    figure, axes = plt.subplots(1, 3, figsize=(7.15, 2.25), sharex=True)
+    figure, axes = plt.subplots(1, 3, figsize=figure_size("wide"), sharex=True)
     colors = {"performative_control": COLORS["actor"], "congestion_resource": COLORS["strategic"]}
     for environment in sorted({str(row["environment_id"]) for row in rows}):
         subset = sorted(
@@ -609,7 +633,7 @@ def _figure2(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             x,
             [row["ide"] for row in subset],
             marker="o",
-            ms=3.5,
+            ms=4.0,
             color=color,
             label=environment.replace("_", " "),
         )
@@ -620,8 +644,8 @@ def _figure2(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             color=color,
             alpha=0.12,
         )
-        axes[1].plot(x, [row["global_rank"] for row in subset], marker="s", ms=3.3, color=color)
-        axes[2].plot(x, [row["irr"] for row in subset], marker="D", ms=3.2, color=color)
+        axes[1].plot(x, [row["global_rank"] for row in subset], marker="s", ms=4.0, color=color)
+        axes[2].plot(x, [row["irr"] for row in subset], marker="D", ms=4.0, color=color)
     axes[0].set_ylabel("IDE (operator-relative)")
     axes[1].set_ylabel("global Spearman")
     axes[2].set_ylabel("IRR")
@@ -631,8 +655,8 @@ def _figure2(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[0].set_title("a  update error")
     axes[1].set_title("b  global fidelity")
     axes[2].set_title("c  decision failure")
-    axes[0].legend(fontsize=5.8, loc="upper left")
-    figure.suptitle("Operator-relative shift changes update fidelity", fontsize=9.5)
+    axes[0].legend(fontsize=TEXT_SIZES["legend"], loc="upper left")
+    figure.suptitle("Operator-relative shift changes update fidelity", fontsize=TEXT_SIZES["title"])
     figure.tight_layout(w_pad=1.0)
     return _bundle(
         root,
@@ -661,7 +685,7 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         "global_voi": "Global-VOI",
         "pivot_voi": "PIVOT-KG",
     }
-    figure = plt.figure(figsize=(7.15, 4.25), constrained_layout=False)
+    figure = plt.figure(figsize=figure_size("wide_tall"), constrained_layout=False)
     grid = figure.add_gridspec(2, 2, height_ratios=[1.15, 0.95], hspace=0.48, wspace=0.30)
     axes = [figure.add_subplot(grid[0, 0]), figure.add_subplot(grid[0, 1])]
     forest_axis = figure.add_subplot(grid[1, :])
@@ -730,12 +754,12 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             source_rows.extend(
                 {**row, "figure_panel": environment, "K_primary": 8} for row in subset
             )
-        axis.set_title(environment.replace("_", " ").title(), fontsize=8.3)
+        axis.set_title(environment.replace("_", " ").title(), fontsize=TEXT_SIZES["panel"])
         axis.set_xlabel("mean HF cost")
         axis.set_ylabel("CISR")
         axis.grid(alpha=0.65)
     handles, labels_ = axes[1].get_legend_handles_labels()
-    axes[1].legend(handles, labels_, fontsize=6, loc="upper right")
+    axes[1].legend(handles, labels_, fontsize=TEXT_SIZES["legend"], loc="upper right")
     # Lower panel: paired, fixed-budget effects across candidate counts.  Each
     # interval is bootstrapped over trajectory seeds; no heterogeneous cells
     # are connected by a line.
@@ -803,22 +827,18 @@ def _figure4(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     forest_axis.set_yticks(
         fy,
         [f"{row['environment_id'].replace('_', ' ').title()}, K={row['K']}" for row in primary],
-        fontsize=6.8,
+        fontsize=TEXT_SIZES["tick"],
     )
     forest_axis.invert_yaxis()
     forest_axis.set_xlabel("CISR reduction: Proxy Only - PIVOT-KG")
     forest_axis.set_title(
-        f"c  registered paired effect at fixed HF budget {fixed_budget}", fontsize=8.3
+        f"c  registered paired effect at fixed HF budget {fixed_budget}",
+        fontsize=TEXT_SIZES["panel"],
     )
-    forest_axis.text(
-        0.01,
-        0.05,
-        "95% bootstrap CI; trajectory-seed unit",
-        transform=forest_axis.transAxes,
-        fontsize=6.5,
-    )
+    # The bootstrap unit is stated in the caption rather than inside the
+    # forest panel, where it competed with the y labels and x-axis.
     source_rows.extend({**row, "figure_panel": "forest"} for row in effect_rows)
-    figure.suptitle("Evidence efficiency varies by environment and candidate set", fontsize=9.5)
+    figure.suptitle("Evidence efficiency varies by environment and candidate set", fontsize=TEXT_SIZES["title"])
     figure.subplots_adjust(top=0.88, bottom=0.13, left=0.09, right=0.98)
     return _bundle(
         root,
@@ -843,7 +863,7 @@ def _figure5(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     transition_rows = (
         _jsonl_gz(source_paths[3]) if len(source_paths) > 3 and source_paths[3].is_file() else []
     )
-    figure, axes = plt.subplots(2, 3, figsize=(7.15, 3.95), squeeze=False)
+    figure, axes = plt.subplots(2, 3, figsize=figure_size("wide_tall"), squeeze=False)
     methods = ["proxy_only", "global_voi", "pivot_voi", "all_hf"]
     source_rows: list[dict[str, Any]] = []
     for col, environment in enumerate(environments):
@@ -895,10 +915,10 @@ def _figure5(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                     }
                 )
             axes[0, col].text(
-                0.04, 0.05, "frozen external null", transform=axes[0, col].transAxes, fontsize=6.3
+                0.04, 0.05, "frozen external null", transform=axes[0, col].transAxes, fontsize=TEXT_SIZES["annotation"]
             )
-            axes[0, col].set_title("MPE2 (frozen external null)", fontsize=8.3)
-            axes[1, col].set_title("MPE2 (frozen external null)", fontsize=8.3)
+            axes[0, col].set_title("MPE2 (frozen external null)", fontsize=TEXT_SIZES["panel"])
+            axes[1, col].set_title("MPE2 (frozen external null)", fontsize=TEXT_SIZES["panel"])
             for axis in axes[:, col]:
                 axis.set_xticks([0], ["endpoint"])
                 axis.grid(axis="y", alpha=0.65)
@@ -908,7 +928,7 @@ def _figure5(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                 0.82,
                 "CISR = 0 for both methods",
                 transform=axes[1, col].transAxes,
-                fontsize=6.2,
+                fontsize=TEXT_SIZES["annotation"],
             )
             continue
         # The confirmatory transition stream retains one selected row per
@@ -1041,13 +1061,13 @@ def _figure5(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                 )
         for axis in axes[:, col]:
             axis.set_xlabel("round")
-            axis.set_title(environment.replace("_", " ").title(), fontsize=8.3)
+            axis.set_title(environment.replace("_", " ").title(), fontsize=TEXT_SIZES["panel"])
             axis.grid(axis="y", alpha=0.65)
     axes[0, 0].set_ylabel("cumulative true improvement (CTI)")
     axes[1, 0].set_ylabel("cumulative selection regret (CISR)")
     handles, labels_ = axes[0, 2].get_legend_handles_labels()
-    axes[0, 2].legend(handles, labels_, fontsize=5.8, loc="best")
-    figure.suptitle("Closed-loop validator outcomes: trajectory-level evidence", fontsize=9.5)
+    axes[0, 2].legend(handles, labels_, fontsize=TEXT_SIZES["legend"], loc="best")
+    figure.suptitle("Closed-loop validator outcomes: trajectory-level evidence", fontsize=TEXT_SIZES["title"])
     figure.tight_layout(h_pad=1.0, w_pad=0.9)
     return _bundle(
         root,
@@ -1097,7 +1117,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         for _, subset in sorted(matched_by_seed.items())
     ]
     figure, axes = plt.subplots(
-        1, 3, figsize=(7.15, 2.35), gridspec_kw={"width_ratios": [1.05, 0.9, 1.15]}
+        1, 3, figsize=figure_size("wide"), gridspec_kw={"width_ratios": [1.05, 0.9, 1.15]}
     )
     # A: one light line per family-by-seed trace; summaries use matched seeds.
     x = np.arange(3)
@@ -1133,7 +1153,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         0.04,
         f"{len(cluster)} family-seed traces\nsummary N={len(matched_seed_summary)} matched seeds",
         transform=axes[0].transAxes,
-        fontsize=5.8,
+        fontsize=TEXT_SIZES["legend"],
     )
     # B: raw family-by-seed distributions with matched-seed summary intervals.
     effects = [
@@ -1183,7 +1203,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         0.04,
         "points: family-seed traces\nintervals: matched-seed bootstrap",
         transform=axes[1].transAxes,
-        fontsize=5.5,
+        fontsize=TEXT_SIZES["annotation"],
     )
     # C: cluster-level strategic reversal plane.
     family_style = {
@@ -1234,7 +1254,7 @@ def _figure6(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         0.05,
         f"adaptive family-mean\nSIRR={100 * sirr:.2f}%",
         transform=axes[2].transAxes,
-        fontsize=6.0,
+        fontsize=TEXT_SIZES["annotation"],
     )
     # Family identity is intentionally shown in the more expansive strategic
     # generalization figure.  A second legend here would overlap this panel's
@@ -1277,7 +1297,7 @@ def _figure7(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
                 }
             )
     figure, axes = plt.subplots(
-        1, 3, figsize=(7.15, 2.25), gridspec_kw={"width_ratios": [1.05, 1.05, 1.0]}
+        1, 3, figsize=figure_size("wide"), gridspec_kw={"width_ratios": [1.05, 1.05, 1.0]}
     )
     y = np.arange(len(SPLIT_ORDER))
     for axis, metric, title, xlabel in [
@@ -1330,7 +1350,7 @@ def _figure7(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[2].set_xlabel(r"$ISC_{global}$")
     axes[2].set_ylabel(r"$ISC_{transition}$")
     axes[2].set_title("c  paired OOD reports")
-    axes[2].legend(fontsize=5.8, loc="upper left")
+    axes[2].legend(fontsize=TEXT_SIZES["legend"], loc="upper left")
     figure.tight_layout(w_pad=1.0)
     return _bundle(
         root,
@@ -1356,7 +1376,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     baseline = next(row for row in costs if float(row["cost_multiplier"]) == 1.0)
     for row in costs:
         row["delta_CISR"] = float(row["mean_CISR"]) - float(baseline["mean_CISR"])
-    figure, axes = plt.subplots(1, 3, figsize=(7.15, 2.2))
+    figure, axes = plt.subplots(1, 3, figsize=figure_size("wide"))
     # Only aggregate group means were frozen for this robustness check.  Draw
     # the observed means, not pseudo-binomial intervals for a Jaccard score.
     p = np.asarray([float(row["selected_set_jaccard"]) for row in posterior])
@@ -1368,7 +1388,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         label="query-set agreement",
     )
     axes[0].set_xlabel("posterior samples")
-    axes[0].set_ylabel("query-set Jaccard\nvs 1024-sample reference", fontsize=7.4)
+    axes[0].set_ylabel("query-set Jaccard\nvs 1024-sample reference", fontsize=TEXT_SIZES["axis"])
     axes[0].set_title("a  Monte Carlo stability")
     axes[0].set_ylim(0, 1)
     axes[0].text(
@@ -1376,7 +1396,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         0.05,
         f"mean across {int(posterior[0]['groups'])} calibration groups",
         transform=axes[0].transAxes,
-        fontsize=6.0,
+        fontsize=TEXT_SIZES["annotation"],
     )
     c = np.asarray([float(row["cost_multiplier"]) for row in costs])
     d = np.asarray([float(row["delta_CISR"]) for row in costs])
@@ -1387,7 +1407,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
     axes[1].set_ylabel(r"$\Delta$CISR vs correct cost")
     axes[1].set_title("b  decision degradation")
     axes[1].text(
-        0.03, 0.05, f"group N={int(costs[0]['groups'])}", transform=axes[1].transAxes, fontsize=6.5
+        0.03, 0.05, f"group N={int(costs[0]['groups'])}", transform=axes[1].transAxes, fontsize=TEXT_SIZES["annotation"]
     )
     p2 = np.asarray([float(row["selected_query_jaccard"]) for row in costs])
     axes[2].plot(c, p2, marker="s", color=COLORS["global"])
@@ -1400,7 +1420,7 @@ def _figure8(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         0.05,
         f"mean across {int(costs[0]['groups'])} calibration groups",
         transform=axes[2].transAxes,
-        fontsize=6.0,
+        fontsize=TEXT_SIZES["annotation"],
     )
     figure.tight_layout(w_pad=1.0)
     return _bundle(
@@ -1438,7 +1458,7 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             }
         )
     figure, axes = plt.subplots(
-        1, 3, figsize=(7.15, 2.35), gridspec_kw={"width_ratios": [0.95, 1.0, 1.18]}
+        1, 3, figsize=figure_size("wide"), gridspec_kw={"width_ratios": [0.95, 1.0, 1.18]}
     )
     distributions = [
         np.asarray([row["strategic_effect"] for row in clusters if row["opponent_mode"] == mode])
@@ -1489,7 +1509,7 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         "gradient_adaptive": "Grad.",
         "rl_evolutionary": "RL/\nEvo.",
     }
-    axes[0].set_xticks(positions, [short_labels[m] for m, _ in valid], fontsize=5.5)
+    axes[0].set_xticks(positions, [short_labels[m] for m, _ in valid], fontsize=TEXT_SIZES["tick"])
     axes[0].tick_params(axis="x", pad=2)
     axes[0].set_ylabel(r"$\Delta_{strategic}-\Delta_{actor}$")
     axes[0].set_title("a  effect distribution")
@@ -1511,7 +1531,7 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         lw=1.2,
     )
     axes[1].axvline(0, color=COLORS["text"], lw=0.6, ls="--")
-    axes[1].set_yticks(ys, [MODE_LABEL[str(row["opponent_mode"])] for row in summary], fontsize=6.8)
+    axes[1].set_yticks(ys, [MODE_LABEL[str(row["opponent_mode"])] for row in summary], fontsize=TEXT_SIZES["tick"])
     axes[1].invert_yaxis()
     axes[1].set_xlabel(r"mean strategic effect")
     axes[1].set_title("b  opponent-family forest")
@@ -1523,7 +1543,7 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
             transform=axes[1].get_yaxis_transform(),
             ha="right",
             va="center",
-            fontsize=5.8,
+            fontsize=TEXT_SIZES["legend"],
         )
     # Reversal plane: color and marker encode opponent family without relying on color alone.
     family_style = {
@@ -1575,9 +1595,9 @@ def _figure9(root: Path, output: Path, source_paths: list[Path]) -> dict[str, An
         0.06,
         f"adaptive family-mean\nSIRR={100 * sirr:.2f}%",
         transform=axes[2].transAxes,
-        fontsize=5.7,
+        fontsize=TEXT_SIZES["annotation"],
     )
-    axes[2].legend(fontsize=5.4, loc="upper left")
+    axes[2].legend(fontsize=TEXT_SIZES["legend"], loc="upper left")
     figure.tight_layout(w_pad=1.0)
     out_rows = clusters + [{**row, "figure_panel": "forest"} for row in summary]
     return _bundle(
@@ -1624,7 +1644,7 @@ def _figure_finance(root: Path, output: Path, source_paths: list[Path]) -> dict[
                 "causal_impact_identified": False,
             }
         )
-    figure, axis = plt.subplots(figsize=(4.8, 2.35))
+    figure, axis = plt.subplots(figsize=figure_size("wide"))
     x = np.asarray(levels)
     mean_array = np.asarray(means)
     axis.plot(x, mean_array, marker="o", color=COLORS["actor"], lw=1.4, label="depth - replay")
@@ -1632,18 +1652,18 @@ def _figure_finance(root: Path, output: Path, source_paths: list[Path]) -> dict[
     axis.axhline(0, color=COLORS["text"], lw=0.6, ls="--")
     axis.set_xlabel("participation rate")
     axis.set_ylabel(r"mechanical effect $\Delta_{depth}-\Delta_{replay}$", labelpad=5)
-    axis.set_title("Finance boundary: observational footprint diagnostic", fontsize=9)
+    axis.set_title("Finance boundary: observational footprint diagnostic", fontsize=TEXT_SIZES["title"])
     axis.text(
         0.98,
         0.88,
         "virtual fills; causal reversal\nnot identified",
         transform=axis.transAxes,
-        fontsize=6.2,
+        fontsize=TEXT_SIZES["annotation"],
         va="top",
         ha="right",
         bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.82, "pad": 1.5},
     )
-    axis.legend(fontsize=6.2, loc="lower left", bbox_to_anchor=(0.01, 0.01))
+    axis.legend(fontsize=TEXT_SIZES["legend"], loc="lower left", bbox_to_anchor=(0.01, 0.01))
     figure.tight_layout(pad=0.9)
     return _bundle(
         root,

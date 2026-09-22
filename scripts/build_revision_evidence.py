@@ -18,10 +18,11 @@ from pathlib import Path
 from typing import Any
 
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 import numpy as np
+from matplotlib.lines import Line2D
 
 # Keep the standalone ``python scripts/...`` entry point importable without
 # relying on the paper build wrapper to export PYTHONPATH.
@@ -29,7 +30,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from paper.figures.v10_style import COLORS, apply
+from paper.figures.v10_style import COLORS, TEXT_SIZES, apply, figure_size
 
 ARCHIVE_SHA256 = "9bef1bdc271b8953603b14da83442cc9b219b51f78212e8974fe94a3203dbccf"
 REVIEW_SHA256 = "80b261ea7853704bf1ac0d5ce7dd07500cd669cefbf43763cbe0aa5598a9630b"
@@ -134,6 +135,38 @@ def primary(summary: dict[str, Any]) -> dict[str, Any]:
     return summary["hypotheses"]["H2_long_primary_gain_minus_comparator_cap192"]
 
 
+def render_main_results_table(
+    rows: dict[str, dict[str, Any]],
+    leduc_h2: dict[str, Any],
+    kuhn_h2: dict[str, Any],
+    v4_h2: dict[str, Any],
+    v4_one: dict[str, Any],
+    v4_short: dict[str, Any],
+) -> str:
+    """Render the manuscript table with explicit estimand semantics.
+
+    ``Gain`` is always Uniform ISR minus PIVOT-KG ISR, so positive values
+    have one interpretation across every row.  Priority is encoded in the
+    condition label rather than an opaque status column.
+    """
+
+    return "\n".join(
+        [
+            r"\begin{tabular}{@{}p{0.28\linewidth}rrrrp{0.15\linewidth}l@{}}",
+            r"\toprule",
+            r"World / condition & $n$ & Uniform ISR & PIVOT-KG ISR & Gain & 95\% CI & Interpretation \\",
+            r"\midrule",
+            f"Leduc, long / 2 queries (primary) & 30 & {fmt(rows['leduc_uniform']['mean_isr'])} & {fmt(rows['leduc_pivot']['mean_isr'])} & {fmt(leduc_h2['mean'])} & {interval(leduc_h2)} & positive " + r"\\",
+            f"Kuhn, long / 2 queries (primary) & 30 & {fmt(rows['kuhn_uniform']['mean_isr'])} & {fmt(rows['kuhn_pivot']['mean_isr'])} & {fmt(kuhn_h2['mean'])} & {interval(kuhn_h2)} & near-null " + r"\\",
+            f"Melting Pot, long / 2 queries (primary) & 30 & {fmt(rows['v4_uniform']['mean_isr'])} & {fmt(rows['v4_pivot']['mean_isr'])} & {fmt(v4_h2['mean'])} & {interval(v4_h2)} & unresolved " + r"\\",
+            f"Melting Pot, long / 1 query (secondary) & 30 & {fmt(rows['v4_uniform']['mean_isr'])} & {fmt(rows['v4_one_pivot']['mean_isr'])} & {fmt(v4_one['mean'])} & {interval(v4_one)} & positive " + r"\\",
+            f"Melting Pot, short / 5 queries (sec.) & 30 & {fmt(rows['v4_short_uniform']['mean_isr'])} & {fmt(rows['v4_short_pivot']['mean_isr'])} & {fmt(v4_short['mean'])} & {interval(v4_short)} & negative " + r"\\",
+            r"\bottomrule",
+            r"\end{tabular}",
+        ]
+    )
+
+
 def _bootstrap(values: list[float], draws: int = 10000, seed: int = 20260917) -> dict[str, float | int]:
     """Reproduce the registered root bootstrap from the sealed scored rows."""
     x = np.asarray(values, dtype=float)
@@ -143,7 +176,7 @@ def _bootstrap(values: list[float], draws: int = 10000, seed: int = 20260917) ->
         "mean": float(x.mean()),
         "lo": float(np.percentile(sample, 2.5)),
         "hi": float(np.percentile(sample, 97.5)),
-        "n": int(len(x)),
+        "n": len(x),
     }
 
 
@@ -315,7 +348,6 @@ def _decision_relevance(
             candidate_deployment = deployment[:-1]
             proxy_order = np.argsort(-candidate_proxy, kind="stable")
             deployment_order = np.argsort(-candidate_deployment, kind="stable")
-            proxy_top2 = {candidate_ids[int(index)] for index in proxy_order[:2]}
             deployment_top2 = {candidate_ids[int(index)] for index in deployment_order[:2]}
             decision_critical = {
                 candidate_ids[int(proxy_order[0])],
@@ -361,13 +393,17 @@ def _decision_relevance(
                 (int(item["adaptation"]), str(item["candidate"]), str(item["block"])): float(item["gap"])
                 for item in mechanism
             }
-            def squared_gap(adaptation: int) -> float:
+            def squared_gap(
+                adaptation: int,
+                gaps_local: dict[tuple[int, str, str], float] = gaps,
+                candidate_ids_local: tuple[int, ...] = tuple(candidate_ids),
+            ) -> float:
                 return float(
                     np.mean(
                         [
-                            gaps[(adaptation, str(candidate), block_a)]
-                            * gaps[(adaptation, str(candidate), block_b)]
-                            for candidate in candidate_ids
+                            gaps_local[(adaptation, str(candidate), block_a)]
+                            * gaps_local[(adaptation, str(candidate), block_b)]
+                            for candidate in candidate_ids_local
                             for block_a, block_b in (("A", "B"),)
                         ]
                     )
@@ -684,6 +720,7 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
         "v4_all": method(v4, 32, "all_hf_reference"),
         "v4_nohf": method(v4, 32, "no_hf_v2"),
         "v4_one_pivot": method(v4, 32, "pivot_kg", 96),
+        "v4_short_uniform": method(v4, 4, "uniform_v2"),
         "v4_short_pivot": method(v4, 4, "pivot_kg"),
     }
 
@@ -868,21 +905,7 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
         writer.writeheader()
         writer.writerows(decision_relevance["rows"])
 
-    main_table = "\n".join(
-        [
-            r"\begin{tabular}{@{}lrrrrl@{}}",
-            r"\toprule",
-            r"World / condition & $n$ & PIVOT--Uniform & 95\% CI & PIVOT ISR & Status \\",
-            r"\midrule",
-            f"Leduc, long / 2 queries & 30 & {fmt(leduc_h2['mean'])} & {interval(leduc_h2)} & {fmt(rows['leduc_pivot']['mean_isr'])} & primary positive " + r"\\",
-            f"Kuhn, long / 2 queries & 30 & {fmt(kuhn_h2['mean'])} & {interval(kuhn_h2)} & {fmt(rows['kuhn_pivot']['mean_isr'])} & near-null " + r"\\",
-            f"Melting Pot, long / 2 queries & 30 & {fmt(v4_h2['mean'])} & {interval(v4_h2)} & {fmt(rows['v4_pivot']['mean_isr'])} & primary null " + r"\\",
-            f"Melting Pot, long / 1 query & 30 & {fmt(v4_one['mean'])} & {interval(v4_one)} & {fmt(rows['v4_one_pivot']['mean_isr'])} & secondary positive " + r"\\",
-            f"Melting Pot, short / 5 queries & 30 & {fmt(v4_short['mean'])} & {interval(v4_short)} & {fmt(rows['v4_short_pivot']['mean_isr'])} & negative " + r"\\",
-            r"\bottomrule",
-            r"\end{tabular}",
-        ]
-    )
+    main_table = render_main_results_table(rows, leduc_h2, kuhn_h2, v4_h2, v4_one, v4_short)
     (tables / "revision_main_results.tex").write_text(main_table + "\n", encoding="utf-8")
 
     method_table = "\n".join(
@@ -909,27 +932,27 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
         "Kuhn": COLORS["cohort_kuhn"],
         "Melting Pot": COLORS["cohort_melting_pot"],
     }
-    fig = plt.figure(figsize=(7.0, 5.35))
+    fig = plt.figure(figsize=figure_size("wide_tall"))
     grid = fig.add_gridspec(2, 6, height_ratios=[0.85, 1.75], hspace=0.44, wspace=0.48)
 
     ax_gap = fig.add_subplot(grid[0, 0:2])
     ax_gap.axis("off")
-    ax_gap.set_title("a  Response magnitude", loc="left", fontsize=8.5, fontweight="bold")
-    ax_gap.text(0.0, 0.82, "within-root normalized gap [95% CI]", fontsize=6.5, color=COLORS["direct"])
+    ax_gap.set_title("a  Response magnitude", loc="left", fontsize=TEXT_SIZES["panel"], fontweight="bold")
+    ax_gap.text(0.0, 0.82, "within-root normalized gap [95% CI]", fontsize=TEXT_SIZES["annotation"], color=COLORS["direct"])
     for y_value, cohort in zip((0.61, 0.36, 0.11), cohorts):
         item = decision_relevance["cohorts"][cohort]["normalized_response_gap"]
-        ax_gap.text(0.0, y_value, cohort, color=palette[cohort], fontsize=7.5, fontweight="bold")
+        ax_gap.text(0.0, y_value, cohort, color=palette[cohort], fontsize=TEXT_SIZES["axis"], fontweight="bold")
         ax_gap.text(
             0.98,
             y_value,
             f"{item['mean']:.2f} [{item['lo']:.2f}, {item['hi']:.2f}]",
             ha="right",
-            fontsize=7.2,
+            fontsize=TEXT_SIZES["axis"],
         )
 
     y = np.arange(len(cohorts))
     ax_flip = fig.add_subplot(grid[0, 2:4])
-    ax_flip.set_title("b  Top-1 ranking flips", loc="left", fontsize=8.5, fontweight="bold")
+    ax_flip.set_title("b  Top-1 ranking flips", loc="left", fontsize=TEXT_SIZES["panel"], fontweight="bold")
     rates = [decision_relevance["cohorts"][cohort]["top1_flip_rate"] for cohort in cohorts]
     means = np.asarray([item["mean"] for item in rates])
     lows = np.asarray([item["lo"] for item in rates])
@@ -944,15 +967,15 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
         linewidth=0.8,
     )
     ax_flip.scatter(means, y, c=[palette[name] for name in cohorts], s=24, zorder=3)
-    ax_flip.set_yticks(y, cohorts, fontsize=7)
+    ax_flip.set_yticks(y, cohorts, fontsize=TEXT_SIZES["tick"])
     ax_flip.set_xlim(0, 1)
-    ax_flip.set_xlabel("fraction of roots", fontsize=7)
-    ax_flip.tick_params(axis="x", labelsize=6.5)
+    ax_flip.set_xlabel("fraction of roots", fontsize=TEXT_SIZES["axis"])
+    ax_flip.tick_params(axis="x", labelsize=TEXT_SIZES["tick"])
     ax_flip.grid(axis="x", alpha=0.2)
     ax_flip.invert_yaxis()
 
     ax_value = fig.add_subplot(grid[0, 4:6])
-    ax_value.set_title("c  Allocation value", loc="left", fontsize=8.5, fontweight="bold")
+    ax_value.set_title("c  Allocation value", loc="left", fontsize=TEXT_SIZES["panel"], fontweight="bold")
     all_gain = []
     for index, cohort in enumerate(cohorts):
         values = [
@@ -975,14 +998,14 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
         linewidth=0.8,
     )
     ax_value.scatter(means, y, c=[palette[name] for name in cohorts], s=24, zorder=3)
-    ax_value.set_yticks(y, cohorts, fontsize=7)
-    ax_value.set_xlabel("normalized ISR reduction", fontsize=7)
-    ax_value.tick_params(axis="x", labelsize=6.5)
+    ax_value.set_yticks(y, cohorts, fontsize=TEXT_SIZES["tick"])
+    ax_value.set_xlabel("normalized ISR reduction", fontsize=TEXT_SIZES["axis"])
+    ax_value.tick_params(axis="x", labelsize=TEXT_SIZES["tick"])
     ax_value.grid(axis="x", alpha=0.2)
     ax_value.invert_yaxis()
 
     ax_scatter = fig.add_subplot(grid[1, 0:3])
-    ax_scatter.set_title("d  Root-level decision relevance", loc="left", fontsize=8.5, fontweight="bold")
+    ax_scatter.set_title("d  Root-level decision relevance", loc="left", fontsize=TEXT_SIZES["panel"], fontweight="bold")
     for cohort in cohorts:
         cohort_rows = [row for row in decision_relevance["rows"] if row["cohort"] == cohort]
         ax_scatter.scatter(
@@ -998,13 +1021,13 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
     ax_scatter.axvline(1.0, color=COLORS["text"], linestyle="--", linewidth=0.8, label="top-1 flip boundary")
     ax_scatter.axhline(0.0, color=COLORS["text"], linewidth=0.7)
     ax_scatter.set_xscale("symlog", linthresh=1.0, linscale=0.6)
-    ax_scatter.set_xlabel("pairwise correction / deployment margin", fontsize=8)
-    ax_scatter.set_ylabel("(Uniform ISR - PIVOT-KG ISR) / deployment range", fontsize=8)
-    ax_scatter.tick_params(labelsize=7)
+    ax_scatter.set_xlabel("pairwise correction / deployment margin", fontsize=TEXT_SIZES["axis"])
+    ax_scatter.set_ylabel("(Uniform ISR - PIVOT-KG ISR) / deployment range", fontsize=TEXT_SIZES["axis"])
+    ax_scatter.tick_params(labelsize=TEXT_SIZES["tick"])
     ax_scatter.grid(alpha=0.16)
     ax_scatter.legend(
         ncol=2,
-        fontsize=5.5,
+        fontsize=TEXT_SIZES["legend"],
         loc="lower left",
         frameon=True,
         framealpha=0.88,
@@ -1016,7 +1039,7 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
     )
 
     ax_resolve = fig.add_subplot(grid[1, 3:6])
-    ax_resolve.set_title("e  HF resolvability", loc="left", fontsize=8.5, fontweight="bold")
+    ax_resolve.set_title("e  HF resolvability", loc="left", fontsize=TEXT_SIZES["panel"], fontweight="bold")
     for cohort in cohorts:
         cohort_rows = [row for row in decision_relevance["rows"] if row["cohort"] == cohort]
         for hit, marker in ((True, "o"), (False, "D")):
@@ -1047,9 +1070,9 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
     ax_resolve.axvline(1.0, color=COLORS["text"], linestyle="--", linewidth=0.8)
     ax_resolve.axhline(0.0, color=COLORS["text"], linewidth=0.7)
     ax_resolve.set_xscale("symlog", linthresh=1.0, linscale=0.6)
-    ax_resolve.set_xlabel("queried HF noise / proxy top-2 margin", fontsize=7.5)
-    ax_resolve.set_ylabel("normalized ISR reduction", fontsize=7.5)
-    ax_resolve.tick_params(labelsize=6.5)
+    ax_resolve.set_xlabel("queried HF noise / proxy top-2 margin", fontsize=TEXT_SIZES["axis"])
+    ax_resolve.set_ylabel("normalized ISR reduction", fontsize=TEXT_SIZES["axis"])
+    ax_resolve.tick_params(labelsize=TEXT_SIZES["tick"])
     ax_resolve.grid(alpha=0.16)
     cohort_handles = [
         Line2D(
@@ -1093,8 +1116,8 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
         handles=cohort_handles,
         title="cohort",
         ncol=1,
-        fontsize=5.4,
-        title_fontsize=5.4,
+        fontsize=TEXT_SIZES["legend"],
+        title_fontsize=TEXT_SIZES["legend"],
         loc="upper left",
         bbox_to_anchor=(0.015, 0.985),
         frameon=True,
@@ -1110,8 +1133,8 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
         handles=state_handles,
         title="query status",
         ncol=1,
-        fontsize=5.2,
-        title_fontsize=5.2,
+        fontsize=TEXT_SIZES["legend"],
+        title_fontsize=TEXT_SIZES["legend"],
         loc="lower left",
         bbox_to_anchor=(0.015, 0.02),
         frameon=True,
@@ -1138,7 +1161,7 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
         ("Melting Pot v4", "PIVOT", rows["v4_pivot"]),
         ("Melting Pot v4", "all HF", rows["v4_all"]),
     ]
-    fig, axes = plt.subplots(1, 2, figsize=(6.8, 2.8))
+    fig, axes = plt.subplots(1, 2, figsize=figure_size("wide"))
     colors = {
         "Leduc": COLORS["cohort_leduc"],
         "Melting Pot v4": COLORS["cohort_melting_pot"],
@@ -1146,8 +1169,14 @@ def build(root: Path, evidence: Path) -> dict[str, Any]:
     for ax, cohort in zip(axes, ("Leduc", "Melting Pot v4")):
         for _, label, row in [item for item in point_rows if item[0] == cohort]:
             ax.scatter(row["mean_hf_episode_cost"], row["mean_isr"], color=colors[cohort], s=26)
-            ax.annotate(label, (row["mean_hf_episode_cost"], row["mean_isr"]), xytext=(3, 3), textcoords="offset points", fontsize=6)
-        ax.set_title(cohort, fontsize=8.5)
+            ax.annotate(
+                label,
+                (row["mean_hf_episode_cost"], row["mean_isr"]),
+                xytext=(3, 3),
+                textcoords="offset points",
+                fontsize=TEXT_SIZES["annotation"],
+            )
+        ax.set_title(cohort, fontsize=TEXT_SIZES["panel"])
         ax.set_xlabel("HF cost")
         ax.grid(alpha=0.2)
     axes[0].set_ylabel("Selection regret")

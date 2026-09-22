@@ -46,7 +46,8 @@ Self-improving agents often select policy updates using cheap verifiers, but dep
 
 Self-improvement is usually written as a loop: generate candidates, score
 them, promote one, and repeat. A self-improving agent ultimately deploys a
-policy replacement, not an isolated policy value. In a trading system, a
+A self-improvement update is a replacement operation, not an isolated policy
+value. In a trading system, a
 larger order changes liquidity; in an auction, a bid changes rivals'
 responses; in a recommender, a policy changes future user behavior. A verifier
 can therefore rank policies correctly while ranking improvements incorrectly.
@@ -407,7 +408,7 @@ Uniform; matched-cost analyses additionally include Proxy Only, Global-VOI,
 Paired LUCB, and an all-HF reference where applicable. HighwayEnv is evaluated
 separately as a physically reactive external setting. Reported bootstrap
 intervals resample the corresponding inferential unit. Additional statistical
-and reproducibility details appear in Appendix~\ref{app:stats-repro}.
+and reproducibility details are included in the supplement.
 
 \subsection{Improvement Fidelity under Operator Shift and Deployment Response}
 Two mechanisms can break update-level fidelity. Operator shift changes the
@@ -497,9 +498,11 @@ a larger response gap does not by itself create allocation value.
 
 \begin{table}[H]
   \centering\scriptsize
-  \caption{Sealed response-world allocation contrasts. Entries are paired
-  PIVOT-KG minus Uniform gains with root-bootstrap 95\% intervals; primary and
-  secondary conditions are shown together.}\label{tab:latest-main}
+  \caption{Sealed response-world allocation contrasts. Uniform ISR and
+  PIVOT-KG ISR are mean improvement-selection regrets; Gain is Uniform ISR
+  minus PIVOT-KG ISR, so positive values favor PIVOT-KG. Intervals are
+  root-bootstrap 95\% intervals. Primary/secondary identify preregistered
+  priority, not a separate significance test.}\label{tab:latest-main}
   \input{tables/revision_main_results.tex}
 \end{table}
 
@@ -517,7 +520,7 @@ Appendix~\ref{app:pivot-ext}.
   \includegraphics[width=\linewidth]{fig4_evidence_efficiency.png}
   \caption{Evidence-efficiency frontier. Matched-cost curves and the
   fixed-budget forest report selection-regret reduction; the all-HF line is a
-  reference. Intervals are seed bootstraps.}
+  reference. Intervals are bootstrap intervals over trajectory seeds.}
   \label{fig:efficiency}
 \end{figure}
 
@@ -525,7 +528,7 @@ Overall, PIVOT-KG is useful when the available HF evidence can resolve
 uncertainty that matters for the update decision, rather than whenever
 deployment response is large.
 
-\subsection{External Validation in HighwayEnv}
+\subsection{Stress Tests Beyond Controlled Environments: HighwayEnv}
 To test PIVOT-KG in a physically reactive setting where high-fidelity
 evaluation is genuinely scarce relative to the candidate set, we use a
 separately registered HighwayEnv redesign with eight distinct scheduled
@@ -612,9 +615,8 @@ extends the response analyses from Section~6.2; Appendix~\ref{app:pivot-ext}
 contains detailed PIVOT-KG and robustness results supporting Sections~6.3--6.4;
 Appendix~\ref{app:highway-replication} collects the complete HighwayEnv
 historical-cohort and redesign audit;
-Appendix~\ref{app:boundary} reports boundary analyses; and
-Appendix~\ref{app:stats-repro} summarizes statistical and reproducibility
-details.
+Appendix~\ref{app:boundary} reports boundary analyses. The supplement
+contains the statistical and reproducibility details, including raw sampled reversal-rate cells and operator-shift cells.
 
 \section{Extended Fidelity and Response Analyses}\label{app:fidelity-response}
 The main text separates operator shift from policy-induced deployment response.
@@ -728,7 +730,8 @@ query/truth ledgers, and independent table/figure audit.
   \centering\scriptsize
   \caption{Original HighwayEnv study, fresh-seed replication, and the
   eight-candidate redesign. $B$ counts candidate paired HF queries per
-  decision. Positive contrasts favor PIVOT-KG; intervals are paired 95\%
+  decision. Gain is Uniform ISR minus PIVOT-KG ISR, so positive values favor
+  PIVOT-KG; intervals are paired 95\%
   bootstrap intervals. $B=2$ is primary in the original/replication cohorts;
   $B=4$ is primary in the redesign.}
   \label{tab:highway-budget}
@@ -740,7 +743,7 @@ query/truth ledgers, and independent table/figure audit.
   \includegraphics[width=0.88\linewidth]{fig4_highway_budget.pdf}
   \caption{HighwayEnv paired allocation contrasts across the historical,
   fresh-seed, and eight-candidate redesign cohorts. Positive
-  Uniform-minus-PIVOT ISR favors PIVOT-KG; error bars are individual 95\%
+  Uniform-minus-PIVOT ISR favors PIVOT-KG; error bars are paired 95\%
   bootstrap intervals over the registered test seeds.}
   \label{fig:highway-budget}
 \end{figure}
@@ -784,17 +787,6 @@ different policy, so this analysis serves as an observational boundary check.
 \caption{Public-data boundary summary.}\label{tab:public-boundary}
 \input{tables/public_results.tex}
 \end{table}
-
-\section{Statistical and Reproducibility Details}\label{app:stats-repro}
-The release includes frozen source snapshots, result manifests, figure assets,
-source tables, and analysis scripts. Metadata record the unit of inference and
-distinguish descriptive spans from bootstrap intervals. The canonical metric
-implementation is the frozen statistics module. Closed-loop CTI/CISR values
-sum over rounds, whereas the budget frontier is a one-set ($T=1$) selection
-problem, so their scales are reported separately. Internal experiment
-identifiers, configuration digests, exact source hashes, and raw sampled
-operator-shift cells are retained in the supplement and figure metadata for
-audit.
 
 \begin{table}[H]
 \centering\scriptsize

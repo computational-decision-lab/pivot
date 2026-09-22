@@ -14,7 +14,29 @@ import matplotlib as mpl
 
 # These tokens mirror paper/figures/scientific_figure_style.json, a checked-in
 # snapshot of the scientific-figure-skills universal high-impact profile.
-STYLE_VERSION = "pivot-v10-scientific-figure-suite-1"
+STYLE_VERSION = "pivot-v11-scientific-figure-suite-1"
+
+# Figure dimensions are specified in inches so that the same canvas is used
+# for the PDF, SVG, and PNG exports.  They correspond to the ICLR single- and
+# double-column widths while leaving a small, deterministic caption gutter.
+FIGURE_SIZES: dict[str, tuple[float, float]] = {
+    "single": (3.35, 2.35),
+    "wide": (7.15, 2.55),
+    "wide_tall": (7.15, 4.05),
+    "appendix": (7.15, 2.55),
+}
+
+# Explicit text tokens prevent one-off fontsize values from drifting between
+# the canonical V10 builders and the revision/Highway builders.
+TEXT_SIZES: dict[str, float] = {
+    "base": 8.0,
+    "title": 9.0,
+    "panel": 8.2,
+    "axis": 7.6,
+    "tick": 7.0,
+    "legend": 6.8,
+    "annotation": 6.6,
+}
 COLORS = {
     "proxy": "#6B7280",
     "global": "#0072B2",
@@ -45,7 +67,7 @@ METHOD_STYLE = {
     "global_voi": {"label": "Global-VOI", "color": COLORS["global"], "marker": "s", "ls": ":"},
     "paired_lucb": {"label": "Paired LUCB", "color": COLORS["lucb"], "marker": "^", "ls": "-."},
     "pivot_voi": {"label": "PIVOT-KG", "color": COLORS["pivot"], "marker": "D", "ls": "-"},
-        "all_hf": {"label": "All-HF reference", "color": COLORS["oracle"], "marker": "x", "ls": "--"},
+    "all_hf": {"label": "All-HF reference", "color": COLORS["oracle"], "marker": "x", "ls": "--"},
 }
 
 
@@ -55,12 +77,15 @@ def apply() -> None:
     mpl.rcParams.update(
         {
             "font.family": "DejaVu Sans",
-            "font.size": 8,
-            "axes.labelsize": 8,
-            "axes.titlesize": 8.5,
-            "xtick.labelsize": 7,
-            "ytick.labelsize": 7,
-            "legend.fontsize": 6.5,
+            "font.sans-serif": ["DejaVu Sans"],
+            "mathtext.fontset": "dejavusans",
+            "mathtext.default": "regular",
+            "font.size": TEXT_SIZES["base"],
+            "axes.labelsize": TEXT_SIZES["axis"],
+            "axes.titlesize": TEXT_SIZES["panel"],
+            "xtick.labelsize": TEXT_SIZES["tick"],
+            "ytick.labelsize": TEXT_SIZES["tick"],
+            "legend.fontsize": TEXT_SIZES["legend"],
             "axes.linewidth": 0.7,
             "axes.edgecolor": COLORS["text"],
             "axes.spines.top": False,
@@ -78,7 +103,7 @@ def apply() -> None:
             "svg.fonttype": "none",
             # Matplotlib otherwise generates random SVG element identifiers,
             # which makes byte-identical figure rebuilds impossible.
-            "svg.hashsalt": "pivot-v10-scientific-figure-suite-1",
+            "svg.hashsalt": STYLE_VERSION,
             "pdf.fonttype": 42,
             "savefig.bbox": "tight",
             "savefig.pad_inches": 0.04,
@@ -96,6 +121,15 @@ def save(figure: Any, stem: Path, formats: Iterable[str] = ("pdf", "svg", "png")
         figure.savefig(target, dpi=320, bbox_inches="tight", pad_inches=0.04)
         outputs.append(target)
     return outputs
+
+
+def figure_size(kind: str) -> tuple[float, float]:
+    """Return a registered canvas size and reject accidental one-off sizes."""
+
+    try:
+        return FIGURE_SIZES[kind]
+    except KeyError as error:
+        raise ValueError(f"unknown publication figure size: {kind}") from error
 
 
 def method_style(method: str) -> dict[str, str]:
