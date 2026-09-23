@@ -38,76 +38,143 @@
 \maketitle
 
 \begin{abstract}
-Self-improving agents often select policy updates using cheap verifiers, but deploying an update can change the environment and the behavior of other agents. We formalize this mismatch through \emph{Improvement Fidelity}, which asks whether proxy improvement preserves the sign and ordering of deployment improvement over the updates an improvement process actually proposes. Our analysis shows that strong global policy evaluation need not imply reliable update evaluation: operator shift and deployment response can create local fidelity errors, while only errors large relative to candidate margins can change the selected update. We introduce PIVOT-KG, a paired differential validator that estimates the correction between proxy and deployment improvement and allocates a fixed high-fidelity evaluation budget by expected reduction in update-selection regret per unit cost. Across controlled response worlds and 90 held-out decision roots, global policy ranking can remain stable as update-level fidelity deteriorates, and proxy and deployment top-1 updates disagree in 51 of 90 roots. Yet response magnitude and ranking flips alone do not predict validation value: PIVOT-KG helps when high-fidelity evidence can resolve uncertainty that matters for the update decision. These results identify Improvement Fidelity and decision-relevant validation as central to reliable self-improvement in adaptive worlds.
+Self-improving agents often choose policy updates with cheap verifiers and
+then deploy them in environments that respond to the chosen policy. This
+creates a transition-level failure mode: a verifier can rank policies well
+globally yet rank the candidate updates that matter for self-improvement
+incorrectly. We formalize this gap as \emph{Improvement Fidelity}, which asks
+whether proxy improvements preserve the sign and ordering of deployment
+improvements over the updates actually proposed by an improvement process.
+We show that global policy accuracy does not guarantee update fidelity:
+operator shift can concentrate evaluation error on proposed transitions,
+deployment response can change candidate value after deployment, and only
+errors large relative to candidate margins can alter the update decision.
+Motivated by this structure, we introduce PIVOT-KG, a paired,
+decision-aware validator that allocates scarce high-fidelity evaluations by
+their expected reduction in update-selection regret per unit cost. Across
+controlled response worlds and 90 sealed decision roots in Leduc, Kuhn, and
+Melting Pot, proxy and deployment evaluation select different top-1 updates
+in 51 cases even when global policy ranking remains comparatively stable.
+The value of additional validation is not determined by response magnitude
+or ranking flips alone, but by whether high-fidelity evidence can resolve
+decision-critical uncertainty. In an eight-candidate HighwayEnv stress test,
+PIVOT-KG reduces mean improvement-selection regret from 0.0435 under exact
+uniform allocation to 0.0055 at the primary budget. These results suggest
+that reliable self-improvement requires fidelity of proposed improvements,
+not merely accurate evaluation of policies in a fixed proxy world.
 \end{abstract}
 
 
 \section{Introduction}
 
-Self-improvement is usually written as a loop: generate candidates, score
-them, promote one, and repeat.
-A self-improvement update is a replacement operation, not an isolated policy
-value. In a trading system, a
-larger order changes liquidity; in an auction, a bid changes rivals'
-responses; in a recommender, a policy changes future user behavior. A verifier
-can therefore rank policies correctly while ranking improvements incorrectly.
-High-fidelity deployment tests can expose the error, but they are often too
-costly to run on every candidate.
+Self-improving agents repeatedly propose candidate policies, evaluate them
+with a verifier, and deploy a replacement. This loop implicitly assumes that
+an update judged better under the verifier remains better after deployment.
+In adaptive environments, that assumption can fail. A lane change alters the
+trajectories of nearby vehicles; an action in a multi-agent game changes how
+other agents respond; a recommender changes the behavior that generates its
+future data. Deploying a candidate can therefore change the world in which
+that candidate should be evaluated. A verifier may be accurate over policies
+in aggregate and still select the wrong local replacement.
 
-We study a proposed transition $\tau=(\pi,\pi')$. Let $V$ denote the cheap
-verifier world and let $*$ denote the policy-induced deployment world. Define
+The distinction arises because \emph{policy evaluation} and
+\emph{update evaluation} are different problems. Global policy evaluation
+asks whether a verifier predicts values or rankings over a broad policy
+distribution. Self-improvement instead makes a transition-level decision
+between an incumbent and a small, highly selected set of candidates produced
+by an improvement operator. The relevant question is therefore not simply
+whether a candidate policy scores well, but whether replacing the incumbent
+with that candidate remains an improvement in the world induced by the
+replacement.
+
+We formalize this question through \emph{Improvement Fidelity}. For a
+proposed transition $\tau=(\pi,\pi')$, let $V$ denote the cheap verifier
+world and let $*$ denote the policy-induced deployment world. Define
 \[
-  \Delta_V=J_V(\pi')-J_V(\pi),\qquad
-  \Delta_*=\mathcal J(\pi')-\mathcal J(\pi).
+  \dproxy = J_V(\pi') - J_V(\pi),
+  \qquad
+  \dtrue = \J(\pi') - \J(\pi).
 \]
-An improvement reversal, $\Delta_V>0$ but $\Delta_*<0$, is one salient
-failure mode. More generally, deployment can change the sign or ordering of
-candidate improvements, and a fidelity error matters to selection when it
-changes the selected update or displaces the no-update action.
-Figure~\ref{fig:reversal} shows the basic sign failure.
+Improvement Fidelity asks whether the sign and ordering of $\dproxy$ are
+preserved by $\dtrue$ over the transitions that the improvement process
+actually proposes. An \emph{improvement reversal},
+$\dproxy>0$ but $\dtrue<0$, is one salient failure mode: an update that looks
+beneficial to the verifier becomes harmful after deployment. More generally,
+a fidelity error matters for self-improvement when it changes which candidate
+is selected.
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{fig1_improvement_reversal.pdf}
-  \caption{Paired proxy and deployment improvements in the two controlled
-  worlds. The lower-right quadrant is an improvement reversal. Points are a
-  deterministic display subsample; IRR is computed on all transition rows.}
-  \label{fig:reversal}
-\end{figure}
+This transition-level view reveals three distinct ingredients. First,
+\emph{operator shift} changes where evaluation accuracy matters: an
+improvement process can concentrate its proposals in a region where a
+globally accurate verifier is locally unreliable. Second,
+\emph{deployment response} changes the world in which the candidate is
+evaluated, either through mechanical environmental response or adaptation by
+other agents. Third, \emph{candidate margins} determine whether these errors
+actually affect the decision: even a substantial evaluation error is
+irrelevant if it is too small to change the ordering of the leading
+candidates. Consequently, strong global policy evaluation need not imply
+reliable self-improvement.
 
-We distinguish three response layers. The \emph{direct} layer holds the
-incumbent world fixed; the \emph{actor} layer lets the environment respond
-mechanically to the candidate; the \emph{strategic} layer additionally lets
-other agents adapt. These correspond to progressively stronger deployment
-responses.
+These observations also change how expensive deployment evaluation should be
+used. High-fidelity evaluation can reveal the true effect of a candidate, but
+running it on every proposal can be prohibitively costly. Moreover, not every
+uncertain candidate is worth resolving: additional evidence matters only when
+it can change the update decision. We therefore introduce \emph{PIVOT-KG}, a
+paired differential validator that models the correction from proxy to
+deployment improvement and allocates a limited high-fidelity evaluation
+budget according to the expected reduction in update-selection regret per
+unit cost. Rather than spending evidence to improve global prediction
+accuracy, PIVOT-KG targets uncertainty that is consequential for the current
+replacement decision.
 
-We call the agreement between proxy and deployment improvement over the
-updates an agent actually proposes \emph{Improvement Fidelity}. It is
-operator-relative: the relevant population is the set of updates generated by
-the self-improvement process. Because only some fidelity errors change the
-update decision, limited high-fidelity evaluation should be targeted to
-uncertainty that matters for selection.
+Our experiments follow the same progression from \emph{diagnosis}, to
+\emph{decision consequence}, to \emph{targeted validation}. In controlled
+operator-shift experiments, update-level error increases while global policy
+ranking remains comparatively stable. Across 90 sealed decision roots in
+Leduc, Kuhn, and Melting Pot, proxy and deployment evaluation choose different
+top-1 updates in 51 cases. Yet a large deployment response, or even a top-1
+ranking flip, does not by itself imply that high-fidelity validation will be
+valuable. Its benefit depends on whether the uncertainty is
+decision-critical and whether the available high-fidelity evidence can
+resolve it. This mechanism extends beyond the controlled and game settings:
+in an eight-candidate HighwayEnv stress test, PIVOT-KG reduces mean
+improvement-selection regret from 0.0435 under exact uniform allocation to
+0.0055 at the primary high-fidelity budget. Together, the results show that
+the central problem is not merely whether deployment changes the world, but
+whether that change threatens the update decision and can be resolved with
+scarce evidence.
 
 Our contributions are:
 \begin{description}
-  \item[Contribution 1.] We formalize operator-relative Improvement Fidelity
-  for self-improving agents and show why accurate global policy evaluation can
-  still fail on the updates an agent actually proposes. Our analysis links
-  these failures to operator shift, deployment response, and candidate
-  margins.
 
-  \item[Contribution 2.] We introduce PIVOT-KG, a paired differential
-  validator that allocates a limited high-fidelity evaluation budget according
-  to the expected reduction in update-selection regret per unit cost.
+  \item[\textbf{1. Improvement Fidelity.}]
+  We formulate self-improvement as a transition-level evaluation problem and
+  introduce operator-relative Improvement Fidelity. Our analysis shows why
+  strong global policy evaluation can coexist with unreliable update
+  evaluation, and identifies operator shift, deployment response, and
+  candidate margins as the mechanisms connecting evaluation error to
+  selection failure.
 
-  \item[Contribution 3.] We evaluate Improvement Fidelity across controlled
-  direct, actor, and strategic response worlds and held-out decision roots,
-  showing when response creates update-level fidelity errors, when those
-  errors change the selected update, and when targeted high-fidelity
-  validation reduces selection regret.
+  \item[\textbf{2. Decision-aware validation.}]
+  We introduce PIVOT-KG, a paired differential validator that allocates a
+  limited high-fidelity evaluation budget according to the expected reduction
+  in update-selection regret per unit cost, rather than global prediction
+  error.
+
+  \item[\textbf{3. Evidence across adaptive worlds.}]
+  We evaluate the framework across controlled response worlds, strategic
+  multi-agent environments, 90 sealed decision roots in Leduc, Kuhn, and
+  Melting Pot, and a physically reactive HighwayEnv stress test. The results
+  show when proxy accuracy fails at the update level, when those failures
+  alter the selected update, and when targeted high-fidelity evidence can
+  resolve the resulting decision uncertainty.
+
 \end{description}
 
-Together, these contributions provide a direct way to diagnose when self-improvement survives deployment and to spend scarce validation effort where it can affect the update decision.
+Taken together, these results shift the evaluation target for
+self-improvement: the relevant question is not only whether a verifier
+evaluates policies accurately, but whether a proposed replacement remains an
+improvement in the world that the replacement itself induces.
 
 \section{Related Work}
 \paragraph{Performative and strategic response.}
@@ -410,7 +477,20 @@ separately as a physically reactive external setting. Reported bootstrap
 intervals resample the corresponding inferential unit. Additional statistical
 and reproducibility details are included in the supplement.
 
+
 \subsection{Improvement Fidelity under Operator Shift and Deployment Response}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{fig1_improvement_reversal.pdf}
+  \caption{Proxy versus deployment improvement in two controlled response
+  worlds. The lower-right quadrant contains \emph{improvement reversals}:
+  updates that appear beneficial under the proxy but become harmful after
+  deployment. Points are a deterministic display subsample; IRR is computed
+  on all transition rows.}
+  \label{fig:reversal}
+\end{figure}
+
 Two mechanisms can break update-level fidelity. Operator shift changes the
 transition distribution induced by the improvement process, while deployment
 response changes the world in which the candidate is evaluated. In the
