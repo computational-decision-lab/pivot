@@ -611,6 +611,69 @@ Appendix~\ref{app:highway-replication}.
 
 
 
+% BEGIN added figure references and existing figures (2026-09-25)
+Additional Leduc figures are provided in Figures~\ref{add20260923:leduc:reversal}--\ref{add20260923:leduc:e1-all}; additional MetaDrive figures are provided in Figures~\ref{add20260923:metadrive:matched_gain}--\ref{add20260923:metadrive:author_gain}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.84\linewidth]{figures/additional_leduc/01_proxy_deployment_reversal.pdf}
+\caption{Proxy-positive improvement reversal in the second Leduc cohort. Within each root, the rate is the fraction of candidates with positive proxy gain whose deployment gain is negative. Bars show the mean of 30 root-level rates and the saved 95\% root-bootstrap intervals for 1-step and 8-step adaptation. Candidates within a root are not independent experimental units.}
+\label{add20260923:leduc:reversal}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/additional_leduc/02_selection_regret_all_methods.pdf}
+\caption{All 13 reported methods and saved 95\% root-bootstrap intervals at long adaptation. Regret is the best attainable deployment gain, including retaining the incumbent, minus the selected gain. Budget exceptions are labeled. The symmetric-log axis is linear within 0.001 of zero; visual distances are not on a globally linear scale.}
+\label{add20260923:leduc:regret}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.84\linewidth]{figures/additional_leduc/03_stopping_budget.pdf}
+\caption{HF hands consumed by PIVOT-KG menu with and without stopping. Means are shown without invented per-bar intervals; the saved paired difference interval is stated separately. Final selected-gain differences were zero for all 30 observed roots. This measures query-sample use on sealed banks, not end-to-end computational cost.}
+\label{add20260923:leduc:stopping}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/additional_leduc/05_v4_component_contrasts.pdf}
+\caption{All saved top-level gain contrasts, including the menu-versus-fixed null/negative finding. Error bars are saved paired root-bootstrap 95\% intervals; secondary comparisons are unadjusted. The HF-hands contrast is reported separately.}
+\label{add20260923:leduc:components}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/additional_leduc/04_e1_all_seven_settings.pdf}
+\caption{All seven E1 settings, including null and negative results. Frozen and corrected analyses use the same saved worlds and differ in the calibration-noise treatment; they are not independent replications. Error bars are the saved pointwise 95\% root-bootstrap intervals without multiplicity adjustment. The primary budget is 16,384 HF hands in each setting.}
+\label{add20260923:leduc:e1-all}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/additional_metadrive/matched_posterior_selected_audit_gain.pdf}
+\caption{First-cohort MetaDrive confirmation: matched-posterior selectors
+under the long response condition (12 profiles), 30 independent roots.
+Higher independent-audit selected gain is better. The prespecified primary
+budget is two candidate queries. Shading gives marginal 95\% root-bootstrap
+intervals, not the paired contrast interval; significance must not be inferred
+from band overlap. Proxy-only and calibrated no-HF controls cost zero HF
+episodes despite being repeated across the query axis.}
+\label{add20260923:metadrive:matched_gain}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{figures/additional_metadrive/author_E5C_selected_audit_gain.pdf}
+\caption{Separate author E5C implementations on the same first-cohort
+MetaDrive confirmation roots and long response condition. These curves are
+secondary comparisons. At two queries, the paired PIVOT-VOI minus Uniform
+interval includes zero. The shaded marginal intervals have the same
+interpretation as in Figure~\ref{add20260923:metadrive:matched_gain}.}
+\label{add20260923:metadrive:author_gain}
+\end{figure}
+% END added figure references and existing figures (2026-09-25)
+
 \section{Conclusion}
 
 This paper reframes reliable self-improvement as an update-level evaluation
