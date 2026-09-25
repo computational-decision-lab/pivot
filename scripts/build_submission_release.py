@@ -17,7 +17,7 @@ SKIP_PARTS = {".git", ".venv", "__pycache__", "__MACOSX", ".pytest_cache", ".myp
 TEXT_SUFFIXES = {".py", ".sh", ".md", ".txt", ".json", ".csv", ".yaml", ".yml", ".toml", ".tex", ".bib", ".sty", ".bst", ".cls"}
 SECRET = re.compile(rb"\b(?:olp_[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9_]{20,}|AKIA[A-Z0-9]{16}|-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----)")
 IDENTITY = re.compile(r"computational-decision-lab|git\.overleaf\.com|overleaf\.com/project|/Users/[^/\s]+|\bcolin_pivot\b", re.I)
-DOCS = ("docs/reproduction.md", "docs/figure-map.md", "docs/rights-and-dependencies.md", "docs/comparison-audit.md", "docs/protocol-chronology.md")
+DOCS = ("docs/reviewer-guide.md", "docs/reproduction.md", "docs/figure-map.md", "docs/rights-and-dependencies.md", "docs/comparison-audit.md", "docs/protocol-chronology.md")
 CORE_TESTS = ("test_metrics.py", "test_transition.py", "test_decomposition.py", "test_acquisition.py", "test_operator_shift.py", "test_pivot_voi.py", "test_validation.py", "test_sample_complexity.py", "test_transfer.py", "test_v9_environments.py", "test_v9_operators.py")
 
 
@@ -87,6 +87,7 @@ implemented PIVOT-KG versus Uniform comparison. `evidence/paper/manifest.json`
 checks frozen inputs; `SHA256SUMS` checks every packaged file. Protocols and
 source snapshots are included under `evidence/paper/`. Numeric results are not
 changed by export. `export-adjustments.json` records minimal path adjustments.
+For a short review route, start with `docs/reviewer-guide.md`.
 
 Expected saved-data results include 51/90 disjoint optimal sets, Leduc's
 primary contrast +0.0298887, and MetaDrive's primary contrast

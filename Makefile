@@ -1,7 +1,18 @@
-.PHONY: reproduce-paper test lint typecheck v9-validate v9-analyze v9-figures v9-tables v9-audit v10-finalize v15-reports v15-figures v15-figure-review v15-finalize v15-release v15-master-loop
+.PHONY: reproduce-verify reproduce-analysis reproduce-figures reproduce-paper test lint typecheck v9-validate v9-analyze v9-figures v9-tables v9-audit v10-finalize v15-reports v15-figures v15-figure-review v15-finalize v15-release v15-master-loop
 
-reproduce-paper:
-	.venv/bin/python scripts/reproduce_paper.py
+REPLAY_PYTHON ?= python3
+REPRO_OUTPUT ?= outputs/reproduction
+
+reproduce-verify:
+	$(REPLAY_PYTHON) reproduction/run.py verify --output $(REPRO_OUTPUT)/verify
+
+reproduce-analysis:
+	$(REPLAY_PYTHON) reproduction/run.py analyze --output $(REPRO_OUTPUT)/analysis
+
+reproduce-figures:
+	$(REPLAY_PYTHON) reproduction/run.py figures --output $(REPRO_OUTPUT)/figures
+
+reproduce-paper: reproduce-verify reproduce-analysis reproduce-figures
 
 test:
 	.venv/bin/pytest -q

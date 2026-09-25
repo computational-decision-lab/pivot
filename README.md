@@ -1,96 +1,141 @@
 # PIVOT: Improvement Fidelity in Adaptive Worlds
 
-Code and reproducibility materials for **When Better Gets Worse: Improvement
-Fidelity for Self-Improving Agents in Adaptive Worlds**.
+Official code and reproducibility materials for **When Better Gets Worse:
+Improvement Fidelity for Self-Improving Agents in Adaptive Worlds**.
+
+[![Reproducibility checks](https://github.com/computational-decision-lab/pivot/actions/workflows/reproducibility.yml/badge.svg)](https://github.com/computational-decision-lab/pivot/actions/workflows/reproducibility.yml)
 
 PIVOT evaluates proposed policy replacements under the worlds their deployment
-induces. PIVOT-KG allocates paired high-fidelity observations to uncertainty that
-can change the replacement decision.
+induces. PIVOT-KG allocates paired high-fidelity observations to uncertainty
+that can change the replacement decision.
 
-## Quick start: recompute the saved evidence
+## Reviewer guide
 
-The offline path requires Python 3.10 on Linux and no simulator, cloud account,
-API key, or access to the original authors' machines.
+| Goal | Start here |
+| --- | --- |
+| Recompute the reported statistics | [`reproduction/run.py`](reproduction/run.py) and the commands below |
+| Follow a short claim-to-evidence route | [`docs/reviewer-guide.md`](docs/reviewer-guide.md) |
+| Understand what each figure uses | [`docs/figure-map.md`](docs/figure-map.md) |
+| Inspect the PIVOT-KG versus Uniform comparison | [`docs/comparison-audit.md`](docs/comparison-audit.md) |
+| Reproduce a particular cohort | [`docs/reproduction.md`](docs/reproduction.md) |
+| Check protocols and unavailable inputs | [`docs/protocol-chronology.md`](docs/protocol-chronology.md) |
+| Read the exact manuscript snapshot | [`reproduction/manuscript/`](reproduction/manuscript/) |
+| Download a frozen package | [ICLR 2027 reproducibility release v1](https://github.com/computational-decision-lab/pivot/releases/tag/iclr2027-repro-v1) |
+| Verify release scope and tests | [`release/iclr2027-repro-v1/validation.json`](release/iclr2027-repro-v1/validation.json) |
+
+The current paper artifact is under `reproduction/`. Directories such as
+`experiments/v9`, `experiments/v15`, `results`, and `archive` preserve research
+history and are not the primary reproduction entry points.
+
+## Five-minute saved-evidence check
+
+This offline path requires Python 3.10 on Linux. It needs no simulator, cloud
+account, API key, or access to the authors' machines.
 
 ```bash
-python3.10 -m venv .venv
-.venv/bin/python -m pip install -r reproduction/environments/replay-requirements.txt
-.venv/bin/python -m pip install --no-deps -e .
-.venv/bin/python reproduction/run.py verify --output outputs/verify
-.venv/bin/python reproduction/run.py analyze --output outputs/analysis
-.venv/bin/python reproduction/run.py figures --output outputs/figures
+git clone https://github.com/computational-decision-lab/pivot.git
+cd pivot
+python3.10 -m venv .venv-replay
+.venv-replay/bin/python -m pip install -r reproduction/environments/replay-requirements.txt
+.venv-replay/bin/python -m pip install --no-deps -e .
+.venv-replay/bin/python reproduction/run.py verify --output outputs/verify
+.venv-replay/bin/python reproduction/run.py analyze --output outputs/analysis
+.venv-replay/bin/python reproduction/run.py figures --output outputs/figures
 ```
 
-Verification checks the supplied evidence and recomputes the tie-aware 51/90
-optimal-set disagreements, Leduc's primary mean contrast of 0.0298887, and
-MetaDrive's primary contrast of 1.88922 with interval [-1.29334, 5.49203].
-MetaDrive remains unresolved. These checks replay saved observations; they do
-not replace a fresh simulator run.
+The commands verify 1,051 packaged evidence files, recompute the saved-result
+aggregates, and create or check all ten manuscript figures. Expected checkpoints
+include 51/90 disjoint optimal sets, the second-Leduc primary mean contrast
+`+0.0298887`, and the unresolved MetaDrive contrast
+`+1.88922 [-1.29334, 5.49203]`.
 
-## Reproduce an experiment
+The first Leduc, Kuhn, and Melting Pot comparisons replay **180 saved
+method/root decisions** in total. In those rows, PIVOT-KG and Uniform share the
+fitted posterior, observation update, and terminal selection rule; query
+allocation is the controlled method difference.
 
-[The reproduction guide](docs/reproduction.md) gives separate environments,
-commands, frozen protocols, and limitations for controlled worlds, OpenSpiel
-(Kuhn and Leduc), MeltingPot, HighwayEnv, and MetaDrive. Use `smoke` for a small
-native check and `full --experiment NAME` for a complete frozen experiment.
-Outputs always go to a separate directory; the distributed evidence is an input.
+These commands replay saved observations. They do not constitute a new simulator
+experiment or an independent full-study replication.
 
-The [figure map](docs/figure-map.md) connects the ten manuscript figures to
-their inputs and scripts. It distinguishes statistical regeneration from
-replaying a supplied, hash-checked figure asset. The user-supplied Figure 4 is
-retained without changing its data or layout.
+## Reproduction levels
 
-## Repository layout
+| Level | Command | What it establishes |
+| --- | --- | --- |
+| Integrity | `python reproduction/run.py verify --output DIR` | Frozen input hashes and saved-result recomputation |
+| Analysis | `python reproduction/run.py analyze --experiment NAME --output DIR` | Cohort-specific saved aggregates and comparison audits |
+| Figures | `python reproduction/run.py figures --output DIR` | The ten paper figures from saved inputs or hash-pinned assets |
+| Native smoke | `python reproduction/run.py smoke --experiment NAME --output DIR` | Bounded simulator/environment execution where dependencies are installed |
+| Full cohort | `python reproduction/run.py full --experiment NAME --output NEW_DIR` | Frozen cohort launcher; environment- and compute-dependent |
 
-| Directory | Contents |
+Detailed commands and separate simulator environments are in
+[`docs/reproduction.md`](docs/reproduction.md). Every output path must be outside
+`evidence/paper`; packaged evidence is treated as immutable input.
+
+## What is included
+
+| Path | Contents |
 | --- | --- |
-| `src/`, `experiments/`, `configs/` | Existing libraries, runners, and configurations; historical interfaces retained |
-| `reproduction/` | Current paper's entry points, environments, figures, and read-only manuscript snapshot |
-| `evidence/paper/` | Frozen observations, decisions, protocols, source snapshots, and hashes |
-| `tests/` | Library tests and release entry-point checks |
-| `docs/` | Reproduction instructions, figure map, provenance, and verification scope |
-| `archive/` | Versioned research code, including the collaborator's server code |
-| `release/iclr2027-repro-v1/` | Release specification and actual verification reports |
-| `paper/` | Existing Overleaf synchronization destination; separate from release assembly |
+| `reproduction/` | Reviewer-facing entry points, environment locks, figure code, and manuscript snapshot |
+| `evidence/paper/` | Frozen observations, decisions, protocols, source snapshots, manifests, and hashes |
+| `src/` | Maintained PIVOT metrics, transition, posterior, and acquisition code |
+| `tests/release/` | Release and command-line acceptance tests |
+| `tests/unit/` | Core algorithm tests |
+| `docs/` | Reproduction guide, figure map, comparison audit, provenance, and evidence limits |
+| `release/iclr2027-repro-v1/` | Validation, citation, manuscript, and comparison reports |
+| `archive/` | Historical collaborator/local code snapshots retained for provenance |
 
-Start with `reproduction/`, not the older V9/V15 development release commands.
-Earlier implementations and cohorts remain available for provenance, but are
-not interchangeable with the current paper's protocols or claims. See
-[code provenance](docs/code-provenance.md) for the collaborator import and
-local-versus-remote source differences.
+## Paper-to-code map
 
-## Release packages
+| Paper component | Implementation or evidence |
+| --- | --- |
+| Improvement Fidelity metrics and ISR | `src/pivot/metrics.py`, `src/pivot/transition.py` |
+| Gaussian correction and conditioning | `src/pivot/validation.py` |
+| PIVOT-KG acquisition | `src/pivot/acquisition.py`, frozen selectors under `evidence/paper/source/` |
+| Table 1 matched comparison | `reproduction/audit_comparisons.py`, `docs/comparison-audit.md` |
+| Decision relevance and ties | `reproduction/verify_saved_evidence.py` |
+| HighwayEnv redesign | `reproduction/highway_redesign/` |
+| MetaDrive stress test | `reproduction/figures/source/replot_metadrive.py`, frozen source under `evidence/paper/source/metadrive/` |
 
-The release builder creates two ZIPs with file manifests and SHA-256 checksums:
+## Verified scope
 
-- **Full research package:** current reproducibility materials and historical
-  research code, including versioned collaborator contributions.
-- **Anonymous submission package:** the current paper's runnable materials,
-  evidence, and documentation, without Git history or author repository links.
+The released commit has passed the GitHub reproducibility workflow, including
+dependency installation, evidence verification, saved-result analysis, figure
+generation, and selected core/release tests. The anonymous ZIP was also installed
+and checked in a separate environment. Exact commands and outcomes are recorded
+in [`release/iclr2027-repro-v1/validation.json`](release/iclr2027-repro-v1/validation.json).
+
+Known limits are explicit:
+
+- Full experimental cohorts were not rerun during packaging.
+- The exact historical Melting Pot rerun needs three absent specialist-model
+  files and the original frozen confirmation protocol. Saved decisions remain
+  verifiable; missing hashes are documented.
+- The recorded historical OpenSpiel version differs from the version used for
+  bounded native smoke validation, so byte-level historical equivalence is not
+  claimed.
+- MetaDrive is boundary evidence: the prespecified `B=2` contrast remains
+  unresolved because its confidence interval crosses zero.
+
+## Release packages and checksums
+
+The [versioned release](https://github.com/computational-decision-lab/pivot/releases/tag/iclr2027-repro-v1)
+contains:
+
+- `pivot-iclr2027-repro-v1-anonymous.zip` — reviewer-facing current-paper package;
+- `pivot-iclr2027-repro-v1-full.zip` — current materials plus historical source;
+- compiled manuscript, validation report, package manifest, and SHA-256 file.
+
+To rebuild the ZIPs outside the checkout:
 
 ```bash
 python scripts/build_submission_release.py --output /tmp/pivot-release
 ```
 
-The public repository does not itself serve as an anonymous review link. Use
-the anonymous ZIP for the conference's supplementary upload. The applicable
-requirements are described in the [ICLR 2027 author guide](https://iclr.cc/Conferences/2027/AuthorGuidelines).
+Third-party notices are preserved. The repository does not grant a new blanket
+license over collaborator or third-party code; see
+[`docs/rights-and-dependencies.md`](docs/rights-and-dependencies.md).
 
-## Validation and limitations
+## Citation
 
-[Release validation](release/iclr2027-repro-v1/validation.json) records the
-commands actually executed, results, environment, and any unavailable checks.
-Full simulator cohorts are not rerun as part of packaging. Historical source
-and saved-result availability vary by cohort; no missing run is substituted
-with synthetic data. Frozen results are not edited to match a rerun.
-Melting Pot's exact frozen confirmation protocol and three specialist model
-files were not present in the delivered archives. Saved results can be checked;
-a complete historical rerun requires restoring those inputs. See the
-[protocol chronology and missing-input record](docs/protocol-chronology.md).
-
-Third-party notices are preserved. No new blanket software license is asserted
-for collaborator or third-party code; see [rights and dependencies](docs/rights-and-dependencies.md).
-
-中文说明：本次整理保留各历史研究版本，并将当前论文复现入口集中到
-`reproduction/`。完整包用于研究归档；匿名包用于投稿附件。已保存结果重算、
-最小模拟器验证和完整实验重跑会分别标明，不混为同一种复现结论。
+During review, cite the paper through its ICLR submission. A formal BibTeX entry
+will be added after the proceedings metadata is available.
