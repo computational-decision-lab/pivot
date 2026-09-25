@@ -19,11 +19,13 @@ that can change the replacement decision.
 | Inspect the PIVOT-KG versus Uniform comparison | [`docs/comparison-audit.md`](docs/comparison-audit.md) |
 | Reproduce a particular cohort | [`docs/reproduction.md`](docs/reproduction.md) |
 | Check protocols and unavailable inputs | [`docs/protocol-chronology.md`](docs/protocol-chronology.md) |
-| Read the exact manuscript snapshot | [`reproduction/manuscript/`](reproduction/manuscript/) |
+| Read the packaged manuscript snapshot | [`reproduction/manuscript/`](reproduction/manuscript/) |
 | Download a frozen package | [ICLR 2027 reproducibility release v1](https://github.com/computational-decision-lab/pivot/releases/tag/iclr2027-repro-v1) |
 | Verify release scope and tests | [`release/iclr2027-repro-v1/validation.json`](release/iclr2027-repro-v1/validation.json) |
 
-The current paper artifact is under `reproduction/`. Directories such as
+The versioned paper artifact is under `reproduction/`. The live manuscript is
+maintained separately in Overleaf, so the Git snapshot can lag by one editorial
+revision without changing frozen evidence. Directories such as
 `experiments/v9`, `experiments/v15`, `results`, and `archive` preserve research
 history and are not the primary reproduction entry points.
 
