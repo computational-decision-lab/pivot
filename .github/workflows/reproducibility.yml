@@ -27,7 +27,7 @@ jobs:
       - run: python -m pytest -q tests/release tests/unit/test_metrics.py tests/unit/test_transition.py tests/unit/test_decomposition.py tests/unit/test_acquisition.py tests/unit/test_operator_shift.py
       - name: Publish validation records
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: reproduction-validation-${{ github.sha }}
           path: |
