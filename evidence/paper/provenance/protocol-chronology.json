@@ -1,0 +1,126 @@
+{
+  "source_archive": {
+    "name": "experiment-results-20260923.zip",
+    "original_filename": "实验结果.zip",
+    "sha256": "d37f1e9546891d32812e09fe0bbcce7f30783694175c74d76f1831ecc0a5755d",
+    "timestamp_note": "All dates below are ZIP member timestamps (or embedded run wallclock values); neither is an independently certified creation time. Original absolute server paths are omitted."
+  },
+  "leduc_second_confirmation": {
+    "frozen_protocol": {
+      "archive_member_suffix": "Leduc_v4_原始执行包/protocols/leduc_v4/confirm.json",
+      "zip_timestamp": "2026-09-20 23:59:38",
+      "sha256": "86ca2679bc548e77184799c2184605c54566f1daffce5cc6e8ad76aacc2ef5c2",
+      "fields": {
+        "protocol_id": "leduc_v4_confirm_20260921",
+        "status": "FROZEN",
+        "primary_hf_cap": 16384,
+        "primary_method": "pivot_kg_menu",
+        "primary_comparator": "uniform_fixed",
+        "H_A_allocation": "long, cap 16384: gain(pivot_kg_menu) - E[gain(uniform_fixed)] > 0   [primary; success = root-bootstrap 95% CI lower bound > 0]",
+        "primary_success_rule": "H_A lower bound > 0 (10000 root-bootstrap draws, seed 20260917). All other hypotheses reported with intervals and sign-flip p-values; no multiplicity adjustment; nulls retained."
+      }
+    },
+    "source_manifest": {
+      "archive_member_suffix": "Leduc_v4_原始执行包/MANIFEST.sha256",
+      "zip_timestamp": "2026-09-20 23:59:38",
+      "sha256": "1901365818427d37dd6e75f5a806f496e881e536761a6ac6c489a3ec78996ff8",
+      "relevant_entries": {
+        "protocols/leduc_v4/confirm.json": "86ca2679bc548e77184799c2184605c54566f1daffce5cc6e8ad76aacc2ef5c2",
+        "code/openspiel_v4_panel.py": "2e9c9776c0516ed07d3799b675d369e9c421392bd1f8ecb9b729f28bd606613d"
+      }
+    },
+    "run_protocol": {
+      "archive_member_suffix": "leduc_v4_confirm/protocol.json",
+      "zip_timestamp": "2026-09-21 00:20:56",
+      "sha256": "ddb421a53ee349e78516ffa51bd483da0c3c3d7369506c0d5e2eab02ded3c410",
+      "fields": {
+        "protocol_sha256": "86ca2679bc548e77184799c2184605c54566f1daffce5cc6e8ad76aacc2ef5c2",
+        "script_sha256": "2e9c9776c0516ed07d3799b675d369e9c421392bd1f8ecb9b729f28bd606613d"
+      }
+    },
+    "outcomes": [
+      {
+        "archive_member_suffix": "leduc_v4_confirm/seed_98000/summary.json",
+        "zip_timestamp": "2026-09-21 00:29:40",
+        "sha256": "daff3cb6f79993fb618c61decd839fe59a00a6656256434b2ec0520b9f5b0a9f",
+        "fields": {"status": "complete"}
+      },
+      {
+        "archive_member_suffix": "leduc_v4_confirm/analysis/summary.json",
+        "zip_timestamp": "2026-09-21 00:57:56",
+        "sha256": "8b6e68e71497fe9de396c2c342a762c95830b4bd3717c5a1c118949965494529",
+        "fields": {
+          "H_A_allocation_pivot_minus_expected_uniform": {
+            "mean": 0.02988871542790324,
+            "lo": 0.005867751676055126,
+            "hi": 0.05809876278019909,
+            "n": 30
+          }
+        }
+      }
+    ]
+  },
+  "metadrive_first_cohort": {
+    "pilot_status": {
+      "archive_member_suffix": "Pilot_4root/status.json",
+      "zip_timestamp": "2026-09-23 19:57:02",
+      "sha256": "db03036993df6827017bee337ba63046a40d8176cc7774c8f351240305d5568f",
+      "fields": {"status": "COMPLETE", "updated_epoch_seconds": 1790164622.7244508, "roots_completed": 4}
+    },
+    "formal_analysis_plan": {
+      "archive_member_suffix": "formal_protocols/formal_analysis_plan.json",
+      "zip_timestamp": "2026-09-23 19:59:46",
+      "sha256": "0a9c37d9659d0399d080030214177354e181a50a4c4815662d87fcbdbe9af809",
+      "fields": {
+        "registered_before_pilot_outcome": true,
+        "primary_response_search_profiles": 12,
+        "primary_budget_queries": 2,
+        "primary_endpoint": "paired independent-audit selected deployment gain: pivot_kg minus uniform_v2_expected_100",
+        "primary_interval": "two-sided 95% percentile bootstrap resampling 30 independent roots, 10000 draws, seed78131"
+      },
+      "audit_note": "The historical registered_before_pilot_outcome assertion is retained verbatim but is not corroborated: the saved pilot status predates this plan's ZIP timestamp."
+    },
+    "confirmation_protocol": {
+      "archive_member_suffix": "formal_protocols/confirmation_protocol.json",
+      "zip_timestamp": "2026-09-23 19:59:46",
+      "sha256": "46e4e529e30ee623517b8808ea69495d7c0dc80c73c011102506b1c4ab447f8d",
+      "fields": {
+        "primary_query_budget": 2,
+        "primary_adaptation": 12,
+        "formal_analysis_plan_sha256": "0a9c37d9659d0399d080030214177354e181a50a4c4815662d87fcbdbe9af809"
+      }
+    },
+    "confirmation_freeze_manifest": {
+      "archive_member_suffix": "07_核验/CONFIRMATION_FREEZE.sha256",
+      "zip_timestamp": "2026-09-23 20:35:34",
+      "sha256": "36ce86c8814a3b25354edaa1052cc8af41b4f205e3918f531799ac358946c75d",
+      "relevant_entries": {
+        "formal_protocols/formal_analysis_plan.json": "0a9c37d9659d0399d080030214177354e181a50a4c4815662d87fcbdbe9af809",
+        "formal_protocols/confirmation_protocol.json": "46e4e529e30ee623517b8808ea69495d7c0dc80c73c011102506b1c4ab447f8d"
+      }
+    },
+    "confirmation_status": {
+      "archive_member_suffix": "正式30root/status.json",
+      "zip_timestamp": "2026-09-23 22:00:26",
+      "sha256": "8a343d4b2260501f43063e4bcac771f8dbc8f23e0567ad9113c480cd62b69cc1",
+      "fields": {
+        "status": "COMPLETE",
+        "wallclock_started_epoch_seconds": 1790166935.2590506,
+        "updated_epoch_seconds": 1790172027.2813373,
+        "roots_completed": 30
+      }
+    }
+  },
+  "meltingpot_replay_assets": {
+    "model_member_prefix": "assets/saved_models/stag_hunt_in_the_matrix__repeated/puppet_1/",
+    "required_sha256": {
+      "saved_model.pb": "da9f6a24dbe132a9646901d1f3745f5e6980a97702293c82bd1dc354bf761a81",
+      "variables/variables.index": "edd77b0ce00380fa30e4d2bad1a424c9bbe0e8d1c9d271ae5632555b11327b5d",
+      "variables/variables.data-00000-of-00001": "5d46c610f588c63025947228579ebd39593a5f8753656b411ec600d2a44b2035"
+    },
+    "hash_source": "saved MeltingPot replay_gate.json model_hashes fields",
+    "hash_source_sha256": "dd748e3c8749ce96eeddca13bfb8d623d17fe9f5f0a7df945d3e9e36ba9df0f2",
+    "asset_payloads_found_in_reviewed_local_packages": false,
+    "retrieval_note": "No public source URL for these exact hashed model bytes is recorded in the reviewed replay gate; obtain the original official saved-model asset bundle and verify all three hashes before claiming independent replay."
+  }
+}

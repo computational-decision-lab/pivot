@@ -1,0 +1,11 @@
+experiment_id: E7C
+seed_start: 9801
+candidate_count: 8
+operator_family: gradient_informed
+operator_shift: 0.7
+opponent_modes: [fixed, reactive, best_response, gradient_adaptive, rl_evolutionary]
+adaptation_strengths: [0.25, 0.5, 1.0]
+statistics:
+  minimum_independent_seeds: 30
+  minimum_strategic_effect: 0.0
+  bootstrap_draws: 10000

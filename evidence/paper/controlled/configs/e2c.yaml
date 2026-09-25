@@ -1,0 +1,17 @@
+experiment_id: E2C
+seed_start: 8101
+candidate_count: 8
+operator_families: [local_random, gradient_informed, evolutionary_population]
+shift_levels: [0.0, 0.1, 0.2, 0.35, 0.5, 0.7, 1.0, 1.5, 2.0, 3.0]
+environments:
+  - id: performative_control
+    response_strengths: [0.35, 0.85]
+  - id: congestion_resource
+    response_strengths: [0.30, 0.75]
+  - id: mpe2_frozen
+    response_strengths: [0.0]
+statistics:
+  minimum_shift_effect_if: 0.0
+  response_variance_floor: 1.0e-6
+  minimum_independent_seeds: 30
+  reference_shift: 0.0

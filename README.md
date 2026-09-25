@@ -1,91 +1,96 @@
-# IMPROVE-X / PIVOT
+# PIVOT: Improvement Fidelity in Adaptive Worlds
 
-<p align="center">
-  <a href="docs/pivot.md"><strong>English Documentation</strong></a>
-  &nbsp;&nbsp;|&nbsp;&nbsp;
-  <a href="docs/zh/00_项目入口与当前状态.md"><strong>中文文档</strong></a>
-</p>
+Code and reproducibility materials for **When Better Gets Worse: Improvement
+Fidelity for Self-Improving Agents in Adaptive Worlds**.
 
-**Improvement Fidelity in Adaptive Worlds**
+PIVOT evaluates proposed policy replacements under the worlds their deployment
+induces. PIVOT-KG allocates paired high-fidelity observations to uncertainty that
+can change the replacement decision.
 
-PIVOT (Paired Interventional Validation of Optimization Transitions) studies whether a self-improvement update that looks beneficial in a cheap proxy world remains beneficial after deployment changes the environment and other participants respond.
+## Quick start: recompute the saved evidence
 
-The statistical object is a directed transition `pi -> pi'`, rather than two isolated policy scores.
-
-## Current status
-
-| Area | Status |
-| --- | --- |
-| Research question and protocol | Frozen and documented |
-| Theory, core algorithms, and controlled experiments | Implemented; local checks pass |
-| V9 registered controlled evidence | Frozen; claims are scoped to registered mechanisms |
-| V15 external-agent study | Engineering and DEV checks complete; confirmatory execution not opened |
-| Paper, supplement, and release package | Local machine checks pass; manual submission gates remain |
-| Overall scientific state | `BLOCKED` pending external confirmatory evidence and manual gates |
-
-## Start here
-
-- **English research guide:** [`docs/pivot.md`](docs/pivot.md)
-- **English research question:** [`docs/research_question.md`](docs/research_question.md)
-- **English estimands and metrics:** [`docs/estimands.md`](docs/estimands.md)
-- **English experiment protocol:** [`docs/experiment_protocol.md`](docs/experiment_protocol.md)
-- **Chinese project guide:** [`docs/zh/00_项目入口与当前状态.md`](docs/zh/00_项目入口与当前状态.md)
-- **Chinese theory and algorithms:** [`docs/zh/01_研究问题与理论.md`](docs/zh/01_研究问题与理论.md), [`docs/zh/02_算法与代码架构.md`](docs/zh/02_算法与代码架构.md)
-- **Chinese experiments and operations:** [`docs/zh/03_实验设计与指标.md`](docs/zh/03_实验设计与指标.md), [`docs/zh/04_运行手册.md`](docs/zh/04_运行手册.md)
-- **Chinese evidence and handoff:** [`docs/zh/05_结果与证据边界.md`](docs/zh/05_结果与证据边界.md), [`docs/zh/06_同事交接清单.md`](docs/zh/06_同事交接清单.md)
-- **Version and file map:** [`docs/zh/版本与审计索引.md`](docs/zh/版本与审计索引.md), [`docs/zh/目录与文件地图.md`](docs/zh/目录与文件地图.md)
-
-## Method
-
-Each round generates candidate transitions, measures proxy deltas and update footprints, selects a fixed high-fidelity query budget, evaluates incumbent and candidate in paired contexts, and records corrected estimates, selection, cost, and provenance.
-
-```text
-incumbent -> candidate transitions -> proxy + footprint
-           -> PIVOT/PIVOT-VOI acquisition
-           -> paired high-fidelity evaluation
-           -> correction, selection, metrics, manifest
-```
-
-The stable public interface is [`src/pivot_core/`](src/pivot_core/). The platform layer is [`src/improve_x/`](src/improve_x/).
-
-## Quick checks
+The offline path requires Python 3.10 on Linux and no simulator, cloud account,
+API key, or access to the original authors' machines.
 
 ```bash
-.venv/bin/pytest -q
-.venv/bin/ruff check src scripts experiments tests
+python3.10 -m venv .venv
+.venv/bin/python -m pip install -r reproduction/environments/replay-requirements.txt
+.venv/bin/python -m pip install --no-deps -e .
+.venv/bin/python reproduction/run.py verify --output outputs/verify
+.venv/bin/python reproduction/run.py analyze --output outputs/analysis
+.venv/bin/python reproduction/run.py figures --output outputs/figures
 ```
 
-Build and evaluate ImprovementBench:
+Verification checks the supplied evidence and recomputes the tie-aware 51/90
+optimal-set disagreements, Leduc's primary mean contrast of 0.0298887, and
+MetaDrive's primary contrast of 1.88922 with interval [-1.29334, 5.49203].
+MetaDrive remains unresolved. These checks replay saved observations; they do
+not replace a fresh simulator run.
 
-```bash
-.venv/bin/python scripts/build_improvementbench.py \
-  --config configs/improve_x/benchmark.yaml \
-  --output /tmp/improvementbench-v1
-```
+## Reproduce an experiment
 
-Rebuild the paper and curated release:
+[The reproduction guide](docs/reproduction.md) gives separate environments,
+commands, frozen protocols, and limitations for controlled worlds, OpenSpiel
+(Kuhn and Leduc), MeltingPot, HighwayEnv, and MetaDrive. Use `smoke` for a small
+native check and `full --experiment NAME` for a complete frozen experiment.
+Outputs always go to a separate directory; the distributed evidence is an input.
 
-```bash
-make v15-finalize
-make v15-release
-```
-
-The underlying finalizer is also available as
-`.venv/bin/python -m experiments.v15 finalize --root .`.
+The [figure map](docs/figure-map.md) connects the ten manuscript figures to
+their inputs and scripts. It distinguishes statistical regeneration from
+replaying a supplied, hash-checked figure asset. The user-supplied Figure 4 is
+retained without changing its data or layout.
 
 ## Repository layout
 
-| Directory | Purpose |
+| Directory | Contents |
 | --- | --- |
-| `src/` | Core libraries and stable facades |
-| `experiments/` | P0-P9, V9, V10, and V15 runners and audits |
-| `configs/` | Registered protocols, experiment parameters, and runtime locks |
-| `results/` | Version-isolated raw and canonical results |
-| `paper/` | Canonical ICLR 2027 submission source, supplement, and release artifacts |
-| `release/` | Sanitized anonymous release package |
-| `docs/zh/` | Chinese team documentation and handoff guide |
-| `tests/` | Unit and integration tests |
+| `src/`, `experiments/`, `configs/` | Existing libraries, runners, and configurations; historical interfaces retained |
+| `reproduction/` | Current paper's entry points, environments, figures, and read-only manuscript snapshot |
+| `evidence/paper/` | Frozen observations, decisions, protocols, source snapshots, and hashes |
+| `tests/` | Library tests and release entry-point checks |
+| `docs/` | Reproduction instructions, figure map, provenance, and verification scope |
+| `archive/` | Versioned research code, including the collaborator's server code |
+| `release/iclr2027-repro-v1/` | Release specification and actual verification reports |
+| `paper/` | Existing Overleaf synchronization destination; separate from release assembly |
 
-## Evidence boundary
+Start with `reproduction/`, not the older V9/V15 development release commands.
+Earlier implementations and cohorts remain available for provenance, but are
+not interchangeable with the current paper's protocols or claims. See
+[code provenance](docs/code-provenance.md) for the collaborator import and
+local-versus-remote source differences.
 
-V9 results apply only to their preregistered controlled mechanisms. V15 stages marked `DEV_ONLY`, `UNDERPOWERED`, or `NOT_RUN` are not confirmatory evidence. The public finance audit is observational and does not identify causal market response. Live trading and unauthorized external execution are out of scope.
+## Release packages
+
+The release builder creates two ZIPs with file manifests and SHA-256 checksums:
+
+- **Full research package:** current reproducibility materials and historical
+  research code, including versioned collaborator contributions.
+- **Anonymous submission package:** the current paper's runnable materials,
+  evidence, and documentation, without Git history or author repository links.
+
+```bash
+python scripts/build_submission_release.py --output /tmp/pivot-release
+```
+
+The public repository does not itself serve as an anonymous review link. Use
+the anonymous ZIP for the conference's supplementary upload. The applicable
+requirements are described in the [ICLR 2027 author guide](https://iclr.cc/Conferences/2027/AuthorGuidelines).
+
+## Validation and limitations
+
+[Release validation](release/iclr2027-repro-v1/validation.json) records the
+commands actually executed, results, environment, and any unavailable checks.
+Full simulator cohorts are not rerun as part of packaging. Historical source
+and saved-result availability vary by cohort; no missing run is substituted
+with synthetic data. Frozen results are not edited to match a rerun.
+Melting Pot's exact frozen confirmation protocol and three specialist model
+files were not present in the delivered archives. Saved results can be checked;
+a complete historical rerun requires restoring those inputs. See the
+[protocol chronology and missing-input record](docs/protocol-chronology.md).
+
+Third-party notices are preserved. No new blanket software license is asserted
+for collaborator or third-party code; see [rights and dependencies](docs/rights-and-dependencies.md).
+
+中文说明：本次整理保留各历史研究版本，并将当前论文复现入口集中到
+`reproduction/`。完整包用于研究归档；匿名包用于投稿附件。已保存结果重算、
+最小模拟器验证和完整实验重跑会分别标明，不混为同一种复现结论。

@@ -1,0 +1,8 @@
+experiment_id: E4C
+source_e2c: results/v9/e2c-confirmatory
+model_families: [bayesian_linear, bootstrap_ensemble]
+holdout_splits: [trajectory, environment, operator, response_regime]
+minimum_independent_test_seeds: 10
+statistics:
+  minimum_isc_gain: 0.0
+  bootstrap_draws: 10000

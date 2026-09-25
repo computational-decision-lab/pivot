@@ -1,0 +1,23 @@
+{
+  "protocol_id": "melting_v4_hetero_calibration_20260918",
+  "status": "FROZEN",
+  "purpose": "Calibration panels for the v2 posterior (prior mean, prior covariance, heteroscedastic HF noise) on the heterogeneous responder population. Also used for the leave-one-root-out pre-flight of all selectors. NEVER used as method-confirmation evidence.",
+  "seeds": [48000, 48001, 48002, 48003, 48004, 48005, 48006, 48007, 48008, 48009, 48010, 48011],
+  "note_on_pilot_roots": "48000-48003 are the pilot roots; run_melting_v4.py --resume reuses their completed panels byte-for-byte.",
+  "responder_type_rule": "competitive_if_seed_odd_else_cooperative",
+  "candidate_probabilities": [0.125, 0.225, 0.325, 0.425, 0.575, 0.675, 0.775, 0.875],
+  "incumbent_probability": 0.5,
+  "adaptation_episodes": [4, 32],
+  "response_learning_rate": 0.5,
+  "reward_scale": 100.0, "reward_clip": 2.0, "logit_clip": 8.0,
+  "native_episodes_per_root": 704,
+  "primary_method": "pivot_kg",
+  "primary_comparator": "uniform_v2",
+  "preflight_gate_before_confirmation_freeze": {
+    "loro_long_kg_minus_uniform_mean": "> 0 (12 roots, descriptive; CI need not exclude 0)",
+    "loro_long_kg_not_worse_than_no_hf_v2_by_more_than": 1.0,
+    "posterior_calibration": "root-held-out 95% predictive interval coverage of selection observations in [0.80, 1.00] for both adaptations",
+    "on_gate_fail": "STOP and report. Do not tune shrinkage/noise floors against LORO regret."
+  },
+  "compute": "12 roots (8 new) -> ~8 workers, ~2 h wallclock"
+}

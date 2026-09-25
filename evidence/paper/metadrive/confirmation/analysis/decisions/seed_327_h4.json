@@ -1,0 +1,3406 @@
+{
+  "root": 327,
+  "adaptation": 4,
+  "joint_decisions": [
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "pivot_kg",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        4
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 24,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -17.121398351378744,
+        8.446041190759619,
+        17.291085528665732,
+        -12.51615807710126,
+        -18.615932400650234,
+        -14.455483059343665
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 3,
+          "observed": -26.33334641422077,
+          "kg": {
+            "0": 0.05853001904901234,
+            "1": 0.0,
+            "2": 4.100187848266046e-05,
+            "3": 7.551868836462589,
+            "4": 4.374353747700731,
+            "5": 1.681436066927052
+          },
+          "acquisition": {
+            "0": 0.003658126190563271,
+            "1": 0.0,
+            "2": 2.5626174051662787e-06,
+            "3": 0.4719918022789118,
+            "4": 0.2733971092312957,
+            "5": 0.10508975418294075
+          }
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "uniform_v2",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 4,
+      "queries": [
+        3
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 24,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -12.079920652302643,
+        8.76691567161639,
+        14.751976411408027,
+        26.27300693467398,
+        9.742148930765481,
+        1.0086340327012762
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 2,
+          "observed": -4.732936638184267
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "ivr_v2",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 4,
+      "queries": [
+        5
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 24,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.453110928410549,
+        8.15487636485677,
+        16.97009807231036,
+        26.149631607001137,
+        5.28283180759925,
+        -2.8332451422314584
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "ivr": {
+            "0": 24.32245249801052,
+            "1": 0.38335448624926927,
+            "2": 2.5640218234674457,
+            "3": 72.71326201311491,
+            "4": 96.46367137925647,
+            "5": 34.53416034571461
+          }
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "lucb_v2",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 4,
+      "queries": [
+        5
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 24,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.453110928410549,
+        8.15487636485677,
+        16.97009807231036,
+        26.149631607001137,
+        5.28283180759925,
+        -2.8332451422314584
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "best": 3,
+          "challenger": 4
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "no_hf_v2",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 4,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 16,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.680159038297269,
+        8.138528275283495,
+        17.020131809395775,
+        25.75063351314698,
+        4.221139433373568,
+        -3.1319557923460604
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "proxy_only",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 16,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -12.287970385871454,
+        7.206823049779879,
+        12.918063012893132,
+        9.59034554378307,
+        7.183475914514752,
+        -16.126936125566196
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "global_voi_heuristic",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 4,
+      "queries": [
+        5
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 24,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.453110928410549,
+        8.15487636485677,
+        16.97009807231036,
+        26.149631607001137,
+        5.28283180759925,
+        -2.8332451422314584
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "score": {
+            "0": 2.3013859757071273,
+            "1": 2.666517254250555,
+            "2": 1.2902265660968257,
+            "3": 3.6430861676992308,
+            "4": 6.084203786226093,
+            "5": 1.8504728228457648
+          }
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "uniform_v2_expected_100",
+      "budget_queries": 1,
+      "selected_idx": null,
+      "selected_distribution": [
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        3,
+        4,
+        4,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "queries_by_draw": [
+        [
+          6
+        ],
+        [
+          3
+        ],
+        [
+          1
+        ],
+        [
+          1
+        ],
+        [
+          4
+        ],
+        [
+          3
+        ],
+        [
+          5
+        ],
+        [
+          2
+        ],
+        [
+          5
+        ],
+        [
+          6
+        ],
+        [
+          4
+        ],
+        [
+          2
+        ],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [
+          5
+        ],
+        [
+          5
+        ],
+        [
+          4
+        ],
+        [
+          5
+        ],
+        [
+          4
+        ],
+        [
+          6
+        ],
+        [
+          5
+        ],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [
+          5
+        ],
+        [
+          1
+        ],
+        [
+          4
+        ],
+        [
+          6
+        ],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [
+          1
+        ],
+        [
+          4
+        ],
+        [
+          1
+        ],
+        [
+          5
+        ],
+        [
+          1
+        ],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [
+          4
+        ],
+        [
+          2
+        ],
+        [
+          4
+        ],
+        [
+          4
+        ],
+        [
+          6
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ],
+        [
+          4
+        ],
+        [
+          3
+        ],
+        [
+          2
+        ],
+        [
+          2
+        ],
+        [
+          5
+        ],
+        [
+          6
+        ],
+        [
+          1
+        ],
+        [
+          5
+        ],
+        [
+          2
+        ],
+        [
+          4
+        ],
+        [
+          1
+        ],
+        [
+          4
+        ],
+        [
+          1
+        ],
+        [
+          6
+        ],
+        [
+          6
+        ],
+        [
+          4
+        ],
+        [
+          5
+        ],
+        [
+          4
+        ],
+        [
+          5
+        ],
+        [
+          5
+        ],
+        [
+          2
+        ],
+        [
+          5
+        ],
+        [
+          1
+        ],
+        [
+          4
+        ],
+        [
+          2
+        ],
+        [
+          1
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          2
+        ],
+        [
+          6
+        ],
+        [
+          4
+        ],
+        [
+          2
+        ],
+        [
+          4
+        ],
+        [
+          3
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ],
+        [
+          6
+        ],
+        [
+          2
+        ],
+        [
+          1
+        ],
+        [
+          4
+        ],
+        [
+          3
+        ],
+        [
+          4
+        ],
+        [
+          1
+        ],
+        [
+          6
+        ],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [
+          4
+        ],
+        [
+          4
+        ],
+        [
+          5
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ],
+        [
+          1
+        ],
+        [
+          1
+        ],
+        [
+          1
+        ]
+      ],
+      "allocation_rng_seeds": [
+        327001,
+        327002,
+        327003,
+        327004,
+        327005,
+        327006,
+        327007,
+        327008,
+        327009,
+        327010,
+        327011,
+        327012,
+        327013,
+        327014,
+        327015,
+        327016,
+        327017,
+        327018,
+        327019,
+        327020,
+        327021,
+        327022,
+        327023,
+        327024,
+        327025,
+        327026,
+        327027,
+        327028,
+        327029,
+        327030,
+        327031,
+        327032,
+        327033,
+        327034,
+        327035,
+        327036,
+        327037,
+        327038,
+        327039,
+        327040,
+        327041,
+        327042,
+        327043,
+        327044,
+        327045,
+        327046,
+        327047,
+        327048,
+        327049,
+        327050,
+        327051,
+        327052,
+        327053,
+        327054,
+        327055,
+        327056,
+        327057,
+        327058,
+        327059,
+        327060,
+        327061,
+        327062,
+        327063,
+        327064,
+        327065,
+        327066,
+        327067,
+        327068,
+        327069,
+        327070,
+        327071,
+        327072,
+        327073,
+        327074,
+        327075,
+        327076,
+        327077,
+        327078,
+        327079,
+        327080,
+        327081,
+        327082,
+        327083,
+        327084,
+        327085,
+        327086,
+        327087,
+        327088,
+        327089,
+        327090,
+        327091,
+        327092,
+        327093,
+        327094,
+        327095,
+        327096,
+        327097,
+        327098,
+        327099,
+        327100
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 24,
+      "hf_episode_budget": 24,
+      "n_allocation_repetitions": 100,
+      "distribution_kind": "monte_carlo_100_uniform_without_replacement_allocations",
+      "cost_note": "per deployment decision; repetitions reuse the sealed bank for baseline integration"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "pivot_kg",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        4,
+        5
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 40,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -13.336584444435552,
+        8.785814308961815,
+        16.419881921886418,
+        -10.593312182677513,
+        -2.507363397742406,
+        -10.604939681867439
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 3,
+          "observed": -26.33334641422077,
+          "kg": {
+            "0": 0.05853001904901234,
+            "1": 0.0,
+            "2": 4.100187848266046e-05,
+            "3": 7.551868836462589,
+            "4": 4.374353747700731,
+            "5": 1.681436066927052
+          },
+          "acquisition": {
+            "0": 0.003658126190563271,
+            "1": 0.0,
+            "2": 2.5626174051662787e-06,
+            "3": 0.4719918022789118,
+            "4": 0.2733971092312957,
+            "5": 0.10508975418294075
+          }
+        },
+        {
+          "it": 1,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "kg": {
+            "0": 0.10236973214606948,
+            "1": 0.0,
+            "2": 6.240713528171682e-05,
+            "4": 2.2416642088035417,
+            "5": 0.06626274716877134
+          },
+          "acquisition": {
+            "0": 0.0063981082591293426,
+            "1": 0.0,
+            "2": 3.900445955107301e-06,
+            "4": 0.14010401305022135,
+            "5": 0.004141421698048209
+          }
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "uniform_v2",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 4,
+      "queries": [
+        3,
+        5
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 40,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -12.669140328454782,
+        8.727194776047456,
+        14.871428432530248,
+        25.212743765104282,
+        6.946224275291899,
+        0.23785242831799835
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 2,
+          "observed": -4.732936638184267
+        },
+        {
+          "it": 1,
+          "query": 4,
+          "observed": 5.736648499789787
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "ivr_v2",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        5,
+        4
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 40,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -13.336584444435552,
+        8.785814308961815,
+        16.419881921886418,
+        -10.593312182677511,
+        -2.5073633977424095,
+        -10.604939681867437
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "ivr": {
+            "0": 24.32245249801052,
+            "1": 0.38335448624926927,
+            "2": 2.5640218234674457,
+            "3": 72.71326201311491,
+            "4": 96.46367137925647,
+            "5": 34.53416034571461
+          }
+        },
+        {
+          "it": 1,
+          "query": 3,
+          "observed": -26.33334641422077,
+          "ivr": {
+            "0": 12.770443076893047,
+            "1": 0.2509666820779469,
+            "2": 0.8906416530060977,
+            "3": 44.010490253589616,
+            "5": 12.836803036148543
+          }
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "lucb_v2",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        5,
+        4
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 40,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -13.336584444435552,
+        8.785814308961815,
+        16.419881921886418,
+        -10.593312182677511,
+        -2.5073633977424095,
+        -10.604939681867437
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "best": 3,
+          "challenger": 4
+        },
+        {
+          "it": 1,
+          "query": 3,
+          "observed": -26.33334641422077,
+          "best": 3,
+          "challenger": 4
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "no_hf_v2",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 4,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 16,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.680159038297269,
+        8.138528275283495,
+        17.020131809395775,
+        25.75063351314698,
+        4.221139433373568,
+        -3.1319557923460604
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "proxy_only",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 16,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -12.287970385871454,
+        7.206823049779879,
+        12.918063012893132,
+        9.59034554378307,
+        7.183475914514752,
+        -16.126936125566196
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "global_voi_heuristic",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        5,
+        4
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 40,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -13.336584444435552,
+        8.785814308961815,
+        16.419881921886418,
+        -10.593312182677511,
+        -2.5073633977424095,
+        -10.604939681867437
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "score": {
+            "0": 2.3013859757071273,
+            "1": 2.666517254250555,
+            "2": 1.2902265660968257,
+            "3": 3.6430861676992308,
+            "4": 6.084203786226093,
+            "5": 1.8504728228457648
+          }
+        },
+        {
+          "it": 1,
+          "query": 3,
+          "observed": -26.33334641422077,
+          "score": {
+            "0": 2.231871681398661,
+            "1": 2.6657140223586153,
+            "2": 1.2848096639915227,
+            "3": 3.4263647975961047,
+            "5": 1.7595230978339391
+          }
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "uniform_v2_expected_100",
+      "budget_queries": 2,
+      "selected_idx": null,
+      "selected_distribution": [
+        4,
+        3,
+        4,
+        4,
+        3,
+        4,
+        4,
+        3,
+        4,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        4,
+        3,
+        3,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        4,
+        3,
+        3,
+        4,
+        3,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        4,
+        3,
+        3,
+        4,
+        3,
+        4,
+        3,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "queries_by_draw": [
+        [
+          6,
+          1
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "allocation_rng_seeds": [
+        327001,
+        327002,
+        327003,
+        327004,
+        327005,
+        327006,
+        327007,
+        327008,
+        327009,
+        327010,
+        327011,
+        327012,
+        327013,
+        327014,
+        327015,
+        327016,
+        327017,
+        327018,
+        327019,
+        327020,
+        327021,
+        327022,
+        327023,
+        327024,
+        327025,
+        327026,
+        327027,
+        327028,
+        327029,
+        327030,
+        327031,
+        327032,
+        327033,
+        327034,
+        327035,
+        327036,
+        327037,
+        327038,
+        327039,
+        327040,
+        327041,
+        327042,
+        327043,
+        327044,
+        327045,
+        327046,
+        327047,
+        327048,
+        327049,
+        327050,
+        327051,
+        327052,
+        327053,
+        327054,
+        327055,
+        327056,
+        327057,
+        327058,
+        327059,
+        327060,
+        327061,
+        327062,
+        327063,
+        327064,
+        327065,
+        327066,
+        327067,
+        327068,
+        327069,
+        327070,
+        327071,
+        327072,
+        327073,
+        327074,
+        327075,
+        327076,
+        327077,
+        327078,
+        327079,
+        327080,
+        327081,
+        327082,
+        327083,
+        327084,
+        327085,
+        327086,
+        327087,
+        327088,
+        327089,
+        327090,
+        327091,
+        327092,
+        327093,
+        327094,
+        327095,
+        327096,
+        327097,
+        327098,
+        327099,
+        327100
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 40,
+      "hf_episode_budget": 40,
+      "n_allocation_repetitions": 100,
+      "distribution_kind": "monte_carlo_100_uniform_without_replacement_allocations",
+      "cost_note": "per deployment decision; repetitions reuse the sealed bank for baseline integration"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "pivot_kg",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        4,
+        5,
+        1,
+        6
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 72,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -8.0261360554488,
+        8.331516887653885,
+        16.769760492527727,
+        -11.560616657888646,
+        -2.7047924908069287,
+        -15.285607861912059
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 3,
+          "observed": -26.33334641422077,
+          "kg": {
+            "0": 0.05853001904901234,
+            "1": 0.0,
+            "2": 4.100187848266046e-05,
+            "3": 7.551868836462589,
+            "4": 4.374353747700731,
+            "5": 1.681436066927052
+          },
+          "acquisition": {
+            "0": 0.003658126190563271,
+            "1": 0.0,
+            "2": 2.5626174051662787e-06,
+            "3": 0.4719918022789118,
+            "4": 0.2733971092312957,
+            "5": 0.10508975418294075
+          }
+        },
+        {
+          "it": 1,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "kg": {
+            "0": 0.10236973214606948,
+            "1": 0.0,
+            "2": 6.240713528171682e-05,
+            "4": 2.2416642088035417,
+            "5": 0.06626274716877134
+          },
+          "acquisition": {
+            "0": 0.0063981082591293426,
+            "1": 0.0,
+            "2": 3.900445955107301e-06,
+            "4": 0.14010401305022135,
+            "5": 0.004141421698048209
+          }
+        },
+        {
+          "it": 2,
+          "query": 0,
+          "observed": -1.7951303817109845,
+          "kg": {
+            "0": 0.11135013907006552,
+            "1": 0.0,
+            "2": 0.00012993128324723102,
+            "5": 0.06724986843648395
+          },
+          "acquisition": {
+            "0": 0.006959383691879095,
+            "1": 0.0,
+            "2": 8.120705202951939e-06,
+            "5": 0.004203116777280247
+          }
+        },
+        {
+          "it": 3,
+          "query": 5,
+          "observed": -23.436691883394207,
+          "kg": {
+            "1": 0.0,
+            "2": 0.0002085631748087735,
+            "5": 0.07321291549153841
+          },
+          "acquisition": {
+            "1": 0.0,
+            "2": 1.3035198425548344e-05,
+            "5": 0.004575807218221151
+          }
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "uniform_v2",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        3,
+        5,
+        4,
+        1
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 72,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -7.0863992650305825,
+        9.434066821036685,
+        14.11997712153465,
+        -10.957619736745357,
+        0.5182952840724477,
+        -7.478324412657374
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 2,
+          "observed": -4.732936638184267
+        },
+        {
+          "it": 1,
+          "query": 4,
+          "observed": 5.736648499789787
+        },
+        {
+          "it": 2,
+          "query": 3,
+          "observed": -26.33334641422077
+        },
+        {
+          "it": 3,
+          "query": 0,
+          "observed": -1.7951303817109845
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "ivr_v2",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        5,
+        4,
+        1,
+        6
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 72,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -8.0261360554488,
+        8.331516887653885,
+        16.769760492527727,
+        -11.560616657888646,
+        -2.704792490806932,
+        -15.285607861912057
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "ivr": {
+            "0": 24.32245249801052,
+            "1": 0.38335448624926927,
+            "2": 2.5640218234674457,
+            "3": 72.71326201311491,
+            "4": 96.46367137925647,
+            "5": 34.53416034571461
+          }
+        },
+        {
+          "it": 1,
+          "query": 3,
+          "observed": -26.33334641422077,
+          "ivr": {
+            "0": 12.770443076893047,
+            "1": 0.2509666820779469,
+            "2": 0.8906416530060977,
+            "3": 44.010490253589616,
+            "5": 12.836803036148543
+          }
+        },
+        {
+          "it": 2,
+          "query": 0,
+          "observed": -1.7951303817109845,
+          "ivr": {
+            "0": 12.76014603146642,
+            "1": 0.2490220746493827,
+            "2": 0.9092955330248754,
+            "5": 8.899714586648802
+          }
+        },
+        {
+          "it": 3,
+          "query": 5,
+          "observed": -23.436691883394207,
+          "ivr": {
+            "1": 0.23579902251267726,
+            "2": 0.7716757686025789,
+            "5": 8.890145115425238
+          }
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "lucb_v2",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        5,
+        4,
+        3,
+        1
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 72,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -7.086399265030583,
+        9.434066821036684,
+        14.119977121534651,
+        -10.957619736745357,
+        0.5182952840724409,
+        -7.4783244126573765
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "best": 3,
+          "challenger": 4
+        },
+        {
+          "it": 1,
+          "query": 3,
+          "observed": -26.33334641422077,
+          "best": 3,
+          "challenger": 4
+        },
+        {
+          "it": 2,
+          "query": 2,
+          "observed": -4.732936638184267,
+          "best": 2,
+          "challenger": 4
+        },
+        {
+          "it": 3,
+          "query": 0,
+          "observed": -1.7951303817109845,
+          "best": 2,
+          "challenger": 4
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "no_hf_v2",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 4,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 16,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.680159038297269,
+        8.138528275283495,
+        17.020131809395775,
+        25.75063351314698,
+        4.221139433373568,
+        -3.1319557923460604
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "proxy_only",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 16,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -12.287970385871454,
+        7.206823049779879,
+        12.918063012893132,
+        9.59034554378307,
+        7.183475914514752,
+        -16.126936125566196
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "global_voi_heuristic",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        5,
+        4,
+        2,
+        1
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 72,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -7.9271842910013435,
+        8.990344767581602,
+        15.970024844428083,
+        -10.766953236955974,
+        -0.8688056196420719,
+        -10.017882899248088
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 5.736648499789787,
+          "score": {
+            "0": 2.3013859757071273,
+            "1": 2.666517254250555,
+            "2": 1.2902265660968257,
+            "3": 3.6430861676992308,
+            "4": 6.084203786226093,
+            "5": 1.8504728228457648
+          }
+        },
+        {
+          "it": 1,
+          "query": 3,
+          "observed": -26.33334641422077,
+          "score": {
+            "0": 2.231871681398661,
+            "1": 2.6657140223586153,
+            "2": 1.2848096639915227,
+            "3": 3.4263647975961047,
+            "5": 1.7595230978339391
+          }
+        },
+        {
+          "it": 2,
+          "query": 1,
+          "observed": 15.421051065567397,
+          "score": {
+            "0": 2.2311154657873433,
+            "1": 2.6651840254985113,
+            "2": 1.2845189004526028,
+            "5": 1.731326842884772
+          }
+        },
+        {
+          "it": 3,
+          "query": 0,
+          "observed": -1.7951303817109845,
+          "score": {
+            "0": 2.230865591903539,
+            "2": 1.2842318509627515,
+            "5": 1.7280712285170334
+          }
+        }
+      ]
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "uniform_v2_expected_100",
+      "budget_queries": 4,
+      "selected_idx": null,
+      "selected_distribution": [
+        3,
+        3,
+        3,
+        4,
+        3,
+        4,
+        4,
+        3,
+        4,
+        4,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        4,
+        3,
+        4,
+        4,
+        3,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        3,
+        3,
+        4,
+        3,
+        4,
+        3,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        3,
+        3,
+        4,
+        3,
+        3,
+        3,
+        4,
+        3,
+        3,
+        4,
+        3,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        3,
+        3,
+        4,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        4,
+        3,
+        3,
+        4,
+        4,
+        4,
+        3,
+        3,
+        4
+      ],
+      "queries_by_draw": [
+        [
+          6,
+          1,
+          3,
+          4
+        ],
+        [
+          3,
+          4,
+          2,
+          1
+        ],
+        [
+          1,
+          2,
+          6,
+          4
+        ],
+        [
+          1,
+          5,
+          6,
+          2
+        ],
+        [
+          4,
+          5,
+          3,
+          1
+        ],
+        [
+          3,
+          6,
+          2,
+          5
+        ],
+        [
+          5,
+          2,
+          6,
+          1
+        ],
+        [
+          2,
+          4,
+          5,
+          3
+        ],
+        [
+          5,
+          3,
+          1,
+          2
+        ],
+        [
+          6,
+          2,
+          3,
+          5
+        ],
+        [
+          4,
+          2,
+          6,
+          5
+        ],
+        [
+          2,
+          1,
+          4,
+          5
+        ],
+        [
+          1,
+          5,
+          4,
+          3
+        ],
+        [
+          3,
+          5,
+          2,
+          4
+        ],
+        [
+          5,
+          2,
+          4,
+          3
+        ],
+        [
+          5,
+          4,
+          1,
+          2
+        ],
+        [
+          4,
+          6,
+          3,
+          2
+        ],
+        [
+          5,
+          6,
+          2,
+          4
+        ],
+        [
+          4,
+          6,
+          5,
+          2
+        ],
+        [
+          6,
+          3,
+          2,
+          1
+        ],
+        [
+          5,
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          5,
+          6
+        ],
+        [
+          3,
+          2,
+          4,
+          1
+        ],
+        [
+          1,
+          6,
+          3,
+          2
+        ],
+        [
+          3,
+          5,
+          2,
+          4
+        ],
+        [
+          5,
+          2,
+          3,
+          4
+        ],
+        [
+          1,
+          4,
+          2,
+          3
+        ],
+        [
+          4,
+          1,
+          3,
+          5
+        ],
+        [
+          6,
+          4,
+          3,
+          1
+        ],
+        [
+          1,
+          6,
+          5,
+          4
+        ],
+        [
+          3,
+          4,
+          5,
+          2
+        ],
+        [
+          1,
+          4,
+          3,
+          5
+        ],
+        [
+          4,
+          5,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3,
+          6
+        ],
+        [
+          5,
+          4,
+          3,
+          2
+        ],
+        [
+          1,
+          5,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          5,
+          3
+        ],
+        [
+          3,
+          6,
+          1,
+          4
+        ],
+        [
+          4,
+          2,
+          3,
+          1
+        ],
+        [
+          2,
+          4,
+          6,
+          1
+        ],
+        [
+          4,
+          1,
+          3,
+          5
+        ],
+        [
+          4,
+          6,
+          2,
+          5
+        ],
+        [
+          6,
+          1,
+          3,
+          2
+        ],
+        [
+          2,
+          6,
+          3,
+          1
+        ],
+        [
+          3,
+          1,
+          6,
+          5
+        ],
+        [
+          4,
+          3,
+          6,
+          1
+        ],
+        [
+          3,
+          2,
+          1,
+          4
+        ],
+        [
+          2,
+          5,
+          1,
+          6
+        ],
+        [
+          2,
+          1,
+          4,
+          5
+        ],
+        [
+          5,
+          6,
+          3,
+          1
+        ],
+        [
+          6,
+          4,
+          2,
+          5
+        ],
+        [
+          1,
+          6,
+          2,
+          3
+        ],
+        [
+          5,
+          3,
+          2,
+          6
+        ],
+        [
+          2,
+          1,
+          6,
+          3
+        ],
+        [
+          4,
+          1,
+          3,
+          6
+        ],
+        [
+          1,
+          6,
+          5,
+          2
+        ],
+        [
+          4,
+          1,
+          2,
+          5
+        ],
+        [
+          1,
+          5,
+          3,
+          4
+        ],
+        [
+          6,
+          1,
+          2,
+          4
+        ],
+        [
+          6,
+          1,
+          3,
+          2
+        ],
+        [
+          4,
+          1,
+          5,
+          6
+        ],
+        [
+          5,
+          1,
+          4,
+          3
+        ],
+        [
+          4,
+          1,
+          6,
+          3
+        ],
+        [
+          5,
+          2,
+          6,
+          1
+        ],
+        [
+          5,
+          4,
+          2,
+          3
+        ],
+        [
+          2,
+          4,
+          5,
+          1
+        ],
+        [
+          5,
+          2,
+          6,
+          3
+        ],
+        [
+          1,
+          4,
+          3,
+          6
+        ],
+        [
+          4,
+          3,
+          5,
+          1
+        ],
+        [
+          2,
+          5,
+          4,
+          1
+        ],
+        [
+          1,
+          5,
+          2,
+          4
+        ],
+        [
+          1,
+          3,
+          4,
+          6
+        ],
+        [
+          2,
+          3,
+          1,
+          5
+        ],
+        [
+          2,
+          1,
+          6,
+          5
+        ],
+        [
+          6,
+          3,
+          1,
+          4
+        ],
+        [
+          4,
+          2,
+          6,
+          3
+        ],
+        [
+          2,
+          5,
+          1,
+          6
+        ],
+        [
+          4,
+          6,
+          1,
+          5
+        ],
+        [
+          3,
+          5,
+          4,
+          6
+        ],
+        [
+          1,
+          4,
+          6,
+          3
+        ],
+        [
+          2,
+          4,
+          5,
+          3
+        ],
+        [
+          3,
+          5,
+          2,
+          4
+        ],
+        [
+          6,
+          4,
+          3,
+          1
+        ],
+        [
+          2,
+          3,
+          5,
+          4
+        ],
+        [
+          1,
+          4,
+          2,
+          6
+        ],
+        [
+          4,
+          6,
+          2,
+          3
+        ],
+        [
+          3,
+          2,
+          4,
+          5
+        ],
+        [
+          4,
+          6,
+          5,
+          2
+        ],
+        [
+          1,
+          3,
+          2,
+          5
+        ],
+        [
+          6,
+          2,
+          5,
+          1
+        ],
+        [
+          1,
+          5,
+          6,
+          2
+        ],
+        [
+          3,
+          2,
+          1,
+          6
+        ],
+        [
+          4,
+          3,
+          2,
+          6
+        ],
+        [
+          4,
+          5,
+          1,
+          3
+        ],
+        [
+          5,
+          1,
+          6,
+          2
+        ],
+        [
+          2,
+          3,
+          1,
+          5
+        ],
+        [
+          3,
+          2,
+          1,
+          5
+        ],
+        [
+          1,
+          6,
+          4,
+          2
+        ],
+        [
+          1,
+          3,
+          2,
+          4
+        ],
+        [
+          1,
+          2,
+          5,
+          6
+        ]
+      ],
+      "allocation_rng_seeds": [
+        327001,
+        327002,
+        327003,
+        327004,
+        327005,
+        327006,
+        327007,
+        327008,
+        327009,
+        327010,
+        327011,
+        327012,
+        327013,
+        327014,
+        327015,
+        327016,
+        327017,
+        327018,
+        327019,
+        327020,
+        327021,
+        327022,
+        327023,
+        327024,
+        327025,
+        327026,
+        327027,
+        327028,
+        327029,
+        327030,
+        327031,
+        327032,
+        327033,
+        327034,
+        327035,
+        327036,
+        327037,
+        327038,
+        327039,
+        327040,
+        327041,
+        327042,
+        327043,
+        327044,
+        327045,
+        327046,
+        327047,
+        327048,
+        327049,
+        327050,
+        327051,
+        327052,
+        327053,
+        327054,
+        327055,
+        327056,
+        327057,
+        327058,
+        327059,
+        327060,
+        327061,
+        327062,
+        327063,
+        327064,
+        327065,
+        327066,
+        327067,
+        327068,
+        327069,
+        327070,
+        327071,
+        327072,
+        327073,
+        327074,
+        327075,
+        327076,
+        327077,
+        327078,
+        327079,
+        327080,
+        327081,
+        327082,
+        327083,
+        327084,
+        327085,
+        327086,
+        327087,
+        327088,
+        327089,
+        327090,
+        327091,
+        327092,
+        327093,
+        327094,
+        327095,
+        327096,
+        327097,
+        327098,
+        327099,
+        327100
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 72,
+      "hf_episode_budget": 72,
+      "n_allocation_repetitions": 100,
+      "distribution_kind": "monte_carlo_100_uniform_without_replacement_allocations",
+      "cost_note": "per deployment decision; repetitions reuse the sealed bank for baseline integration"
+    }
+  ],
+  "author_decisions": [
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_PIVOT_VOI_E5C",
+      "original_author_method": "pivot_voi",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 4,
+      "queries": [
+        3
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 24,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.562113020410566,
+        9.480965684318992,
+        -4.732936638184268,
+        18.484119973253673,
+        -1.7102985149558763,
+        -5.272474075414251
+      ],
+      "observed_query_means": {
+        "3": -4.732936638184268
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_GlobalVOI_E5C",
+      "original_author_method": "global_voi",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 4,
+      "queries": [
+        5
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 24,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.562113020410566,
+        9.480965684318992,
+        17.466348281971356,
+        18.484119973253673,
+        5.736648499789787,
+        -5.272474075414251
+      ],
+      "observed_query_means": {
+        "5": 5.736648499789787
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_Uniform_E5C",
+      "original_author_method": "random_hf",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        4
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 24,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -12.287970385871454,
+        7.206823049779879,
+        12.918063012893132,
+        -26.333346414220774,
+        7.183475914514752,
+        -16.126936125566196
+      ],
+      "observed_query_means": {
+        "4": -26.333346414220774
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_LUCB_E5C",
+      "original_author_method": "paired_lucb",
+      "budget_queries": 1,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        4
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 24,
+      "hf_episode_budget": 24,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.562113020410566,
+        9.480965684318992,
+        17.466348281971356,
+        -26.333346414220774,
+        -1.7102985149558763,
+        -5.272474075414251
+      ],
+      "observed_query_means": {
+        "4": -26.333346414220774
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_PIVOT_VOI_E5C",
+      "original_author_method": "pivot_voi",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 2,
+      "queries": [
+        3,
+        4
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 40,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.562113020410566,
+        9.480965684318992,
+        -4.732936638184268,
+        -26.333346414220774,
+        -1.7102985149558763,
+        -5.272474075414251
+      ],
+      "observed_query_means": {
+        "3": -4.732936638184268,
+        "4": -26.333346414220774
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_GlobalVOI_E5C",
+      "original_author_method": "global_voi",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        5,
+        4
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 40,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.562113020410566,
+        9.480965684318992,
+        17.466348281971356,
+        -26.333346414220774,
+        5.736648499789787,
+        -5.272474075414251
+      ],
+      "observed_query_means": {
+        "5": 5.736648499789787,
+        "4": -26.333346414220774
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_Uniform_E5C",
+      "original_author_method": "random_hf",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 3,
+      "queries": [
+        4,
+        1
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 40,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -1.7951303817109845,
+        7.206823049779879,
+        12.918063012893132,
+        -26.333346414220774,
+        7.183475914514752,
+        -16.126936125566196
+      ],
+      "observed_query_means": {
+        "4": -26.333346414220774,
+        "1": -1.7951303817109845
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_LUCB_E5C",
+      "original_author_method": "paired_lucb",
+      "budget_queries": 2,
+      "selection_rng_seed": 327,
+      "selected_idx": 2,
+      "queries": [
+        4,
+        3
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 40,
+      "hf_episode_budget": 40,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.562113020410566,
+        9.480965684318992,
+        -4.732936638184268,
+        -26.333346414220774,
+        -1.7102985149558763,
+        -5.272474075414251
+      ],
+      "observed_query_means": {
+        "4": -26.333346414220774,
+        "3": -4.732936638184268
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_PIVOT_VOI_E5C",
+      "original_author_method": "pivot_voi",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 2,
+      "queries": [
+        3,
+        4,
+        1,
+        5
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 72,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -1.7951303817109845,
+        9.480965684318992,
+        -4.732936638184268,
+        -26.333346414220774,
+        5.736648499789787,
+        -5.272474075414251
+      ],
+      "observed_query_means": {
+        "3": -4.732936638184268,
+        "4": -26.333346414220774,
+        "1": -1.7951303817109845,
+        "5": 5.736648499789787
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_GlobalVOI_E5C",
+      "original_author_method": "global_voi",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 2,
+      "queries": [
+        5,
+        4,
+        3,
+        2
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 72,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.562113020410566,
+        15.421051065567399,
+        -4.732936638184268,
+        -26.333346414220774,
+        5.736648499789787,
+        -5.272474075414251
+      ],
+      "observed_query_means": {
+        "5": 5.736648499789787,
+        "4": -26.333346414220774,
+        "3": -4.732936638184268,
+        "2": 15.421051065567399
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_Uniform_E5C",
+      "original_author_method": "random_hf",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 2,
+      "queries": [
+        4,
+        1,
+        3,
+        2
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 72,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -1.7951303817109845,
+        15.421051065567399,
+        -4.732936638184268,
+        -26.333346414220774,
+        7.183475914514752,
+        -16.126936125566196
+      ],
+      "observed_query_means": {
+        "4": -26.333346414220774,
+        "1": -1.7951303817109845,
+        "3": -4.732936638184268,
+        "2": 15.421051065567399
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 327,
+      "adaptation": 4,
+      "method": "author_LUCB_E5C",
+      "original_author_method": "paired_lucb",
+      "budget_queries": 4,
+      "selection_rng_seed": 327,
+      "selected_idx": 2,
+      "queries": [
+        4,
+        3,
+        2,
+        5
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 72,
+      "hf_episode_budget": 72,
+      "incumbent_setup_episode_cost": 8,
+      "per_query_episode_cost": 16,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -14.562113020410566,
+        15.421051065567399,
+        -4.732936638184268,
+        -26.333346414220774,
+        5.736648499789787,
+        -5.272474075414251
+      ],
+      "observed_query_means": {
+        "4": -26.333346414220774,
+        "3": -4.732936638184268,
+        "2": 15.421051065567399,
+        "5": 5.736648499789787
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    }
+  ],
+  "joint_decision_sha256": "68435225f2cedd14a6d87511a334ab530d7df2b49a5254028cf6a5416634e2bf",
+  "author_decision_sha256": "f35490c027cb44915b1d5972afce6f25c958d707706f2bebed8a9e2b55dd5346",
+  "fit_sha256": "7aa672069dfe05bfbbe39f8c02658a5951d118452220f909bf091bf2a2c2ee0d",
+  "protocol_sha256": "46e4e529e30ee623517b8808ea69495d7c0dc80c73c011102506b1c4ab447f8d",
+  "root_file_sha256": "1a31541610562de692837de5ae149c945e24333c95fdd928d4e217b0086688b9"
+}

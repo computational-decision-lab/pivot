@@ -1,0 +1,93 @@
+{
+  "config": {
+    "candidate_count": 8,
+    "environments": [
+      {
+        "id": "performative_control",
+        "response_strengths": [
+          0.35,
+          0.85
+        ]
+      },
+      {
+        "id": "congestion_resource",
+        "response_strengths": [
+          0.3,
+          0.75
+        ]
+      },
+      {
+        "id": "mpe2_frozen",
+        "response_strengths": [
+          0.0
+        ]
+      }
+    ],
+    "experiment_id": "E2C",
+    "operator_families": [
+      "local_random",
+      "gradient_informed",
+      "evolutionary_population"
+    ],
+    "seed_start": 8101,
+    "shift_levels": [
+      0.0,
+      0.1,
+      0.2,
+      0.35,
+      0.5,
+      0.7,
+      1.0,
+      1.5,
+      2.0,
+      3.0
+    ],
+    "statistics": {
+      "minimum_independent_seeds": 30,
+      "minimum_shift_effect_if": 0.0,
+      "reference_shift": 0.0,
+      "response_variance_floor": 1e-06
+    }
+  },
+  "config_sha256": "6726e8bff87e823041e51cd0922ceba0e8ed63fbd0a4d85d40011b44e888657c",
+  "created_at_utc": "2026-08-26T05:03:26.891113+00:00",
+  "experiment_id": "E2C",
+  "machine": "x86_64",
+  "paired_context": true,
+  "python": "3.10.12",
+  "raw_outcomes_preserved": true,
+  "schema_version": "pivot-v9-provenance-v1",
+  "seed_list": [
+    8101,
+    8102,
+    8103,
+    8104,
+    8105,
+    8106,
+    8107,
+    8108,
+    8109,
+    8110,
+    8111,
+    8112,
+    8113,
+    8114,
+    8115,
+    8116,
+    8117,
+    8118,
+    8119,
+    8120,
+    8121,
+    8122,
+    8123,
+    8124,
+    8125,
+    8126,
+    8127,
+    8128,
+    8129,
+    8130
+  ],
+  "source_commit": "c5c9496004effefee02324e399621e6bd8970430"
+}

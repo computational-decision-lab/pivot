@@ -1,0 +1,19 @@
+# Secondary controlled E4 diagnostic: same source transitions, two estimands.
+world:
+  response_strength: 0.7
+  competition_strength: 0.0
+  noise_scale: 0.05
+  horizon: 12
+  reward_bound: 10.0
+  optimization_strength: 1.0
+  config_id: controlled-e4-value-vs-improvement-v1
+seeds: [401, 402, 403, 404, 405]
+response_strengths: [0.0, 0.3, 0.7, 0.9]
+candidate_scales: [0.1, 0.2, 0.3, 0.5]
+optimization_strengths: [0.5, 1.0, 1.5]
+hf_budget: 24
+contrast:
+  differential_bias_scale: 4.0
+  common_value_offset: 0.6
+  tau_sign: 1.0e-9
+  bootstrap_seed: 20260820

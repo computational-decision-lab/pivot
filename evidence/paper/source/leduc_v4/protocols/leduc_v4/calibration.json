@@ -1,0 +1,150 @@
+{
+ "game": "leduc_poker",
+ "num_suits": 2,
+ "cfr_iterations": 2000,
+ "beta_min": 0.35,
+ "beta_max": 0.95,
+ "dirichlet_concentration": 0.35,
+ "eta": 0.15,
+ "adaptation_steps": {
+  "short": 1,
+  "long": 8
+ },
+ "response_weights": {
+  "short": 0.15,
+  "long": 0.7275094749609375
+ },
+ "candidates": [
+  {
+   "id": "all_a1.00",
+   "direction": "all",
+   "alpha": 1.0
+  },
+  {
+   "id": "all_a0.50",
+   "direction": "all",
+   "alpha": 0.5
+  },
+  {
+   "id": "all_a0.25",
+   "direction": "all",
+   "alpha": 0.25
+  },
+  {
+   "id": "rankJ_a1.00",
+   "direction": "rank0",
+   "alpha": 1.0
+  },
+  {
+   "id": "rankQ_a1.00",
+   "direction": "rank1",
+   "alpha": 1.0
+  },
+  {
+   "id": "rankK_a1.00",
+   "direction": "rank2",
+   "alpha": 1.0
+  },
+  {
+   "id": "round1_a1.00",
+   "direction": "round1",
+   "alpha": 1.0
+  },
+  {
+   "id": "round2_a1.00",
+   "direction": "round2",
+   "alpha": 1.0
+  }
+ ],
+ "candidate_alphas": [
+  1.0,
+  0.5,
+  0.25,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0
+ ],
+ "incumbent_copy_in_candidate_set": false,
+ "responder_type_rule": "exploiter_if_seed_odd_else_equilibrator",
+ "responder_type_is_latent": "never shown to selectors",
+ "bank_hands": 4096,
+ "audit_hands": 4096,
+ "query_sizes": [
+  512,
+  2048,
+  4096
+ ],
+ "fixed_query_size": 4096,
+ "cost_rule": "2 x n physical hands per query (candidate + incumbent rollouts); unpaired queries cost the same",
+ "hf_caps": [
+  8192,
+  16384,
+  32768
+ ],
+ "query_cost": 8192,
+ "query_cost_note": "one fixed-size (4096-hand) paired query = 8192 physical hands; used by the analyze_v4 cross-check only",
+ "primary_hf_cap": 16384,
+ "primary_method": "pivot_kg_menu",
+ "primary_comparator": "uniform_fixed",
+ "acquisition_comparator": "ivr_menu",
+ "methods": [
+  "pivot_kg_menu",
+  "pivot_kg_menu_stop",
+  "pivot_kg_fixed",
+  "pivot_kg_menu_unpaired",
+  "ivr_menu",
+  "ivr_fixed",
+  "lucb_fixed",
+  "top_proxy_fixed",
+  "uniform_fixed",
+  "uniform_small",
+  "all_hf_fixed",
+  "no_hf",
+  "proxy_only"
+ ],
+ "randomised_comparator_evaluation": "uniform_fixed: exact expectation over all query subsets; uniform_small: mean of 64 seeded draws; the pre-registered single draw is also reported",
+ "calibration_label_sources": [
+  "exact",
+  "noisy_audit"
+ ],
+ "primary_calibration_label_source": "exact",
+ "bootstrap": {
+  "draws": 10000,
+  "seed": 20260917,
+  "unit": "root seed"
+ },
+ "design_rationale": "v2b showed that with a one-dimensional candidate ray and a binary latent type, every posterior-guided rule (EVSI, IVR, LUCB) issues identical queries. v4 makes candidate informativeness heterogeneous (five directions, three step sizes on the main direction), adds a query-size menu so cost-aware acquisition is exercised, stores per-hand outcomes so paired vs unpaired estimation and repeated queries can be evaluated on the same sealed hands, and adds two noisy audit blocks so calibration from realistic audits can be tested. Proxy and deployment values remain exact; scoring uses exact values only.",
+ "protocol_id": "leduc_v4_calibration_20260921",
+ "status": "FROZEN",
+ "seeds": [
+  97000,
+  97001,
+  97002,
+  97003,
+  97004,
+  97005,
+  97006,
+  97007,
+  97008,
+  97009,
+  97010,
+  97011
+ ],
+ "pilot_seeds_reused": [
+  97000,
+  97001,
+  97002,
+  97003
+ ],
+ "preflight_gate_before_confirmation_freeze": {
+  "C1_root_held_out_predictive_coverage_95": [
+   0.8,
+   1.0
+  ],
+  "C2_loro_long_pivot_kg_menu_not_worse_than_no_hf_by_more_than": 0.02,
+  "C3_design_discriminates_acquisition_rules": "pivot_kg_menu and ivr_menu issue a different FIRST query (candidate or size) in >= 3 of 12 held-out roots at the primary cap, long response; if C3 fails, hypothesis H_B is declared not testable in this design and is reported as such; confirmation still runs for the other hypotheses",
+  "note": "gates are evaluated with the exact-label calibration; the noisy-audit calibration is reported alongside"
+ }
+}

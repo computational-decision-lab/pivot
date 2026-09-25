@@ -1,0 +1,24 @@
+{
+  "protocol_id": "melting_v4_hetero_pilot_20260918",
+  "status": "PILOT_FROZEN",
+  "purpose": "Discovery-stage manipulation check ONLY: does a competitive (relative-payoff) responder move its stag probability the opposite way and flip the deployment value of the extreme stag update, relative to a cooperative responder? No method claim is made from this cohort. Pilot roots become calibration roots afterwards; they never enter the test set.",
+  "seeds": [48000, 48001, 48002, 48003],
+  "responder_type_rule": "competitive_if_seed_odd_else_cooperative",
+  "responder_types": {"cooperative": "reward = own return (identical to v3)", "competitive": "reward = own return - 1.0 * focal return"},
+  "candidate_probabilities": [0.125, 0.225, 0.325, 0.425, 0.575, 0.675, 0.775, 0.875],
+  "incumbent_probability": 0.5,
+  "adaptation_episodes": [4, 32],
+  "response_learning_rate": 0.5,
+  "reward_scale": 100.0, "reward_clip": 2.0, "logit_clip": 8.0,
+  "native_episodes_per_root": 704,
+  "pilot_go_criteria": {
+    "competitive_q_vs_candidate7_below_incumbent_q": "mean over competitive roots of q(after 32 eps | focal p=.875) < q(after 32 | focal p=.5)",
+    "cooperative_q_vs_candidate7_above_incumbent_q": "mirror for cooperative roots (replicates v3 direction)",
+    "candidate7_deployment_sign_differs_by_type": "cooperative mean deployment delta of candidate 7 > 0 AND competitive mean is lower by at least min_type_separation_return_units",
+    "best_candidate_differs_by_type": "argmax of mean audit label differs between the two types (incumbent admissible)",
+    "min_type_separation_return_units": 5.0
+  },
+  "on_no_go": "STOP. Do not change lambda, learning rate, horizons or candidates to force a flip. Report pilot_report.json and wait for a human decision.",
+  "compute": "4 single-thread workers, ~2 h wallclock, ~2,816 native episodes",
+  "claims_excluded": ["any method comparison", "any confirmation-level inference"]
+}

@@ -1,0 +1,74 @@
+{
+  "protocol_id": "openspiel_v2b_kuhn_calibration_20260918",
+  "status": "FROZEN",
+  "seeds": [
+    92100,
+    92101,
+    92102,
+    92103,
+    92104,
+    92105,
+    92106,
+    92107,
+    92108,
+    92109,
+    92110,
+    92111
+  ],
+  "seed_extension": false,
+  "game": "kuhn_poker",
+  "cfr_iterations": 5000,
+  "beta_min": 0.35,
+  "beta_max": 0.95,
+  "dirichlet_concentration": 0.35,
+  "candidate_alphas": [
+    0.0,
+    0.125,
+    0.25,
+    0.375,
+    0.5,
+    0.625,
+    0.75,
+    0.875,
+    1.0
+  ],
+  "eta": 0.15,
+  "adaptation_steps": {
+    "short": 1,
+    "long": 8
+  },
+  "response_weights": {
+    "short": 0.15,
+    "long": 0.7275
+  },
+  "query_hands": 4096,
+  "query_cost": 8192,
+  "hf_caps": [
+    8192,
+    16384,
+    32768
+  ],
+  "primary_hf_cap": 16384,
+  "responder_type_rule": "exploiter_if_seed_odd_else_equilibrator",
+  "responder_type_is_latent": "never shown to selectors",
+  "eta_selection_evidence": "Discovery sweep (code/openspiel_v2/openspiel_v2_discovery.py, 40 roots, exact values): eta=0.15 long -> exploiter best alpha=0 in 38/40, equilibrator best alpha=1 in 36/40, mixed-population value of world-specific information 0.0436 = 100% of oracle (population prior always keeps incumbent, value 0). eta=0.25/0.40 shrink equilibrator gains toward 0 (0.0076 / 0.0008). eta fixed at 0.15 before any pilot/calibration/confirmation root is generated.",
+  "primary_method": "pivot_kg",
+  "primary_comparator": "uniform_v2",
+  "methods": [
+    "pivot_kg",
+    "pivot_kg_stop",
+    "uniform_v2",
+    "ivr_v2",
+    "lucb_v2",
+    "no_hf_v2",
+    "proxy_only",
+    "all_hf_reference"
+  ],
+  "cost_note": "query_cost = 2 x 4096 physical paired hands (SE ~0.02 in Kuhn units). Caps = 1/2/4 queries; primary = 2 queries.",
+  "why_v2b": "v2 (256 hands, Kuhn 93000-93029) is retained as a null: even all-HF (8 x 256 hands) reached ISR 0.022 vs no-HF 0.032 and oracle 0, i.e. the HF instrument could not resolve the decision-relevant 0.044 equilibrator gain (SE 0.09). v2b changes ONLY HF precision; eta, candidates, latent-type rule, cap structure unchanged. Both cohorts are reported.",
+  "preflight_gate_before_confirmation_freeze": {
+    "loro_long_kg_minus_uniform_mean": "> 0 (descriptive)",
+    "loro_long_kg_not_worse_than_no_hf_v2_by_more_than": 0.02,
+    "posterior_calibration": "root-held-out 95% predictive coverage of S in [0.80,1.00]"
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "edited_files": [
+    "main.tex"
+  ],
+  "section_6_4_rule_comparison": {
+    "decision": "The earlier complete-rule contrast wording was incorrect. Table 1 isolates query allocation within a shared calibrated posterior, observation update, and final selection rule. The corrected sentence is added after the Table 1 introduction with the existing Appendix B label app:pivot-ext.",
+    "source_trace": [
+      "source/core/analyze_v4.py:347-354 fits a posterior on disjoint calibration roots and calls decide on held-out roots.",
+      "source/core/analyze_v4.py:149-164 constructs the same posterior specification for each method and invokes run_selector with method-specific query behavior.",
+      "source/core/pivot_v2.py:135-144 names pivot_kg and uniform_v2 as different methods using the same posterior.",
+      "source/core/pivot_v2.py:163-179 uses knowledge-gradient per cost for pivot_kg and random available queries for uniform_v2.",
+      "source/core/pivot_v2.py:196-205 conditions on each HF observation and selects the largest posterior mean, with the incumbent available, for both methods.",
+      "source/core/analyze_v4.py:355-369 seals decisions before audit-label scoring; lines 174-179 score the selected choice as held-out ISR. Scoring final ISR does not itself imply that final selection rules differ."
+    ],
+    "saved_table_1_rows": [
+      {
+        "world": "Leduc long",
+        "source": "core/leduc/analysis/summary.json:method_table_cap192",
+        "methods": [
+          "pivot_kg",
+          "uniform_v2"
+        ],
+        "roots_per_method": 30,
+        "hf_queries": 2,
+        "pivot_isr": 0.009268662421935329,
+        "uniform_isr": 0.04575369777627247
+      },
+      {
+        "world": "Kuhn long",
+        "source": "core/kuhn/analysis/summary.json:method_table_cap192",
+        "methods": [
+          "pivot_kg",
+          "uniform_v2"
+        ],
+        "roots_per_method": 30,
+        "hf_queries": 2,
+        "pivot_isr": 0.05602424325799525,
+        "uniform_isr": 0.05798808964075329
+      },
+      {
+        "world": "Melting Pot long",
+        "source": "core/melting/analysis/summary.json:method_table_cap192",
+        "methods": [
+          "pivot_kg",
+          "uniform_v2"
+        ],
+        "roots_per_method": 30,
+        "hf_queries": 2,
+        "pivot_isr": 0.8359997699065508,
+        "uniform_isr": 1.7424631790317098
+      }
+    ],
+    "appendix_boundary": "Appendix B is Extended PIVOT-KG Evaluation (main.tex label app:pivot-ext). Its Leduc component forest is from a second confirmation cohort with a repeated-query sample-size variant; it is related evidence, not a decomposition of the three Table 1 rows.",
+    "scope_note": "The HighwayEnv appendix's Uniform proxy estimate statement concerns the original and fresh-seed replication cohorts. The positive eight-candidate redesign instead reconstructs the same GaussianPosterior, observes each Uniform subset, and selects with the shared posterior rule (source/highway_redesign/source/experiments/revision/highway_b4_redesign.py:93-135). These cohort details are separate from the Table 1 code trace."
+  },
+  "registered_term": {
+    "decision": "Changed Registered allocation interactions to Designated allocation interactions.",
+    "evidence": [
+      "core/leduc/confirm/protocol.json and core/kuhn/confirm/protocol.json have status FROZEN, primary methods pivot_kg/uniform_v2, and H3 long-minus-short interaction contrasts.",
+      "source/core/freeze_confirm.py:19-51 defines a pre-confirmation freeze workflow but is specific to the Melting Pot cohort.",
+      "The packaged Leduc and Kuhn frozen protocol JSON files have no frozen_at_utc field or independently verifiable pre-test timestamp. No external registration record was found in the inspected package."
+    ],
+    "claim_boundary": "The internal protocols designate these contrasts; the paper does not claim public registration or independently verified temporal preregistration for the first-cohort interaction."
+  },
+  "language_edits": [
+    "Added the exact calibration-set sampling-uncertainty sentence to the second conclusion limitation.",
+    "Changed physical-driving and physical-interaction claims to reactive driving simulation or driving-simulator wording, including main-text and appendix headings and actor rollouts.",
+    "Preserved physical hands/cost and measurement-noise language where physical is technically meaningful."
+  ],
+  "checks": {
+    "latexmk_pdf_exit_code": 0,
+    "pages": 16,
+    "baseline_pages": 16,
+    "bibliography_entries": 21,
+    "baseline_bibliography_entries": 21,
+    "undefined_citations": 0,
+    "undefined_references": 0,
+    "new_latex_warnings": 0,
+    "underfull_notices": 7,
+    "baseline_underfull_notices": 7,
+    "git_diff_check": "pass",
+    "pdf": "pivot-manuscript-20260926.pdf"
+  },
+  "protected_content": {
+    "equations": {
+      "count": 6,
+      "unchanged": true
+    },
+    "propositions": {
+      "count": 4,
+      "unchanged": true
+    },
+    "proofs": {
+      "count": 4,
+      "unchanged": true
+    },
+    "algorithm": {
+      "count": 1,
+      "unchanged": true
+    },
+    "tables": {
+      "count": 3,
+      "unchanged": true
+    },
+    "title": {
+      "count": 1,
+      "unchanged": true
+    }
+  }
+}

@@ -1,0 +1,24 @@
+name: Reproducibility checks
+on:
+  push:
+    branches: [master, release/iclr2027-repro-v1]
+    paths: ['src/**', 'configs/**', 'experiments/**', 'reproduction/**', 'evidence/paper/**', 'tests/**', 'scripts/build_submission_release.py', '.github/workflows/reproducibility.yml']
+  pull_request:
+    paths: ['src/**', 'configs/**', 'experiments/**', 'reproduction/**', 'evidence/paper/**', 'tests/**', 'scripts/build_submission_release.py', '.github/workflows/reproducibility.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-reproduction:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - run: python -m pip install -r reproduction/environments/replay-requirements.txt
+      - run: python -m pip install --no-deps -e .
+      - run: python reproduction/run.py verify --output /tmp/pivot-verify
+      - run: python reproduction/run.py analyze --output /tmp/pivot-analysis
+      - run: python reproduction/run.py figures --output /tmp/pivot-figures
+      - run: python -m pytest -q tests/release tests/unit/test_metrics.py tests/unit/test_transition.py tests/unit/test_decomposition.py tests/unit/test_acquisition.py tests/unit/test_operator_shift.py

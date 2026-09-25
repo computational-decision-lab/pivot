@@ -1,0 +1,184 @@
+{
+ "game": "leduc_poker",
+ "num_suits": 2,
+ "cfr_iterations": 2000,
+ "beta_min": 0.35,
+ "beta_max": 0.95,
+ "dirichlet_concentration": 0.35,
+ "eta": 0.15,
+ "adaptation_steps": {
+  "short": 1,
+  "long": 8
+ },
+ "response_weights": {
+  "short": 0.15,
+  "long": 0.7275094749609375
+ },
+ "candidates": [
+  {
+   "id": "all_a1.00",
+   "direction": "all",
+   "alpha": 1.0
+  },
+  {
+   "id": "all_a0.50",
+   "direction": "all",
+   "alpha": 0.5
+  },
+  {
+   "id": "all_a0.25",
+   "direction": "all",
+   "alpha": 0.25
+  },
+  {
+   "id": "rankJ_a1.00",
+   "direction": "rank0",
+   "alpha": 1.0
+  },
+  {
+   "id": "rankQ_a1.00",
+   "direction": "rank1",
+   "alpha": 1.0
+  },
+  {
+   "id": "rankK_a1.00",
+   "direction": "rank2",
+   "alpha": 1.0
+  },
+  {
+   "id": "round1_a1.00",
+   "direction": "round1",
+   "alpha": 1.0
+  },
+  {
+   "id": "round2_a1.00",
+   "direction": "round2",
+   "alpha": 1.0
+  }
+ ],
+ "candidate_alphas": [
+  1.0,
+  0.5,
+  0.25,
+  1.0,
+  1.0,
+  1.0,
+  1.0,
+  1.0
+ ],
+ "incumbent_copy_in_candidate_set": false,
+ "responder_type_rule": "exploiter_if_seed_odd_else_equilibrator",
+ "responder_type_is_latent": "never shown to selectors",
+ "bank_hands": 4096,
+ "audit_hands": 4096,
+ "query_sizes": [
+  512,
+  2048,
+  4096
+ ],
+ "fixed_query_size": 4096,
+ "cost_rule": "2 x n physical hands per query (candidate + incumbent rollouts); unpaired queries cost the same",
+ "hf_caps": [
+  8192,
+  16384,
+  32768
+ ],
+ "query_cost": 8192,
+ "query_cost_note": "one fixed-size (4096-hand) paired query = 8192 physical hands; used by the analyze_v4 cross-check only",
+ "primary_hf_cap": 16384,
+ "primary_method": "pivot_kg_menu",
+ "primary_comparator": "uniform_fixed",
+ "acquisition_comparator": "ivr_menu",
+ "methods": [
+  "pivot_kg_menu",
+  "pivot_kg_menu_stop",
+  "pivot_kg_fixed",
+  "pivot_kg_menu_unpaired",
+  "ivr_menu",
+  "ivr_fixed",
+  "lucb_fixed",
+  "top_proxy_fixed",
+  "uniform_fixed",
+  "uniform_small",
+  "all_hf_fixed",
+  "no_hf",
+  "proxy_only"
+ ],
+ "randomised_comparator_evaluation": "uniform_fixed: exact expectation over all query subsets; uniform_small: mean of 64 seeded draws; the pre-registered single draw is also reported",
+ "calibration_label_sources": [
+  "exact",
+  "noisy_audit"
+ ],
+ "primary_calibration_label_source": "exact",
+ "bootstrap": {
+  "draws": 10000,
+  "seed": 20260917,
+  "unit": "root seed"
+ },
+ "design_rationale": "v2b showed that with a one-dimensional candidate ray and a binary latent type, every posterior-guided rule (EVSI, IVR, LUCB) issues identical queries. v4 makes candidate informativeness heterogeneous (five directions, three step sizes on the main direction), adds a query-size menu so cost-aware acquisition is exercised, stores per-hand outcomes so paired vs unpaired estimation and repeated queries can be evaluated on the same sealed hands, and adds two noisy audit blocks so calibration from realistic audits can be tested. Proxy and deployment values remain exact; scoring uses exact values only.",
+ "protocol_id": "leduc_v4_confirm_20260921",
+ "status": "FROZEN",
+ "seeds": [
+  98000,
+  98001,
+  98002,
+  98003,
+  98004,
+  98005,
+  98006,
+  98007,
+  98008,
+  98009,
+  98010,
+  98011,
+  98012,
+  98013,
+  98014,
+  98015,
+  98016,
+  98017,
+  98018,
+  98019,
+  98020,
+  98021,
+  98022,
+  98023,
+  98024,
+  98025,
+  98026,
+  98027,
+  98028,
+  98029
+ ],
+ "calibration_seeds": [
+  97000,
+  97001,
+  97002,
+  97003,
+  97004,
+  97005,
+  97006,
+  97007,
+  97008,
+  97009,
+  97010,
+  97011
+ ],
+ "hypotheses": {
+  "H_A_allocation": "long, cap 16384: gain(pivot_kg_menu) - E[gain(uniform_fixed)] > 0   [primary; success = root-bootstrap 95% CI lower bound > 0]",
+  "H_B_acquisition": "long, cap 16384: gain(pivot_kg_menu) - gain(ivr_menu) > 0            [only if calibration gate C3 passed]",
+  "H_B2_acquisition_vs_lucb": "long, cap 16384: gain(pivot_kg_menu) - gain(lucb_fixed) > 0",
+  "H_C_pairing": "SE ratio unpaired/paired > 1 (descriptive, all candidates) and gain(pivot_kg_menu) - gain(pivot_kg_menu_unpaired) >= 0 at cap 16384",
+  "H_D_noisy_calibration": "gain(pivot_kg_menu | exact calibration) - gain(pivot_kg_menu | noisy-audit calibration) at cap 16384; report CI (robustness, no directional claim)",
+  "H_E_stop_rule": "hands(pivot_kg_menu_stop) < hands(pivot_kg_menu) with gain difference CI containing 0 (budget saved at equal regret)",
+  "H_F_fidelity_menu": "gain(pivot_kg_menu) - gain(pivot_kg_fixed) at cap 16384 (value of the size menu)",
+  "H_G_interaction": "[pivot_kg_menu - E uniform_fixed]_long - [same]_short > 0",
+  "mechanism": "IDE, IRR, ISC short vs long; best candidate by type; VWI ceiling"
+ },
+ "primary_success_rule": "H_A lower bound > 0 (10000 root-bootstrap draws, seed 20260917). All other hypotheses reported with intervals and sign-flip p-values; no multiplicity adjustment; nulls retained.",
+ "if_null": "Retain and report with v2b and the eta suite. No further hands/eta/seed/candidate changes.",
+ "inference_unit": "root seed (30)",
+ "protocol_sha256": "86ca2679bc548e77184799c2184605c54566f1daffce5cc6e8ad76aacc2ef5c2",
+ "script_sha256": "2e9c9776c0516ed07d3799b675d369e9c421392bd1f8ecb9b729f28bd606613d",
+ "open_spiel": "2.0.2"
+}

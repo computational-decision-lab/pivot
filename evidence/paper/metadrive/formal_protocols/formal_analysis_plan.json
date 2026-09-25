@@ -1,0 +1,24 @@
+{
+  "registered_before_pilot_outcome": true,
+  "primary_population": "independent confirmation roots 301-330, same sampling protocol as calibration roots 201-212",
+  "primary_response_search_profiles": 12,
+  "primary_budget_queries": 2,
+  "primary_endpoint": "paired independent-audit selected deployment gain: pivot_kg minus uniform_v2_expected_100",
+  "primary_interval": "two-sided 95% percentile bootstrap resampling 30 independent roots, 10000 draws, seed78131",
+  "primary_evidence_rule": "lower confidence bound > 0 supports PIVOT-KG improvement over this matched-posterior Uniform comparator in this registered condition",
+  "other_comparisons": "budgets1and4, response4, LUCB, IVR, Global-VOI heuristic, noHF, proxy-only and author-code variants are secondary; no unadjusted multiple-comparison superiority claims",
+  "author_code_comparisons": [
+    "author_PIVOT_VOI_E5C",
+    "author_GlobalVOI_E5C",
+    "author_Uniform_E5C",
+    "author_LUCB_E5C"
+  ],
+  "author_features": "four signed normalized candidate-minus-incumbent controller parameter differences: speed/20-1, headway/1.5-1, distance/5-1, lane_change_distance/15-1. No-update footprint and gain exactly zero. Separate model for each response search budget, trained on calibration only.",
+  "candidate_and_environment_policy": "no outcome-based tuning or filtering; all six prespecified controller updates retained, even proxy-negative ones; report proxy-positive subset descriptively",
+  "HF_charge": "response search adaptation*2 episodes once for incumbent plus each queried candidate; paired selection4 episodes costs8 perquery; fixedblock only, no menu or stopping claim",
+  "calibration_diagnostics": "leave-one-root-out coverage including heldout audit measurement variance; diagnostic only, no posthoc parameter alteration",
+  "decision_sealing": "hash complete decisions before opening independent confirmation audit; querycallback returns only the requested precomputed selection block",
+  "full_reporting": "retain all null/negative conditions, engine errors, cost ledger, all roots, protocols and source hashes",
+  "author_reward_units": "Author Bayesian prior is specified in average return per fixed planned decision step: all proxy/training/query gains divided by fixed horizon300 before author functions; final independent audit metrics converted/reported in original native cumulative-return units. No outcome-derived scale. Existing joint candidate posterior fits covariance/noise directly in native units.",
+  "author_prior_scale_reason": "Avoid applying fixed prior precision1 to arbitrary cumulative reward units. Declared before reading pilot outcome or generating calibration/confirmation."
+}

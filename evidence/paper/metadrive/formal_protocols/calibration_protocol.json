@@ -1,0 +1,202 @@
+{
+  "schema": "metadrive_response_v1",
+  "phase": "calibration",
+  "upstream_commit": "85e5dadc6c7436d324348f6e3d8f8e680c06b4db",
+  "root_seeds": [
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209,
+    210,
+    211,
+    212
+  ],
+  "environment": {
+    "num_agents": 8,
+    "horizon": 300
+  },
+  "incumbent": {
+    "speed": 20.0,
+    "headway": 1.5,
+    "distance": 5.0,
+    "lane_change_distance": 15.0
+  },
+  "background_initial": {
+    "speed": 20.0,
+    "headway": 1.5,
+    "distance": 5.0,
+    "lane_change_distance": 15.0
+  },
+  "candidate_names": [
+    "slower",
+    "faster",
+    "fastest",
+    "cautious",
+    "assertive",
+    "fast_assertive"
+  ],
+  "candidates": [
+    {
+      "speed": 15,
+      "headway": 1.5,
+      "distance": 5.0,
+      "lane_change_distance": 15.0
+    },
+    {
+      "speed": 25,
+      "headway": 1.5,
+      "distance": 5.0,
+      "lane_change_distance": 15.0
+    },
+    {
+      "speed": 30,
+      "headway": 1.5,
+      "distance": 5.0,
+      "lane_change_distance": 15.0
+    },
+    {
+      "speed": 20.0,
+      "headway": 2.2,
+      "distance": 7,
+      "lane_change_distance": 20
+    },
+    {
+      "speed": 20.0,
+      "headway": 0.8,
+      "distance": 3,
+      "lane_change_distance": 10
+    },
+    {
+      "speed": 25,
+      "headway": 1,
+      "distance": 4,
+      "lane_change_distance": 12
+    }
+  ],
+  "response": {
+    "adaptation_steps": [
+      4,
+      12
+    ],
+    "training_episodes_per_profile": 2,
+    "pool_size": 12,
+    "initial_profile_included": true,
+    "pool_seed_offset": 530000,
+    "bounds": {
+      "speed": [
+        15.0,
+        30.0
+      ],
+      "headway": [
+        0.7,
+        2.3
+      ],
+      "distance": [
+        3.0,
+        8.0
+      ],
+      "lane_change_distance": [
+        10.0,
+        25.0
+      ]
+    },
+    "objective": "fixed-initial-roster mean background native cumulative return",
+    "search": "best of first 4 / all 12 predetermined profiles; same pool and training scenes for all policies including incumbent"
+  },
+  "proxy_episodes": 4,
+  "selection_episodes": 4,
+  "audit_episodes_per_split": 8,
+  "response_validation_episodes": 2,
+  "query_budgets": [
+    1,
+    2,
+    4
+  ],
+  "primary_query_budget": 2,
+  "primary_adaptation": 12,
+  "seed_layout": {
+    "root_stride": 1000,
+    "train": 0,
+    "proxy": 10,
+    "response_validation": 20,
+    "selection": 100,
+    "audit_a": 300,
+    "audit_b": 500,
+    "candidate_stride": 20
+  },
+  "pilot_go_rule": {
+    "engine_checks_required": true,
+    "heldout_background_long_minus_fixed_positive": true,
+    "mean_abs_gap_long_greater_than_short": true,
+    "at_least_one_proxy_positive_to_long_negative_flip_stable_in_a_and_b": true
+  },
+  "on_no_go": "Preserve all results, stop formal expansion. Inconclusive pilot is not proof of absence. No parameter sweeps or extra seeds to obtain a pass.",
+  "formal_plan_if_go": {
+    "calibration_root_seeds": [
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
+      208,
+      209,
+      210,
+      211,
+      212
+    ],
+    "confirmation_root_seeds": [
+      301,
+      302,
+      303,
+      304,
+      305,
+      306,
+      307,
+      308,
+      309,
+      310,
+      311,
+      312,
+      313,
+      314,
+      315,
+      316,
+      317,
+      318,
+      319,
+      320,
+      321,
+      322,
+      323,
+      324,
+      325,
+      326,
+      327,
+      328,
+      329,
+      330
+    ],
+    "audit_episodes_per_split": 8,
+    "freeze_before_confirmation": true
+  },
+  "method_names": [
+    "pivot_kg",
+    "uniform_v2",
+    "uniform_expected_100",
+    "lucb_v2",
+    "ivr_v2",
+    "global_voi_heuristic",
+    "no_hf_v2",
+    "proxy_only"
+  ],
+  "scientific_scope": "New exploratory MetaDrive native bottleneck response extension; finite shared-controller response search, not independently learning neural agents, not official adaptive MetaDrive score, not exact best response. Candidate policies prespecified before pilot outcomes. Same fixed profile-query sizes for all methods; no stopping/menu claims.",
+  "cost_accounting": "For q>0: incumbent response setup h*2 + q*(h*2 + 2*selection_episodes) native episodes. Proxy common to all methods. Audits and all-candidate precomputed bank counted separately as experimental cost; algorithms access only selected query blocks.",
+  "formal_analysis_plan_sha256": "0a9c37d9659d0399d080030214177354e181a50a4c4815662d87fcbdbe9af809"
+}

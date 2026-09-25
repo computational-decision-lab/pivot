@@ -1,0 +1,3406 @@
+{
+  "root": 319,
+  "adaptation": 12,
+  "joint_decisions": [
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "pivot_kg",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        4
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 56,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -5.671896311963628,
+        3.3331655535705615,
+        14.504501967694296,
+        10.311428215560348,
+        -24.826545267033538,
+        -16.6981007809287
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 3,
+          "observed": 28.65823776654144,
+          "kg": {
+            "0": 0.13874251101133694,
+            "1": 0.0,
+            "2": 0.0,
+            "3": 0.7564554610224477,
+            "4": 0.5355567198130142,
+            "5": 0.05708174541456934
+          },
+          "acquisition": {
+            "0": 0.0043357034691042795,
+            "1": 0.0,
+            "2": 0.0,
+            "3": 0.02363923315695149,
+            "4": 0.016736147494156695,
+            "5": 0.0017838045442052919
+          }
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "uniform_v2",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        6
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 56,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -9.67073284008304,
+        3.8942397366776915,
+        13.18655729737482,
+        -23.29230495676984,
+        -43.298461712343254,
+        -25.690324448700697
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 5,
+          "observed": -23.111707246274708
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "ivr_v2",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        5
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 56,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -2.3192272670017378,
+        2.8489848409464993,
+        14.897179646087363,
+        -10.950522861625883,
+        -8.763598960716514,
+        -17.347625086655484
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 4.437073649264352,
+          "ivr": {
+            "0": 11.999903799406033,
+            "1": 1.1133920304383953,
+            "2": 0.6434472502045758,
+            "3": 35.5543288959452,
+            "4": 53.21533991337418,
+            "5": 28.130809523548468
+          }
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "lucb_v2",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        4
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 56,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -5.671896311963628,
+        3.3331655535705615,
+        14.504501967694296,
+        10.311428215560348,
+        -24.826545267033538,
+        -16.6981007809287
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 3,
+          "observed": 28.65823776654144,
+          "best": 2,
+          "challenger": 3
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "no_hf_v2",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 32,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.390621041466712,
+        4.125788970133473,
+        12.999545670129868,
+        -26.28584324470649,
+        -47.51028772553483,
+        -30.0031938575281
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "proxy_only",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 32,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -6.06100634921329,
+        2.33929575381368,
+        3.993527967563658,
+        -38.85568801145361,
+        -38.008007212739216,
+        -39.53723872057297
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "global_voi_heuristic",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        3
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 56,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -6.587616407451822,
+        3.8185004060680066,
+        13.572704226575546,
+        -23.063538736373207,
+        -41.500252851753984,
+        -28.223503697320506
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 2,
+          "observed": 57.519668395515815,
+          "score": {
+            "0": 4.248227651498869,
+            "1": 3.7730361671822727,
+            "2": 5.035112577757332,
+            "3": 1.0254865929624595,
+            "4": 1.2390782958489543,
+            "5": 0.7527983981480821
+          }
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "uniform_v2_expected_100",
+      "budget_queries": 1,
+      "selected_idx": null,
+      "selected_distribution": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "queries_by_draw": [
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          4
+        ],
+        [
+          4
+        ],
+        [
+          4
+        ],
+        [
+          6
+        ],
+        [
+          4
+        ],
+        [
+          4
+        ],
+        [
+          2
+        ],
+        [
+          6
+        ],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [
+          6
+        ],
+        [
+          6
+        ],
+        [
+          6
+        ],
+        [
+          4
+        ],
+        [
+          5
+        ],
+        [
+          5
+        ],
+        [
+          3
+        ],
+        [
+          1
+        ],
+        [
+          4
+        ],
+        [
+          4
+        ],
+        [
+          3
+        ],
+        [
+          2
+        ],
+        [
+          4
+        ],
+        [
+          5
+        ],
+        [
+          3
+        ],
+        [
+          6
+        ],
+        [
+          4
+        ],
+        [
+          4
+        ],
+        [
+          4
+        ],
+        [
+          2
+        ],
+        [
+          2
+        ],
+        [
+          1
+        ],
+        [
+          6
+        ],
+        [
+          5
+        ],
+        [
+          5
+        ],
+        [
+          1
+        ],
+        [
+          6
+        ],
+        [
+          2
+        ],
+        [
+          2
+        ],
+        [
+          6
+        ],
+        [
+          2
+        ],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [
+          2
+        ],
+        [
+          1
+        ],
+        [
+          4
+        ],
+        [
+          1
+        ],
+        [
+          5
+        ],
+        [
+          6
+        ],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [
+          2
+        ],
+        [
+          2
+        ],
+        [
+          5
+        ],
+        [
+          2
+        ],
+        [
+          4
+        ],
+        [
+          2
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          5
+        ],
+        [
+          6
+        ],
+        [
+          6
+        ],
+        [
+          2
+        ],
+        [
+          4
+        ],
+        [
+          3
+        ],
+        [
+          6
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ],
+        [
+          5
+        ],
+        [
+          1
+        ],
+        [
+          5
+        ],
+        [
+          5
+        ],
+        [
+          4
+        ],
+        [
+          2
+        ],
+        [
+          1
+        ],
+        [
+          1
+        ],
+        [
+          4
+        ],
+        [
+          5
+        ],
+        [
+          5
+        ],
+        [
+          6
+        ],
+        [
+          6
+        ],
+        [
+          1
+        ],
+        [
+          4
+        ],
+        [
+          1
+        ],
+        [
+          6
+        ],
+        [
+          5
+        ],
+        [
+          1
+        ],
+        [
+          6
+        ],
+        [
+          6
+        ],
+        [
+          4
+        ],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [
+          5
+        ],
+        [
+          2
+        ],
+        [
+          4
+        ],
+        [
+          2
+        ],
+        [
+          5
+        ]
+      ],
+      "allocation_rng_seeds": [
+        319001,
+        319002,
+        319003,
+        319004,
+        319005,
+        319006,
+        319007,
+        319008,
+        319009,
+        319010,
+        319011,
+        319012,
+        319013,
+        319014,
+        319015,
+        319016,
+        319017,
+        319018,
+        319019,
+        319020,
+        319021,
+        319022,
+        319023,
+        319024,
+        319025,
+        319026,
+        319027,
+        319028,
+        319029,
+        319030,
+        319031,
+        319032,
+        319033,
+        319034,
+        319035,
+        319036,
+        319037,
+        319038,
+        319039,
+        319040,
+        319041,
+        319042,
+        319043,
+        319044,
+        319045,
+        319046,
+        319047,
+        319048,
+        319049,
+        319050,
+        319051,
+        319052,
+        319053,
+        319054,
+        319055,
+        319056,
+        319057,
+        319058,
+        319059,
+        319060,
+        319061,
+        319062,
+        319063,
+        319064,
+        319065,
+        319066,
+        319067,
+        319068,
+        319069,
+        319070,
+        319071,
+        319072,
+        319073,
+        319074,
+        319075,
+        319076,
+        319077,
+        319078,
+        319079,
+        319080,
+        319081,
+        319082,
+        319083,
+        319084,
+        319085,
+        319086,
+        319087,
+        319088,
+        319089,
+        319090,
+        319091,
+        319092,
+        319093,
+        319094,
+        319095,
+        319096,
+        319097,
+        319098,
+        319099,
+        319100
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 56,
+      "hf_episode_budget": 56,
+      "n_allocation_repetitions": 100,
+      "distribution_kind": "monte_carlo_100_uniform_without_replacement_allocations",
+      "cost_note": "per deployment decision; repetitions reuse the sealed bank for baseline integration"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "pivot_kg",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        4,
+        5
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 88,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -1.338846814524989,
+        2.6559932220263813,
+        15.45240305460542,
+        13.596477383846704,
+        -4.031405875238352,
+        -10.961630903496916
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 3,
+          "observed": 28.65823776654144,
+          "kg": {
+            "0": 0.13874251101133694,
+            "1": 0.0,
+            "2": 0.0,
+            "3": 0.7564554610224477,
+            "4": 0.5355567198130142,
+            "5": 0.05708174541456934
+          },
+          "acquisition": {
+            "0": 0.0043357034691042795,
+            "1": 0.0,
+            "2": 0.0,
+            "3": 0.02363923315695149,
+            "4": 0.016736147494156695,
+            "5": 0.0017838045442052919
+          }
+        },
+        {
+          "it": 1,
+          "query": 4,
+          "observed": 4.437073649264352,
+          "kg": {
+            "0": 0.24427467027060423,
+            "1": 0.0,
+            "2": 0.0,
+            "4": 1.4635073643817886,
+            "5": 0.40252643727177784
+          },
+          "acquisition": {
+            "0": 0.007633583445956382,
+            "1": 0.0,
+            "2": 0.0,
+            "4": 0.045734605136930895,
+            "5": 0.012578951164743057
+          }
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "uniform_v2",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        6,
+        2
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 88,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -18.569323158792365,
+        4.637894924062127,
+        11.909362662986174,
+        -27.110768303703743,
+        -57.21683488483011,
+        -29.94521779473715
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 5,
+          "observed": -23.111707246274708
+        },
+        {
+          "it": 1,
+          "query": 1,
+          "observed": 61.20346417341658
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "ivr_v2",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        5,
+        4
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 88,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -1.3388468145249888,
+        2.655993222026381,
+        15.452403054605417,
+        13.596477383846706,
+        -4.03140587523835,
+        -10.961630903496916
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 4.437073649264352,
+          "ivr": {
+            "0": 11.999903799406033,
+            "1": 1.1133920304383953,
+            "2": 0.6434472502045758,
+            "3": 35.5543288959452,
+            "4": 53.21533991337418,
+            "5": 28.130809523548468
+          }
+        },
+        {
+          "it": 1,
+          "query": 3,
+          "observed": 28.65823776654144,
+          "ivr": {
+            "0": 5.45672458706949,
+            "1": 0.1839111118808867,
+            "2": 0.12933085173970627,
+            "3": 19.490044922950013,
+            "5": 10.823293539108063
+          }
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "lucb_v2",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        4,
+        5
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 88,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -1.338846814524989,
+        2.6559932220263813,
+        15.45240305460542,
+        13.596477383846704,
+        -4.031405875238352,
+        -10.961630903496916
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 3,
+          "observed": 28.65823776654144,
+          "best": 2,
+          "challenger": 3
+        },
+        {
+          "it": 1,
+          "query": 4,
+          "observed": 4.437073649264352,
+          "best": 2,
+          "challenger": 4
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "no_hf_v2",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 32,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.390621041466712,
+        4.125788970133473,
+        12.999545670129868,
+        -26.28584324470649,
+        -47.51028772553483,
+        -30.0031938575281
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "proxy_only",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 32,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -6.06100634921329,
+        2.33929575381368,
+        3.993527967563658,
+        -38.85568801145361,
+        -38.008007212739216,
+        -39.53723872057297
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "global_voi_heuristic",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        3,
+        1
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 88,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.790156424239008,
+        4.092678137840489,
+        13.038926230402366,
+        -24.46097680105772,
+        -45.062003715354784,
+        -29.175984487947193
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 2,
+          "observed": 57.519668395515815,
+          "score": {
+            "0": 4.248227651498869,
+            "1": 3.7730361671822727,
+            "2": 5.035112577757332,
+            "3": 1.0254865929624595,
+            "4": 1.2390782958489543,
+            "5": 0.7527983981480821
+          }
+        },
+        {
+          "it": 1,
+          "query": 0,
+          "observed": -15.551596860377167,
+          "score": {
+            "0": 4.237324274022321,
+            "1": 3.7726782328969373,
+            "3": 1.0244695750561423,
+            "4": 1.2360193290729926,
+            "5": 0.7523899750865543
+          }
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "uniform_v2_expected_100",
+      "budget_queries": 2,
+      "selected_idx": null,
+      "selected_distribution": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "queries_by_draw": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          5,
+          1
+        ]
+      ],
+      "allocation_rng_seeds": [
+        319001,
+        319002,
+        319003,
+        319004,
+        319005,
+        319006,
+        319007,
+        319008,
+        319009,
+        319010,
+        319011,
+        319012,
+        319013,
+        319014,
+        319015,
+        319016,
+        319017,
+        319018,
+        319019,
+        319020,
+        319021,
+        319022,
+        319023,
+        319024,
+        319025,
+        319026,
+        319027,
+        319028,
+        319029,
+        319030,
+        319031,
+        319032,
+        319033,
+        319034,
+        319035,
+        319036,
+        319037,
+        319038,
+        319039,
+        319040,
+        319041,
+        319042,
+        319043,
+        319044,
+        319045,
+        319046,
+        319047,
+        319048,
+        319049,
+        319050,
+        319051,
+        319052,
+        319053,
+        319054,
+        319055,
+        319056,
+        319057,
+        319058,
+        319059,
+        319060,
+        319061,
+        319062,
+        319063,
+        319064,
+        319065,
+        319066,
+        319067,
+        319068,
+        319069,
+        319070,
+        319071,
+        319072,
+        319073,
+        319074,
+        319075,
+        319076,
+        319077,
+        319078,
+        319079,
+        319080,
+        319081,
+        319082,
+        319083,
+        319084,
+        319085,
+        319086,
+        319087,
+        319088,
+        319089,
+        319090,
+        319091,
+        319092,
+        319093,
+        319094,
+        319095,
+        319096,
+        319097,
+        319098,
+        319099,
+        319100
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 88,
+      "hf_episode_budget": 88,
+      "n_allocation_repetitions": 100,
+      "distribution_kind": "monte_carlo_100_uniform_without_replacement_allocations",
+      "cost_note": "per deployment decision; repetitions reuse the sealed bank for baseline integration"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "pivot_kg",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        4,
+        5,
+        6,
+        1
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 152,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -7.557138524513638,
+        3.2286080335903997,
+        14.757308836580833,
+        11.922049887644889,
+        -7.375635037104676,
+        -17.523415832011352
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 3,
+          "observed": 28.65823776654144,
+          "kg": {
+            "0": 0.13874251101133694,
+            "1": 0.0,
+            "2": 0.0,
+            "3": 0.7564554610224477,
+            "4": 0.5355567198130142,
+            "5": 0.05708174541456934
+          },
+          "acquisition": {
+            "0": 0.0043357034691042795,
+            "1": 0.0,
+            "2": 0.0,
+            "3": 0.02363923315695149,
+            "4": 0.016736147494156695,
+            "5": 0.0017838045442052919
+          }
+        },
+        {
+          "it": 1,
+          "query": 4,
+          "observed": 4.437073649264352,
+          "kg": {
+            "0": 0.24427467027060423,
+            "1": 0.0,
+            "2": 0.0,
+            "4": 1.4635073643817886,
+            "5": 0.40252643727177784
+          },
+          "acquisition": {
+            "0": 0.007633583445956382,
+            "1": 0.0,
+            "2": 0.0,
+            "4": 0.045734605136930895,
+            "5": 0.012578951164743057
+          }
+        },
+        {
+          "it": 2,
+          "query": 5,
+          "observed": -23.111707246274708,
+          "kg": {
+            "0": 0.34333877019920855,
+            "1": 0.0,
+            "2": 0.0,
+            "5": 0.6359695207813658
+          },
+          "acquisition": {
+            "0": 0.010729336568725267,
+            "1": 0.0,
+            "2": 0.0,
+            "5": 0.019874047524417682
+          }
+        },
+        {
+          "it": 3,
+          "query": 0,
+          "observed": -15.551596860377167,
+          "kg": {
+            "0": 0.3343964773407553,
+            "1": 0.0,
+            "2": 0.0
+          },
+          "acquisition": {
+            "0": 0.010449889916898603,
+            "1": 0.0,
+            "2": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "uniform_v2",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        6,
+        2,
+        5,
+        4
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 152,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -8.291251428142667,
+        3.400970016148976,
+        14.638640103876272,
+        11.85367607236297,
+        -10.082281978015276,
+        -20.269895501692908
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 5,
+          "observed": -23.111707246274708
+        },
+        {
+          "it": 1,
+          "query": 1,
+          "observed": 61.20346417341658
+        },
+        {
+          "it": 2,
+          "query": 4,
+          "observed": 4.437073649264352
+        },
+        {
+          "it": 3,
+          "query": 3,
+          "observed": 28.65823776654144
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "ivr_v2",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        5,
+        4,
+        6,
+        1
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 152,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -7.557138524513638,
+        3.2286080335903993,
+        14.757308836580831,
+        11.922049887644892,
+        -7.375635037104675,
+        -17.523415832011352
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 4,
+          "observed": 4.437073649264352,
+          "ivr": {
+            "0": 11.999903799406033,
+            "1": 1.1133920304383953,
+            "2": 0.6434472502045758,
+            "3": 35.5543288959452,
+            "4": 53.21533991337418,
+            "5": 28.130809523548468
+          }
+        },
+        {
+          "it": 1,
+          "query": 3,
+          "observed": 28.65823776654144,
+          "ivr": {
+            "0": 5.45672458706949,
+            "1": 0.1839111118808867,
+            "2": 0.12933085173970627,
+            "3": 19.490044922950013,
+            "5": 10.823293539108063
+          }
+        },
+        {
+          "it": 2,
+          "query": 5,
+          "observed": -23.111707246274708,
+          "ivr": {
+            "0": 5.362892614148366,
+            "1": 0.16137816706219985,
+            "2": 0.10327892734209358,
+            "5": 7.735139170540065
+          }
+        },
+        {
+          "it": 3,
+          "query": 0,
+          "observed": -15.551596860377167,
+          "ivr": {
+            "0": 5.358917681073316,
+            "1": 0.10645280204727128,
+            "2": 0.10275268563516547
+          }
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "lucb_v2",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        4,
+        5,
+        3,
+        6
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 152,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        1.305590229921151,
+        2.772759283422766,
+        15.750320302068632,
+        12.662249885223945,
+        -4.630411606024658,
+        -17.464162480991533
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 3,
+          "observed": 28.65823776654144,
+          "best": 2,
+          "challenger": 3
+        },
+        {
+          "it": 1,
+          "query": 4,
+          "observed": 4.437073649264352,
+          "best": 2,
+          "challenger": 4
+        },
+        {
+          "it": 2,
+          "query": 2,
+          "observed": 57.519668395515815,
+          "best": 2,
+          "challenger": 3
+        },
+        {
+          "it": 3,
+          "query": 5,
+          "observed": -23.111707246274708,
+          "best": 2,
+          "challenger": 3
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "no_hf_v2",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 32,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.390621041466712,
+        4.125788970133473,
+        12.999545670129868,
+        -26.28584324470649,
+        -47.51028772553483,
+        -30.0031938575281
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "proxy_only",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [],
+      "hf_queries": 0,
+      "hf_episode_cost": 0,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 0,
+      "per_query_episode_cost": 32,
+      "stop_reason": "no_hf_method",
+      "estimates_incumbent_first": [
+        0.0,
+        -6.06100634921329,
+        2.33929575381368,
+        3.993527967563658,
+        -38.85568801145361,
+        -38.008007212739216,
+        -39.53723872057297
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": []
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "global_voi_heuristic",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        3,
+        1,
+        2,
+        5
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 152,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "budget_exhausted",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.42319844411685,
+        3.5188932471976866,
+        13.968450620760896,
+        -12.55598090843678,
+        -13.652785342525469,
+        -23.542210608385297
+      ],
+      "internal_trace_index_convention": "candidate=0..K-1; incumbent=K",
+      "steps": [
+        {
+          "it": 0,
+          "query": 2,
+          "observed": 57.519668395515815,
+          "score": {
+            "0": 4.248227651498869,
+            "1": 3.7730361671822727,
+            "2": 5.035112577757332,
+            "3": 1.0254865929624595,
+            "4": 1.2390782958489543,
+            "5": 0.7527983981480821
+          }
+        },
+        {
+          "it": 1,
+          "query": 0,
+          "observed": -15.551596860377167,
+          "score": {
+            "0": 4.237324274022321,
+            "1": 3.7726782328969373,
+            "3": 1.0244695750561423,
+            "4": 1.2360193290729926,
+            "5": 0.7523899750865543
+          }
+        },
+        {
+          "it": 2,
+          "query": 1,
+          "observed": 61.20346417341658,
+          "score": {
+            "1": 3.7627112505825315,
+            "3": 1.017763103305861,
+            "4": 1.1978569131123884,
+            "5": 0.7482914232571468
+          }
+        },
+        {
+          "it": 3,
+          "query": 4,
+          "observed": 4.437073649264352,
+          "score": {
+            "3": 1.017016859329285,
+            "4": 1.194182253716494,
+            "5": 0.74623958717579
+          }
+        }
+      ]
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "uniform_v2_expected_100",
+      "budget_queries": 4,
+      "selected_idx": null,
+      "selected_distribution": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "queries_by_draw": [
+        [
+          1,
+          2,
+          3,
+          4
+        ],
+        [
+          2,
+          4,
+          3,
+          1
+        ],
+        [
+          4,
+          3,
+          6,
+          2
+        ],
+        [
+          4,
+          3,
+          5,
+          6
+        ],
+        [
+          4,
+          2,
+          1,
+          5
+        ],
+        [
+          6,
+          1,
+          3,
+          2
+        ],
+        [
+          4,
+          5,
+          6,
+          2
+        ],
+        [
+          4,
+          3,
+          2,
+          6
+        ],
+        [
+          2,
+          5,
+          4,
+          1
+        ],
+        [
+          6,
+          2,
+          1,
+          4
+        ],
+        [
+          1,
+          4,
+          6,
+          3
+        ],
+        [
+          3,
+          4,
+          2,
+          5
+        ],
+        [
+          6,
+          2,
+          1,
+          4
+        ],
+        [
+          6,
+          2,
+          4,
+          3
+        ],
+        [
+          6,
+          1,
+          5,
+          4
+        ],
+        [
+          4,
+          2,
+          6,
+          1
+        ],
+        [
+          5,
+          6,
+          1,
+          4
+        ],
+        [
+          5,
+          3,
+          4,
+          2
+        ],
+        [
+          3,
+          5,
+          2,
+          1
+        ],
+        [
+          1,
+          6,
+          3,
+          2
+        ],
+        [
+          4,
+          1,
+          6,
+          3
+        ],
+        [
+          4,
+          1,
+          6,
+          2
+        ],
+        [
+          3,
+          5,
+          4,
+          1
+        ],
+        [
+          2,
+          6,
+          5,
+          4
+        ],
+        [
+          4,
+          5,
+          1,
+          2
+        ],
+        [
+          5,
+          3,
+          2,
+          4
+        ],
+        [
+          3,
+          1,
+          4,
+          5
+        ],
+        [
+          6,
+          3,
+          1,
+          2
+        ],
+        [
+          4,
+          3,
+          6,
+          1
+        ],
+        [
+          4,
+          3,
+          5,
+          6
+        ],
+        [
+          4,
+          3,
+          5,
+          1
+        ],
+        [
+          2,
+          4,
+          1,
+          3
+        ],
+        [
+          2,
+          6,
+          3,
+          4
+        ],
+        [
+          1,
+          3,
+          2,
+          4
+        ],
+        [
+          6,
+          3,
+          5,
+          2
+        ],
+        [
+          5,
+          6,
+          3,
+          1
+        ],
+        [
+          5,
+          6,
+          3,
+          2
+        ],
+        [
+          1,
+          2,
+          5,
+          3
+        ],
+        [
+          6,
+          4,
+          5,
+          1
+        ],
+        [
+          2,
+          3,
+          6,
+          1
+        ],
+        [
+          2,
+          4,
+          5,
+          1
+        ],
+        [
+          6,
+          5,
+          4,
+          3
+        ],
+        [
+          2,
+          4,
+          1,
+          5
+        ],
+        [
+          1,
+          3,
+          2,
+          4
+        ],
+        [
+          3,
+          1,
+          2,
+          4
+        ],
+        [
+          2,
+          6,
+          4,
+          3
+        ],
+        [
+          1,
+          5,
+          6,
+          4
+        ],
+        [
+          4,
+          5,
+          2,
+          3
+        ],
+        [
+          1,
+          5,
+          6,
+          3
+        ],
+        [
+          5,
+          4,
+          2,
+          1
+        ],
+        [
+          6,
+          5,
+          3,
+          2
+        ],
+        [
+          1,
+          5,
+          6,
+          3
+        ],
+        [
+          3,
+          5,
+          1,
+          2
+        ],
+        [
+          2,
+          1,
+          5,
+          3
+        ],
+        [
+          2,
+          3,
+          1,
+          4
+        ],
+        [
+          5,
+          4,
+          2,
+          3
+        ],
+        [
+          2,
+          3,
+          4,
+          5
+        ],
+        [
+          4,
+          2,
+          6,
+          5
+        ],
+        [
+          2,
+          4,
+          5,
+          6
+        ],
+        [
+          1,
+          5,
+          6,
+          4
+        ],
+        [
+          2,
+          3,
+          4,
+          6
+        ],
+        [
+          5,
+          1,
+          4,
+          3
+        ],
+        [
+          6,
+          4,
+          2,
+          3
+        ],
+        [
+          6,
+          3,
+          1,
+          2
+        ],
+        [
+          2,
+          1,
+          6,
+          4
+        ],
+        [
+          4,
+          2,
+          6,
+          5
+        ],
+        [
+          3,
+          2,
+          6,
+          5
+        ],
+        [
+          6,
+          2,
+          4,
+          1
+        ],
+        [
+          1,
+          3,
+          2,
+          6
+        ],
+        [
+          2,
+          3,
+          4,
+          6
+        ],
+        [
+          3,
+          5,
+          6,
+          1
+        ],
+        [
+          5,
+          4,
+          3,
+          2
+        ],
+        [
+          1,
+          5,
+          3,
+          6
+        ],
+        [
+          5,
+          6,
+          1,
+          3
+        ],
+        [
+          5,
+          1,
+          6,
+          3
+        ],
+        [
+          4,
+          6,
+          1,
+          5
+        ],
+        [
+          2,
+          1,
+          6,
+          3
+        ],
+        [
+          1,
+          2,
+          6,
+          3
+        ],
+        [
+          1,
+          3,
+          6,
+          4
+        ],
+        [
+          4,
+          2,
+          3,
+          6
+        ],
+        [
+          5,
+          2,
+          1,
+          6
+        ],
+        [
+          5,
+          2,
+          3,
+          4
+        ],
+        [
+          6,
+          3,
+          4,
+          2
+        ],
+        [
+          6,
+          3,
+          5,
+          1
+        ],
+        [
+          1,
+          5,
+          6,
+          2
+        ],
+        [
+          4,
+          3,
+          1,
+          2
+        ],
+        [
+          1,
+          3,
+          4,
+          2
+        ],
+        [
+          6,
+          2,
+          1,
+          5
+        ],
+        [
+          5,
+          1,
+          4,
+          6
+        ],
+        [
+          1,
+          5,
+          2,
+          3
+        ],
+        [
+          6,
+          1,
+          3,
+          2
+        ],
+        [
+          6,
+          4,
+          1,
+          3
+        ],
+        [
+          4,
+          3,
+          1,
+          2
+        ],
+        [
+          1,
+          2,
+          3,
+          6
+        ],
+        [
+          3,
+          5,
+          6,
+          1
+        ],
+        [
+          5,
+          6,
+          1,
+          4
+        ],
+        [
+          2,
+          3,
+          5,
+          6
+        ],
+        [
+          4,
+          2,
+          6,
+          1
+        ],
+        [
+          2,
+          5,
+          4,
+          1
+        ],
+        [
+          5,
+          1,
+          6,
+          2
+        ]
+      ],
+      "allocation_rng_seeds": [
+        319001,
+        319002,
+        319003,
+        319004,
+        319005,
+        319006,
+        319007,
+        319008,
+        319009,
+        319010,
+        319011,
+        319012,
+        319013,
+        319014,
+        319015,
+        319016,
+        319017,
+        319018,
+        319019,
+        319020,
+        319021,
+        319022,
+        319023,
+        319024,
+        319025,
+        319026,
+        319027,
+        319028,
+        319029,
+        319030,
+        319031,
+        319032,
+        319033,
+        319034,
+        319035,
+        319036,
+        319037,
+        319038,
+        319039,
+        319040,
+        319041,
+        319042,
+        319043,
+        319044,
+        319045,
+        319046,
+        319047,
+        319048,
+        319049,
+        319050,
+        319051,
+        319052,
+        319053,
+        319054,
+        319055,
+        319056,
+        319057,
+        319058,
+        319059,
+        319060,
+        319061,
+        319062,
+        319063,
+        319064,
+        319065,
+        319066,
+        319067,
+        319068,
+        319069,
+        319070,
+        319071,
+        319072,
+        319073,
+        319074,
+        319075,
+        319076,
+        319077,
+        319078,
+        319079,
+        319080,
+        319081,
+        319082,
+        319083,
+        319084,
+        319085,
+        319086,
+        319087,
+        319088,
+        319089,
+        319090,
+        319091,
+        319092,
+        319093,
+        319094,
+        319095,
+        319096,
+        319097,
+        319098,
+        319099,
+        319100
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 152,
+      "hf_episode_budget": 152,
+      "n_allocation_repetitions": 100,
+      "distribution_kind": "monte_carlo_100_uniform_without_replacement_allocations",
+      "cost_note": "per deployment decision; repetitions reuse the sealed bank for baseline integration"
+    }
+  ],
+  "author_decisions": [
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_PIVOT_VOI_E5C",
+      "original_author_method": "pivot_voi",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        6
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 56,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.339127981916526,
+        6.617417386516915,
+        12.549771232970128,
+        -28.317109420344178,
+        -48.54658580384866,
+        -23.11170724627471
+      ],
+      "observed_query_means": {
+        "6": -23.11170724627471
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_GlobalVOI_E5C",
+      "original_author_method": "global_voi",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        3
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 56,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.339127981916526,
+        6.617417386516915,
+        57.519668395515815,
+        -28.317109420344178,
+        -48.54658580384866,
+        -31.58944051638068
+      ],
+      "observed_query_means": {
+        "3": 57.519668395515815
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_Uniform_E5C",
+      "original_author_method": "random_hf",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 5,
+      "queries": [
+        5
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 56,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -6.06100634921329,
+        2.33929575381368,
+        3.993527967563658,
+        -38.85568801145361,
+        4.437073649264351,
+        -39.53723872057297
+      ],
+      "observed_query_means": {
+        "5": 4.437073649264351
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_LUCB_E5C",
+      "original_author_method": "paired_lucb",
+      "budget_queries": 1,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        3
+      ],
+      "hf_queries": 1,
+      "hf_episode_cost": 56,
+      "hf_episode_budget": 56,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.339127981916526,
+        6.617417386516915,
+        57.519668395515815,
+        -28.317109420344178,
+        -48.54658580384866,
+        -31.58944051638068
+      ],
+      "observed_query_means": {
+        "3": 57.519668395515815
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_PIVOT_VOI_E5C",
+      "original_author_method": "pivot_voi",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 3,
+      "queries": [
+        6,
+        3
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 88,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.339127981916526,
+        6.617417386516915,
+        57.519668395515815,
+        -28.317109420344178,
+        -48.54658580384866,
+        -23.11170724627471
+      ],
+      "observed_query_means": {
+        "6": -23.11170724627471,
+        "3": 57.519668395515815
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_GlobalVOI_E5C",
+      "original_author_method": "global_voi",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 2,
+      "queries": [
+        3,
+        2
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 88,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.339127981916526,
+        61.203464173416585,
+        57.519668395515815,
+        -28.317109420344178,
+        -48.54658580384866,
+        -31.58944051638068
+      ],
+      "observed_query_means": {
+        "3": 57.519668395515815,
+        "2": 61.203464173416585
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_Uniform_E5C",
+      "original_author_method": "random_hf",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 5,
+      "queries": [
+        5,
+        6
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 88,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -6.06100634921329,
+        2.33929575381368,
+        3.993527967563658,
+        -38.85568801145361,
+        4.437073649264351,
+        -23.11170724627471
+      ],
+      "observed_query_means": {
+        "5": 4.437073649264351,
+        "6": -23.11170724627471
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_LUCB_E5C",
+      "original_author_method": "paired_lucb",
+      "budget_queries": 2,
+      "selection_rng_seed": 319,
+      "selected_idx": 2,
+      "queries": [
+        3,
+        2
+      ],
+      "hf_queries": 2,
+      "hf_episode_cost": 88,
+      "hf_episode_budget": 88,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -10.339127981916526,
+        61.203464173416585,
+        57.519668395515815,
+        -28.317109420344178,
+        -48.54658580384866,
+        -31.58944051638068
+      ],
+      "observed_query_means": {
+        "3": 57.519668395515815,
+        "2": 61.203464173416585
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_PIVOT_VOI_E5C",
+      "original_author_method": "pivot_voi",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 2,
+      "queries": [
+        6,
+        3,
+        1,
+        2
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 152,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -15.551596860377169,
+        61.203464173416585,
+        57.519668395515815,
+        -28.317109420344178,
+        -48.54658580384866,
+        -23.11170724627471
+      ],
+      "observed_query_means": {
+        "6": -23.11170724627471,
+        "3": 57.519668395515815,
+        "1": -15.551596860377169,
+        "2": 61.203464173416585
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_GlobalVOI_E5C",
+      "original_author_method": "global_voi",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 2,
+      "queries": [
+        3,
+        2,
+        1,
+        6
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 152,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -15.551596860377169,
+        61.203464173416585,
+        57.519668395515815,
+        -28.317109420344178,
+        -48.54658580384866,
+        -23.11170724627471
+      ],
+      "observed_query_means": {
+        "3": 57.519668395515815,
+        "2": 61.203464173416585,
+        "1": -15.551596860377169,
+        "6": -23.11170724627471
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_Uniform_E5C",
+      "original_author_method": "random_hf",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 2,
+      "queries": [
+        5,
+        6,
+        2,
+        4
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 152,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -6.06100634921329,
+        61.203464173416585,
+        3.993527967563658,
+        28.658237766541443,
+        4.437073649264351,
+        -23.11170724627471
+      ],
+      "observed_query_means": {
+        "5": 4.437073649264351,
+        "6": -23.11170724627471,
+        "2": 61.203464173416585,
+        "4": 28.658237766541443
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    },
+    {
+      "root": 319,
+      "adaptation": 12,
+      "method": "author_LUCB_E5C",
+      "original_author_method": "paired_lucb",
+      "budget_queries": 4,
+      "selection_rng_seed": 319,
+      "selected_idx": 2,
+      "queries": [
+        3,
+        2,
+        1,
+        4
+      ],
+      "hf_queries": 4,
+      "hf_episode_cost": 152,
+      "hf_episode_budget": 152,
+      "incumbent_setup_episode_cost": 24,
+      "per_query_episode_cost": 32,
+      "stop_reason": "author_E5C_fixed_batch",
+      "estimates_incumbent_first": [
+        0.0,
+        -15.551596860377169,
+        61.203464173416585,
+        57.519668395515815,
+        28.658237766541443,
+        -48.54658580384866,
+        -31.58944051638068
+      ],
+      "observed_query_means": {
+        "3": 57.519668395515815,
+        "2": 61.203464173416585,
+        "1": -15.551596860377169,
+        "4": 28.658237766541443
+      },
+      "return_normalization": 300.0,
+      "estimate_and_observation_units": "native cumulative return; author model alone uses return/planned_horizon",
+      "unqueried_observations_exposed": false,
+      "author_outcome_rule": "queried=observed_mean; unqueried=author model or proxy for Random; incumbent=0"
+    }
+  ],
+  "joint_decision_sha256": "1cab458d201138a6d6b98eceea9db16d56bc1dc8d0cdfbf5a3a2583e3cc2b436",
+  "author_decision_sha256": "0e7582b9a8b2b37b61d8bef03585c59ea84879f586ee2ef841856bd1461b556b",
+  "fit_sha256": "7aa672069dfe05bfbbe39f8c02658a5951d118452220f909bf091bf2a2c2ee0d",
+  "protocol_sha256": "46e4e529e30ee623517b8808ea69495d7c0dc80c73c011102506b1c4ab447f8d",
+  "root_file_sha256": "c480844bfff018a31ac43d2eb4ff44573031968d543494184c1571b3c7358e8a"
+}

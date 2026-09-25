@@ -1,0 +1,121 @@
+{
+  "protocol_id": "openspiel_v2b_kuhn_confirm_20260918",
+  "status": "FROZEN",
+  "seeds": [
+    93100,
+    93101,
+    93102,
+    93103,
+    93104,
+    93105,
+    93106,
+    93107,
+    93108,
+    93109,
+    93110,
+    93111,
+    93112,
+    93113,
+    93114,
+    93115,
+    93116,
+    93117,
+    93118,
+    93119,
+    93120,
+    93121,
+    93122,
+    93123,
+    93124,
+    93125,
+    93126,
+    93127,
+    93128,
+    93129
+  ],
+  "calibration_seeds": [
+    92100,
+    92101,
+    92102,
+    92103,
+    92104,
+    92105,
+    92106,
+    92107,
+    92108,
+    92109,
+    92110,
+    92111
+  ],
+  "seed_extension": false,
+  "game": "kuhn_poker",
+  "cfr_iterations": 5000,
+  "beta_min": 0.35,
+  "beta_max": 0.95,
+  "dirichlet_concentration": 0.35,
+  "candidate_alphas": [
+    0.0,
+    0.125,
+    0.25,
+    0.375,
+    0.5,
+    0.625,
+    0.75,
+    0.875,
+    1.0
+  ],
+  "eta": 0.15,
+  "adaptation_steps": {
+    "short": 1,
+    "long": 8
+  },
+  "response_weights": {
+    "short": 0.15,
+    "long": 0.7275
+  },
+  "query_hands": 4096,
+  "query_cost": 8192,
+  "hf_caps": [
+    8192,
+    16384,
+    32768
+  ],
+  "primary_hf_cap": 16384,
+  "responder_type_rule": "exploiter_if_seed_odd_else_equilibrator",
+  "responder_type_is_latent": "never shown to selectors",
+  "eta_selection_evidence": "Discovery sweep (code/openspiel_v2/openspiel_v2_discovery.py, 40 roots, exact values): eta=0.15 long -> exploiter best alpha=0 in 38/40, equilibrator best alpha=1 in 36/40, mixed-population value of world-specific information 0.0436 = 100% of oracle (population prior always keeps incumbent, value 0). eta=0.25/0.40 shrink equilibrator gains toward 0 (0.0076 / 0.0008). eta fixed at 0.15 before any pilot/calibration/confirmation root is generated.",
+  "primary_method": "pivot_kg",
+  "primary_comparator": "uniform_v2",
+  "methods": [
+    "pivot_kg",
+    "pivot_kg_stop",
+    "uniform_v2",
+    "ivr_v2",
+    "lucb_v2",
+    "no_hf_v2",
+    "proxy_only",
+    "all_hf_reference"
+  ],
+  "cost_note": "query_cost = 2 x 4096 physical paired hands (SE ~0.02 in Kuhn units). Caps = 1/2/4 queries; primary = 2 queries.",
+  "why_v2b": "v2 (256 hands, Kuhn 93000-93029) is retained as a null: even all-HF (8 x 256 hands) reached ISR 0.022 vs no-HF 0.032 and oracle 0, i.e. the HF instrument could not resolve the decision-relevant 0.044 equilibrator gain (SE 0.09). v2b changes ONLY HF precision; eta, candidates, latent-type rule, cap structure unchanged. Both cohorts are reported.",
+  "hypothesis_chain": "Latent strategic-response family (exploiter vs equilibrator) makes the sign of every update's deployment improvement world-specific under long response; a population calibration alone keeps the incumbent everywhere and forfeits the equilibrator worlds' gains; one decision-sensitive paired HF query of a high-alpha candidate identifies the type. PIVOT (exact EVSI per cost) should beat uniform allocation at matched cost, more under long than short.",
+  "boundary_results_retained": [
+    "Frozen Kuhn line 71000-71099 (homogeneous exploiter, eta=0.062): mechanism yes, PIVOT-Random null (CI [-0.00045,+0.00225]); retained as the systematic-response boundary.",
+    "openspiel_v2 Kuhn 256-hand cohort: mechanism yes, H2 null (+0.0012 [-0.0007,+0.0042]), single-query +0.0019 [+0.0001,+0.0040], instrument-limited"
+  ],
+  "primary_contrasts": [
+    "H2: long, cap 16384 (2 queries): gain(pivot_kg) - gain(uniform_v2)",
+    "H3: [kg-uniform]_long - [kg-uniform]_short"
+  ],
+  "primary_success_rule": "Both root-bootstrap 95% CI lower endpoints > 0 (10000 draws, seed 20260917). Mechanism reported alongside (squared gap long-short; best candidate differs by latent type).",
+  "secondary_prespecified": [
+    "cap 512 (1 query) kg - uniform",
+    "kg - ivr_v2",
+    "kg - no_hf_v2",
+    "no_hf_v2 - proxy_only",
+    "kg_stop cost",
+    "per-type ISR"
+  ],
+  "if_null": "Retain and report with v2 and the frozen Kuhn line. No further hands/eta/seed changes.",
+  "inference_unit": "root seed (30)"
+}

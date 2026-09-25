@@ -1,0 +1,19 @@
+"""Separate common errors from errors that change candidate ranking."""
+import argparse,json,pathlib,itertools
+import numpy as np
+from diagnose_mpe_calibration import fit,read,write
+p=argparse.ArgumentParser();p.add_argument('--base',type=pathlib.Path,required=True);p.add_argument('--replay',type=pathlib.Path,required=True);p.add_argument('--output',type=pathlib.Path,required=True);a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
+rows=[read(a.base/f'pivot_calibration_128/seed_{s}/candidate_{j}.json') for s in range(100,124) for j in range(4)];pairs=list(itertools.combinations(range(4),2));errors=[];knowncov=[];calpairs=[]
+for seed in range(100,124):
+    train=[r for r in rows if r['seed']!=seed];held=[r for r in rows if r['seed']==seed];m,mu,sd=fit(train);x=np.c_[np.ones(4),(np.array([r['features'][1:] for r in held])-mu)/sd];err=np.array([r['target_correction'] for r in held])-m.predict(x);cov=x@m.covariance@x.T;obs=np.array([r['query_noise_variance']/4 for r in held]);errors.append(err);knowncov.append(cov+np.diag(obs))
+    for j,k in pairs:calpairs.append({'seed':seed,'pair':[j,k],'squared_difference_error':float((err[j]-err[k])**2),'known_variance':float(cov[j,j]+cov[k,k]-2*cov[j,k]+obs[j]+obs[k])})
+errors=np.array(errors);raw_discrepancy=errors.T@errors/len(errors)-np.mean(knowncov,axis=0);u=np.ones(4)/2;P=np.eye(4)-np.outer(u,u)
+pair_variance=max(0.,float(np.mean([r['squared_difference_error']-r['known_variance'] for r in calpairs])))
+cal={'purpose':'calibration-only ranking-error diagnostic','n_training_seeds':24,'candidate_error_mean':errors.mean(0).tolist(),'raw_discrepancy_second_moment':raw_discrepancy.tolist(),'common_direction_second_moment':float(u@raw_discrepancy@u),'mean_contrast_direction_second_moment':float(np.trace(P@raw_discrepancy)/3),'pair_difference_discrepancy':pair_variance,'note':'Unclipped second moments may be negative from estimation error; systematic bias is included.'};write(a.output/'calibration_only.json',cal)
+# Only now open test audit and compare pairwise differences, not just values.
+m,mu,sd=fit(rows);audit=read(a.replay/'candidate_audit.json');records=[]
+for seed in range(500,530):
+    f=np.array(read(a.base/f'pivot_panel30/seed_{seed}/features.json')['rows']);x=np.c_[np.ones(4),(f[:,1:]-mu)/sd];pred=f[:,0]+m.predict(x);cov=x@m.covariance@x.T;rep=np.array(audit[str(seed)]['audit_replicates']);truth=rep.mean(1);obs=rep.var(1,ddof=1)/8
+    for j,k in pairs:
+        error=float((pred[j]-pred[k])-(truth[j]-truth[k]));latent=max(0.,float(cov[j,j]+cov[k,k]-2*cov[j,k]));noise=float(obs[j]+obs[k]);records.append({'seed':seed,'pair':[j,k],'difference_error':error,'covered_coefficient_only':bool(abs(error)<=1.95996398454*np.sqrt(latent)),'covered_with_measurement':bool(abs(error)<=1.95996398454*np.sqrt(latent+noise)),'covered_with_pair_discrepancy':bool(abs(error)<=1.95996398454*np.sqrt(latent+noise+pair_variance))})
+summary={'purpose':'post-hoc pairwise ranking-uncertainty diagnostic','n_training_seeds':30,'n_candidate_pairs':len(records),'pair_discrepancy_from_calibration':pair_variance,'calibration_common_direction_second_moment':cal['common_direction_second_moment'],'calibration_mean_contrast_direction_second_moment':cal['mean_contrast_direction_second_moment'],'coverage_vs_noisy_audit_pair_differences':{k:float(np.mean([r[k] for r in records])) for k in ['covered_coefficient_only','covered_with_measurement','covered_with_pair_discrepancy']},'limitations':['Pair contrasts share candidates; 180 contrasts are not independent seeds.','Marginal coverage alone does not diagnose winner-confidence calibration.','Coverage here is against noisy measured differences, not exact true rankings.','Discrepancy is a calibration-only moment estimate, not a coverage guarantee.']};write(a.output/'pair_rows.json',records);write(a.output/'summary.json',summary);print(json.dumps(summary),flush=True)

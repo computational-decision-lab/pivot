@@ -1,0 +1,17 @@
+# Protocol chronology and replay boundary
+
+The compact field extracts and original file SHA-256 values are in [`evidence/paper/provenance/protocol-chronology.json`](../evidence/paper/provenance/protocol-chronology.json). Its timestamps are ZIP member timestamps or run-record wallclock fields, not independently certified creation times. Source archive: `实验结果.zip` (not distributed in the compact paper evidence). Absolute server paths and identifying labels have been omitted from the extract.
+
+## Leduc second confirmation
+
+The frozen `leduc_v4_confirm_20260921` protocol names a long-adaptation, 16,384-hand PIVOT-KG minus expected-Uniform comparison as its primary H_A test. Its archive member and `MANIFEST.sha256` both carry ZIP timestamp 2026-09-20 23:59:38; the manifest binds protocol SHA-256 `86ca2679bc548e77184799c2184605c54566f1daffce5cc6e8ad76aacc2ef5c2` and code SHA-256 `2e9c9776c0516ed07d3799b675d369e9c421392bd1f8ecb9b729f28bd606613d`. The saved run protocol (ZIP timestamp 2026-09-21 00:20:56) repeats both hashes. A confirmation seed result follows at 00:29:40 and the analysis summary at 00:57:56. This supports describing the second confirmation contrast as internally prespecified before its confirmation outcomes. It does not establish public preregistration.
+
+## MetaDrive first cohort
+
+The formal analysis plan fixes 12 response profiles, two HF queries, 30 confirmation roots, and the PIVOT-KG minus expected-Uniform selected-gain endpoint. The plan and confirmation protocol have ZIP timestamp 2026-09-23 19:59:46. The `CONFIRMATION_FREEZE.sha256` member, timestamped 20:35:34, binds both SHA-256 values; the saved confirmation status records run start at 20:35:35 CST (epoch 1790166935.2590506) and 30 completed roots. This supports **prespecified before confirmation** for the two-query comparison. The four-root pilot status is timestamped 19:57:02, earlier than the formal plan. The historical plan's `registered_before_pilot_outcome: true` field is preserved in the extract but **not corroborated** by these records. Do not describe this plan as publicly registered or demonstrably frozen before the pilot outcome.
+
+## MeltingPot assets and confirmation protocol
+
+The saved replay gate records three required TensorFlow SavedModel file hashes, listed in the compact extract. The archived runner requires those files under `assets/saved_models/stag_hunt_in_the_matrix__repeated/puppet_1/` and imports the historical `meltingpot` source checkout. The reviewed local files, result ZIPs, supplementary ZIP, and four MeltingPot evidence tarballs contain none of the three model payloads. No verified public URL for the exact bytes appears in the replay gate. Obtain the original official asset bundle and compare all three SHA-256 values before independent replay.
+
+The compact cohort evidence also lacks `core/melting/confirm/protocol.json`. Thirty saved confirmation seed summaries consistently name source protocol SHA-256 `ed9a6423e8dd81002286b15fe72a66eab9c9e6099385e7a4dcd9217db9e7dabc`; no local protocol file or inspected ZIP/tar member matched that hash. A frozen protocol hash in the saved support bundle is present, but its matching payload was not found. The available `melting_v4_confirm.draft.json` is a different file and must not be substituted for the frozen confirmation protocol. The protocol and model asset gaps limit independent cohort replay, although the recorded results and hashes remain inspectable.

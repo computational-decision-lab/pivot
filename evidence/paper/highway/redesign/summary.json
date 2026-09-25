@@ -1,0 +1,69 @@
+{
+  "analysis_note": "Uniform is exact subset expectation; truth probes are audit-only and never enter acquisition decisions.",
+  "budget_contrasts": [
+    {
+      "budget": 2,
+      "ci95": [
+        0.03434496000824992,
+        0.0586657587961413
+      ],
+      "estimand": "ISR_uniform_expected_minus_Calibrated_PIVOT-KG",
+      "mean": 0.04559803265218655,
+      "n_seed_pairs": 120,
+      "negative_pairs": 12,
+      "positive_favors": "Calibrated PIVOT-KG",
+      "positive_pairs": 78,
+      "sd": 0.0691774970431756,
+      "zero_pairs": 30
+    },
+    {
+      "budget": 4,
+      "ci95": [
+        0.030023240629899212,
+        0.04744786302898247
+      ],
+      "estimand": "ISR_uniform_expected_minus_Calibrated_PIVOT-KG",
+      "mean": 0.038038521190802026,
+      "n_seed_pairs": 120,
+      "negative_pairs": 4,
+      "positive_favors": "Calibrated PIVOT-KG",
+      "positive_pairs": 92,
+      "sd": 0.048755450604593825,
+      "zero_pairs": 24
+    }
+  ],
+  "calibration_seed_count": 40,
+  "candidate_count": 8,
+  "convergence_ok": true,
+  "failures": [],
+  "leave_one_out_primary": {
+    "max": 0.03878062455851881,
+    "min": 0.035311900513421916,
+    "range": 0.003468724045096891
+  },
+  "primary_contrast": {
+    "budget": 4,
+    "ci95": [
+      0.030023240629899212,
+      0.04744786302898247
+    ],
+    "estimand": "ISR_uniform_expected_minus_Calibrated_PIVOT-KG",
+    "mean": 0.038038521190802026,
+    "n_seed_pairs": 120,
+    "negative_pairs": 4,
+    "positive_favors": "Calibrated PIVOT-KG",
+    "positive_pairs": 92,
+    "sd": 0.048755450604593825,
+    "zero_pairs": 24
+  },
+  "promotion_row_count": 600,
+  "promotion_status": "READY_FOR_REVIEW",
+  "protocol_id": "highway-physical-reactive-b4-redesign-v1",
+  "proxy_row_count": 960,
+  "query_row_count": 720,
+  "status": "DEV_EXTERNAL_REDESIGN",
+  "stop_reason": "gate_passed_review_required",
+  "subset_row_count": 11760,
+  "test_seed_count": 120,
+  "truth_audit_row_count": 1080
+}

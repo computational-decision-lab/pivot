@@ -4,3 +4,8 @@
 # CSV exports may use RFC 4180 CRLF line endings; do not flag the carriage
 # return as source whitespace in review diffs.
 *.csv -whitespace
+# Frozen research snapshots and upstream style files retain original bytes.
+archive/server-code-20260926/** -whitespace
+archive/local-code-20260926/** -whitespace
+reproduction/manuscript/*.sty -whitespace
+reproduction/manuscript/*.bst -whitespace

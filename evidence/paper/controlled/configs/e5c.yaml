@@ -1,0 +1,21 @@
+experiment_id: E5C
+seed_start: 9501
+calibration_seed_start: 9401
+calibration_seeds: 16
+candidate_counts: [4, 8, 16]
+budgets: [0, 1, 2, 4, 8, 16]
+environments:
+  - id: performative_control
+    response_strength: 0.85
+  - id: congestion_resource
+    response_strength: 0.75
+methods: [proxy_only, random_hf, top_proxy_hf, uncertainty_hf, paired_lucb, global_voi, pivot_h, pivot_voi, all_hf]
+statistics:
+  minimum_independent_seeds: 30
+  bootstrap_draws: 10000
+  calibration_max_groups: 24
+  voi_fantasies: 8
+  voi_posterior_samples: 32
+  cost_multipliers: [0.5, 0.75, 1.0, 1.25, 1.5]
+  posterior_samples: [128, 256, 512, 1024]
+  hypothetical_samples: [16, 32, 64]

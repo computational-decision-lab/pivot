@@ -1,0 +1,121 @@
+{
+  "protocol_id": "openspiel_v2b_leduc_confirm_20260918",
+  "status": "FROZEN",
+  "seeds": [
+    96000,
+    96001,
+    96002,
+    96003,
+    96004,
+    96005,
+    96006,
+    96007,
+    96008,
+    96009,
+    96010,
+    96011,
+    96012,
+    96013,
+    96014,
+    96015,
+    96016,
+    96017,
+    96018,
+    96019,
+    96020,
+    96021,
+    96022,
+    96023,
+    96024,
+    96025,
+    96026,
+    96027,
+    96028,
+    96029
+  ],
+  "calibration_seeds": [
+    95000,
+    95001,
+    95002,
+    95003,
+    95004,
+    95005,
+    95006,
+    95007,
+    95008,
+    95009,
+    95010,
+    95011
+  ],
+  "seed_extension": false,
+  "game": "leduc_poker",
+  "cfr_iterations": 2000,
+  "beta_min": 0.35,
+  "beta_max": 0.95,
+  "dirichlet_concentration": 0.35,
+  "candidate_alphas": [
+    0.0,
+    0.125,
+    0.25,
+    0.375,
+    0.5,
+    0.625,
+    0.75,
+    0.875,
+    1.0
+  ],
+  "eta": 0.15,
+  "adaptation_steps": {
+    "short": 1,
+    "long": 8
+  },
+  "response_weights": {
+    "short": 0.15,
+    "long": 0.7275
+  },
+  "query_hands": 4096,
+  "query_cost": 8192,
+  "hf_caps": [
+    8192,
+    16384,
+    32768
+  ],
+  "primary_hf_cap": 16384,
+  "responder_type_rule": "exploiter_if_seed_odd_else_equilibrator",
+  "responder_type_is_latent": "never shown to selectors",
+  "eta_selection_evidence": "Leduc discovery (12 roots exact, code/openspiel_v2/openspiel_v2_discovery.py): eta=0.15 long -> exploiter best alpha=0 in 12/12 (alpha=1: -1.21), equilibrator best alpha=1 in 11/12 (gain 0.198), mixed value of world-specific info 0.106 = 100% oracle. eta=0.08 gave a split exploiter (6/12 vs 5/12) and was rejected. Fixed before any calibration root.",
+  "primary_method": "pivot_kg",
+  "primary_comparator": "uniform_v2",
+  "methods": [
+    "pivot_kg",
+    "pivot_kg_stop",
+    "uniform_v2",
+    "ivr_v2",
+    "lucb_v2",
+    "no_hf_v2",
+    "proxy_only",
+    "all_hf_reference"
+  ],
+  "cost_note": "query_cost = 2 x 4096 physical paired hands (SE ~0.02 in Kuhn units). Caps = 1/2/4 queries; primary = 2 queries.",
+  "why_v2b": "v2 (256 hands, Kuhn 93000-93029) is retained as a null: even all-HF (8 x 256 hands) reached ISR 0.022 vs no-HF 0.032 and oracle 0, i.e. the HF instrument could not resolve the decision-relevant 0.044 equilibrator gain (SE 0.09). v2b changes ONLY HF precision; eta, candidates, latent-type rule, cap structure unchanged. Both cohorts are reported.",
+  "hypothesis_chain": "Latent strategic-response family (exploiter vs equilibrator) makes the sign of every update's deployment improvement world-specific under long response; a population calibration alone keeps the incumbent everywhere and forfeits the equilibrator worlds' gains; one decision-sensitive paired HF query of a high-alpha candidate identifies the type. PIVOT (exact EVSI per cost) should beat uniform allocation at matched cost, more under long than short.",
+  "boundary_results_retained": [
+    "Frozen Kuhn line 71000-71099 (homogeneous exploiter, eta=0.062): mechanism yes, PIVOT-Random null (CI [-0.00045,+0.00225]); retained as the systematic-response boundary.",
+    "openspiel_v2 Kuhn 256-hand cohort: mechanism yes, H2 null (+0.0012 [-0.0007,+0.0042]), single-query +0.0019 [+0.0001,+0.0040], instrument-limited"
+  ],
+  "primary_contrasts": [
+    "H2: long, cap 16384 (2 queries): gain(pivot_kg) - gain(uniform_v2)",
+    "H3: [kg-uniform]_long - [kg-uniform]_short"
+  ],
+  "primary_success_rule": "Both root-bootstrap 95% CI lower endpoints > 0 (10000 draws, seed 20260917). Mechanism reported alongside (squared gap long-short; best candidate differs by latent type).",
+  "secondary_prespecified": [
+    "cap 512 (1 query) kg - uniform",
+    "kg - ivr_v2",
+    "kg - no_hf_v2",
+    "no_hf_v2 - proxy_only",
+    "kg_stop cost",
+    "per-type ISR"
+  ],
+  "if_null": "Retain and report with v2 and the frozen Kuhn line. No further hands/eta/seed changes.",
+  "inference_unit": "root seed (30)"
+}

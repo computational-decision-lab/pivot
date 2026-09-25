@@ -1,0 +1,26 @@
+experiment_id: E3C
+seed_start: 9101
+calibration_seed_start: 9001
+calibration_seeds: 16
+candidate_count: 8
+operator_family: gradient_informed
+operator_shift: 0.7
+hf_budget_per_round: 2
+methods: [proxy_only, global_value, random_hf, top_proxy_hf, uncertainty_hf, paired_lucb, global_voi, pivot_h, pivot_voi, all_hf]
+environments:
+  # The active confirmatory run uses the two new controlled worlds below.
+  # The powered MPE2 result is a frozen external null, loaded from the V7
+  # artifact below and never rerun or relabeled as a V9 observation.
+  - id: performative_control
+    response_strength: 0.85
+  - id: congestion_resource
+    response_strength: 0.75
+frozen_mpe2:
+  result_root: results/v7/e3b-confirmatory
+statistics:
+  minimum_cisr_reduction: 0.0
+  response_variance_floor: 1.0e-6
+  candidate_spread_floor: 1.0e-5
+  minimum_independent_seeds: 30
+  voi_fantasies: 32
+  voi_posterior_samples: 128
