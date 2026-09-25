@@ -38,7 +38,7 @@ FIGURES = [
     ('additional_leduc/05_v4_component_contrasts.pdf', '4a5172b63ebac3d32b5c7864ad1b4f3103b702a9eb528d14c6b65c0d40738689', 'generated'),
     ('fig5_closed_loop.pdf', '69189f0643fcb5a4672ba30197c11153c99d621f0425daf3d96d8c4108723a7e', 'replayed'),
     ('figC_posterior_robustness.pdf', 'b394018c2f55d7de29097357ca156b14763880d2dd39814969efb618d4a5cda0', 'supplied'),
-    ('additional_metadrive/matched_posterior_selected_audit_gain.pdf', 'b473f411fb3c9d2e9f80c3017fd84082ac303bc39896041f777ab17bc123a03d', 'generated'),
+    ('additional_metadrive/matched_posterior_selected_audit_gain.pdf', 'adc90b1e51a3aeca6e2d05ad93b6918b9ba3739df46b99e1f86bd952f4065b67', 'generated'),
 ]
 
 
@@ -111,7 +111,7 @@ def main() -> None:
                             provenance=kind, sha256=actual,
                             frozen_reference_sha256=final_hash,
                             reference_comparison=comparison))
-    manifest = dict(version='2026-09-26 final Overleaf readback f7afee89',
+    manifest = dict(version='2026-09-26 MetaDrive boundary-evidence revision',
                     scope='saved-evidence plotting and PDF replay; no simulation rerun',
                     input_sha256=INPUT_HASHES, figures=records)
     (output / 'figure-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')

@@ -515,7 +515,7 @@ decision-critical pair in \RevisionCriticalQueryRate{}
 \RevisionCriticalQueryRateCI{} of roots, while the mean model-assumed queried
 observation standard deviation (SD) is \RevisionCriticalNoiseMargin{} \RevisionCriticalNoiseMarginCI{}
 times the proxy top-2 margin. This regularized-model diagnostic does not
-estimate physical HF noise directly; targeting alone need not resolve ordering.
+estimate HF observation noise directly; targeting alone need not resolve ordering.
 
 \begin{figure}[!t]
   \centering
@@ -622,7 +622,7 @@ strategic response models capture several important forms of adaptation but do
 not cover all deployment dynamics. Second, PIVOT-KG relies on a calibrated
 correction model and sufficiently informative HF observations; when evidence
 is too noisy or budgets are too small, decision-critical uncertainty can
-remain unresolved. Reported held-out CIs condition on the fitted calibration
+remain unresolved. Reported held-out intervals condition on the fitted calibration
 model and do not propagate calibration-set sampling uncertainty. Third, our
 driving-simulator evidence has its clearest allocation result in HighwayEnv
 and a more mixed MetaDrive stress test.
@@ -723,7 +723,7 @@ The query-hit pair uses proxy/deployment top candidates within $C$ (stable index
 top-2 margins exclude no-update. Normalization divides Uniform minus PIVOT ISR
 by the deployment range over $C^+$. The noise ratio uses mean queried $\sqrt{R_j}$,
 a margin floor of $10^{-12}$, and poker's model-variance floor $0.25$;
-it is model-assumed, not physical measurement noise.
+it is model-assumed, not directly measured observation noise.
 
 At the primary long budget, the decision-critical query-hit rates are
 \RevisionLeducCriticalQueryRate{} in Leduc,
@@ -852,16 +852,17 @@ audit records are provided in the supplement.
 \paragraph{MetaDrive.}
 We additionally evaluate a first MetaDrive~\citep{li2022metadrive} cohort under
 a long-response condition with 12 profiles and 30 held-out roots. Figure~\ref{fig:metadrive-stress} reports selected deployment gain across
-one, two, and four HF candidate-query budgets. At the pre-specified two-query
+one, two, and four HF candidate-query budgets. At the prespecified two-query
 budget, the paired PIVOT-KG--Uniform contrast is
 $+1.89\,[-1.29,5.49]$ (30-root bootstrap, 10,000 draws), leaving the primary
 comparison unresolved. The $B=1$ and $B=4$ comparisons are secondary with
-unadjusted intervals. MetaDrive remains a secondary driving-simulator
-stress test; roots share one fixed bottleneck geometry.
+unadjusted intervals. We retain MetaDrive as boundary evidence rather than a
+stable positive result; roots share one fixed bottleneck geometry.
 Integrated variance reduction (IVR) and LUCB use the matched posterior.
 The calibrated no-HF and proxy-only baselines incur zero HF cost and appear
-at $B=0$. Positive-query costs include response search and paired evaluation;
-the supplement retains all eight rules.
+as the separate No-HF baselines. Uniform averages 100 allocation draws per root.
+Positive-query costs include response search and paired evaluation; the
+supplement retains all eight rules.
 
 \paragraph{Evaluator boundary.}
 Improvement Fidelity defines an evaluation target, not a preferred learner
@@ -874,11 +875,12 @@ reported in the supplement.
 \begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figures/additional_metadrive/matched_posterior_selected_audit_gain.pdf}
-  \caption{MetaDrive stress test (12 profiles, 30 held-out roots).
-  (a) Selected deployment gain with marginal 95\% root-bootstrap intervals.
-  (b) Paired PIVOT-KG--Uniform selected-gain contrasts with 95\%
-  root-bootstrap intervals. The prespecified $B=2$ comparison is
-  $+1.89\,[-1.29,5.49]$ and remains unresolved.}
+  \caption{MetaDrive stress test as a boundary case. The prespecified $B=2$
+  comparison remains unresolved: $+1.89\,[-1.29,5.49]$, with the 95\%
+  root-bootstrap CI crossing zero. (a) Selected deployment gain (12 profiles,
+  30 held-out roots; marginal 95\% root-bootstrap intervals).
+  (b) Paired PIVOT-KG--Uniform selected deployment gain contrasts;
+  $B=1,4$ are secondary.}
   \label{fig:metadrive-stress}
 \end{figure}
 \end{document}

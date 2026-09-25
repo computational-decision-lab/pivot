@@ -15,11 +15,11 @@ import numpy as np
 STEM = 'matched_posterior_selected_audit_gain'
 METHODS = [
     ('pivot_kg', 'PIVOT-KG', '#0072B2', 'o', -0.15),
-    ('uniform_v2_expected_100', 'Uniform (100-draw mean)', '#D55E00', 's', -0.05),
-    ('ivr_v2', 'IVR', '#9583AD', 'D', 0.05),
-    ('lucb_v2', 'LUCB', '#639D8C', '^', 0.15),
-    ('no_hf_v2', 'Calibrated, no HF', '#626C78', 'P', -0.10),
-    ('proxy_only', 'Proxy only', '#989898', 'x', 0.10),
+    ('uniform_v2_expected_100', 'Uniform', '#D55E00', 's', -0.05),
+    ('ivr_v2', 'IVR', '#B2B8BE', 'D', 0.05),
+    ('lucb_v2', 'LUCB', '#B2B8BE', '^', 0.15),
+    ('no_hf_v2', 'Calibrated, no HF', '#92999F', 'P', -0.10),
+    ('proxy_only', 'Proxy only', '#B2B8BE', 'x', 0.10),
 ]
 
 def sha(path):
@@ -89,20 +89,20 @@ def main():
                          'axes.linewidth': .65, 'axes.edgecolor': '#747474',
                          'text.color': '#222222', 'axes.labelcolor': '#222222'})
     fig = plt.figure(figsize=(7.1, 3.6), facecolor='white')
-    left = fig.add_axes([.090, .345, .455, .56])
-    right = fig.add_axes([.690, .345, .285, .56])
+    left = fig.add_axes([.090, .345, .405, .56])
+    right = fig.add_axes([.645, .345, .330, .56])
     left.set_title('(a) Selected deployment gain', loc='left', fontsize=10, pad=13)
     right.set_title('(b) Paired contrast', loc='left', fontsize=10, pad=13)
     # The categorical x=2 position marks the prespecified two-query comparison.
     left.axvline(2, color='#C8C8C8', linestyle=(0, (3, 3)), linewidth=.7, zorder=.5)
-    handles = []
+    handles, reference_handles, no_hf_handles = [], [], []
     styles = [
         dict(linewidth=1.45, elinewidth=1.25, markersize=5.8, capthick=1.0, alpha=1.0),
         dict(linewidth=1.05, elinewidth=.95, markersize=5.1, capthick=.8, alpha=.92),
-        dict(linewidth=.55, elinewidth=.5, markersize=3.8, capthick=.5, alpha=.58),
-        dict(linewidth=.55, elinewidth=.5, markersize=3.8, capthick=.5, alpha=.58),
-        dict(linewidth=.75, elinewidth=.75, markersize=4.8, capthick=.65, alpha=.8),
-        dict(linewidth=.75, elinewidth=.75, markersize=4.8, capthick=.65, alpha=.8),
+        dict(linewidth=.45, elinewidth=.45, markersize=3.5, capthick=.45, alpha=.58),
+        dict(linewidth=.45, elinewidth=.45, markersize=3.5, capthick=.45, alpha=.58),
+        dict(linewidth=.65, elinewidth=.65, markersize=4.5, capthick=.6, alpha=.8),
+        dict(linewidth=.65, elinewidth=.65, markersize=4.5, capthick=.6, alpha=.8),
     ]
     for i, (method, label, color, marker, offset) in enumerate(METHODS):
         is_primary = i < 2
@@ -122,10 +122,11 @@ def main():
                       markersize=style['markersize'],
                       markeredgewidth=.85 if is_primary else .65, alpha=style['alpha'],
                       zorder=5 if is_primary else 3, label=label)
-        handles.append(Line2D([], [], color=color, marker=marker, linestyle='none',
-                              markersize=style['markersize'], alpha=style['alpha'], label=label))
+        handle = Line2D([], [], color=color, marker=marker, linestyle='none',
+                        markersize=style['markersize'], alpha=style['alpha'], label=label)
+        (handles if is_primary else reference_handles if i < 4 else no_hf_handles).append(handle)
     left.set(xlim=(-.42, 3.42), ylim=(-.5, 16),
-             xticks=[0, 1, 2, 3], xticklabels=['0', '1', '2', '4'],
+             xticks=[0, 1, 2, 3], xticklabels=['No-HF\nbaselines', '1', '2', '4'],
              xlabel='HF candidate-query budget B',
              ylabel='Gain (native return units)')
     left.yaxis.set_major_locator(MultipleLocator(5))
@@ -133,13 +134,15 @@ def main():
     left.grid(axis='y', color='#E4E4E4', linewidth=.55, zorder=0)
     left.axhline(0, color='#999999', linewidth=.65, zorder=1)
     left.get_xticklabels()[2].set_weight('bold')
+    left.get_xticklabels()[0].set_fontsize(7.4)
     left.tick_params(axis='x', labelcolor='#222222')
+    left.get_xticklabels()[0].set_color('#777777')
 
     right.axvline(0, color='#888888', linestyle=(0, (3, 3)), linewidth=.8, zorder=1)
     ys = [2.65, 1.40, .15]
     for contrast, y in zip(contrasts, ys):
         focus = contrast['budget_queries'] == 2
-        color = '#0072B2' if focus else '#929BA3'
+        color = '#0072B2' if focus else '#C0C5CA'
         right.errorbar(contrast['mean'], y,
                        xerr=[[contrast['mean'] - contrast['lo']],
                              [contrast['hi'] - contrast['mean']]],
@@ -149,21 +152,34 @@ def main():
     right.set(ylim=(-.5, 3.3), xlim=(-4, 7),
               yticks=ys, yticklabels=['B=1', 'B=2', 'B=4'],
               xticks=[-4, 0, 4])
-    right.set_xlabel('Paired selected-gain difference\n(PIVOT-KG − Uniform)', fontsize=9.2, labelpad=6)
+    right.set_xlabel('Selected deployment gain difference\n(PIVOT-KG − Uniform)', fontsize=8.7, labelpad=6)
     right.spines['left'].set_visible(False)
     right.tick_params(axis='y', length=0, pad=7)
     right.tick_params(axis='y', labelcolor='#222222')
+    for label, budget in zip(right.get_yticklabels(), [1, 2, 4]):
+        label.set_color('#0072B2' if budget == 2 else '#92999F')
+        if budget == 2:
+            label.set_weight('bold')
     primary_text = f"{primary['mean']:+.2f} [{primary['lo']:.2f}, {primary['hi']:.2f}]"
-    right.text(.5, .565, 'B=2  Prespecified', transform=right.transAxes,
-               ha='center', fontsize=8.4, color='#0072B2')
+    annotation_background = dict(facecolor='white', edgecolor='none', pad=.8)
+    right.text(.5, .565, 'Primary comparison: B=2', transform=right.transAxes,
+               ha='center', fontsize=8, color='#444444', bbox=annotation_background)
     right.text(.5, .395, primary_text.replace('-', '−'), transform=right.transAxes,
-               ha='center', fontsize=9.7, weight='bold', color='#0072B2')
-    right.text(.5, .30, 'unresolved', transform=right.transAxes,
-               ha='center', fontsize=8.5, color='#444444')
-    legend = fig.legend(handles=handles, loc='lower center', bbox_to_anchor=(.52, .035),
-                        ncol=3, frameon=False, fontsize=9.2, handletextpad=.5,
-                        columnspacing=1.75, labelspacing=.65)
-    assert len(legend.get_texts()) == 6
+               ha='center', fontsize=9.7, weight='bold', color='#0072B2',
+               bbox=annotation_background)
+    right.text(.5, .285, 'unresolved (95% CI crosses 0)', transform=right.transAxes,
+               ha='center', fontsize=7.2, color='#666666', bbox=annotation_background)
+    legend = fig.legend(handles=handles, loc='lower center', bbox_to_anchor=(.29, .10),
+                        ncol=2, frameon=False, fontsize=8.7, handletextpad=.4,
+                        columnspacing=1.35, labelspacing=.5)
+    # Secondary keys are subdued and separate from the two-method main legend.
+    fig.legend(handles=reference_handles, loc='lower center', bbox_to_anchor=(.26, .035),
+               ncol=2, frameon=False, fontsize=7.2, labelcolor='#777777',
+               handletextpad=.3, columnspacing=.9)
+    fig.legend(handles=no_hf_handles, loc='lower center', bbox_to_anchor=(.67, .035),
+               ncol=2, frameon=False, fontsize=7.2, labelcolor='#777777',
+               handletextpad=.3, columnspacing=.9)
+    assert len(legend.get_texts()) == 2
     assert all(t.get_text().strip() for t in legend.get_texts())
     assert not left.patches and not right.patches
     fig.canvas.draw()
@@ -191,18 +207,22 @@ def main():
                   bootstrap_seed=78131, interval='percentile 2.5% and 97.5%; paired roots on right',
                   plotted_methods=[dict(id=m[0], label=m[1]) for m in METHODS],
                   omitted_from_display=['uniform_v2', 'global_voi_heuristic'],
-                  omission_reason='One Uniform comparator and four distinct controls; all eight rules retained in adjacent table and original evidence.',
+                  omission_reason='One Uniform comparator; four secondary controls remain gray. All eight rules are retained in the adjacent table and original evidence.',
                   zero_hf_baselines_displayed_at_budget=0, marginal_rows_verified=len(complete),
                   contrasts=contrasts, primary_unresolved=True,
                   text_within_figure_bounds=not outside,
                   visual_style=dict(primary_budget_guide='light gray dashed line at categorical B=2',
                                     hierarchy=styles, overall_title=False,
-                                    panel_b_budget_labels='uniform black',
+                                    main_legend=['PIVOT-KG', 'Uniform'],
+                                    secondary_references='gray; separate subdued keys',
+                                    no_hf_axis_label='No-HF baselines',
+                                    panel_b_budget_labels='B=2 blue; B=1 and B=4 gray',
                                     panel_b_xlabel=right.get_xlabel()),
                   outputs={p.name: sha(p) for p in args.output_dir.glob(STEM + '.*') if p.suffix in ['.pdf','.png','.svg']})
     (args.output_dir / (STEM + '.audit.json')).write_text(json.dumps(record, indent=2) + '\n')
     print(json.dumps({'verified_method_rows':len(complete), 'paired_contrasts':contrasts,
-                      'legend_entries':6, 'out_of_bounds_text':outside}, indent=2))
+                      'main_legend_entries':2, 'secondary_reference_entries':4,
+                      'out_of_bounds_text':outside}, indent=2))
 
 if __name__ == '__main__':
     main()

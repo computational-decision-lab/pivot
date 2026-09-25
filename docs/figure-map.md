@@ -1,8 +1,15 @@
 # Current manuscript figures
 
 The ten entries below follow the figure order in `reproduction/manuscript/main.tex`
-at final readback `f7afee89` (2026-09-26). This package freezes the current
+at Overleaf readback `d9160e7` (2026-09-26). This snapshot freezes the current
 manuscript visuals. It does not rerun simulations or create new estimates.
+
+The MetaDrive display emphasizes the prespecified unresolved B=2 contrast.
+PIVOT-KG and Uniform form the two-entry main legend; the other controls are
+gray references with separate keys, and zero-cost controls have a separate
+No-HF category. The 24 saved method/budget summaries and all three paired
+contrasts are unchanged. The published `iclr2027-repro-v1` archives retain
+their original manuscript and figures; this is a later presentation revision.
 
 Run from any working directory with Python 3 and PyMuPDF (`fitz`), NumPy, and
 Matplotlib installed:
