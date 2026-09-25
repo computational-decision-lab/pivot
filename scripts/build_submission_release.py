@@ -12,12 +12,12 @@ import stat
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "iclr2027-repro-v1"
+VERSION = "iclr2027-repro-v2"
 SKIP_PARTS = {".git", ".venv", "__pycache__", "__MACOSX", ".pytest_cache", ".mypy_cache", ".ruff_cache"}
 TEXT_SUFFIXES = {".py", ".sh", ".md", ".txt", ".json", ".csv", ".yaml", ".yml", ".toml", ".tex", ".bib", ".sty", ".bst", ".cls"}
 SECRET = re.compile(rb"\b(?:olp_[A-Za-z0-9_-]{16,}|gh[pousr]_[A-Za-z0-9_]{20,}|AKIA[A-Z0-9]{16}|-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----)")
 IDENTITY = re.compile(r"computational-decision-lab|git\.overleaf\.com|overleaf\.com/project|/Users/[^/\s]+|\bcolin_pivot\b", re.I)
-DOCS = ("docs/reviewer-guide.md", "docs/reproduction.md", "docs/figure-map.md", "docs/rights-and-dependencies.md", "docs/comparison-audit.md", "docs/protocol-chronology.md")
+DOCS = ("docs/reviewer-guide.md", "docs/repository-map.md", "docs/reproduction.md", "docs/figure-map.md", "docs/rights-and-dependencies.md", "docs/comparison-audit.md", "docs/protocol-chronology.md")
 CORE_TESTS = ("test_metrics.py", "test_transition.py", "test_decomposition.py", "test_acquisition.py", "test_operator_shift.py", "test_pivot_voi.py", "test_validation.py", "test_sample_complexity.py", "test_transfer.py", "test_v9_environments.py", "test_v9_operators.py")
 
 
@@ -93,13 +93,51 @@ Expected saved-data results include 51/90 disjoint optimal sets, Leduc's
 primary contrast +0.0298887, and MetaDrive's primary contrast
 +1.88922 [-1.29334, 5.49203] (unresolved). Simulator smoke validation is separate
 from saved-data verification; full original studies were not rerun for release.
-See `release/iclr2027-repro-v1/validation.json` for actual validation outcomes.
+See `release/iclr2027-repro-v2/validation.json` for actual validation outcomes.
 
 Only the current paper's reproduction materials are included. Historical
 development implementations are not substitutes for frozen cohort protocols.
 The manuscript snapshot is read-only. See `docs/rights-and-dependencies.md`
 for dependency notices and the absence of a new project-wide license grant.
 """
+
+
+def anonymize_manuscript(files: dict[str, tuple[bytes, bool]]) -> dict[str, tuple[bytes, bool]]:
+    """Export the public manuscript without its identifying availability link.
+
+    Only the exact availability sentence and the snapshot's matching hash are
+    changed. Frozen evidence is never edited. The public PDF is omitted because
+    its text and link annotations contain the repository identity.
+    """
+    files = dict(files)
+    path = "reproduction/manuscript/main.tex"
+    original, link = files[path]
+    public_sentence = ("The code and reproducibility materials are available at\n"
+                       "\\url{https://github.com/computational-decision-lab/pivot}.").encode()
+    anonymous_sentence = ("The anonymized code and reproducibility materials are provided\n"
+                          "in the supplementary ZIP.").encode()
+    if original.count(public_sentence) != 1:
+        raise ValueError("Manuscript availability sentence changed; review anonymous export")
+    exported = original.replace(public_sentence, anonymous_sentence)
+    files[path] = (exported, link)
+    snapshot_path = "reproduction/manuscript/snapshot.json"
+    snapshot = json.loads(files[snapshot_path][0])
+    records = [r for r in snapshot["files"] if r["path"] == "main.tex"]
+    if len(records) != 1 or records[0]["sha256"] != digest(original):
+        raise ValueError("Manuscript source snapshot hash mismatch")
+    records[0]["sha256"] = digest(exported)
+    snapshot.pop("compiled_pdf", None)
+    snapshot["export_note"] = "Anonymous availability sentence; see MANUSCRIPT-EXPORT.json."
+    files[snapshot_path] = ((json.dumps(snapshot, indent=2) + "\n").encode(), False)
+    pdf_path = "reproduction/manuscript/paper.pdf"
+    pdf, _ = files.pop(pdf_path)
+    record = {"scope": "Manuscript-only anonymity export; numerical evidence unchanged",
+              "changed": {"path": path, "source_sha256": digest(original),
+                          "export_sha256": digest(exported)},
+              "omitted": {"path": pdf_path, "sha256": digest(pdf),
+                          "reason": "Public manuscript PDF contains the repository link; compile the supplied anonymous LaTeX instead."}}
+    files["MANUSCRIPT-EXPORT.json"] = ((json.dumps(record, indent=2) + "\n").encode(), False)
+    return files
 
 
 def package_inputs(root: Path, anonymous: bool) -> dict[str, tuple[bytes, bool]]:
@@ -111,7 +149,8 @@ def package_inputs(root: Path, anonymous: bool) -> dict[str, tuple[bytes, bool]]
         names += ["tests/unit/" + name for name in CORE_TESTS]
     else:
         names = common + ["README.md", "Makefile", "experiments", "configs", "scripts", "tests",
-                          "archive/server-code-20260926", "archive/local-code-20260926", "docs/code-provenance.md"]
+                          "archive/server-code-20260926", "archive/local-code-20260926", "docs/code-provenance.md",
+                          "docs/README.md", "archive/README.md", "docs/archive/v15/root-reports-20260926"]
     files = collect(root, names)
     if anonymous:
         files = {p: value for p, value in files.items()
@@ -120,6 +159,7 @@ def package_inputs(root: Path, anonymous: bool) -> dict[str, tuple[bytes, bool]]
         # Keep source manifests used by frozen runner integrity checks. Identity
         # removal is limited to export-only provenance, never numeric evidence.
         files["README.md"] = (anonymous_readme(), False)
+        files = anonymize_manuscript(files)
         for path, (data, link) in list(files.items()):
             if Path(path).suffix in TEXT_SUFFIXES:
                 content = data.decode("utf8")

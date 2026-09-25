@@ -61,3 +61,29 @@ def test_reject_credential_without_printing_it(builder, tmp_path):
         builder.collect(tmp_path, ["source.py"])
     assert "source.py" in str(caught.value)
     assert fake not in str(caught.value)
+
+
+def test_anonymous_manuscript_preserves_evidence_and_updates_hash(builder):
+    main = (b'The code and reproducibility materials are available at\n'
+            b'\\url{https://github.com/computational-decision-lab/pivot}.\n'
+            b'Result: +1.89 [-1.29, 5.49].\n')
+    snapshot = {"files": [{"path": "main.tex", "sha256": builder.digest(main)}],
+                "compiled_pdf": {"path": "paper.pdf"}}
+    inputs = {"reproduction/manuscript/main.tex": (main, False),
+              "reproduction/manuscript/snapshot.json": (json.dumps(snapshot).encode(), False),
+              "reproduction/manuscript/paper.pdf": (b"public PDF", False),
+              "evidence/rows.csv": (b"gain\n1.89\n", False)}
+    exported = builder.anonymize_manuscript(inputs)
+    assert inputs["reproduction/manuscript/main.tex"][0] == main
+    assert exported["evidence/rows.csv"] == inputs["evidence/rows.csv"]
+    assert "reproduction/manuscript/paper.pdf" not in exported
+    tex = exported["reproduction/manuscript/main.tex"][0]
+    assert b"+1.89 [-1.29, 5.49]" in tex
+    assert b"computational-decision-lab" not in tex
+    new_snapshot = json.loads(exported["reproduction/manuscript/snapshot.json"][0])
+    assert new_snapshot["files"][0]["sha256"] == builder.digest(tex)
+    assert "compiled_pdf" not in new_snapshot
+    bad = dict(inputs)
+    bad["reproduction/manuscript/main.tex"] = (main.replace(b"The code", b"Code"), False)
+    with pytest.raises(ValueError, match="availability sentence changed"):
+        builder.anonymize_manuscript(bad)

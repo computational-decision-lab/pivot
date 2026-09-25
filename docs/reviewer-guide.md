@@ -5,7 +5,7 @@ with the repository's development history.
 
 ## Recommended reading order
 
-1. Read the repository `README.md` for scope and the five-minute command path.
+1. Read the repository `README.md` for scope and the quick command path.
 2. Run `python reproduction/run.py verify --output outputs/verify`.
 3. Inspect `docs/comparison-audit.md` for what differs between PIVOT-KG and
    Uniform in each cohort.

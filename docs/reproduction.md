@@ -1,10 +1,11 @@
 # Reproducing the paper artifact
 
-Run from any directory using the path to this clone:
+From the repository root, create the replay environment and install the code:
 
 ```bash
 python3.10 -m venv /tmp/pivot-paper-replay
 /tmp/pivot-paper-replay/bin/python -m pip install -r reproduction/environments/replay-requirements.txt
+/tmp/pivot-paper-replay/bin/python -m pip install --no-deps -e .
 /tmp/pivot-paper-replay/bin/python reproduction/run.py verify --output /tmp/pivot-paper-check
 /tmp/pivot-paper-replay/bin/python reproduction/run.py analyze --experiment leduc_v4 --output /tmp/pivot-paper-analysis
 /tmp/pivot-paper-replay/bin/python reproduction/run.py figures --output /tmp/pivot-paper-figures

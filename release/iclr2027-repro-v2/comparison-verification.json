@@ -1,0 +1,56 @@
+{
+  "scope": "First-cohort Table 1; recomputed decisions, not new native simulator runs",
+  "cohorts": {
+    "leduc": {
+      "roots": 30,
+      "replayed_decisions": 60,
+      "queries_each": 2,
+      "max_posterior_estimate_error": 0.0,
+      "mean_ISR": {
+        "pivot_kg": 0.009268662421935329,
+        "uniform_v2": 0.04575369777627247
+      },
+      "uniform_minus_pivot_ISR": 0.03648503535433714,
+      "saved_root_bootstrap_CI": [
+        0.014469605838594959,
+        0.06368511877904805
+      ],
+      "same_selected_update_roots": 19,
+      "comparison": "Same fitted posterior, observation update and terminal selection; query allocation differs."
+    },
+    "kuhn": {
+      "roots": 30,
+      "replayed_decisions": 60,
+      "queries_each": 2,
+      "max_posterior_estimate_error": 0.0,
+      "mean_ISR": {
+        "pivot_kg": 0.05602424325799525,
+        "uniform_v2": 0.05798808964075329
+      },
+      "uniform_minus_pivot_ISR": 0.0019638463827580427,
+      "saved_root_bootstrap_CI": [
+        0.0,
+        0.005793342117114196
+      ],
+      "same_selected_update_roots": 28,
+      "comparison": "Same fitted posterior, observation update and terminal selection; query allocation differs."
+    },
+    "melting": {
+      "roots": 30,
+      "replayed_decisions": 60,
+      "queries_each": 2,
+      "max_posterior_estimate_error": 0.0,
+      "mean_ISR": {
+        "pivot_kg": 0.8359997699065508,
+        "uniform_v2": 1.7424631790317098
+      },
+      "uniform_minus_pivot_ISR": 0.9064634091251589,
+      "saved_root_bootstrap_CI": [
+        -0.7842838193264877,
+        3.4006284715303687
+      ],
+      "same_selected_update_roots": 21,
+      "comparison": "Same fitted posterior, observation update and terminal selection; query allocation differs."
+    }
+  }
+}

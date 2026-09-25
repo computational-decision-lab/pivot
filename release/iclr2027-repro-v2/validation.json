@@ -1,0 +1,213 @@
+{
+  "version": "iclr2027-repro-v2",
+  "scope": "Saved evidence and bounded simulator results inherited from v1; current reviewer entry, figure replay and package export rechecked. Full cohorts not rerun.",
+  "original_evidence_files": 1049,
+  "saved_results": {
+    "input_files": 1051,
+    "input_hash_failures": [],
+    "core": {
+      "roots": 90,
+      "disjoint_optimal_sets": 51,
+      "tied_deployment_optima": 28,
+      "ratios_above_one": 51
+    },
+    "leduc_v4": {
+      "roots": 30,
+      "scored_rows": 3960,
+      "max_gain_error": 0.0,
+      "max_regret_error": 0.0,
+      "primary_gain_contrast": 0.02988871542790324,
+      "unchanged_stopping_decisions": 30,
+      "repeated_query_roots": 30
+    },
+    "metadrive": {
+      "roots": 30,
+      "scored_rows": 2160,
+      "max_gain_error": 0.0,
+      "max_regret_error": 0.0,
+      "primary_gain_contrast": {
+        "mean": 1.8892200633710954,
+        "lo": -1.293344796836559,
+        "hi": 5.492029012751752,
+        "n": 30
+      }
+    },
+    "highway_redesign": {
+      "roots": 120,
+      "budget": 4,
+      "pivot_ISR": 0.005482298201404241,
+      "uniform_expected_ISR": 0.04352081939220627
+    },
+    "all_hf_reference": {
+      "fully_queried_rows": 900,
+      "excluded_incomplete_rows": 180,
+      "correct_reference": 0.0
+    },
+    "scope": "Saved-label and artifact replay only. No simulator, retraining, independent preregistration timestamp, or human approval is certified."
+  },
+  "comparison_replay": {
+    "scope": "First-cohort Table 1; recomputed decisions, not new native simulator runs",
+    "cohorts": {
+      "leduc": {
+        "roots": 30,
+        "replayed_decisions": 60,
+        "queries_each": 2,
+        "max_posterior_estimate_error": 0.0,
+        "mean_ISR": {
+          "pivot_kg": 0.009268662421935329,
+          "uniform_v2": 0.04575369777627247
+        },
+        "uniform_minus_pivot_ISR": 0.03648503535433714,
+        "saved_root_bootstrap_CI": [
+          0.014469605838594959,
+          0.06368511877904805
+        ],
+        "same_selected_update_roots": 19,
+        "comparison": "Same fitted posterior, observation update and terminal selection; query allocation differs."
+      },
+      "kuhn": {
+        "roots": 30,
+        "replayed_decisions": 60,
+        "queries_each": 2,
+        "max_posterior_estimate_error": 0.0,
+        "mean_ISR": {
+          "pivot_kg": 0.05602424325799525,
+          "uniform_v2": 0.05798808964075329
+        },
+        "uniform_minus_pivot_ISR": 0.0019638463827580427,
+        "saved_root_bootstrap_CI": [
+          0.0,
+          0.005793342117114196
+        ],
+        "same_selected_update_roots": 28,
+        "comparison": "Same fitted posterior, observation update and terminal selection; query allocation differs."
+      },
+      "melting": {
+        "roots": 30,
+        "replayed_decisions": 60,
+        "queries_each": 2,
+        "max_posterior_estimate_error": 0.0,
+        "mean_ISR": {
+          "pivot_kg": 0.8359997699065508,
+          "uniform_v2": 1.7424631790317098
+        },
+        "uniform_minus_pivot_ISR": 0.9064634091251589,
+        "saved_root_bootstrap_CI": [
+          -0.7842838193264877,
+          3.4006284715303687
+        ],
+        "same_selected_update_roots": 21,
+        "comparison": "Same fitted posterior, observation update and terminal selection; query allocation differs."
+      }
+    }
+  },
+  "tests": {
+    "core_and_release": {
+      "passed": 41,
+      "failed": 0,
+      "command": "python -m pytest -q tests/release and 11 core unit-test modules"
+    },
+    "frozen_pivot_v2": {
+      "passed": 11,
+      "command": "python -m unittest -q test_pivot_v2"
+    },
+    "frozen_pivot_v3": {
+      "passed": 10,
+      "command": "python -m unittest -q test_pivot_v3"
+    }
+  },
+  "smoke": {
+    "kuhn": {
+      "experiment": "kuhn",
+      "status": "passed",
+      "check": "OpenSpiel native game episode",
+      "game": "kuhn_poker",
+      "actions": 4,
+      "native_environment_step": true
+    },
+    "leduc_v4": {
+      "experiment": "leduc_v4",
+      "status": "passed",
+      "check": "OpenSpiel native game episode",
+      "game": "leduc_poker",
+      "actions": 7,
+      "native_environment_step": true
+    },
+    "highway": {
+      "experiment": "highway",
+      "status": "passed",
+      "check": "HighwayEnv native step and frozen source check",
+      "native_environment_step": true
+    },
+    "highway_redesign": {
+      "experiment": "highway_redesign",
+      "status": "passed",
+      "check": "HighwayEnv native step and frozen source check",
+      "native_environment_step": true
+    },
+    "metadrive": {
+      "experiment": "metadrive",
+      "status": "passed",
+      "check": "frozen MetaDrive adapter repeated native rollout",
+      "native_environment_step": true,
+      "smoke_ok": true
+    },
+    "meltingpot": {
+      "experiment": "meltingpot",
+      "status": "passed",
+      "check": "Melting Pot native substrate reset and step",
+      "native_environment_step": true
+    },
+    "controlled": {
+      "experiment": "controlled",
+      "status": "passed",
+      "check": "frozen controlled world rollout",
+      "native_environment_step": false,
+      "environment_steps": 16
+    },
+    "leduc": {
+      "experiment": "leduc",
+      "status": "passed",
+      "check": "OpenSpiel native game episode",
+      "game": "leduc_poker",
+      "actions": 7,
+      "native_environment_step": true
+    }
+  },
+  "full_cohorts": {
+    "status": "not_run",
+    "reason": "Packaging scope uses saved evidence and bounded native checks; complete commands provided separately."
+  },
+  "external_limitations": [
+    "Historical OpenSpiel protocol records 2.0.2; available tested smoke environment is 1.6.11. Full historical equivalence not established.",
+    "Melting Pot full replay needs three absent specialist model files and the original frozen confirmation protocol. Native substrate smoke passed; saved decision replay passed. Exact missing hashes are in docs/protocol-chronology.md."
+  ],
+  "validation_state": "passed_for_documented_scope_with_full_replay_gaps",
+  "manuscript": {
+    "overleaf_revision": "e03c1ca55330e53a6fe651dba5cc61e71fee515e",
+    "pages": 16,
+    "cited_sources_checked": 21,
+    "undefined_references": 0,
+    "undefined_citations": 0,
+    "protected_math_tables_title_unchanged": true
+  },
+  "figure_validation": {
+    "outputs": 10,
+    "generated_from_saved_statistics": 2,
+    "vector_patch_replay": 4,
+    "verified_supplied_assets": 4,
+    "numeric_change": false
+  },
+  "fresh_archive_trial": {
+    "anonymous_unit_and_cli_tests_passed": 37,
+    "saved_result_replay": "passed",
+    "figure_generation": "passed",
+    "final_download_check": "Publication receipt accompanies the v2 release."
+  },
+  "source_review": {
+    "critical_findings": 0,
+    "important_findings": 0,
+    "scope": "Release builder, cohort CLI flags, environment smoke, CI and anonymous contents; no full cohort reruns."
+  },
+  "prior_validation_source": "release/iclr2027-repro-v1/validation.json at 0306c67"
+}
