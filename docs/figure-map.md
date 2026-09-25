@@ -1,7 +1,7 @@
 # Current manuscript figures
 
 The ten entries below follow the figure order in `reproduction/manuscript/main.tex`
-at Overleaf readback `d9160e7` (2026-09-26). This snapshot freezes the current
+at Overleaf readback `e03c1ca` (2026-09-26). This snapshot freezes the current
 manuscript visuals. It does not rerun simulations or create new estimates.
 
 The MetaDrive display emphasizes the prespecified unresolved B=2 contrast.
