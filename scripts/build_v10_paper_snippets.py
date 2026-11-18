@@ -101,9 +101,10 @@ def build(root: Path) -> Path:
         f"\\newcommand{{\\StrategicFamilySeedTraces}}{{{sum(int(row['cluster_n']) for row in m7['by_mode'])}}}",
         f"\\newcommand{{\\StrategicEffect}}{{{_num(m7['adaptive_effect_mean'])}}}",
         f"\\newcommand{{\\StrategicEffectCI}}{{{_interval(m7['adaptive_effect_ci_low'], m7['adaptive_effect_ci_high'])}}}",
+        f"\\newcommand{{\\StrategicReversalRate}}{{{_num(strategic_sirr)}}}",
         f"\\newcommand{{\\StrategicSIRR}}{{{_num(strategic_sirr)}}}",
         "% Strategic effect: mean of three adaptive family values within each matched seed; interval bootstraps matched seeds.",
-        "% Strategic SIRR: unweighted mean of the three family-level SIRRs.",
+        "% Strategic reversal rate: unweighted mean of the three family-level SIRRs.",
         "% The external finance audit is observational and has no causal reversal estimate.",
     ]
     output = root / "paper/v10_results_macros.tex"

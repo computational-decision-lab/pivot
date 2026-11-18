@@ -1,0 +1,60 @@
+{
+  "acquisition": {
+    "IVR-Online": "integrated variance reduction",
+    "PIVOT-KG-Loop-v2": "exact one-step Gaussian KG",
+    "Top-Proxy-Online": "descending proxy delta"
+  },
+  "calibration_roots": 240,
+  "candidate_count": 4,
+  "contextual_model": {
+    "cross_round_update": "Gaussian rank-one correction-regression update for the three online methods",
+    "drift_diagnostic": "standardized residuals logged; no test-tuned threshold",
+    "features": [
+      "pressure",
+      "response_strength",
+      "incumbent_intensity",
+      "incumbent_bias",
+      "delta_intensity",
+      "delta_bias",
+      "proxy_delta",
+      "pressure_x_delta_intensity",
+      "response_x_delta_intensity",
+      "round_fraction"
+    ],
+    "ridge": 0.5,
+    "type": "Bayesian linear correction model",
+    "within_round_update": "posterior conditions on every queried observation"
+  },
+  "hf_budget_per_round": 2,
+  "initial_test_pressure": "0.10 + 0.015 * (root_offset mod 7)",
+  "method_definitions": {
+    "Contextual-KG": "two KG-selected queries; posterior conditions within each round, but correction regression resets to the calibration fit at each round",
+    "IVR-Online": "common sentinel plus one IVR-selected query; correction regression updates persist across rounds",
+    "PIVOT-KG-Loop-v2": "common sentinel plus one KG-selected query; correction regression updates persist across rounds",
+    "Static-PIVOT-KG-v1": "two KG-selected queries under the original narrow-state static calibration prior; legacy reference",
+    "Top-Proxy-Online": "common sentinel plus one proxy-ranked query; correction regression updates persist across rounds"
+  },
+  "online_methods": [
+    "PIVOT-KG-Loop-v2",
+    "IVR-Online",
+    "Top-Proxy-Online"
+  ],
+  "physical_simulator_called": false,
+  "protocol_id": "P1-LOOP-V2-2026-11-10",
+  "response_regimes": {
+    "high": 0.85,
+    "low": 0.35,
+    "medium": 0.6
+  },
+  "root_start": 700000,
+  "roots_per_regime": 120,
+  "rounds": 5,
+  "sentinel_rule": "candidate_index = round_id mod 4; one common-rule sentinel plus one method-specific query",
+  "shared_random_streams": {
+    "deployment": "root, round",
+    "evaluation": "root, round, candidate index",
+    "queries": "root, round, candidate id"
+  },
+  "split": "confirmation",
+  "terminal_rule": "posterior mean over incumbent plus four candidates"
+}

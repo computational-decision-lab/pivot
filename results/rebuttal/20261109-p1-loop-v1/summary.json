@@ -1,0 +1,194 @@
+{
+  "analysis_kind": "genuine_multiround_algorithm1_loop",
+  "audit_checks": {
+    "all_pass": true,
+    "all_pivot_rounds_used_two_queries": true,
+    "all_rounds_have_query_or_zero_query_record": true,
+    "independent_eval_seed_recorded": true,
+    "response_state_changes_recorded": true,
+    "terminal_selection_includes_incumbent": true
+  },
+  "calibration_prior_hash": "12336b9b777ce0d53b7e1c96223c7d4c9e743f49046ff991b35b8fe5495ead87",
+  "formal_lucb": {
+    "reason": "formal initialization requires 4 candidate observations, but the per-round budget is 2",
+    "status": "not_run_budget_infeasible"
+  },
+  "ledger_sha256": "9a8b90cb387f69190ba511036046056a15882b300b44957d5158335ca11911ef",
+  "method_summary": {
+    "All-HF": {
+      "CISR": {
+        "ci_high": 0.006130756579577378,
+        "ci_low": 0.001471380139136106,
+        "mean": 0.003573810516889242,
+        "n": 30
+      },
+      "cumulative_utility": {
+        "ci_high": 0.7685675986398613,
+        "ci_low": 0.7372677826274847,
+        "mean": 0.7526927705674851,
+        "n": 30
+      },
+      "harmful_adoption_rate": {
+        "ci_high": 0.06666666666666668,
+        "ci_low": 0.013333333333333334,
+        "mean": 0.04,
+        "n": 30
+      },
+      "retention_rate": {
+        "ci_high": 0.5000000000000001,
+        "ci_low": 0.3266666666666667,
+        "mean": 0.4133333333333333,
+        "n": 30
+      }
+    },
+    "IVR": {
+      "CISR": {
+        "ci_high": 2.269004861236043,
+        "ci_low": 1.696580509823713,
+        "mean": 1.9860417871601197,
+        "n": 30
+      },
+      "cumulative_utility": {
+        "ci_high": 0.8130032699011713,
+        "ci_low": 0.18999534985444264,
+        "mean": 0.49666352297864064,
+        "n": 30
+      },
+      "harmful_adoption_rate": {
+        "ci_high": 0.47333333333333333,
+        "ci_low": 0.3933333333333334,
+        "mean": 0.43333333333333335,
+        "n": 30
+      },
+      "retention_rate": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "mean": 0.0,
+        "n": 30
+      }
+    },
+    "PIVOT-KG": {
+      "CISR": {
+        "ci_high": 3.1697267149359716,
+        "ci_low": 2.043910355917692,
+        "mean": 2.6019175665224243,
+        "n": 30
+      },
+      "cumulative_utility": {
+        "ci_high": 0.3263774284418302,
+        "ci_low": -0.225983660127109,
+        "mean": 0.05227791396307582,
+        "n": 30
+      },
+      "harmful_adoption_rate": {
+        "ci_high": 0.32,
+        "ci_low": 0.24000000000000007,
+        "mean": 0.27999999999999997,
+        "n": 30
+      },
+      "retention_rate": {
+        "ci_high": 0.38000000000000006,
+        "ci_low": 0.28,
+        "mean": 0.33333333333333337,
+        "n": 30
+      }
+    },
+    "Proxy-Only": {
+      "CISR": {
+        "ci_high": 20.189696562181435,
+        "ci_low": 19.34201653237007,
+        "mean": 19.780334502064246,
+        "n": 30
+      },
+      "cumulative_utility": {
+        "ci_high": -11.043348355185454,
+        "ci_low": -11.181145645374299,
+        "mean": -11.113351832361008,
+        "n": 30
+      },
+      "harmful_adoption_rate": {
+        "ci_high": 0.7800000000000004,
+        "ci_low": 0.7200000000000003,
+        "mean": 0.7533333333333336,
+        "n": 30
+      },
+      "retention_rate": {
+        "ci_high": 0.17333333333333337,
+        "ci_low": 0.10666666666666669,
+        "mean": 0.14000000000000004,
+        "n": 30
+      }
+    },
+    "Top-Proxy": {
+      "CISR": {
+        "ci_high": 2.2956978305282125,
+        "ci_low": 1.7016739639063132,
+        "mean": 1.998886931052896,
+        "n": 30
+      },
+      "cumulative_utility": {
+        "ci_high": 0.7270563163780539,
+        "ci_low": 0.16489595600799867,
+        "mean": 0.44749904103367044,
+        "n": 30
+      },
+      "harmful_adoption_rate": {
+        "ci_high": 0.4733333333333334,
+        "ci_low": 0.4066666666666667,
+        "mean": 0.44000000000000006,
+        "n": 30
+      },
+      "retention_rate": {
+        "ci_high": 0.0,
+        "ci_low": 0.0,
+        "mean": 0.0,
+        "n": 30
+      }
+    },
+    "Uniform-Random": {
+      "CISR": {
+        "ci_high": 2.6057637326372682,
+        "ci_low": 1.7446127888376692,
+        "mean": 2.1697643659618704,
+        "n": 30
+      },
+      "cumulative_utility": {
+        "ci_high": 0.7303150885572117,
+        "ci_low": 0.16184432938305107,
+        "mean": 0.453971997224853,
+        "n": 30
+      },
+      "harmful_adoption_rate": {
+        "ci_high": 0.40666666666666657,
+        "ci_low": 0.31999999999999995,
+        "mean": 0.36,
+        "n": 30
+      },
+      "retention_rate": {
+        "ci_high": 0.16000000000000006,
+        "ci_low": 0.06666666666666667,
+        "mean": 0.11333333333333336,
+        "n": 30
+      }
+    }
+  },
+  "methods": [
+    "PIVOT-KG",
+    "Uniform-Random",
+    "IVR",
+    "Top-Proxy",
+    "Proxy-Only",
+    "All-HF"
+  ],
+  "physical_simulator_called": false,
+  "protocol": {
+    "calibration_roots": 40,
+    "candidate_count": 4,
+    "evaluation_seeds_independent": true,
+    "hf_budget_per_round": 2,
+    "paired_query_cost_environment_steps": 24,
+    "response_state_carried": true,
+    "roots": 30,
+    "rounds": 5
+  }
+}

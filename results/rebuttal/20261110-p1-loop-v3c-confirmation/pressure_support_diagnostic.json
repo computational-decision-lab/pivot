@@ -1,0 +1,101 @@
+{
+  "calibration_support": {
+    "max": 0.6959375000000001,
+    "min": 0.0540625,
+    "n_candidate_rows": 960
+  },
+  "diagnostic_id": "V3C-PRESSURE-SUPPORT-2026-11-10",
+  "input_hashes": {
+    "calibration_training_samples": "f43f1b800641bb026df24ccc35ce7fe2d0269868169dc2cebf3dafc2d585e255",
+    "ledger": "91352cc0f3679413e7da70aac9c32a7417f686844863b4087af82e5597209055"
+  },
+  "interpretation": "Pressure values outside the calibration min/max are extrapolative relative to observed calibration support; this is a descriptive coverage diagnostic, not a test exclusion rule.",
+  "test_states_by_regime": {
+    "high": {
+      "max": 1.993928790089585,
+      "min": 0.03787345129683291,
+      "n_states": 1800,
+      "outside_calibration_support": 423,
+      "outside_fraction": 0.235
+    },
+    "low": {
+      "max": 0.6466060191196813,
+      "min": 0.1,
+      "n_states": 1800,
+      "outside_calibration_support": 0,
+      "outside_fraction": 0.0
+    },
+    "medium": {
+      "max": 1.2249415427192079,
+      "min": 0.1,
+      "n_states": 1800,
+      "outside_calibration_support": 148,
+      "outside_fraction": 0.08222222222222222
+    }
+  },
+  "test_states_by_regime_method": {
+    "high:IVR-Online-v3c": {
+      "max": 1.993928790089585,
+      "min": 0.1,
+      "n_states": 600,
+      "outside_calibration_support": 163,
+      "outside_fraction": 0.27166666666666667
+    },
+    "high:PIVOT-KG-Loop-v3c": {
+      "max": 0.864505483757943,
+      "min": 0.1,
+      "n_states": 600,
+      "outside_calibration_support": 83,
+      "outside_fraction": 0.13833333333333334
+    },
+    "high:Top-Proxy-Online-v3c": {
+      "max": 0.921302341937227,
+      "min": 0.03787345129683291,
+      "n_states": 600,
+      "outside_calibration_support": 177,
+      "outside_fraction": 0.295
+    },
+    "low:IVR-Online-v3c": {
+      "max": 0.6466060191196813,
+      "min": 0.1,
+      "n_states": 600,
+      "outside_calibration_support": 0,
+      "outside_fraction": 0.0
+    },
+    "low:PIVOT-KG-Loop-v3c": {
+      "max": 0.6152075347791802,
+      "min": 0.1,
+      "n_states": 600,
+      "outside_calibration_support": 0,
+      "outside_fraction": 0.0
+    },
+    "low:Top-Proxy-Online-v3c": {
+      "max": 0.6101700546024882,
+      "min": 0.1,
+      "n_states": 600,
+      "outside_calibration_support": 0,
+      "outside_fraction": 0.0
+    },
+    "medium:IVR-Online-v3c": {
+      "max": 1.2249415427192079,
+      "min": 0.1,
+      "n_states": 600,
+      "outside_calibration_support": 76,
+      "outside_fraction": 0.12666666666666668
+    },
+    "medium:PIVOT-KG-Loop-v3c": {
+      "max": 0.6757476075562732,
+      "min": 0.1,
+      "n_states": 600,
+      "outside_calibration_support": 0,
+      "outside_fraction": 0.0
+    },
+    "medium:Top-Proxy-Online-v3c": {
+      "max": 0.833906461756945,
+      "min": 0.1,
+      "n_states": 600,
+      "outside_calibration_support": 72,
+      "outside_fraction": 0.12
+    }
+  }
+}

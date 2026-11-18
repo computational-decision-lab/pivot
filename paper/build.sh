@@ -8,17 +8,12 @@ export PYTHONPATH="$project_root${PYTHONPATH:+:$PYTHONPATH}"
 
 # Keep the submission PDF byte-stable across clean rebuilds.
 export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-1787227200}"
-if [ -n "${PIVOT_PYTHON:-}" ]; then
-  python_bin="$PIVOT_PYTHON"
-elif [ -x "$project_root/.venv/bin/python" ]; then
-  python_bin="$project_root/.venv/bin/python"
-else
-  python_bin="python3"
-fi
+python_bin="${PIVOT_PYTHON:-python3}"
 
+# The submission release uses frozen audited assets. Regeneration of evidence
+# is an explicit analysis step, not a side effect of packaging the manuscript.
 PIVOT_PYTHON="$python_bin" bash "$paper_root/build_frozen.sh"
-mkdir -p "$project_root/artifacts/revision"
-supplement_staging="$(mktemp -d "$project_root/artifacts/revision/supplement.XXXXXXXX")"
+supplement_staging="$project_root/artifacts/revision/supplement_staging"
 "$python_bin" "$project_root/scripts/build_iclr_supplement.py" \
   --project-root "$project_root" \
   --output-root "$supplement_staging" \

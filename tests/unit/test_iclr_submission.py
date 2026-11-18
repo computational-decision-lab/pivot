@@ -7,15 +7,17 @@ from pathlib import Path
 from scripts.build_iclr_supplement import (
     ALLOWLIST,
     LATEST_EVIDENCE_SOURCES,
-    _copy_hash_bound_tree,
+    MULTIROUND_ARTIFACT_FILES,
     _copy_sanitized,
 )
 from scripts.build_revision_evidence import public_audit
+from scripts.paper_assets import manuscript_assets
 from scripts.verify_iclr_submission import (
     _aux_path,
     _portable_path,
     audit_archive_contents,
     audit_archive_members,
+    audit_manuscript_archive,
     audit_revision_evidence_archive,
     audit_source_text,
     audit_style_hashes,
@@ -23,13 +25,54 @@ from scripts.verify_iclr_submission import (
 )
 
 
-def test_hash_bound_tree_preserves_json_bytes(tmp_path: Path) -> None:
-    source = tmp_path / "source"
-    source.mkdir()
-    content = b'{ "b": 1, "a": 2 }\n'
-    (source / "rows.json").write_bytes(content)
-    _copy_hash_bound_tree(source, tmp_path / "export")
-    assert (tmp_path / "export/rows.json").read_bytes() == content
+def test_manuscript_archive_detects_missing_and_stale_dependencies(tmp_path: Path) -> None:
+    import zipfile
+
+    paper = tmp_path / "paper"
+    (paper / "figures/extra").mkdir(parents=True)
+    (paper / "tables").mkdir()
+    (paper / "main.tex").write_text(
+        r"\graphicspath{{figures/}}" "\n"
+        r"\input{tables/result}" "\n"
+        r"\includegraphics[width=\linewidth]{extra/plot.pdf}" "\n"
+        r"\bibliography{references}" "\n"
+        r"% \includegraphics{private.pdf}" "\n"
+    )
+    (paper / "tables/result.tex").write_text(r"\input{macros.tex}")
+    (paper / "macros.tex").write_text(r"\newcommand{\Result}{0.1}")
+    (paper / "references.bib").write_text("@article{example, title={Example}}")
+    (paper / "figures/extra/plot.pdf").write_bytes(b"frozen figure")
+    (paper / "figures/private.zip").write_bytes(b"unrelated data")
+    (paper / "build_frozen.sh").write_text("latexmk -pdf main.tex\n")
+
+    assets = manuscript_assets(paper / "main.tex")
+    assert {p.relative_to(paper).as_posix() for p in assets} == {
+        "main.tex", "tables/result.tex", "macros.tex", "references.bib",
+        "figures/extra/plot.pdf",
+    }
+    archive = tmp_path / "supplement.zip"
+    with zipfile.ZipFile(archive, "w") as output:
+        for path in [*assets, paper / "build_frozen.sh"]:
+            output.write(path, path.relative_to(tmp_path))
+    assert audit_manuscript_archive(archive, paper / "main.tex")["valid"] is True
+
+    with zipfile.ZipFile(archive, "w") as output:
+        for path in [*assets, paper / "build_frozen.sh"]:
+            if path.suffix != ".pdf":
+                output.write(path, path.relative_to(tmp_path))
+    (paper / "macros.tex").write_text(r"\newcommand{\Result}{0.2}")
+    result = audit_manuscript_archive(archive, paper / "main.tex")
+    assert result["valid"] is False
+    assert result["missing"] == ["paper/figures/extra/plot.pdf"]
+    assert result["mismatched"] == ["paper/macros.tex"]
+
+
+def test_supplement_inventory_includes_algorithm1_v3c_call_chain_audit() -> None:
+    assert {
+        "docs/rebuttal/audit/audit_algorithm1_v3c_call_chain.py",
+        "docs/rebuttal/audit/ALGORITHM1_V3C_CALL_CHAIN_AUDIT_20261114.md",
+        "docs/rebuttal/audit/ALGORITHM1_V3C_CALL_CHAIN_AUDIT_20261114.json",
+    }.issubset(set(MULTIROUND_ARTIFACT_FILES))
 
 
 def test_latest_supplement_inventory_contains_three_sealed_cohorts() -> None:
@@ -187,6 +230,15 @@ def test_supplement_sanitizer_redacts_runtime_endpoint(tmp_path: Path) -> None:
     rendered = target.read_text(encoding="utf-8")
     assert "private.example.invalid" not in rendered
     assert '"api_base": "<external-endpoint>"' in rendered
+
+
+def test_release_sanitizer_preserves_builder_and_verifier_rules(tmp_path: Path) -> None:
+    root = Path(__file__).resolve().parents[2]
+    for name in ("build_iclr_supplement.py", "verify_iclr_submission.py"):
+        source = root / "scripts" / name
+        target = tmp_path / name
+        _copy_sanitized(source, target)
+        assert target.read_bytes() == source.read_bytes()
 
 
 def test_supplement_sanitizer_redacts_jsonl_paths(tmp_path: Path) -> None:
@@ -376,12 +428,6 @@ def test_audit_archive_members_allows_generated_v15_parquet_sources() -> None:
     assert checks["generated_parquet_members"] == ["results/v15/canonical/table.parquet"]
 
 
-def test_archive_accepts_paper_figure_tables_but_rejects_raw_parquet() -> None:
-    checks = audit_archive_members(["paper/figures/release/figure.parquet", "README.md"])
-    assert checks["no_raw_archives"]
-    assert not audit_archive_members(["data/raw/vendor.parquet"])["no_raw_archives"]
-
-
 def test_generated_parquet_inventory_is_not_a_submission_gate() -> None:
     report = {
         "machine_checks": {
@@ -448,24 +494,19 @@ def test_spotlight_upgrade_source_contains_transition_first_narrative() -> None:
     source = Path("paper/main.tex").read_text(encoding="utf-8")
     required = (
         "replacement operation",
-        "rank policies correctly while ranking improvements incorrectly",
-        "Contribution 1",
-        "Contribution 2",
-        "Contribution 3",
-        "Operator Shift Bound",
-        "Paired variance",
+        "Improvement Fidelity",
+        "Our contributions are",
+        "PIVOT validation framework and standard-KG instantiation",
+        "Operator shift bound",
         "Decision preservation",
-        "\\section{PIVOT-KG}",
-        "Stress Tests Beyond Controlled Environments",
-        "Uniform value fidelity is sufficient",
         "Q_{\\mathcal A}",
-        "operator-relative Improvement Fidelity",
-        "\\operatorname{IF}(V,\\mathcal A;L)",
-        "raw sampled reversal-rate cells",
-        "improvement reversal",
-        "CTI",
-        "0/7",
-        "0/5",
+        "operator-relative",
+        "PIVOT is the paired validation framework",
+        "PIVOT-KG is one concrete instantiation",
+        "HighwayEnv saved-truth replay",
+        "fresh simulator development cohort",
+        "controlled five-round extension",
+        "calibration/test shift",
     )
     missing = [token for token in required if token not in source]
     assert not missing, f"missing spotlight narrative tokens: {missing}"

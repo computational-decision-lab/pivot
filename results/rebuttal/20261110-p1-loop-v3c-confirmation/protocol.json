@@ -1,0 +1,51 @@
+{
+  "acquisition": {
+    "IVR-Online-v3c": "integrated variance reduction, sequentially updated posterior",
+    "PIVOT-KG-Loop-v3c": "exact one-step Gaussian KG, sequentially updated posterior",
+    "Top-Proxy-Online-v3c": "descending proxy delta, sequentially updated posterior"
+  },
+  "calibration_repeats_per_candidate": 8,
+  "calibration_root_start": 510000,
+  "calibration_roots": 240,
+  "candidate_count": 4,
+  "contextual_model": {
+    "cross_round_update": "none",
+    "model_residual_variance": "five-fold held-out MSE minus variance of the calibration mean, floored at 1e-6",
+    "observation_variance": "mean within-context variance over eight independent calibration rollouts, by response strength and candidate slot",
+    "ridge": 0.5,
+    "type": "Bayesian linear correction model",
+    "within_round_update": "noisy Gaussian conditioning with positive observation variance; coefficient update kept separate"
+  },
+  "hf_budget_per_round": 2,
+  "initial_test_pressure": "0.10 + 0.015 * (root_offset mod 7)",
+  "method_definitions": {
+    "IVR-Online-v3c": "two sequential IVR queries under the same contextual calibration",
+    "PIVOT-KG-Loop-v3c": "two sequential KG queries under contextual calibration",
+    "Top-Proxy-Online-v3c": "two sequential proxy-ranked queries under the same contextual calibration"
+  },
+  "physical_simulator_called": false,
+  "primary_estimand": "paired five-round cumulative ISR and absolute deployment return under the declared controlled world",
+  "protocol_id": "P1-LOOP-V3C-2026-11-10",
+  "query_protocol": "two sequential method-specific queries; no common sentinel",
+  "response_regime_order": [
+    "low",
+    "medium",
+    "high"
+  ],
+  "response_regimes": {
+    "high": 0.85,
+    "low": 0.35,
+    "medium": 0.6
+  },
+  "root_start": 960000,
+  "roots_per_regime": 120,
+  "rounds": 5,
+  "sentinel_rule": null,
+  "shared_random_streams": {
+    "deployment": "root, round",
+    "evaluation": "root, round, candidate index",
+    "queries": "root, round, candidate id"
+  },
+  "split": "confirmation",
+  "terminal_rule": "posterior mean over incumbent plus four candidates"
+}

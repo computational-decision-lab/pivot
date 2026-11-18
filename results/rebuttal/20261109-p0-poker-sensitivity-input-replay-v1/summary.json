@@ -1,0 +1,36 @@
+{
+  "analysis_kind": "offline_poker_prior_sensitivity",
+  "calibration_roots": 12,
+  "decision_hash": "281df6083c2f26eb336535f1a371a9b3595f276411c4b67222eae9b9ddedec9f",
+  "default_prior_reproduced": true,
+  "grid": {
+    "covariance_shrinkage": [
+      0.0,
+      0.25,
+      0.4782608695652174,
+      0.75,
+      1.0
+    ],
+    "r_floor": [
+      0.125,
+      0.25,
+      0.5,
+      1.0
+    ]
+  },
+  "input_hashes": {
+    "frozen_prior": "2c8f96a4974e6adb7f2ae559d7dd1d5af639b0a5b3dd4092242611080a5a4092",
+    "pivot_v2": "4015296d5df9a0e20ed2fbf67b52e408285f496ec25fa0f54a424ba5c73d2df7",
+    "protocol": "b92b5c627f511af517db81ebe10efb9cfe7460c6628bb96f4af3f0a123d51b74"
+  },
+  "notes": [
+    "Decisions were sealed before audit labels were used for scoring.",
+    "This is a sensitivity replay over saved sealed banks, not a new rollout.",
+    "Uniform, IVR, LUCB-v2, no-HF calibrated, and Proxy-Only use the same frozen root set and terminal decision rule.",
+    "No-HF calibrated and Proxy-Only are zero-query diagnostics; LUCB-v2 retains the source implementation's label.",
+    "The default long-horizon prior matches the frozen specification before any sensitivity result is emitted."
+  ],
+  "physical_simulator_called": false,
+  "protocol": "frozen Leduc v2b, primary cap 16384, two fixed 4096-hand paired queries",
+  "test_roots": 30
+}

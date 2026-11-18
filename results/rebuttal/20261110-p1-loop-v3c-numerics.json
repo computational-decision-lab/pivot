@@ -1,0 +1,33 @@
+{
+  "check_id": "V3B-NUMERICAL-2026-11-10",
+  "checks": {
+    "all_pass": true,
+    "exact_kg_matches_monte_carlo": true,
+    "exact_kg_nonnegative": true,
+    "observed_latent_variances_positive": true,
+    "sequential_batch_covariance_agree": true,
+    "sequential_batch_mean_agree": true,
+    "unqueried_variances_positive": true
+  },
+  "conditioning": {
+    "max_covariance_abs_error": 1.7763568394002505e-15,
+    "max_mean_abs_error": 6.938893903907228e-16,
+    "observation_variance": [
+      0.03,
+      0.07,
+      0.02,
+      0.05
+    ],
+    "queried_indices": [
+      0,
+      2
+    ]
+  },
+  "kg": {
+    "exact_score": 1.0603691293453599,
+    "monte_carlo_draws": 200000,
+    "monte_carlo_score": 1.0595671855167375,
+    "selected_candidate": "c1"
+  },
+  "source": "docs/rebuttal/audit_inputs/highway_redesign/source"
+}

@@ -1,0 +1,453 @@
+{
+  "analysis_kind": "equal_budget_no_sentinel_multiround_selector_comparison",
+  "audit_checks": {
+    "all_pass": true,
+    "common_deployment_seed_across_methods": true,
+    "complete_method_root_round_panel": true,
+    "deployment_returns_recorded": true,
+    "no_sentinel_queries": true,
+    "state_transitions_recorded": true,
+    "terminal_rule_includes_incumbent": true,
+    "two_queries_each_round": true,
+    "unique_query_ids_within_round": true
+  },
+  "calibration": {
+    "contextual_model_hash": "1fb7aed96dfa798761a134b3d04739fd0878c0e3c49951f8831875a365b90641",
+    "five_fold_cv": {
+      "bias": 0.0011736408023277707,
+      "by_pressure_bin": {
+        "high_pressure_gt_0_50": {
+          "bias": -0.03085854492825973,
+          "mae": 0.8167455609590061,
+          "n_observations": 300,
+          "rmse": 1.0903506813531372
+        },
+        "low_pressure_le_0_25": {
+          "bias": -0.0011450814238813222,
+          "mae": 0.7529774182997475,
+          "n_observations": 300,
+          "rmse": 1.0253550964150946
+        },
+        "mid_pressure_0_25_to_0_50": {
+          "bias": 0.029799397432991617,
+          "mae": 0.6832964129510188,
+          "n_observations": 360,
+          "rmse": 0.9880025338476414
+        }
+      },
+      "by_response_strength": {
+        "0.35": {
+          "bias": -0.032317993588379515,
+          "mae": 0.4182217224424881,
+          "n_observations": 320,
+          "rmse": 0.6136555128696243
+        },
+        "0.6": {
+          "bias": 0.0621306221320171,
+          "mae": 0.7510336655133522,
+          "n_observations": 320,
+          "rmse": 0.9649231980784201
+        },
+        "0.85": {
+          "bias": -0.02629170613665424,
+          "mae": 1.0710683696691377,
+          "n_observations": 320,
+          "rmse": 1.37503521519543
+        }
+      },
+      "candidate_observations": 960,
+      "folds": 5,
+      "label_noise_variance": 0.00020866806301406,
+      "mae": 0.7467745858749927,
+      "model_residual_variance": 1.065915235167889,
+      "observation_variance": [
+        [
+          0.0010705726622776246,
+          0.0004473318131377916,
+          0.0010096366564656958,
+          0.0010011824441066115
+        ],
+        [
+          0.0018461202334295358,
+          0.0004038407060534798,
+          0.0011705947357846778,
+          0.0019624064957710066
+        ],
+        [
+          0.0029354670402668183,
+          0.0018749015093695008,
+          0.001964117866406439,
+          0.004345961886280576
+        ]
+      ],
+      "rmse": 1.0325327613353985,
+      "roots": 240
+    }
+  },
+  "ledger_sha256": "91352cc0f3679413e7da70aac9c32a7417f686844863b4087af82e5597209055",
+  "method_summary": {
+    "high": {
+      "IVR-Online-v3c": {
+        "CISR": {
+          "ci_high": 1.2799497916427178,
+          "ci_low": 0.7362080518035241,
+          "mean": 0.9853241677821174,
+          "n": 120
+        },
+        "cumulative_deployment_return": {
+          "ci_high": 3.3301760921663885,
+          "ci_low": 2.4691741928464084,
+          "mean": 2.9380899849910613,
+          "n": 120
+        },
+        "cumulative_utility": {
+          "ci_high": 0.736554394673046,
+          "ci_low": 0.46853649256618035,
+          "mean": 0.6169878409895362,
+          "n": 120
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.125,
+          "ci_low": 0.08499999999999999,
+          "mean": 0.10500000000000001,
+          "n": 120
+        },
+        "retention_rate": {
+          "ci_high": 0.475,
+          "ci_low": 0.3866666666666667,
+          "mean": 0.43,
+          "n": 120
+        }
+      },
+      "PIVOT-KG-Loop-v3c": {
+        "CISR": {
+          "ci_high": 0.10839489204563049,
+          "ci_low": 0.07001961099099449,
+          "mean": 0.08885908030105018,
+          "n": 120
+        },
+        "cumulative_deployment_return": {
+          "ci_high": 4.3276216324350285,
+          "ci_low": 4.278799388936914,
+          "mean": 4.30372728936968,
+          "n": 120
+        },
+        "cumulative_utility": {
+          "ci_high": 0.7724624217990966,
+          "ci_low": 0.7456491717896873,
+          "mean": 0.7586725964431149,
+          "n": 120
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.013333333333333334,
+          "ci_low": 0.0016666666666666668,
+          "mean": 0.006666666666666667,
+          "n": 120
+        },
+        "retention_rate": {
+          "ci_high": 0.6400000000000001,
+          "ci_low": 0.5533333333333333,
+          "mean": 0.5966666666666668,
+          "n": 120
+        }
+      },
+      "Top-Proxy-Online-v3c": {
+        "CISR": {
+          "ci_high": 0.38183549239847153,
+          "ci_low": 0.2880896504920243,
+          "mean": 0.33346203030368154,
+          "n": 120
+        },
+        "cumulative_deployment_return": {
+          "ci_high": 4.160336795389245,
+          "ci_low": 4.071713637945838,
+          "mean": 4.11744898765826,
+          "n": 120
+        },
+        "cumulative_utility": {
+          "ci_high": 0.7691622580971961,
+          "ci_low": 0.7149995469363993,
+          "mean": 0.74116999457198,
+          "n": 120
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.05166666666666667,
+          "ci_low": 0.021666666666666667,
+          "mean": 0.03666666666666667,
+          "n": 120
+        },
+        "retention_rate": {
+          "ci_high": 0.4033333333333334,
+          "ci_low": 0.30833333333333335,
+          "mean": 0.3550000000000001,
+          "n": 120
+        }
+      },
+      "n_roots": 120
+    },
+    "low": {
+      "IVR-Online-v3c": {
+        "CISR": {
+          "ci_high": 0.06566686330342611,
+          "ci_low": 0.046989390656013576,
+          "mean": 0.055742911780611484,
+          "n": 120
+        },
+        "cumulative_deployment_return": {
+          "ci_high": 10.013697710996581,
+          "ci_low": 9.980086972781873,
+          "mean": 9.997142511274664,
+          "n": 120
+        },
+        "cumulative_utility": {
+          "ci_high": 0.04982935626025416,
+          "ci_low": 0.04021818289484332,
+          "mean": 0.045611835105976835,
+          "n": 120
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.02666666666666667,
+          "ci_low": 0.006666666666666667,
+          "mean": 0.016666666666666666,
+          "n": 120
+        },
+        "retention_rate": {
+          "ci_high": 0.6683333333333333,
+          "ci_low": 0.6116666666666665,
+          "mean": 0.64,
+          "n": 120
+        }
+      },
+      "PIVOT-KG-Loop-v3c": {
+        "CISR": {
+          "ci_high": 0.011069098884327134,
+          "ci_low": 0.0068944171524633995,
+          "mean": 0.008881907515396218,
+          "n": 120
+        },
+        "cumulative_deployment_return": {
+          "ci_high": 10.085150555981931,
+          "ci_low": 10.060432076993857,
+          "mean": 10.072812563720865,
+          "n": 120
+        },
+        "cumulative_utility": {
+          "ci_high": 0.06296083371586722,
+          "ci_low": 0.060389224069886276,
+          "mean": 0.06166823606435591,
+          "n": 120
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.025,
+          "ci_low": 0.006666666666666667,
+          "mean": 0.015000000000000001,
+          "n": 120
+        },
+        "retention_rate": {
+          "ci_high": 0.48500000000000004,
+          "ci_low": 0.44000000000000006,
+          "mean": 0.4633333333333333,
+          "n": 120
+        }
+      },
+      "Top-Proxy-Online-v3c": {
+        "CISR": {
+          "ci_high": 0.08463498505815774,
+          "ci_low": 0.05733499845630276,
+          "mean": 0.07095462632193868,
+          "n": 120
+        },
+        "cumulative_deployment_return": {
+          "ci_high": 10.030013010959085,
+          "ci_low": 9.986798135989122,
+          "mean": 10.008551092162024,
+          "n": 120
+        },
+        "cumulative_utility": {
+          "ci_high": 0.02654095619624017,
+          "ci_low": 0.00484492271195067,
+          "mean": 0.015946175229426117,
+          "n": 120
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.16333333333333336,
+          "ci_low": 0.12333333333333332,
+          "mean": 0.14333333333333334,
+          "n": 120
+        },
+        "retention_rate": {
+          "ci_high": 0.22666666666666666,
+          "ci_low": 0.15833333333333333,
+          "mean": 0.19166666666666668,
+          "n": 120
+        }
+      },
+      "n_roots": 120
+    },
+    "medium": {
+      "IVR-Online-v3c": {
+        "CISR": {
+          "ci_high": 0.5190733991763485,
+          "ci_low": 0.37252980911029526,
+          "mean": 0.44046197227728834,
+          "n": 120
+        },
+        "cumulative_deployment_return": {
+          "ci_high": 5.840050909993035,
+          "ci_low": 5.6469700869187465,
+          "mean": 5.753813259205498,
+          "n": 120
+        },
+        "cumulative_utility": {
+          "ci_high": 0.0528375144995475,
+          "ci_low": -0.009126361929478893,
+          "mean": 0.023905587671484447,
+          "n": 120
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.21333333333333335,
+          "ci_low": 0.16833333333333333,
+          "mean": 0.19,
+          "n": 120
+        },
+        "retention_rate": {
+          "ci_high": 0.5433333333333333,
+          "ci_low": 0.46333333333333326,
+          "mean": 0.505,
+          "n": 120
+        }
+      },
+      "PIVOT-KG-Loop-v3c": {
+        "CISR": {
+          "ci_high": 0.0024298430048345547,
+          "ci_low": 0.0006657991643272379,
+          "mean": 0.0014064706543051475,
+          "n": 120
+        },
+        "cumulative_deployment_return": {
+          "ci_high": 6.214740855347855,
+          "ci_low": 6.1988562861555465,
+          "mean": 6.20685763984233,
+          "n": 120
+        },
+        "cumulative_utility": {
+          "ci_high": 0.17028864841311864,
+          "ci_low": 0.16812506963998924,
+          "mean": 0.1692250984538137,
+          "n": 120
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.013333333333333334,
+          "ci_low": 0.0016666666666666668,
+          "mean": 0.006666666666666667,
+          "n": 120
+        },
+        "retention_rate": {
+          "ci_high": 0.7383333333333333,
+          "ci_low": 0.6966666666666668,
+          "mean": 0.7183333333333334,
+          "n": 120
+        }
+      },
+      "Top-Proxy-Online-v3c": {
+        "CISR": {
+          "ci_high": 0.28336981583569604,
+          "ci_low": 0.18268742916340172,
+          "mean": 0.23241443209483179,
+          "n": 120
+        },
+        "cumulative_deployment_return": {
+          "ci_high": 6.064732867336241,
+          "ci_low": 5.982665189642713,
+          "mean": 6.023906447191081,
+          "n": 120
+        },
+        "cumulative_utility": {
+          "ci_high": 0.13634402768555018,
+          "ci_low": 0.11366529166238581,
+          "mean": 0.12521084354295867,
+          "n": 120
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.035,
+          "ci_low": 0.010000000000000002,
+          "mean": 0.021666666666666667,
+          "n": 120
+        },
+        "retention_rate": {
+          "ci_high": 0.6983333333333334,
+          "ci_low": 0.6349999999999999,
+          "mean": 0.6666666666666665,
+          "n": 120
+        }
+      },
+      "n_roots": 120
+    }
+  },
+  "methods": [
+    "PIVOT-KG-Loop-v3c",
+    "IVR-Online-v3c",
+    "Top-Proxy-Online-v3c"
+  ],
+  "protocol": {
+    "acquisition": {
+      "IVR-Online-v3c": "integrated variance reduction, sequentially updated posterior",
+      "PIVOT-KG-Loop-v3c": "exact one-step Gaussian KG, sequentially updated posterior",
+      "Top-Proxy-Online-v3c": "descending proxy delta, sequentially updated posterior"
+    },
+    "calibration_repeats_per_candidate": 8,
+    "calibration_root_start": 510000,
+    "calibration_roots": 240,
+    "candidate_count": 4,
+    "contextual_model": {
+      "cross_round_update": "none",
+      "model_residual_variance": "five-fold held-out MSE minus variance of the calibration mean, floored at 1e-6",
+      "observation_variance": "mean within-context variance over eight independent calibration rollouts, by response strength and candidate slot",
+      "ridge": 0.5,
+      "type": "Bayesian linear correction model",
+      "within_round_update": "noisy Gaussian conditioning with positive observation variance; coefficient update kept separate"
+    },
+    "hf_budget_per_round": 2,
+    "initial_test_pressure": "0.10 + 0.015 * (root_offset mod 7)",
+    "method_definitions": {
+      "IVR-Online-v3c": "two sequential IVR queries under the same contextual calibration",
+      "PIVOT-KG-Loop-v3c": "two sequential KG queries under contextual calibration",
+      "Top-Proxy-Online-v3c": "two sequential proxy-ranked queries under the same contextual calibration"
+    },
+    "physical_simulator_called": false,
+    "primary_estimand": "paired five-round cumulative ISR and absolute deployment return under the declared controlled world",
+    "protocol_id": "P1-LOOP-V3C-2026-11-10",
+    "query_protocol": "two sequential method-specific queries; no common sentinel",
+    "response_regime_order": [
+      "low",
+      "medium",
+      "high"
+    ],
+    "response_regimes": {
+      "high": 0.85,
+      "low": 0.35,
+      "medium": 0.6
+    },
+    "root_start": 960000,
+    "roots_per_regime": 120,
+    "rounds": 5,
+    "sentinel_rule": null,
+    "shared_random_streams": {
+      "deployment": "root, round",
+      "evaluation": "root, round, candidate index",
+      "queries": "root, round, candidate id"
+    },
+    "split": "confirmation",
+    "terminal_rule": "posterior mean over incumbent plus four candidates"
+  },
+  "protocol_sha256": "142fd7102e3fe20e995f3b96bdbf5ebdc7f725909beab7bafa482cc4ccf8a735",
+  "source_hashes": {
+    "analyzer": "8360d41e56d65f8aa9982d64344c2f5bc5a7be87e370a6654ef894564fdcc047",
+    "calibration_source": "accc2caa16ed82c97d0d68cc0197625b845db4f44ff421c85059e8d213e4e848",
+    "kg_source": "77421d69eaab328f23c7d432401e8aaf6837e47ad581c9501522e9d1fee4765c",
+    "preregistration": "02fec7cfb9c6bafb5f69e1087247e103b3fdb53295194c5e27200ca46321af3b",
+    "runner": "6772b78d33d81b9e6a801fda4087d1991b0c3a609fd3cb02f30fed5e40abf900",
+    "v1_runner": "3d9194fbc377ef07e58044ade0a9745a03f09b0ad21ee1e8f5f6d1be212f6be2",
+    "v3b_runner": "f3d10ee34705d7424a7c99cf1d7dc52cfc5821c49b7dc3f38cf0d790991f3984"
+  }
+}

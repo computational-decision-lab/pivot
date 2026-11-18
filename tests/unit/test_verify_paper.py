@@ -8,24 +8,12 @@ from scripts.verify_paper import (
     _parse_fonts,
     _portable_path,
     _resolve_aux,
+    parse_conclusion_end_page,
     parse_appendix_start_page,
-    parse_main_end_page,
     parse_references_start_page,
     scan_log,
 )
-
-
-def test_main_text_on_references_page_still_counts() -> None:
-    from scripts.verify_iclr_submission import parse_main_end_page as submission_main_end
-
-    aux = r"\newlabel{main:end}{{9}{10}{}{section.9}{}}" + "\n" + r"\newlabel{refs:start}{{}{10}}"
-    assert parse_main_end_page(aux) == 10
-    assert submission_main_end(aux) == 10
-
-
-def test_main_end_label_is_required() -> None:
-    with pytest.raises(ValueError, match="main:end"):
-        parse_main_end_page(r"\newlabel{refs:start}{{}{10}}")
+from scripts.verify_iclr_submission import _conclusion_end_page
 
 
 def test_portable_path_avoids_machine_absolute_prefix() -> None:
@@ -56,6 +44,27 @@ def test_parse_references_start_page_reads_latex_aux_label() -> None:
 def test_parse_references_start_page_requires_label() -> None:
     with pytest.raises(ValueError, match="references label"):
         parse_references_start_page(r"\relax")
+
+
+def test_parse_conclusion_end_page_reads_latex_aux_label() -> None:
+    aux = r"""\relax
+\newlabel{sec:conclusion-end}{{}{10}}
+"""
+    assert parse_conclusion_end_page(aux) == 10
+
+
+def test_parse_conclusion_end_page_requires_label() -> None:
+    with pytest.raises(ValueError, match="conclusion end label"):
+        parse_conclusion_end_page(r"\relax")
+
+
+def test_submission_verifier_reads_conclusion_end_page_from_aux(tmp_path: Path) -> None:
+    pdf = tmp_path / "paper.pdf"
+    pdf.write_bytes(b"%PDF")
+    aux = tmp_path / "main.aux"
+    aux.write_text(r"\newlabel{sec:conclusion-end}{{}{11}}", encoding="utf-8")
+
+    assert _conclusion_end_page(pdf, aux) == 11
 
 
 def test_parse_fonts_uses_embedded_column_not_subset_column() -> None:

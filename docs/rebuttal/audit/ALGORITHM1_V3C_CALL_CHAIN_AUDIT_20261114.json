@@ -1,0 +1,48 @@
+{
+  "checks": {
+    "five_round_loop": true,
+    "no_sentinel": true,
+    "original_kg_source_unchanged_reference": true,
+    "positive_observation_variance": true,
+    "state_transition_recorded": true,
+    "terminal_rule_includes_incumbent": true,
+    "two_queries_per_round": true
+  },
+  "controlled_extensions": [
+    "five state-carrying rounds",
+    "contextual correction model reset at each round",
+    "method-specific two-query sequence with no common sentinel",
+    "method-specific later candidate panels after incumbent divergence"
+  ],
+  "not_established": [
+    "confirmation of static Algorithm 1 in arbitrary environments",
+    "universal KG superiority",
+    "persistent cross-round online calibration"
+  ],
+  "paper_anchors": {
+    "algorithm_acquisition": 477,
+    "algorithm_candidate_proxy": 473,
+    "algorithm_condition": 482,
+    "algorithm_hf": 481,
+    "algorithm_posterior": 474,
+    "algorithm_terminal": 485
+  },
+  "runner_anchors": {
+    "acquisition": 127,
+    "deployment": 187,
+    "gaussian_conditioning": 157,
+    "hf_observation": 132,
+    "independent_evaluation": 174,
+    "next_incumbent": 226,
+    "posterior": 114,
+    "proposer": 108,
+    "proxy": 109,
+    "terminal_selection": 172
+  },
+  "scope": "source-level call-chain audit; no simulator execution",
+  "status": "PASS",
+  "submitted_algorithm": {
+    "single_round_logic": "Algorithm 1 in paper/main.tex",
+    "v3c_relation": "faithful single-round logic inside a controlled five-round extension"
+  }
+}

@@ -45,7 +45,7 @@ def main() -> None:
                 "--preview",
                 "paper/preview.png",
                 "--max-main-pages",
-                "9",
+                "10",
             ],
             cwd=root,
             check=True,

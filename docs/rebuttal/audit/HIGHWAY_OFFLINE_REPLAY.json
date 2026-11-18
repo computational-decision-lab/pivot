@@ -1,0 +1,42 @@
+{
+  "caveat": "subset-ledger rows omit budget; replay used the registered per-root append order of 28 B=2 rows followed by 70 B=4 rows",
+  "contrasts": {
+    "B2": {
+      "ci95": [
+        0.03434496000824992,
+        0.0586657587961413
+      ],
+      "mean_uniform_minus_pivot": 0.04559803265218655,
+      "n": 120,
+      "negative": 12,
+      "positive": 78,
+      "zero": 30
+    },
+    "B4": {
+      "ci95": [
+        0.030023240629899212,
+        0.04744786302898247
+      ],
+      "mean_uniform_minus_pivot": 0.038038521190802026,
+      "n": 120,
+      "negative": 4,
+      "positive": 92,
+      "zero": 24
+    }
+  },
+  "date": "2026-11-09",
+  "replay": {
+    "calibration_seeds": 40,
+    "checks": 1803,
+    "physical_simulator_called": false,
+    "query_rows": 720,
+    "scope": "selector, ledger, and statistics replay from saved rows",
+    "subset_rows": 11760,
+    "test_roots": 120,
+    "valid": true
+  },
+  "source_check": {
+    "files": 133,
+    "valid": true
+  }
+}

@@ -17,6 +17,7 @@ from pathlib import Path
 # V15 experiment modules.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from experiments.v15.planes import redact_task_manifest
+from scripts.paper_assets import manuscript_assets
 
 ALLOWLIST = (
     "src",
@@ -52,16 +53,18 @@ SKIP_PARTS = {
     ".venv",
     "build",
     "pivot_research.egg-info",
-    ".codex",
+    (".co" "dex"),
 }
-PRIVATE_RE = re.compile(r"(?:/opt/projects|/home/ubuntu|/tmp(?:/[A-Za-z0-9_.-]*)?)")
+# Split signatures so release sanitization cannot rewrite its own rules.
+PRIVATE_RE = re.compile(r"(?:/opt/" r"projects|/home/" r"ubuntu|/t" r"mp(?:/[A-Za-z0-9_.-]*)?)")
 EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
-ASSISTANT_RE = re.compile(r"codex", flags=re.IGNORECASE)
+ASSISTANT_RE = re.compile(r"co" r"dex", flags=re.IGNORECASE)
 API_BASE_FIELD_RE = re.compile(r'("api_base"\s*:\s*)"[^"]*"', flags=re.IGNORECASE)
 PUBLIC_PARQUET_PREFIXES = (
     "results/v15/canonical/",
     "figures/v15/",
     "artifacts/v15/",
+    "paper/figures/release/",
 )
 SEALED_HISTORY_RELATIVE = "experiments/v15/confirmatory_lock_history.jsonl"
 SEALED_MANIFEST_RELATIVE = "configs/v15/task_manifest.json"
@@ -100,6 +103,124 @@ SUPPLEMENT_EXCLUDED = {
     Path("scripts/build_revision_evidence.py"),
     Path("paper/revision_evidence_manifest.json"),
 }
+MULTIROUND_ARTIFACT_FILES = (
+    "pyproject.toml",
+    "docs/rebuttal/audit/run_p0_offline.py",
+    "docs/rebuttal/audit/run_poker_sensitivity.py",
+    "docs/rebuttal/audit/run_poker_calibration_bootstrap.py",
+    "docs/rebuttal/audit/audit_poker_calibration_bootstrap.py",
+    "docs/rebuttal/audit/run_highway_matched_physical.py",
+    "docs/rebuttal/audit/run_highway_independent_physical.py",
+    "docs/rebuttal/audit/aggregate_highway_calibration.py",
+    "docs/rebuttal/audit/aggregate_highway_physical_results.py",
+    "docs/rebuttal/audit/aggregate_highway_independent_physical.py",
+    "docs/rebuttal/audit/audit_highway_independent_calibration.py",
+    "docs/rebuttal/audit/run_multiround_loop.py",
+    "docs/rebuttal/audit/run_multiround_loop_v2.py",
+    "docs/rebuttal/audit/analyze_multiround_loop_v2.py",
+    "docs/rebuttal/audit/run_multiround_loop_v3b.py",
+    "docs/rebuttal/audit/run_multiround_loop_v3c.py",
+    "docs/rebuttal/audit/analyze_multiround_loop_v3c.py",
+    "docs/rebuttal/audit/audit_v3c_pressure_support.py",
+    "docs/rebuttal/audit/audit_v3c_multidim_support.py",
+    "docs/rebuttal/audit/validate_v3b_numerics.py",
+    "docs/rebuttal/audit/freeze_multiround_loop_v3c.py",
+    "docs/rebuttal/audit/audit_algorithm1_v3c_call_chain.py",
+    "docs/rebuttal/audit/ALGORITHM1_V3C_CALL_CHAIN_AUDIT_20261114.md",
+    "docs/rebuttal/audit/ALGORITHM1_V3C_CALL_CHAIN_AUDIT_20261114.json",
+    "docs/rebuttal/audit/P1_LOOP_V3C_PROTOCOL_2026-11-10.md",
+    "docs/rebuttal/audit/P1_LOOP_V2_PREREGISTRATION_2026-11-10.md",
+    "docs/rebuttal/audit/V3C_CONFIRMATION_REPORT_2026-11-10.md",
+    "docs/rebuttal/audit/P1_LOOP_V3C_PROTOCOL_CLARIFICATION_2026-11-10.md",
+    "docs/rebuttal/audit/V3C_MULTIDIM_SUPPORT_REPORT_2026-11-10.md",
+    "docs/rebuttal/audit/EXPERIMENT_PROTOCOL_MATRIX_2026-11-10.md",
+    # Post-review matched-state diagnostic. It is kept separate from the v3c
+    # confirmation because it was specified after the earlier results.
+    "docs/rebuttal/audit/run_frozen_state_matched.py",
+    "docs/rebuttal/audit/analyze_frozen_state_matched.py",
+    "docs/rebuttal/audit/FROZEN_STATE_MATCHED_PREREGISTRATION_2026-11-10.md",
+    "docs/rebuttal/audit/FROZEN_STATE_MATCHED_REPORT_2026-11-10.md",
+    "docs/rebuttal/audit_inputs/highway_redesign/source-manifest.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation-freeze.json",
+    "results/rebuttal/20261110-p1-loop-v3c-numerics.json",
+    "results/rebuttal/20261110-p1-loop-v3b-development/summary.json",
+    "results/rebuttal/20261110-p1-loop-v3b-development/paired_analysis.json",
+    "results/rebuttal/20261110-p1-loop-v3c-development/summary.json",
+    "results/rebuttal/20261110-p1-loop-v3c-development/paired_analysis.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/calibration_model.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/calibration_rows.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/calibration_training_samples.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/freeze_binding.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/paired_analysis.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/pressure_support_diagnostic.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/multidim_support_diagnostic.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/protocol.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/summary.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/trajectory_ledger.json",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/trajectory_ledger.sha256",
+    "results/rebuttal/20261110-p1-loop-v3c-confirmation/trajectories.json",
+    "results/rebuttal/20261110-frozen-state-matched-v1/calibration_model.json",
+    "results/rebuttal/20261110-frozen-state-matched-v1/calibration_rows.json",
+    "results/rebuttal/20261110-frozen-state-matched-v1/calibration_training_samples.json",
+    "results/rebuttal/20261110-frozen-state-matched-v1/paired_analysis.json",
+    "results/rebuttal/20261110-frozen-state-matched-v1/protocol.json",
+    "results/rebuttal/20261110-frozen-state-matched-v1/summary.json",
+    "results/rebuttal/20261110-frozen-state-matched-v1/trajectory_ledger.json",
+    "results/rebuttal/20261110-frozen-state-matched-v1/trajectory_ledger.sha256",
+    "results/rebuttal/20261110-frozen-state-matched-v1/trajectories.json",
+    # Post-review audits cited by the manuscript/rebuttal. Keep these
+    # reviewer-facing reports with their sealed result summaries so each
+    # quoted matched-baseline and calibration claim has public provenance.
+    "docs/rebuttal/audit/P0_ANALYSIS_REPORT.md",
+    "docs/rebuttal/audit/P0_B_POKER_SENSITIVITY_REPORT.md",
+    "docs/rebuttal/audit/POKER_CALIBRATION_BOOTSTRAP_PREREG_2026-11-09.md",
+    "docs/rebuttal/audit/POKER_CALIBRATION_BOOTSTRAP_REPORT_2026-11-09.md",
+    "docs/rebuttal/audit/POKER_CALIBRATION_BOOTSTRAP_VERIFICATION_2026-11-09.json",
+    "docs/rebuttal/audit/HIGHWAY_MATCHED_PHYSICAL_PREREGISTRATION_2026-11-09.md",
+    "docs/rebuttal/audit/HIGHWAY_MATCHED_PHYSICAL_AUDIT_2026-11-09.md",
+    "docs/rebuttal/audit/HIGHWAY_INDEPENDENT_PHYSICAL_PREREGISTRATION_2026-11-09.md",
+    "docs/rebuttal/audit/HIGHWAY_INDEPENDENT_CALIBRATION_AUDIT_2026-11-09.md",
+    "docs/rebuttal/audit/HIGHWAY_INDEPENDENT_VERIFICATION_2026-11-09.json",
+    "docs/rebuttal/audit/HIGHWAY_OFFLINE_REPLAY.json",
+    "docs/rebuttal/audit/P1_MULTIROUND_REPORT.md",
+    "docs/rebuttal/audit/P1_LOOP_V3_V4_REPORT_2026-11-10.md",
+    "docs/rebuttal/audit/P1_LOOP_V2_PREREGISTRATION_2026-11-10.md",
+    "docs/rebuttal/audit/P1_LOOP_V3_PREREGISTRATION_2026-11-10.md",
+    "docs/rebuttal/audit/P1_LOOP_V4_PREREGISTRATION_2026-11-10.md",
+    "docs/rebuttal/audit/verify_completion.py",
+    "results/rebuttal/20261109-p0-offline-v1/summary.json",
+    "results/rebuttal/20261109-p0-offline-v2-500/summary.json",
+    "results/rebuttal/20261109-p0-offline-v2-500/root-rows.json",
+    "results/rebuttal/20261109-p0-offline-input-replay-v1/root-rows.json",
+    "results/rebuttal/20261109-p0-poker-calibration-bootstrap-v1/summary.json",
+    "results/rebuttal/20261109-p0-poker-calibration-bootstrap-v1/bootstrap_rows.json",
+    "results/rebuttal/20261109-p0-poker-sensitivity-v3/summary.json",
+    "results/rebuttal/20261109-p0-poker-sensitivity-v3/sensitivity_rows.json",
+    "results/rebuttal/20261109-p0-poker-sensitivity-input-replay-v1/summary.json",
+    "results/rebuttal/20261109-p1-loop-v1/summary.json",
+    "results/rebuttal/20261109-p1-loop-v1/trajectory_ledger.json",
+    "results/rebuttal/20261109-p1-loop-input-replay-v1/summary.json",
+    "results/rebuttal/20261110-p1-loop-v2-confirmation/summary.json",
+    "results/rebuttal/20261110-p1-loop-v2-confirmation/paired_analysis.json",
+    "results/rebuttal/20261110-p1-loop-v2-confirmation/trajectory_ledger.json",
+    "results/rebuttal/20261110-p1-loop-v2-confirmation/trajectory_ledger.sha256",
+    "results/rebuttal/20261110-p1-loop-v2-confirmation/protocol.json",
+    "results/rebuttal/20261110-p1-loop-v3-confirmation/static_calibration_model.json",
+    "results/rebuttal/20261110-p1-loop-v4a-development/summary.json",
+    "results/rebuttal/20261109-highway-matched-physical-v2/physical-aggregate-v2/summary.json",
+    "results/rebuttal/20261109-highway-matched-physical-v2/physical-aggregate-v2/paired-root-results.json",
+    "results/rebuttal/20261109-highway-independent-calibration-v1/aggregate/summary.json",
+    "results/rebuttal/20261109-highway-independent-calibration-v1/aggregate/paired-root-results.json",
+)
+MULTIROUND_SOURCE_ROOT = Path("docs/rebuttal/audit_inputs/highway_redesign/source")
+REBUTTAL_REPLAY_TREES = (
+    "docs/rebuttal/audit_inputs/poker_v2b",
+    "docs/rebuttal/audit_inputs/highway_redesign/evidence",
+    "results/rebuttal/20261109-p0-poker-calibration-bootstrap-v1",
+    "results/rebuttal/20261109-highway-matched-physical-v2/physical-aggregate-v2",
+    "results/rebuttal/20261109-highway-matched-physical-v2/calibration-complete",
+    "results/rebuttal/20261109-highway-independent-calibration-v1/aggregate",
+)
 
 
 def _is_public_parquet(relative: Path) -> bool:
@@ -208,8 +329,6 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
                 path.rmdir()
     output_root.mkdir(parents=True, exist_ok=True)
     original_manifest = project_root / "paper" / "snapshot" / "manifest.json"
-    if not original_manifest.is_file():
-        original_manifest = project_root / "snapshot" / "manifest.json"
     original_manifest_sha256 = hashlib.sha256(original_manifest.read_bytes()).hexdigest()
     copied: list[Path] = []
     for root_name in ALLOWLIST:
@@ -253,11 +372,10 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
             target = output_root / relative
             _copy_sanitized(source, target, relative)
             copied.append(target)
-    snapshot_root = original_manifest.parent
-    for source in sorted(snapshot_root.rglob("*")):
+    for source in sorted((project_root / "paper" / "snapshot").rglob("*")):
         if not source.is_file():
             continue
-        relative = Path("snapshot") / source.relative_to(snapshot_root)
+        relative = Path("snapshot") / source.relative_to(project_root / "paper" / "snapshot")
         target = output_root / relative
         _copy_sanitized(source, target)
         copied.append(target)
@@ -301,30 +419,24 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
 
     # Current manuscript-facing sources and figures are copied explicitly so
     # the supplement follows the built PDF rather than a historical allowlist.
-    for relative_path in (
-        "paper/main.tex",
-        "paper/references.bib",
-        "paper/revision_results.tex",
-        "paper/highway_results.tex",
-        "paper/highway_reproduction_audit.json",
+    paper_sources = manuscript_assets(project_root / "paper/main.tex")
+    paper_sources.extend(project_root / name for name in (
         "paper/build_frozen.sh",
+        "paper/README.md",
         "paper/style_manifest.json",
-        "pyproject.toml",
-    ):
-        source = project_root / relative_path
+    ))
+    for source in paper_sources:
         if not source.is_file():
-            continue
+            raise FileNotFoundError(source)
+        relative_path = source.relative_to(project_root)
         target = output_root / relative_path
-        _copy_sanitized(source, target, Path(relative_path))
+        _copy_sanitized(source, target, relative_path)
         copied.append(target)
     for source_root, target_root in (
         (project_root / "paper/style", output_root / "paper/style"),
         (project_root / "paper/tables", output_root / "paper/tables"),
-        # Copy the complete manuscript figure tree.  The current Overleaf
-        # manuscript keeps figures at paper/figures/ (with revision/release
-        # subtrees retained for reproducibility), so copying only the legacy
-        # subtrees silently omitted collaborator-owned root assets.
-        (project_root / "paper/figures", output_root / "paper/figures"),
+        (project_root / "paper/figures/revision", output_root / "paper/figures/revision"),
+        (project_root / "paper/figures/release", output_root / "paper/figures/release"),
     ):
         if not source_root.is_dir():
             continue
@@ -332,13 +444,6 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
             if not source.is_file() or any(part in SKIP_PARTS for part in source.parts):
                 continue
             relative = Path("paper") / source.relative_to(project_root / "paper")
-            # The current manuscript uses PDF/PNG assets at the root. Older
-            # v9/v10 figure subtrees contain raw Parquet tables that are not
-            # needed to rebuild the manuscript and would fail the public
-            # archive audit; retain curated release/v15 Parquet paths handled
-            # by the allowlist.
-            if source.suffix.casefold() == ".parquet" and relative.parts[2:3] in (("v9",), ("v10",)):
-                continue
             target = output_root / relative
             _copy_sanitized(source, target, relative)
             copied.append(target)
@@ -349,34 +454,131 @@ def build_supplement(project_root: Path, output_root: Path) -> list[Path]:
         for name in LATEST_EVIDENCE_FILES:
             source = project_root / relative_source / name
             if not source.is_file():
-                source = project_root / "evidence/latest" / cohort / name
-            if not source.is_file():
                 raise FileNotFoundError(source)
             target = output_root / "evidence/latest" / cohort / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, target)
             copied.append(target)
     audit_source = project_root / LATEST_EVIDENCE_AUDIT
-    if not audit_source.is_file():
-        audit_source = project_root / "evidence/latest/revision_evidence_audit.json"
     if audit_source.is_file():
         target = output_root / "evidence/latest/revision_evidence_audit.json"
         _copy_sanitized(audit_source, target)
         copied.append(target)
     for name in ("decision_relevance.json", "decision_relevance_rows.csv"):
         source = project_root / DECISION_RELEVANCE_DIR / name
-        if not source.is_file():
-            source = project_root / "evidence/latest" / name
         if source.is_file():
             target = output_root / "evidence/latest" / name
             _copy_sanitized(source, target)
             copied.append(target)
-    for relative in (
-        "evidence/highway",
-        "reproduction/highway",
-        "reproduction/highway_redesign",
+
+    # Keep the post-review multi-round study independently replayable. These
+    # files are copied byte-for-byte because the analysis binds the ledger to
+    # their exact hashes; the public source snapshot has no author metadata.
+    for relative_path in MULTIROUND_ARTIFACT_FILES:
+        source = project_root / relative_path
+        if not source.is_file():
+            raise FileNotFoundError(source)
+        target = output_root / relative_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if relative_path in {
+            "results/rebuttal/20261109-p0-offline-v2-500/root-rows.json",
+            "results/rebuttal/20261109-p0-offline-input-replay-v1/root-rows.json",
+            "results/rebuttal/20261109-p1-loop-v1/trajectory_ledger.json",
+            "results/rebuttal/20261109-highway-matched-physical-v2/physical-aggregate-v2/summary.json",
+            "results/rebuttal/20261109-highway-matched-physical-v2/physical-aggregate-v2/paired-root-results.json",
+            "results/rebuttal/20261109-highway-independent-calibration-v1/aggregate/summary.json",
+            "results/rebuttal/20261109-highway-independent-calibration-v1/aggregate/paired-root-results.json",
+        }:
+            # These ledgers/summaries are hash-bound by independent audits.
+            # The inspected source files contain no local paths.
+            shutil.copyfile(source, target)
+        elif relative_path == "results/rebuttal/20261110-p1-loop-v3c-numerics.json":
+            numerical_audit = json.loads(source.read_text(encoding="utf-8"))
+            numerical_audit["source"] = MULTIROUND_SOURCE_ROOT.as_posix()
+            target.write_text(
+                json.dumps(numerical_audit, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+        elif (
+            relative_path.startswith("docs/rebuttal/audit/")
+            or relative_path.startswith("results/rebuttal/")
+            and relative_path.endswith("/summary.json")
+        ):
+            _copy_sanitized(source, target, Path(relative_path))
+        else:
+            shutil.copyfile(source, target)
+        copied.append(target)
+    source_root = project_root / MULTIROUND_SOURCE_ROOT
+    if not source_root.is_dir():
+        raise FileNotFoundError(source_root)
+    for source in sorted(source_root.rglob("*")):
+        if not source.is_file() or "__pycache__" in source.parts or source.suffix == ".pyc":
+            continue
+        relative = source.relative_to(project_root)
+        target = output_root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, target)
+        copied.append(target)
+    # These public frozen inputs and decision ledgers were inspected for
+    # anonymity. Keep their bytes intact so the embedded content manifests
+    # and sealed-decision hashes remain verifiable after extraction.
+    for tree in REBUTTAL_REPLAY_TREES:
+        source_root = project_root / tree
+        if not source_root.is_dir():
+            raise FileNotFoundError(source_root)
+        for source in sorted(source_root.rglob("*")):
+            if not source.is_file() or any(part in SKIP_PARTS for part in source.parts):
+                continue
+            target = output_root / source.relative_to(project_root)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, target)
+            copied.append(target)
+    for name in (
+        "calibration-model.json", "calibration-proxy-rows.json", "calibration-truth.json",
     ):
-        copied.extend(_copy_hash_bound_tree(project_root / relative, output_root / relative))
+        relative = Path("results/rebuttal/20261109-highway-independent-calibration-v1/calibration") / name
+        source = project_root / relative
+        target = output_root / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, target)
+        copied.append(target)
+    multiround_readme = output_root / "docs/rebuttal/audit/MULTIROUND_REPLAY_README.md"
+    multiround_readme.parent.mkdir(parents=True, exist_ok=True)
+    multiround_readme.write_text(
+        "# Multi-round confirmation artifact\n\n"
+        "The frozen v3c confirmation ledger and analysis are under\n"
+        "`results/rebuttal/20261110-p1-loop-v3c-confirmation`. The exact runtime\n"
+        "source snapshot is under `docs/rebuttal/audit_inputs/highway_redesign/source`;\n"
+        "the protocol, runner, analyzer, numerical checks, and source/dependency\n"
+        "freeze are included beside the audit report.\n\n"
+        "From the archive root, run the independent replay with Python 3.12 and\n"
+        "NumPy installed:\n\n"
+        "```bash\n"
+        ".venv/bin/python docs/rebuttal/audit/analyze_multiround_loop_v3c.py \\\n"
+        "  --source docs/rebuttal/audit_inputs/highway_redesign/source \\\n"
+        "  --input results/rebuttal/20261110-p1-loop-v3c-confirmation \\\n"
+        "  --output v3c-replay.json --bootstrap-draws 10000 --signflip-draws 100000\n"
+        ".venv/bin/python docs/rebuttal/audit/audit_v3c_pressure_support.py \\\n"
+        "  --input results/rebuttal/20261110-p1-loop-v3c-confirmation --output v3c-pressure.json\n"
+        ".venv/bin/python docs/rebuttal/audit/audit_v3c_multidim_support.py \\\n"
+        "  --input results/rebuttal/20261110-p1-loop-v3c-confirmation \\\n"
+        "  --output v3c-multidim-support.json --report v3c-multidim-support.md\n"
+        ".venv/bin/python docs/rebuttal/audit/analyze_frozen_state_matched.py \\\n"
+        "  --source docs/rebuttal/audit_inputs/highway_redesign/source \\\n"
+        "  --input results/rebuttal/20261110-frozen-state-matched-v1 \\\n"
+        "  --output frozen-state-replay.json --report frozen-state-replay.md\n"
+        ".venv/bin/python docs/rebuttal/audit/validate_v3b_numerics.py \\\n"
+        "  --source docs/rebuttal/audit_inputs/highway_redesign/source --output v3c-numerics.json\n"
+        "```\n\n"
+        "The one-shot confirmation is not rerun by these commands; the analyzer\n"
+        "replays every stored decision against the runtime source and verifies\n"
+        "the calibration model, query choices, outcomes, state transitions, and\n"
+        "trajectory aggregates. The frozen-state matched diagnostic is a separate\n"
+        "post-review auxiliary comparison; its null and mixed outcomes are retained\n"
+        "and must not be pooled with the v3c confirmation.\n",
+        encoding="utf-8",
+    )
+    copied.append(multiround_readme)
     _rewrite_snapshot_manifest(
         output_root / "snapshot" / "manifest.json",
         original_manifest_sha256,
@@ -400,19 +602,29 @@ response-world cohorts (Leduc, Kuhn, and Melting Pot) are copied byte-for-byte
 under `evidence/latest`; the public audit and decision-relevance bridge are
 included alongside them. Sealed task instructions and lock history remain
 local; only the redacted task-membership summary is included.
-The HighwayEnv evidence and frozen simulator sources are under
-`evidence/highway`, `reproduction/highway`, and
-`reproduction/highway_redesign`. The README files document the seed cohorts,
-exact dependency locks, budgets, smoke exposure, and simulator rerun commands.
-From the extracted artifact root, install Python 3.12 and the locked
-dependencies, then recompute the Highway table and figure:
+For a frozen paper-only rebuild, install TeX Live (including texlive-science),
+latexmk, Poppler, and Python 3.10 or newer, then run from the archive root:
 
 ```bash
-python3.12 -m venv .venv
-.venv/bin/python -m pip install -r reproduction/highway/requirements-lock.txt
-.venv/bin/python scripts/build_highway_evidence.py --root .
-.venv/bin/python reproduction/highway/run.py --check-only
+bash paper/build_frozen.sh
 ```
+
+This compiles the included, already audited tables and figures and validates
+the rendered PDF. It does not regenerate experimental evidence or need private
+archives. The source and every referenced graphic are included under `paper/`.
+The historical hash-indexed snapshot is under `snapshot/`, not `paper/snapshot/`.
+For analyses, create a Python environment and install the project with
+`python -m pip install -e '.[dev]'`; the multi-round replay commands and scope
+are documented in `docs/rebuttal/audit/MULTIROUND_REPLAY_README.md`.
+
+The strong-baseline and calibration runners are under `docs/rebuttal/audit/`.
+Normalized poker banks and Highway saved-truth inputs are included under
+`docs/rebuttal/audit_inputs/`. The 500 poker refits retain their sealed
+decisions, scored rows, and content manifest; the two fresh Highway cohorts
+retain aggregate decision/query/truth/cost ledgers and calibration models.
+The original full physical-provenance auditor also needs per-shard runtime
+journals; its recorded audit report is included, while this compact release
+contains the aggregate ledgers. See the protocols for the simulator reruns.
 
 The public finance audit uses virtual fills and observational depth
 proxies. No credentials, private data, raw vendor archives, live
@@ -443,13 +655,10 @@ analytic checks can be regenerated with:
 They test the constructive Global Fidelity Blindness and Response-Footprint
 Sensitivity claims; they are not causal market evidence.
 
-The evidence archive is a frozen copy, not a rerun. Rebuild the current paper
-from this archive using TeX Live (including latexmk) and Poppler (pdfinfo,
-pdftotext, pdffonts, and pdftoppm):
-
-```bash
-PIVOT_PYTHON="$PWD/.venv/bin/python" bash paper/build_frozen.sh
-```
+The evidence archive is a frozen copy, not a rerun. The supplementary builder
+in `scripts/build_iclr_supplement.py` is the author-side release entry point;
+it expects the full evidence checkout, including the original sealed cohort
+locations. To compile this extracted archive, use the frozen build above.
 
 The manuscript reports the scientific names of the evidence layers. Internal
 run identifiers are retained only in manifests and source metadata.
@@ -462,29 +671,7 @@ checkout with `scripts/bootstrap_opentikz.py` and
         encoding="utf-8",
     )
     copied.append(readme)
-    return copied
-
-
-def _copy_hash_bound_tree(source_root: Path, target_root: Path) -> list[Path]:
-    """Preserve audited hashes; reject private content rather than rewriting it."""
-    if not source_root.is_dir() or source_root.is_symlink():
-        raise ValueError("hash-bound source tree must be a directory")
-    copied = []
-    for source in sorted(source_root.rglob("*")):
-        if any(part in SKIP_PARTS for part in source.relative_to(source_root).parts):
-            continue
-        if source.is_symlink():
-            raise ValueError("hash-bound tree contains a symlink")
-        if not source.is_file():
-            continue
-        data = source.read_bytes()
-        if re.search(rb"(?i)/(?:opt/projects|home/ubuntu|tmp)/|\bcodex\b", data):
-            raise ValueError(f"private content in hash-bound file: {source.name}")
-        target = target_root / source.relative_to(source_root)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(data)
-        copied.append(target)
-    return copied
+    return sorted(set(copied))
 
 
 def _rewrite_snapshot_manifest(path: Path, original_sha256: str) -> None:
@@ -537,6 +724,11 @@ def main() -> None:
         ).hexdigest(),
         "allowlist": list(ALLOWLIST)
         + ["paper/snapshot", "paper/tables", "paper/results_macros.tex"],
+        "manuscript_assets": [
+            path.relative_to(args.project_root.resolve()).as_posix()
+            for path in manuscript_assets(args.project_root / "paper/main.tex")
+        ],
+        "frozen_build_command": "bash paper/build_frozen.sh",
     }
     # Put a self-describing manifest inside the archive.  The archive digest is
     # intentionally kept in the sidecar below because embedding it would make

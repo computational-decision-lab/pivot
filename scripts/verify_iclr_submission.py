@@ -13,15 +13,20 @@ import hashlib
 import json
 import re
 import subprocess
+import sys
 import zipfile
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.paper_assets import manuscript_assets
+
 PRIVATE_PATH_PATTERNS = (
-    "/opt/projects",
-    "/home/ubuntu",
-    "/tmp/",
+    # Preserve these detection signatures through release sanitization.
+    ("/opt/" "projects"),
+    ("/home/" "ubuntu"),
+    ("/t" "mp/"),
     "\\\\Users\\\\",
     "api_key",
     "api-key",
@@ -39,7 +44,7 @@ IDENTITY_PATTERNS = (
 )
 ARCHIVE_PRIVATE_CONTENT_RE = re.compile(rb"(?i)/(?:opt/projects|home/ubuntu|tmp)/")
 ARCHIVE_CREDENTIAL_RE = re.compile(rb"(?:sk-[A-Za-z0-9]{12,}|AKIA[0-9A-Z]{16}|Bearer\s+[A-Za-z0-9._-]{12,})")
-ARCHIVE_ASSISTANT_RE = re.compile(rb"(?i)\bcodex\b")
+ARCHIVE_ASSISTANT_RE = re.compile(rb"(?i)\bco" rb"dex\b")
 
 
 def audit_source_text(source: str) -> dict[str, bool]:
@@ -60,15 +65,8 @@ def audit_source_text(source: str) -> dict[str, bool]:
             for token in (
                 "improvement fidelity",
                 "pivot",
-                "decision preservation",
-            )
-        )
-        and any(
-            token in lowered
-            for token in (
                 "replacement operation",
-                "policy replacement",
-                "proposed replacement",
+                "decision preservation under differential error",
             )
         ),
     }
@@ -87,7 +85,9 @@ def audit_archive_members(members: Iterable[str]) -> dict[str, Any]:
         name
         for name in names
         if name.casefold().endswith(".parquet")
-        and name.casefold().startswith(("results/v15/", "figures/v15/", "artifacts/v15/", "paper/figures/release/"))
+        and name.casefold().startswith(
+            ("results/v15/", "figures/v15/", "artifacts/v15/", "paper/figures/release/")
+        )
     ]
     raw = [
         name
@@ -144,6 +144,30 @@ def audit_archive_contents(archive_path: Path) -> dict[str, Any]:
         "private_content_hits": sorted(private_hits),
         "credential_content_hits": sorted(credential_hits),
         "assistant_content_hits": sorted(assistant_hits),
+    }
+
+
+def audit_manuscript_archive(archive_path: Path, source: Path) -> dict[str, Any]:
+    """Require the supplement to carry the exact manuscript and all its assets."""
+
+    missing: list[str] = []
+    mismatched: list[str] = []
+    project_root = source.resolve().parent.parent
+    assets = manuscript_assets(source)
+    assets.append(source.resolve().parent / "build_frozen.sh")
+    with zipfile.ZipFile(archive_path) as archive:
+        names = set(archive.namelist())
+        for path in assets:
+            name = path.relative_to(project_root).as_posix()
+            if name not in names:
+                missing.append(name)
+            elif archive.read(name) != path.read_bytes():
+                mismatched.append(name)
+    return {
+        "valid": not missing and not mismatched,
+        "assets_checked": len(assets),
+        "missing": missing,
+        "mismatched": mismatched,
     }
 
 
@@ -325,18 +349,7 @@ def _appendix_page(pdf: Path, aux: Path | None = None) -> int:
     text = aux_file.read_text(encoding="utf-8", errors="replace")
     match = re.search(r"\\newlabel\{app:artifact\}\{\{[^{}]*\}\{(\d+)\}", text)
     if match is None:
-        # The latest Overleaf manuscript labels appendix sections directly.
-        appendix_pages = []
-        for appendix_line in text.splitlines():
-            if "newlabel{app:" not in appendix_line:
-                continue
-            try:
-                appendix_pages.append(int(appendix_line.rsplit("}{", 1)[-1].rstrip("}")))
-            except ValueError:
-                continue
-        if appendix_pages:
-            return min(appendix_pages)
-        raise ValueError("no appendix section label is present in LaTeX aux")
+        raise ValueError("appendix label app:artifact is missing from LaTeX aux")
     return int(match.group(1))
 
 
@@ -351,11 +364,17 @@ def _references_page(pdf: Path, aux: Path | None = None) -> int:
     return int(match.group(1))
 
 
-def parse_main_end_page(aux_text: str) -> int:
-    """Read the final body page instead of assuming references start a new page."""
-    match = re.search(r"\\newlabel\{main:end\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
+def _conclusion_end_page(pdf: Path, aux: Path | None = None) -> int:
+    """Read the page containing the end of the main-text conclusion."""
+
+    aux_file = _aux_path(pdf, aux)
+    text = aux_file.read_text(encoding="utf-8", errors="replace")
+    match = re.search(
+        r"\\newlabel\{sec:conclusion-end\}\{\{[^{}]*\}\{(\d+)\}",
+        text,
+    )
     if match is None:
-        raise ValueError("main text label main:end is missing from LaTeX aux")
+        raise ValueError("conclusion end label sec:conclusion-end is missing from LaTeX aux")
     return int(match.group(1))
 
 
@@ -367,7 +386,7 @@ def audit_submission(
     style_dir: Path,
     output: Path,
     aux: Path | None = None,
-    max_main_pages: int = 9,
+    max_main_pages: int = 10,
 ) -> dict[str, Any]:
     """Run local checks and write a JSON decision report."""
 
@@ -378,20 +397,29 @@ def audit_submission(
     pdf_compact = _compact_pdf_text(pdf_text)
     with zipfile.ZipFile(supplement) as archive:
         members = archive.namelist()
+    required_call_chain_audit_members = {
+        "docs/rebuttal/audit/audit_algorithm1_v3c_call_chain.py",
+        "docs/rebuttal/audit/ALGORITHM1_V3C_CALL_CHAIN_AUDIT_20261114.md",
+        "docs/rebuttal/audit/ALGORITHM1_V3C_CALL_CHAIN_AUDIT_20261114.json",
+    }
+    call_chain_audit_present = required_call_chain_audit_members.issubset(set(members))
     archive_checks = audit_archive_members(members)
     archive_content_checks = audit_archive_contents(supplement)
     revision_evidence_checks = audit_revision_evidence_archive(supplement)
+    manuscript_archive_checks = audit_manuscript_archive(supplement, source)
     page_count = _pdf_pages(pdf)
     aux_path = _aux_path(pdf, aux)
     references_page = _references_page(pdf, aux_path)
     appendix_page = _appendix_page(pdf, aux_path)
-    main_pages = parse_main_end_page(aux_path.read_text(encoding="utf-8"))
+    conclusion_end_page = _conclusion_end_page(pdf, aux_path)
+    main_pages = references_page - 1
     style_manifest = style_dir.parent / "style_manifest.json"
     machine_checks = {
         "pdf_exists": pdf.is_file() and pdf.stat().st_size > 0,
         "pdf_text_nonempty": len(pdf_text.strip()) > 500,
         "pdf_page_count_present": page_count >= 1,
-        "main_text_within_nine_pages": main_pages <= max_main_pages,
+        "main_text_within_ten_pages": main_pages <= max_main_pages,
+        "conclusion_within_ten_pages": conclusion_end_page <= max_main_pages,
         "references_before_appendix": references_page < appendix_page,
         "pdf_ai_use_statement": "aiusestatement" in pdf_compact,
         "pdf_reproducibility_statement": "reproducibilitystatement" in pdf_compact,
@@ -410,8 +438,10 @@ def audit_submission(
                 "has_snapshot_manifest",
             )
         ),
+        "supplement_call_chain_audit": call_chain_audit_present,
         "supplement_content_clean": bool(archive_content_checks.get("valid", False)),
         "revision_evidence_archive": bool(revision_evidence_checks.get("valid", False)),
+        "supplement_manuscript_matches": manuscript_archive_checks["valid"],
     }
     machine_checks.update({f"source_{name}": value for name, value in source_checks.items()})
     machine_checks.update(
@@ -431,6 +461,7 @@ def audit_submission(
         "appendix_start_page": appendix_page,
         "references_start_page": references_page,
         "main_pages": main_pages,
+        "conclusion_end_page": conclusion_end_page,
         "machine_checks": machine_checks,
         "manual_gates": {
             "openreview_profile": "pending",
@@ -449,6 +480,7 @@ def audit_submission(
         "archive_members": members,
         "archive_content_checks": archive_content_checks,
         "revision_evidence_checks": revision_evidence_checks,
+        "manuscript_archive_checks": manuscript_archive_checks,
     }
     report.update(build_decision(report))
     output.parent.mkdir(parents=True, exist_ok=True)

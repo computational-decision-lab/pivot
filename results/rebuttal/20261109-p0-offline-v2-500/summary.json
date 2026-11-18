@@ -1,0 +1,120 @@
+{
+  "analysis_kind": "offline_counterfactual_replay",
+  "budgets": [
+    2,
+    4
+  ],
+  "calibration_bootstrap_B2": {
+    "ci95_over_calibration_fits": [
+      0.026504533456776922,
+      0.06789441046700552
+    ],
+    "max_selection_flip_rate": 0.20833333333333334,
+    "mean_of_fitted_contrasts": 0.04910141302382158,
+    "mean_selection_flip_rate": 0.07903333333333333,
+    "replicates": 500,
+    "sign_stability": 1.0
+  },
+  "calibration_bootstrap_B4": {
+    "ci95_over_calibration_fits": [
+      0.024474134640226256,
+      0.05416376042956007
+    ],
+    "max_selection_flip_rate": 0.09166666666666666,
+    "mean_of_fitted_contrasts": 0.039196472176132174,
+    "mean_selection_flip_rate": 0.02945,
+    "replicates": 500,
+    "sign_stability": 1.0
+  },
+  "calibration_source": "saved calibration rows and calibration-model.json",
+  "comparisons": {
+    "IVR-Trace_minus_PIVOT_B2": {
+      "ci95": [
+        0.025683247994020535,
+        0.051182764015908024
+      ],
+      "mean_ISR_difference": 0.038313996688124415,
+      "n": 120,
+      "negative": 10,
+      "positive": 43,
+      "positive_favors": "PIVOT-KG",
+      "zero": 67
+    },
+    "IVR-Trace_minus_PIVOT_B4": {
+      "ci95": [
+        -0.007348312531202646,
+        0.0009211467230198173
+      ],
+      "mean_ISR_difference": -0.0028154444860104292,
+      "n": 120,
+      "negative": 6,
+      "positive": 7,
+      "positive_favors": "PIVOT-KG",
+      "zero": 107
+    },
+    "Top-Proxy_minus_PIVOT_B2": {
+      "ci95": [
+        0.03338735205562129,
+        0.05671823575428865
+      ],
+      "mean_ISR_difference": 0.04489242212353492,
+      "n": 120,
+      "negative": 4,
+      "positive": 46,
+      "positive_favors": "PIVOT-KG",
+      "zero": 70
+    },
+    "Top-Proxy_minus_PIVOT_B4": {
+      "ci95": [
+        0.005698637594291433,
+        0.01979517835204433
+      ],
+      "mean_ISR_difference": 0.012107837306727938,
+      "n": 120,
+      "negative": 1,
+      "positive": 18,
+      "positive_favors": "PIVOT-KG",
+      "zero": 101
+    },
+    "Uniform-Exact_minus_PIVOT_B2": {
+      "ci95": [
+        0.03434496000824992,
+        0.0586657587961413
+      ],
+      "mean_ISR_difference": 0.04559803265218655,
+      "n": 120,
+      "negative": 12,
+      "positive": 78,
+      "positive_favors": "PIVOT-KG",
+      "zero": 30
+    },
+    "Uniform-Exact_minus_PIVOT_B4": {
+      "ci95": [
+        0.030023240629899212,
+        0.04744786302898247
+      ],
+      "mean_ISR_difference": 0.038038521190802026,
+      "n": 120,
+      "negative": 4,
+      "positive": 92,
+      "positive_favors": "PIVOT-KG",
+      "zero": 24
+    }
+  },
+  "formal_lucb": {
+    "candidate_count": 8,
+    "primary_budget": 4,
+    "reason": "formal paired LUCB initialization requires one pull per candidate, but B=4 < K=8",
+    "status": "initialization_infeasible"
+  },
+  "methods": [
+    "PIVOT-KG",
+    "IVR-Trace",
+    "Top-Proxy",
+    "Uniform-Exact"
+  ],
+  "physical_simulator_called": false,
+  "roots": 120,
+  "rows": 960,
+  "truth_source": "saved post-decision truth-audit.json"
+}

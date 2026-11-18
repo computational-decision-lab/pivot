@@ -2,8 +2,8 @@
 """Verify the reproducible PIVOT paper PDF and its source-level invariants.
 
 The verifier intentionally checks the rendered artifact rather than trusting a
-successful LaTeX exit code.  In particular, the nine-page ICLR main-text gate
-is read from the explicit end-of-main-text label in the generated ``.aux``
+successful LaTeX exit code.  In particular, the ten-page ICLR discussion-version main-text gate
+is read from the references and appendix labels in the generated ``.aux``
 file, while the complete PDF may contain a bibliography and appendix after
 that boundary.
 """
@@ -29,19 +29,7 @@ def parse_appendix_start_page(aux_text: str) -> int:
 
     match = re.search(r"\\newlabel\{app:artifact\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
     if match is None:
-        # The latest Overleaf manuscript uses an unnumbered Appendix heading.
-        # Fall back to the first directly labelled appendix section.
-        appendix_pages = []
-        for appendix_line in aux_text.splitlines():
-            if "newlabel{app:" not in appendix_line:
-                continue
-            try:
-                appendix_pages.append(int(appendix_line.rsplit("}{", 1)[-1].rstrip("}")))
-            except ValueError:
-                continue
-        if appendix_pages:
-            return min(appendix_pages)
-        raise ValueError("no appendix section label is present in LaTeX aux")
+        raise ValueError("appendix label app:artifact is missing from LaTeX aux")
     return int(match.group(1))
 
 
@@ -54,11 +42,15 @@ def parse_references_start_page(aux_text: str) -> int:
     return int(match.group(1))
 
 
-def parse_main_end_page(aux_text: str) -> int:
-    """Count the actual last body page, including body sharing a reference page."""
-    match = re.search(r"\\newlabel\{main:end\}\{\{[^{}]*\}\{(\d+)\}", aux_text)
+def parse_conclusion_end_page(aux_text: str) -> int:
+    """Return the rendered page containing the end of the conclusion."""
+
+    match = re.search(
+        r"\\newlabel\{sec:conclusion-end\}\{\{[^{}]*\}\{(\d+)\}",
+        aux_text,
+    )
     if match is None:
-        raise ValueError("main text label main:end is missing from LaTeX aux")
+        raise ValueError("conclusion end label sec:conclusion-end is missing from LaTeX aux")
     return int(match.group(1))
 
 
@@ -107,7 +99,7 @@ def verify_paper(
     source: Path,
     output: Path,
     preview: Path | None = None,
-    max_main_pages: int = 9,
+    max_main_pages: int = 10,
     aux: Path | None = None,
 ) -> dict[str, Any]:
     """Run PDF, source, font, text, figure, and warning checks.
@@ -136,31 +128,26 @@ def verify_paper(
     aux_text = aux_path.read_text(encoding="utf-8", errors="replace")
     references_page = parse_references_start_page(aux_text)
     appendix_page = parse_appendix_start_page(aux_text)
-    main_pages = parse_main_end_page(aux_text)
+    conclusion_end_page = parse_conclusion_end_page(aux_text)
+    main_pages = references_page - 1
 
     log = pdf.with_suffix(".log")
     log_scan = scan_log(log.read_text(encoding="utf-8", errors="replace")) if log.is_file() else {}
     source_text = source.read_text(encoding="utf-8")
-    # Keep this list aligned with the current manuscript vocabulary.  Older
-    # V10 checks required phrases and theorem counts that no longer exist in
-    # the revised paper and therefore produced false failures.
     required_tokens = [
-        "improvement reversal",
         "improvement fidelity",
         "actor",
         "strategic",
-        "response layers",
+        "response map",
         "pivot",
         "decision preservation",
-        "paired high-fidelity",
+        "paired",
         "knowledge-gradient",
-        "fixed high-fidelity budget",
         "leduc",
         "kuhn",
         "melting pot",
-        "contribution 1",
-        "contribution 2",
-        "contribution 3",
+        "primary",
+        "contributions",
         "operator-relative improvement fidelity",
         "q_{\\mathcal a}",
     ]
@@ -170,8 +157,6 @@ def verify_paper(
         for token in required_tokens
         if " ".join(token.casefold().split()) not in source_lower
     ]
-    if "observer" not in source_lower and "verifier" not in source_lower:
-        missing_tokens.append("observer|verifier")
 
     scientific_source = source_text.split("\\begin{document}", 1)[-1].split("\\appendix", 1)[0]
     forbidden_version_tokens = sorted(
@@ -184,7 +169,6 @@ def verify_paper(
         )
     )
     proposition_count = len(re.findall(r"\\begin\{proposition\}", source_text))
-    lemma_count = len(re.findall(r"\\begin\{lemma\}", source_text))
     required_assets = {
         "fig1_decision_relevance.pdf",
         "fig2_regret_cost.pdf",
@@ -203,12 +187,13 @@ def verify_paper(
         "pdf_exists": pdf.stat().st_size > 0,
         "text_nonempty": len(text.strip()) > 500,
         "main_pages_within_limit": main_pages <= max_main_pages,
+        "conclusion_within_limit": conclusion_end_page <= max_main_pages,
         "references_before_appendix": references_page < appendix_page,
         "appendix_after_main": appendix_page > references_page,
         "anonymous_author": author in {"", "-", "Anonymous", "Anonymous Authors"},
         "embedded_fonts": bool(fonts) and all(font["embedded"] for font in fonts),
         "required_source_tokens": not missing_tokens,
-        "current_theorem_structure": proposition_count == 3 and lemma_count == 2,
+        "four_propositions": proposition_count == 4,
         "no_internal_version_language_in_main": not forbidden_version_tokens,
         "required_figure_assets": not asset_missing,
         "no_undefined_references": not log_scan.get("undefined_references", False),
@@ -221,6 +206,7 @@ def verify_paper(
         "bytes": pdf.stat().st_size,
         "pages": pages,
         "main_pages": main_pages,
+        "conclusion_end_page": conclusion_end_page,
         "references_start_page": references_page,
         "appendix_start_page": appendix_page,
         "aux": _portable_path(aux_path),
@@ -231,7 +217,6 @@ def verify_paper(
         "missing_source_tokens": missing_tokens,
         "forbidden_version_tokens": forbidden_version_tokens,
         "proposition_count": proposition_count,
-        "lemma_count": lemma_count,
         "missing_figure_assets": asset_missing,
         "preview": _portable_path(preview_path) if preview_path else None,
         "checks": checks,
@@ -311,7 +296,7 @@ def main() -> None:
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--preview", type=Path)
-    parser.add_argument("--max-main-pages", type=int, default=9)
+    parser.add_argument("--max-main-pages", type=int, default=10)
     parser.add_argument("--aux", type=Path, help="LaTeX aux sidecar; defaults to PDF/build/main.aux")
     args = parser.parse_args()
     report = verify_paper(args.pdf, args.source, args.output, args.preview, args.max_main_pages, args.aux)

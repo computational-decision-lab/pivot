@@ -10,27 +10,26 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{flafter}
+\usepackage{placeins}
+\usepackage[hidelinks]{hyperref}
 
 \graphicspath{{figures/}}
 
-\setlength{\textfloatsep}{7pt plus 1pt minus 2pt}
-\setlength{\floatsep}{6pt plus 1pt minus 2pt}
-\setlength{\intextsep}{6pt plus 1pt minus 2pt}
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\M}{\mathcal{M}}
-\newcommand{\J}{\mathcal{J}}
 \newcommand{\dproxy}{\Delta_V}
 \newcommand{\dtrue}{\Delta_*}
 \newcommand{\pii}{\pi}
 \newcommand{\pip}{\pi'}
 \newtheorem{proposition}{Proposition}
-\newtheorem{lemma}{Lemma}
 \input{results_macros.tex}
 \input{revision_results.tex}
 \input{highway_results.tex}
 
-\title{When Better Gets Worse: Improvement Fidelity for Self-Improving Agents in Adaptive Worlds}
+\title{When Better Gets Worse:\\
+Improvement Fidelity for Self-Improving Agents in\\
+Adaptive Worlds}
 \author{}
 \date{}
 
@@ -38,102 +37,105 @@
 \maketitle
 
 \begin{abstract}
-Self-improving agents often choose policy updates with cheap verifiers and
-then deploy them in environments that respond to the chosen policy. This
-creates a transition-level failure mode: a verifier can rank policies well
-globally yet rank the candidate updates that matter for self-improvement
-incorrectly. We formalize this gap as \emph{Improvement Fidelity}, which asks
-whether proxy improvements preserve the sign and ordering of deployment
-improvements over the updates actually proposed by an improvement process.
-We show that global policy accuracy does not guarantee update fidelity:
-operator shift can concentrate evaluation error on proposed transitions,
-deployment response can change candidate value after deployment, and only
-errors large relative to candidate margins can alter the update decision.
-Motivated by this structure, we introduce PIVOT-KG, a paired,
-decision-aware validator that allocates scarce high-fidelity evaluations by
-their expected reduction in update-selection regret per unit cost. Across
-controlled response worlds and 90 sealed decision roots in Leduc, Kuhn, and
-Melting Pot, proxy and deployment evaluation select different top-1 updates
-in 51 cases even when global policy ranking remains comparatively stable.
-The value of additional validation is not determined by response magnitude
-or ranking flips alone, but by whether high-fidelity evidence can resolve
-decision-critical uncertainty. In an eight-candidate HighwayEnv stress test,
-PIVOT-KG reduces mean improvement-selection regret from 0.0435 under exact
-uniform allocation to 0.0055 at the primary budget. These results suggest
-that reliable self-improvement requires fidelity of proposed improvements,
-not merely accurate evaluation of policies in a fixed proxy world.
+We study a replacement transition in which an improvement operator proposes
+policy candidates, a proxy verifier scores them, and deployment changes the
+world in which they are evaluated. An update that looks better to the verifier
+can therefore become worse after deployment even when the verifier ranks
+policies well overall.
+We formalize this gap as \emph{Improvement Fidelity}, our core evaluation
+target: whether proxy improvements preserve the sign and ordering of deployment
+improvements over the updates an improvement process proposes. We show that
+global policy accuracy need not guarantee update fidelity: operator shift and
+deployment response can create update-level errors, while candidate margins
+determine whether those errors change the replacement decision. PIVOT is the
+paired validation framework; \textbf{PIVOT-KG} is a concrete application of
+the established one-step correlated-Gaussian knowledge gradient that allocates
+scarce high-fidelity evaluation according to expected reduction in selection
+regret per unit cost. Across 90 held-out roots in Leduc, Kuhn, and Melting Pot,
+proxy and deployment optimal sets are disjoint in 51 cases. In an
+eight-candidate HighwayEnv saved-truth replay, PIVOT-KG reduces mean
+improvement-selection regret from 0.0435 under exact Uniform validation
+to 0.0055 at the primary budget. Together, these results show why
+operator-proposed replacements should be evaluated in the worlds they induce,
+while testing an allocation rule for cases in which scarce deployment evidence
+can affect the replacement decision.\footnote{Our code is available at \urlstyle{same}\url{https://anonymous.4open.science/r/pivot-anonymous-review-2E67/}.}
 \end{abstract}
 
 
 \section{Introduction}
 
-Self-improving agents repeatedly propose candidate policies, evaluate them
-with a verifier, and deploy a replacement. This loop implicitly assumes that
-an update judged better under the verifier remains better after deployment.
-In adaptive environments, however, deploying a policy can change the world in
-which that policy should be evaluated. A lane change alters the trajectories
-of nearby vehicles, and an action in a multi-agent game changes how other
-agents respond. A verifier may therefore be accurate over policies in
-aggregate and still select the wrong local replacement.
-
-The distinction arises because policy evaluation and update evaluation are
-different problems. Global policy evaluation asks whether a verifier predicts
-values or rankings over a broad policy distribution. Self-improvement instead
-makes a local replacement decision between an incumbent and a small set of
-proposed candidates. The relevant question is therefore not simply whether a
-candidate policy scores well, but whether replacing the incumbent with that
-candidate remains an improvement after deployment. We call this problem
-Improvement Fidelity. Figure~\ref{fig:reversal} illustrates the basic failure
-mode: an update that appears beneficial under proxy evaluation can become
-harmful after deployment.
+An improvement operator can repeatedly propose candidate policies, score them
+with a verifier, and deploy a replacement. Yet an update that looks better to the
+verifier can become worse after deployment when the deployed policy changes the
+world in which it is evaluated. A lane change alters nearby trajectories, and
+an action in a multi-agent game changes how other agents respond. A verifier
+can therefore be accurate over policies in aggregate and still choose the wrong
+local replacement. Figure~\ref{fig:reversal} illustrates this failure mode.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\linewidth]{fig1_improvement_reversal.pdf}
-  \caption{Proxy improvements can reverse after deployment. Each point
-  represents a proposed policy update evaluated under the proxy and deployment
-  worlds. Updates in the lower-right quadrant appear beneficial under the
-  proxy but become harmful after deployment.}
+  \caption{Proxy improvements can reverse after deployment. Each point is a
+  proposed update; lower-right points are proxy-positive but
+  deployment-negative.}
   \label{fig:reversal}
 \end{figure}
 
-High-fidelity deployment evaluation can reveal such failures, but it is often
-too costly to apply to every candidate. Since validation is limited, additional
-evidence is most useful when it can change the replacement decision. We
-introduce \textbf{PIVOT-KG}, a paired differential validator that allocates a
-limited high-fidelity evaluation budget based on its value for the current
-replacement decision. Across 90 held-out decision roots in Leduc, Kuhn, and
-Melting Pot, proxy and deployment evaluation select different top-1 updates
-in 51 cases. Across controlled response worlds, strategic multi-agent settings,
-and HighwayEnv, our experiments further show when such disagreement affects
-selection and when limited high-fidelity evidence can reduce
-improvement-selection regret.
+We call this transition-level requirement \emph{Improvement Fidelity}: whether
+an improvement under the verifier remains an improvement after deployment in
+the world induced by the update. Because deployment evaluation is often too
+costly for every candidate, we instantiate PIVOT (Paired Interventional
+Validation of Optimization Transitions) with \textbf{PIVOT-KG}, a standard
+correlated-Gaussian knowledge-gradient validator that directs a limited
+high-fidelity (HF) budget to uncertainty that can change the replacement
+decision.
+
+Prior work separately studies deployment-induced response, policy-level
+evaluation or safe improvement, and verifier reliability. We instead study an
+operator-relative criterion for whether a proposed replacement remains an
+improvement in the world it induces, together with a decision-aware rule for
+allocating scarce deployment evidence for that decision.
+Our analysis treats decision preservation under differential error as a
+margin-dependent property of each replacement operation proposed by the
+improvement operator.
+
+PIVOT is the paired validation framework for this replacement problem, whereas
+PIVOT-KG is one concrete instantiation using the established one-step
+correlated-Gaussian knowledge-gradient rule. We therefore claim neither a new
+KG acquisition theorem nor a general policy-improvement algorithm: the
+algorithmic question is when decision-aware HF allocation adds value for the
+operator's proposed transition.
+
+\FloatBarrier
 
 Our contributions are:
-\begin{description}
 
-  \item[\textbf{1. Improvement Fidelity.}]
-  We formulate self-improvement as a transition-level evaluation problem and
-  introduce operator-relative Improvement Fidelity, characterizing why strong
-  global policy evaluation need not imply reliable evaluation of the updates
-  an agent actually proposes.
+\noindent\textbf{1. Improvement Fidelity.}
+We formulate operator-proposed replacement as an operator-relative,
+transition-level
+evaluation problem and introduce Improvement Fidelity, showing why strong global
+policy evaluation need not imply reliable evaluation of the updates an agent
+actually proposes.
 
-  \item[\textbf{2. Decision-aware validation.}]
-  We introduce PIVOT-KG, a paired differential validator that allocates a
-  limited high-fidelity evaluation budget according to its expected reduction
-  in update-selection regret rather than global prediction error.
+\smallskip
+\noindent\textbf{2. PIVOT validation framework and standard-KG instantiation.}
+PIVOT defines paired, operator-relative validation; PIVOT-KG applies an
+established correlated-Gaussian KG rule to allocate limited HF evidence by its
+expected reduction in update-selection regret rather than global prediction
+error.
 
-  \item[\textbf{3. Evidence across adaptive worlds.}]
-  We evaluate the framework across controlled response worlds, strategic
-  multi-agent environments, and a physically reactive HighwayEnv setting,
-  showing when proxy failures alter the selected update and when targeted
-  high-fidelity validation can reduce the resulting selection regret.
+\smallskip
+\noindent\textbf{3. Evidence across response worlds.}
+Across controlled response worlds, multi-agent environments, and reactive
+driving simulations, we test the failure mechanisms predicted by the
+theory and identify when targeted HF validation reduces selection regret.
 
-\end{description}
+\smallskip
 
-The evaluation target for self-improvement is therefore not only whether
-policies are scored accurately in a fixed proxy world, but whether a proposed
-replacement remains an improvement after deployment.
+Together, these contributions shift the evaluation of proposed replacement from
+whether policies are evaluated accurately in a proxy world to whether proposed
+improvements remain improvements after deployment, while providing a principled
+basis for allocating deployment evidence when it can affect the replacement decision.
 
 \section{Related Work}
 
@@ -141,95 +143,143 @@ replacement remains an improvement after deployment.
 Performative prediction and reinforcement learning study settings in which
 deployment changes the data distribution, dynamics, rewards, or behavior of
 other agents
-\cite{perdomo2020performative,mandal2023performative,rank2024performative,
-gois2025performative,multiagentperformative2022}.
-These works primarily characterize learning dynamics, stability, and
-equilibrium behavior under deployment-induced response. We instead ask
-whether a particular proposed replacement remains an improvement after that
-response is realized.
+~\citep{perdomo2020performative,mandal2023performative,rank2024performative,
+mandal2025linear,gois2025performative,multiagentperformative2022}.
+These works study how deployment-induced response affects learning, stability,
+and optimality. We instead ask a local evaluation question: whether a
+particular proposed replacement remains an improvement under the response
+world it induces.
 
 \paragraph{Policy evaluation and safe improvement.}
 Off-policy evaluation and safe policy improvement estimate or certify the
-performance of a candidate relative to a baseline, while world-model-based
-evaluation asks whether a proxy environment preserves policy values or
-rankings
-\cite{jiang2016doubly,thomas2015hcpi,worldgym2025,policyaware2026}.
-Our setting differs in that the deployment world itself can depend on the
-proposed policy. Policy-level accuracy in a fixed evaluator can therefore
-coexist with an incorrect local replacement decision.
+performance of a candidate relative to a baseline
+~\citep{jiang2016doubly,thomas2015hcpi,laroche2019spibb}, while
+work on learned simulators studies policy evaluation, policy-value gaps,
+or ranking preservation~\citep{worldgym2025,policyaware2026}.
+Our focus is the proposed transition itself: a proxy can preserve policy-level
+accuracy or rankings yet still induce the wrong local replacement decision
+once deployment changes the evaluation world.
 
 \paragraph{Self-improvement and verification.}
 Recent work has made iterative policy or agent improvement operational
-\cite{evopolicygym2026,dgm2025} and has documented regressions or failures of
+~\citep{evopolicygym2026,dgm2025} and has documented regressions or failures of
 verification during self-improvement
-\cite{wu2024progress,selfauthored2026}.
-We focus on a complementary failure mode: even a fixed external verifier can
-mis-evaluate an update when deployment induces a different response world.
+~\citep{wu2024progress,selfauthored2026}. Related work on reward
+overoptimization shows that optimizing an imperfect proxy can itself degrade
+true performance~\citep{gao2023reward,laidlaw2025correlated}.
+Our failure mode is complementary: the verifier need not be self-authored,
+changing, or directly exploited. Even a fixed external verifier can select the
+wrong update when deployment changes the world in which that update is
+evaluated.
 
 \paragraph{Adaptive selection and paired evaluation.}
-Knowledge-gradient and best-arm methods allocate costly observations to
-decision-relevant alternatives under limited budgets
-\cite{frazier2009kg,kalyanakrishnan2012pac,xie2016pairwise}.
-PIVOT-KG applies this decision-aware allocation principle to
-proxy--deployment validation, modeling the correction in improvement and
-valuing high-fidelity queries by their effect on the replacement decision.
+Knowledge-gradient, ranking-and-selection, and best-arm methods allocate costly
+observations to decision-relevant alternatives under limited budgets
+~\citep{chick2001crn,frazier2009kg,kalyanakrishnan2012pac,xie2016pairwise,konyushova2021active}.
+PIVOT-KG instantiates established KG for operator-relative replacement
+validation; unlike Active Offline Policy Selection, it targets candidate-dependent
+deployment worlds and proxy-to-deployment replacement regret, while
+introducing no new KG acquisition rule.
 
-These connections motivate an update-level formulation of self-improvement:
-the object to evaluate is not a policy in isolation, but a proposed
-replacement under the world induced by deployment.
+\paragraph{Scope relative to adjacent fields.}
+These literatures motivate our setting but target different objects. Game
+theory studies strategic interaction and equilibrium concepts, while
+performative prediction studies distributional response and often fixed-point
+or learning behavior. PIVOT asks the narrower deployment decision question:
+given one operator-proposed replacement, does it remain worth deploying in the
+world induced by that replacement? The
+distinction is summarized below: PIVOT evaluates a proposed policy transition
+after deployment response, rather than replacing the established problems.
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{0.92}
+\begin{tabular}{@{}p{0.24\columnwidth}p{0.69\columnwidth}@{}}
+\toprule
+Area & Existing focus; PIVOT focus \\
+\midrule
+Game theory & Strategic response and equilibria; whether a specific replacement remains worth deploying. \\
+Performative RL & Learning under deployment-induced distribution change; fidelity of the proposed update under that response. \\
+Model-based RL & Learning a model for prediction or planning; correcting proxy-to-deployment value for a replacement decision. \\
+Active selection & Choosing alternatives under a finite observation budget; allocating HF queries by replacement regret. \\
+Knowledge Gradient & Value of information for costly observations; a standard KG instance inside the PIVOT validation framework. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Unlike model-based RL, PIVOT-KG does not learn the full deployment transition
+or response map $\M[\pi]$, nor does it plan through such a model. It calibrates
+proxy-to-deployment improvement corrections from paired high-fidelity
+observations and uses them to validate a proposed replacement.
 
 
-\section{Problem Formulation}
+\section{Improvement Fidelity: Problem Formulation}
+
+\paragraph{Agent, improvement operator, and adaptive world.}
+An agent is a decision maker holding an incumbent policy; we do not assume a
+particular learner architecture. An improvement is the transition from that
+incumbent to a proposed candidate. An improvement operator $\mathcal A$ maps
+the current decision context to a law over such replacements. The adaptive
+world $\M[\pi]$ is the deployment environment, including dynamics and any
+other-agent response induced by policy $\pi$. Our experiments evaluate this
+replacement and validation step, not online policy training.
 
 \paragraph{Proxy and deployment improvement.}
 Let $\M[\pi]$ denote the deployment world induced by policy $\pi$, including
-any response to that policy. We use $J_V(\pi)$ for the value assigned by the
-cheap verifier and write $\J(\pi)=J(\pi;\M[\pi])$ for the value after
-deployment. For a proposed replacement $\tau=(\pii,\pip)$, define
+the environment response to that policy. Let $V$ denote the cheap verifier,
+with value $J_V(\pi)$, and let $J(\pi;\M[\pi])$ denote the deployment value
+of $\pi$ in its induced world. For a
+proposed replacement $\tau=(\pii,\pip)$, define
 \begin{equation}
   \Delta_V=J_V(\pip)-J_V(\pii),
   \qquad
-  \Delta_*=\J(\pip)-\J(\pii).
+  \Delta_*=J(\pip;\M[\pip])-J(\pii;\M[\pii]).
   \label{eq:improvement}
 \end{equation}
 Thus $\Delta_V$ is the verifier-estimated improvement and $\Delta_*$ is the
-improvement realized under deployment.
+deployment improvement.
 
-\paragraph{Improvement Fidelity.}
+\paragraph{Operator-relative Improvement Fidelity.}
 Let an improvement operator $\mathcal A$ induce a transition law
 $Q_{\mathcal A}$ over proposed replacements. For a transition-level loss $L$,
-we define operator-relative Improvement Fidelity as
+we quantify the corresponding Improvement Fidelity error by
 \begin{equation}
-  \operatorname{IF}(V,\mathcal A;L)
+  \mathcal E_{\mathrm{IF}}(V,\mathcal A;L)
   =
   \E_{\tau\sim Q_{\mathcal A}}
   [L(\Delta_V,\Delta_*)].
   \label{eq:if}
 \end{equation}
-The relevant population is therefore the updates the improvement process
-actually proposes, rather than the policy space in general. For a loss $L$,
-smaller values of \eqref{eq:if} indicate greater fidelity.
+The relevant population is the updates the improvement process actually
+proposes rather than the policy space in general; smaller values indicate
+greater fidelity.
 
-\paragraph{Core metrics and selection.}
-For $n$ proposed transitions, we measure error magnitude by
-$\mathrm{IDE}=n^{-1}\sum_k|\Delta_{V,k}-\Delta_{*,k}|$, let $\mathrm{ISC}$
-denote sign agreement after removing ties, and define
-$\mathrm{IRR}=\Pr_{Q_{\mathcal A}}(\Delta_*<0\mid\Delta_V>0)$.
-Let $C=\{1,\ldots,K\}$ index the candidate updates and
+\paragraph{Fidelity and decision metrics.}
+Improvement Differential Error (IDE) is the absolute-error instance of
+Eq.~\eqref{eq:if}. We define
+$\mathrm{IDE}=\E_{Q_{\mathcal A}}[|\Delta_V-\Delta_*|]$ for error magnitude,
+$\mathrm{ISC}=\Pr_{Q_{\mathcal A}}(\operatorname{sgn}\Delta_V=
+\operatorname{sgn}\Delta_*\mid\Delta_V\Delta_*\neq0)$ for sign agreement
+after removing ties, and
+$\mathrm{IRR}=\Pr_{Q_{\mathcal A}}(\Delta_*<0\mid\Delta_V>0)$ for the
+proxy-positive reversal rate. Empirical results report the corresponding
+sample estimates. Let $C=\{1,\ldots,K\}$ index candidate updates and
 $C^+=\{0\}\cup C$ include the no-update action, with
-$\Delta_{V,0}=\Delta_{*,0}=0$. For a selected action $\hat j\in C^+$,
-define improvement-selection regret as
+$\Delta_{V,0}=\Delta_{*,0}=0$. For a selected action $\hat j\in C^+$, define
+improvement-selection regret (ISR) as
 \begin{equation}
   \mathrm{ISR}(\hat j)
   =
   \max_{j\in C^+}\Delta_{*,j}-\Delta_{*,\hat j}.
   \label{eq:isr}
 \end{equation}
-IDE, ISC, and IRR diagnose transition-level fidelity, while ISR measures its
+IDE, ISC, and IRR diagnose transition-level fidelity; ISR measures its
 consequence for the replacement decision.
 
-\paragraph{Response levels.}
-To separate sources of deployment response, we consider
+\paragraph{Deployment response levels.}
+To separate sources of deployment response, we consider the following levels.
+In the strategic case, $\pi$ denotes the focal agent $i$'s policy and
+$R_{-i}(\pi)$ the response of the other agents:
 \begin{align*}
   \Delta_{\mathrm{direct}}
   &=J(\pip;\M[\pii])-J(\pii;\M[\pii]),\\
@@ -240,44 +290,49 @@ To separate sources of deployment response, we consider
 \end{align*}
 The direct level holds the incumbent world fixed, the actor level allows the
 environment to respond to the candidate, and the strategic level additionally
-allows other agents to adapt through a response map $R_{-i}$; best response is
-one special case.
+allows other agents to adapt through a response map $R_{-i}$. Here $J_i$
+denotes realized value after both environment and other-agent response; best
+response is one special case. In settings without other-agent adaptation,
+$\Delta_{\mathrm{actor}}=\Delta_*$.
 
 
 \section{Properties of Improvement Fidelity}
 
-The following results characterize when policy-level evaluation controls
-update-level fidelity, how operator shift and deployment response can break
-that connection, and when fidelity error changes the replacement decision.
+The results below establish when policy-level evaluation controls update-level
+fidelity, how that connection can fail, and when the resulting error changes a
+replacement decision.
 
+\paragraph{From policy fidelity to update fidelity.}
 \begin{proposition}[Uniform value fidelity is sufficient]
-If $\sup_\pi|J_V(\pi)-\J(\pi)|\leq\varepsilon$, then
+If $\sup_\pi|J_V(\pi)-J(\pi;\M[\pi])|\leq\varepsilon$, then
 $|\Delta_V-\Delta_*|\leq2\varepsilon$. The sign is preserved whenever
 $|\Delta_*|>2\varepsilon$.
 \end{proposition}
 \begin{proof}
 $\Delta_V-\Delta_*=
-[J_V(\pip)-\J(\pip)]-[J_V(\pii)-\J(\pii)]$; the triangle inequality gives
-the bound and the sign statement.
+[J_V(\pip)-J(\pip;\M[\pip])]-[J_V(\pii)-J(\pii;\M[\pii])]$; the triangle
+inequality gives the bound and the sign statement.
 \end{proof}
 
 \begin{proposition}[Global policy accuracy need not imply update fidelity]
 For every $\varepsilon>0$, there exist a finite policy family, a verifier,
-a policy distribution, and an improvement operator with policy MAE and
+a policy distribution, and an improvement operator with policy mean absolute error (MAE) and
 Spearman rank error below $\varepsilon$, but $\mathrm{IRR}=1$ and
 $\mathrm{ISC}=0$ under the operator-induced transition law.
 \end{proposition}
 \begin{proof}
-Let $\J(\pi_k)=k/(n-1)$ for $k=0,\ldots,n-1$ under the uniform policy
+Let $J(\pi_k)=k/(n-1)$ for $k=0,\ldots,n-1$ under the uniform policy
 distribution, and let $J_V$ swap the values of adjacent policies
-$\pi_k,\pi_{k+1}$. Then $\mathrm{MAE}=2/[n(n-1)]$ and
-$1-\rho_S=12/[n(n^2-1)]$, both tending to zero. If the operator always
-proposes $(\pi_{k+1},\pi_k)$, then $\Delta_V>0$ while $\Delta_*<0$, giving
-$\mathrm{IRR}=1$ and $\mathrm{ISC}=0$.
+$\pi_k,\pi_{k+1}$ for any fixed $k\in\{0,\ldots,n-2\}$. Then
+$\mathrm{MAE}=2/[n(n-1)]$ and $1-\rho_S=12/[n(n^2-1)]$, both tending to
+zero. If the operator always proposes $(\pi_{k+1},\pi_k)$, then
+$\Delta_V>0$ while $\Delta_*<0$, giving $\mathrm{IRR}=1$ and
+$\mathrm{ISC}=0$.
 \end{proof}
 
+\paragraph{Operator shift and deployment response.}
 \begin{proposition}[Operator shift bound]\label{prop:operator-shift}
-Let $P$ be a calibration law and $Q_{\mathcal A}\ll P$ with
+Let $P$ be a calibration transition law and $Q_{\mathcal A}\ll P$ with
 $\chi^2(Q_{\mathcal A}\Vert P)<\infty$. For
 $w=dQ_{\mathcal A}/dP$ and $\ell(\tau)=L(\Delta_V,\Delta_*)$ with finite
 variance under $P$,
@@ -301,59 +356,62 @@ Cauchy--Schwarz and
 $\E_P[(w-1)^2]=\chi^2(Q_{\mathcal A}\Vert P)$ give the result.
 \end{proof}
 
-Deployment response provides a distinct source of error:
+Deployment response is a distinct source of error:
 $\Delta_{\mathrm{actor}}-\Delta_{\mathrm{direct}}
 =J(\pip;\M[\pip])-J(\pip;\M[\pii])$.
-Thus the actor--direct gap isolates the change in candidate value caused by
-the world it induces; the strategic level additionally captures other-agent
+The actor--direct gap therefore isolates the change in candidate value caused
+by the world it induces; the strategic level additionally captures other-agent
 response through $R_{-i}$.
 
-\begin{lemma}[Decision preservation]\label{lem:decision-preservation}
-Let $\epsilon_C=\max_{j\in C^+}|\Delta_{V,j}-\Delta_{*,j}|$,
+\paragraph{When fidelity errors change decisions.}
+\begin{proposition}[Decision preservation]\label{prop:decision-preservation}
+Let $\varepsilon_C=\max_{j\in C^+}|\Delta_{V,j}-\Delta_{*,j}|$,
 $j^*\in\arg\max_{j\in C^+}\Delta_{*,j}$, and
 $\hat j_V\in\arg\max_{j\in C^+}\Delta_{V,j}$. If $j^*$ is unique, let
-$m=\Delta_{*,j^*}-\max_{k\neq j^*}\Delta_{*,k}$.
-Then
-\[
-  \mathrm{ISR}(\hat j_V)\leq2\epsilon_C,
+$m=\Delta_{*,j^*}-\max_{k\neq j^*}\Delta_{*,k}$. Then
+\begin{equation}
+  \mathrm{ISR}(\hat j_V)\leq2\varepsilon_C,
   \qquad
-  m>2\epsilon_C\ \Longrightarrow\ \hat j_V=j^*.
-\]
-\end{lemma}
+  m>2\varepsilon_C\ \Longrightarrow\ \hat j_V=j^*.
+  \label{eq:decision-preservation}
+\end{equation}
+\end{proposition}
 \begin{proof}
 Optimality of $\hat j_V$ gives
-$\Delta_{*,j^*}\leq\Delta_{V,j^*}+\epsilon_C
-\leq\Delta_{V,\hat j_V}+\epsilon_C
-\leq\Delta_{*,\hat j_V}+2\epsilon_C$.
-The same error bound preserves the top-1 ordering when $m>2\epsilon_C$.
+$\Delta_{*,j^*}\leq\Delta_{V,j^*}+\varepsilon_C
+\leq\Delta_{V,\hat j_V}+\varepsilon_C
+\leq\Delta_{*,\hat j_V}+2\varepsilon_C$.
+The same error bound preserves the top-1 ordering when $m>2\varepsilon_C$.
 \end{proof}
 
-For paired incumbent and candidate returns $Y$ and $Y'$ under shared
-randomness,
-$\operatorname{Var}(Y'-Y)=\operatorname{Var}(Y')+\operatorname{Var}(Y)
--2\operatorname{Cov}(Y',Y)$.
-Positive covariance therefore reduces the variance of the paired difference
-relative to independent evaluation with the same marginal variances.
-
-Uniform policy fidelity controls update error, whereas global average accuracy
-need not protect operator-induced transitions. Operator shift and deployment
-response can separate proxy from deployment improvement, but such errors alter
-selection only when they are large relative to candidate margins. Paired HF
-evidence can reduce uncertainty in these differences, motivating PIVOT-KG.
+With matched randomness, positive incumbent--candidate covariance reduces the
+variance of their paired difference relative to independent evaluation with
+the same marginal variances. Uniform policy fidelity is sufficient to control
+update error, but global average accuracy need not protect operator-induced
+updates. Operator shift and deployment response create distinct sources of
+update-level error, and these errors change replacement decisions only
+relative to candidate margins. This motivates directing scarce HF evidence to
+uncertainty that can change the selected update.
 
 
-\section{PIVOT-KG}
+\section{PIVOT-KG: Decision-Aware Validation}
 
-The preceding results suggest allocating expensive high-fidelity (HF)
-evaluation to uncertainty that can change the replacement decision. Given an
-incumbent and $K$ candidate updates, the cheap verifier provides proxy
-improvements $\{\Delta_{V,j}\}_{j=1}^K$. PIVOT-KG models the
-proxy-to-deployment correction
+PIVOT is a paired validation framework for candidate transitions; PIVOT-KG
+is its decision-aware instantiation using the knowledge-gradient acquisition
+rule below. We therefore allocate expensive high-fidelity (HF) evaluation to
+uncertainty that can change the replacement decision. Given an incumbent and
+$K$ candidate updates, the cheap verifier provides proxy improvements
+$\{\Delta_{V,j}\}_{j=1}^K$. PIVOT-KG models the proxy-to-deployment correction
 $G_j=\Delta_{*,j}-\Delta_{V,j}$.
 
-For the $K$ candidates, let
-$G=(G_j)_{j=1}^K$, $\Delta_V=(\Delta_{V,j})_{j=1}^K$, and
-$\Delta_*=(\Delta_{*,j})_{j=1}^K$. We use the calibrated model
+The framework and the acquisition rule should be distinguished. PIVOT defines
+the paired candidate-versus-incumbent validation target and its decision
+regret; PIVOT-KG applies standard one-step KG to that calibrated correction
+model. The contribution is this decision-aware use of HF evidence for an
+operator-proposed replacement, not a new KG rule.
+
+For tractable sequential updating, we use a calibrated working Gaussian correction
+model over candidate-wise vectors $G,\Delta_V,\Delta_*\in\R^K$:
 \[
   G\sim\mathcal N(\mu,\Sigma_G),
   \qquad
@@ -364,16 +422,20 @@ The prior parameters and observation variances are estimated from a disjoint
 calibration set of paired proxy/HF transitions, so each held-out decision root
 starts from this calibrated belief without using its HF outcomes.
 
-A queried candidate $j$ yields
-$Y_j=\Delta_{*,j}+\eta_j$ with
-$\eta_j\sim\mathcal N(0,s_j^2)$, where $s_j^2$ is estimated from calibration
-data. The incumbent and candidate are evaluated under matched initial state,
-exogenous randomness, and opponent initialization. Each query updates the
-joint posterior by Gaussian conditioning; non-diagonal $\Sigma_G$ allows
-evidence to update correlated unqueried candidates.
+A query of candidate $j$ produces a prescribed paired HF evaluation
+$Y_j=\Delta_{*,j}+\eta_j$ with $\eta_j\sim\mathcal N(0,s_j^2)$, where $s_j^2$
+is estimated and regularized from calibration data. Gaussian conditioning
+uses a working likelihood with conditionally independent query noise.
+The incumbent and candidate are evaluated under the protocol's matched initial
+state, declared evaluation seeds, and opponent initialization. For the
+MetaDrive and PerformativeWorld studies this is matched-start/common-seed
+pairing, not strict common random numbers.
+Each query updates the joint posterior by Gaussian conditioning; non-diagonal
+$\Sigma_G$ lets evidence update correlated unqueried candidates. In the
+fixed-budget procedure, each candidate is queried at most once.
 
-Let $D$ denote the queried candidate-observation pairs. Using the candidate
-set $C^+$ defined above,
+Given queried data $D$, let $a(D)$ denote the posterior replacement decision
+and $\mathcal R(D)$ its Bayes selection regret. Using $C^+$ defined above,
 \[
 \begin{aligned}
   a(D)
@@ -386,25 +448,24 @@ set $C^+$ defined above,
     \right].
 \end{aligned}
 \]
-For a hypothetical HF observation $Y_j$, define
+For a hypothetical HF observation $Y_j$, define its expected value of sample
+information (EVSI) and cost-normalized acquisition score as
 \begin{equation}
+\begin{aligned}
   \mathrm{EVSI}_j
-  =
-  \mathcal R(D)
-  -
-  \E_{Y_j\mid D}
-  \!\left[
-    \mathcal R\bigl(D\cup\{(j,Y_j)\}\bigr)
-  \right],
-  \qquad
-  A_j=\frac{\mathrm{EVSI}_j}{c_j}.
+  &=\mathcal R(D)
+    -\E_{Y_j\mid D}\!\left[\mathcal R\bigl(D\cup\{(j,Y_j)\}\bigr)\right],\\
+  A_j&=\frac{\mathrm{EVSI}_j}{c_j}.
+\end{aligned}
   \label{eq:acquisition}
 \end{equation}
 PIVOT-KG therefore queries the feasible candidate with the largest expected
-reduction in selection regret per unit HF cost.
+reduction in selection regret per unit HF cost. Implementations use Monte Carlo
+or analytic Gaussian integration for these posterior expectations.
 
 \begin{algorithm}[H]
-\caption{PIVOT-KG under a fixed high-fidelity budget}
+\caption{PIVOT-KG under a fixed high-fidelity budget (single-round procedure;
+v3c uses this logic inside a controlled five-round extension).}
 \label{alg:pivot-kg}
 \begin{algorithmic}[1]
 \REQUIRE Incumbent $\pi$; candidates $\{\pi'_j\}_{j=1}^K$;
@@ -415,8 +476,7 @@ query costs $\{c_j\}_{j=1}^K$; HF budget $B$
 \STATE Initialize the calibrated posterior,
 $D\leftarrow\emptyset$, $S\leftarrow\emptyset$, and $b\leftarrow B$
 \WHILE{there exists $j\in C\setminus S$ with $c_j\leq b$}
-  \STATE Compute $A_j=\mathrm{EVSI}_j/c_j$ for all feasible
-  $j\in C\setminus S$
+  \STATE Compute $A_j$ for each feasible $j\in C\setminus S$
   \STATE
   $j_q\leftarrow
   \arg\max_{j\in C\setminus S:\,c_j\leq b} A_j$
@@ -424,42 +484,82 @@ $D\leftarrow\emptyset$, $S\leftarrow\emptyset$, and $b\leftarrow B$
   \STATE $D\leftarrow D\cup\{(j_q,Y_{j_q})\}$ and condition the posterior
   \STATE $S\leftarrow S\cup\{j_q\}$ and $b\leftarrow b-c_{j_q}$
 \ENDWHILE
-\STATE \RETURN
-$\displaystyle
-a(D)=\arg\max_{j\in C^+}\E[\Delta_{*,j}\mid D]$
+\RETURN $a(D)$
 \end{algorithmic}
 \end{algorithm}
 
 The fixed-budget rule is our primary procedure; posterior-based early stopping
-is a secondary variant. PIVOT-KG values each HF query by its expected
-reduction in replacement-selection regret.
+is a secondary variant.
 
 
 \section{Experiments}
 
-We organize the evaluation around three questions: when does global policy
-evaluation fail on proposed updates, when do those errors change the
-replacement decision, and can limited high-fidelity (HF) evidence reduce the
-resulting selection regret? We then test the resulting validation rule in a
-physically reactive HighwayEnv~\cite{highwayenv2018} setting.
+The experiments follow the progression from update-level fidelity failure to
+its decision consequences and budgeted validation. We first isolate operator
+shift and deployment response, then test when the resulting errors alter the
+replacement decision, and finally evaluate whether PIVOT-KG can reduce
+selection regret with limited high-fidelity (HF) evidence. We conclude with
+reactive driving and controlled multi-round stress tests.
 
 \subsection{Experimental Protocol}
 \label{sec:exp-protocol}
 
-Controlled studies use paired common-random-number rollouts with 30 independent
-seeds. In all analyses, inference is performed at the corresponding seed,
-trajectory, opponent-seed cluster, or held-out root level; transition rows are
-not treated as independent replicates. The sealed study contains 30 held-out
-roots in each of Leduc, Kuhn, and Melting Pot. We use Leduc and Kuhn poker
-through OpenSpiel~\cite{lanctot2019openspiel} and the Melting Pot multi-agent
-suite~\cite{leibo2021meltingpot}. Primary sealed comparisons use a fixed HF
-budget and compare PIVOT-KG with Uniform; matched-cost analyses additionally
-include Proxy Only, Global-VOI, Paired LUCB, and an all-HF reference where
-applicable. HighwayEnv is evaluated separately as a physically reactive stress
-test. Bootstrap intervals resample the corresponding inferential unit.
-Additional statistical and reproducibility details are provided in the
-supplement.
+Controlled response studies use Performative Control and Congestion Resource
+to isolate operator shift and deployment response; the pooled operator-shift
+contrast additionally includes a frozen MPE2~\citep{lowe2017maddpg} condition
+described in Appendix~\ref{app:fidelity-response}. Multi-agent evaluations use Leduc and
+Kuhn poker through OpenSpiel~\citep{lanctot2019openspiel} and the Melting Pot
+suite~\citep{leibo2021meltingpot}. Controlled studies use paired
+common-random-number rollouts with 30 independent seeds; the external
+MetaDrive and PerformativeWorld studies use matched-start/common-seed pairing,
+not strict common random numbers. The held-out
+multi-agent study contains 30 roots in each environment. Each held-out decision
+root has a fixed panel of candidate policy updates generated by its improvement
+operator; selection also permits the incumbent no-update option. Held-out comparisons
+use paired root-bootstrap confidence intervals (CIs) conditional on the fitted calibration
+model; the controlled-study aggregation is specified in
+Appendix~\ref{app:fidelity-response}. An HF query is one prescribed paired
+candidate evaluation under matched randomness. Primary comparisons use
+PIVOT-KG and Uniform; controlled batch diagnostics additionally include
+Proxy Only, value-of-information (VOI) and lower and upper confidence bound (LUCB) heuristics, and an all-HF reference. HighwayEnv~\citep{highwayenv2018} is the
+primary reactive driving stress test. A second Leduc cohort and an exploratory
+MetaDrive PGMA boundary cohort are reported in the appendix. Bootstrap intervals
+resample the corresponding inferential unit; further reproducibility details
+are provided in the supplement.
 
+\begin{table}[t]
+  \centering
+  \scriptsize
+  \setlength{\tabcolsep}{2pt}
+  \renewcommand{\arraystretch}{1.12}
+  \caption{Candidate, proxy, deployment, and response protocols across the
+  evaluation environments. An HF query is a prescribed paired
+  candidate-versus-incumbent evaluation. The first four rows are fixed-panel
+  single-decision studies; PerformativeWorld is a state-carrying multi-round
+  extension.}
+  \label{tab:experiment-protocol-matrix}
+  \resizebox{\linewidth}{!}{%
+  \begin{tabular}{@{}p{0.70in}p{1.26in}p{1.26in}p{1.55in}p{1.37in}@{}}
+    \toprule
+    Environment & Candidate generation & Proxy verifier & HF verifier & Response \\
+    \midrule
+    Leduc/Kuhn & Nine alpha-mixture candidate slots, including an alpha=0 incumbent copy, plus a separate no-update action. & Exact game value against perturbed proxy opponent. & Paired common-random rollouts; 4,096 hands per query. & Strategic opponent adaptation; short/long are 1/8 response steps. \\
+    Melting Pot & Eight specialist mixtures on the stag-hunt substrate. & Frozen-responder proxy block with stratified native rollouts. & Sealed paired, stratified native rollouts. & Latent cooperative/competitive responder; short/long are 4/32 adaptation episodes. \\
+    HighwayEnv & Eight action-by-window schedules: four non-idle actions, early/late. & Observer-mode score with disjoint-calibration Gaussian correction. & Saved-truth replay or fresh paired candidate/incumbent actor rollouts at the same seed; $B=4$. & Reactive traffic simulation; one replacement decision. \\
+    MetaDrive PGMA (exploratory) & Frozen focal checkpoint with $K=4$ candidate updates. & Proxy return under the shared panel and calibrated prior. & $B=2$ paired response bundles plus an independent truth bank. & Scripted IDM population; matched-start/common-seed response. \\
+    Performative\-World & Fixed proposer generates four candidates from each round's incumbent. & Contextual correction over proxy deltas and state features. & Two sequential paired HF observations per round. & State carries through five response rounds; later panels may diverge by method. \\
+    \bottomrule
+  \end{tabular}
+  }
+\end{table}
+The designated Allocation Interaction is
+$(\mathrm{ISR}_{U}-\mathrm{ISR}_{PIVOT})_{\mathrm{long}}-(\mathrm{ISR}_{U}-\mathrm{ISR}_{PIVOT})_{\mathrm{short}}$.
+Each paired HF observation compares candidate and incumbent under the same
+root, random stream, and opponent or environment initialization.
+For the external studies, ``paired'' denotes matched-start/common-seed
+evaluation and does not imply strict common random numbers. Candidate panels,
+proxy scores, HF observations, response operators, and terminal rules are
+specified separately for each row and are not pooled across environments.
 
 \subsection{Improvement Fidelity under Operator Shift and Deployment Response}
 \label{sec:exp-fidelity}
@@ -467,265 +567,227 @@ supplement.
 We first test the two mechanisms identified by the theory. Operator shift
 changes which proposed transitions matter, whereas deployment response changes
 the world in which a candidate is evaluated. In the operator-shift study, the
-high-minus-low contrast in operator-relative IDE is
-\OperatorShiftEffect{} \OperatorShiftEffectCI{} across
-\OperatorShiftSeeds{} independent seeds. Local update error and improvement
-reversals increase with shift while global policy rank remains comparatively
-stable (Figure~\ref{fig:operator-shift}). Thus strong global policy evaluation
-can mask failure on the updates an improvement operator actually proposes.
+pooled high-minus-low contrast in operator-relative IDE is
+\OperatorShiftEffect{} \OperatorShiftEffectCI{} (descriptive cell-bootstrap
+interval, \OperatorShiftSeeds{} seed values; Appendix~\ref{app:fidelity-response}).
+Local update error and reversals increase with the designed shift intensity,
+while global policy rank is a fixed calibration reference
+(Figure~\ref{fig:operator-shift}). Thus global policy accuracy can mask
+failure on the updates an improvement operator actually proposes.
 
-\begin{figure}[H]
+\begin{figure}[!b]
   \centering
   \includegraphics[width=\linewidth]{fig2_operator_shift.pdf}
-  \caption{Operator shift separates global policy fidelity from update-level
-  fidelity. Operator-relative error and improvement reversals increase with
-  registered shift, while global Spearman rank remains comparatively stable.
-  Panels report the same environment-by-shift conditions.}
+  \caption{Operator shift exposes update-level failure. The horizontal axis
+  is the design intensity $s^2$, not a measured $\chi^2$ divergence. Global
+  Spearman rank is a fixed calibration reference.}
   \label{fig:operator-shift}
 \end{figure}
 
 Deployment response provides a distinct source of discrepancy. In the
 strategic fixture, the strategic-minus-actor effect is
 \StrategicEffect{} \StrategicEffectCI{}, with family-balanced strategic
-reversal rate \StrategicSIRR{}. Appendix~\ref{app:fidelity-response}
-decomposes the direct, actor, and strategic response levels and compares
-strategic effects across opponent mechanisms. Together, these studies support
-the central premise of Improvement Fidelity: policy-level accuracy can remain
-strong while the updates encountered by the improvement process fail under
-operator shift or deployment-induced response.
-
+reversal rate \StrategicReversalRate{}. A second Leduc confirmation cohort shows the
+same mechanism along the response horizon: the proxy-positive reversal rate
+rises from 2.5\% under one-step response to 51.7\% under eight-step adaptation
+(Appendix~\ref{app:fidelity-response}). The appendix also compares
+response-disabled proxy, actor, and strategic evaluations across opponents. Together,
+these results identify two distinct sources of update-level failure: operator
+shift can concentrate error on the transitions proposed by the improvement
+process, while deployment response can sharply alter the value and sign of a
+candidate after deployment.
 
 \subsection{Decision Relevance and High-Fidelity Resolvability}
 \label{sec:exp-decision}
 
-Lemma~\ref{lem:decision-preservation} shows that update error changes a
+Proposition~\ref{prop:decision-preservation} shows that update error changes a
 replacement decision only when it is large relative to the candidate margin.
-For each sealed root, we compare the deployment winner with its competitors
-using a winner-relative correction-to-margin ratio; values above one correspond
-to a proxy/deployment top-1 reversal, with one as the tie boundary.
+For each held-out root, we compare the deployment winner with its competitors
+using a winner-relative correction-to-margin ratio; values above one indicate
+disjoint proxy and deployment optimal sets, with one as the tie boundary.
 Appendix~\ref{app:pivot-ext} gives the exact definition.
 
-Across \RevisionDecisionRoots{} sealed roots,
-\RevisionDecisionFlips{} select different proxy and deployment top-1 updates.
-Figure~\ref{fig:decision-relevance} relates this disagreement to response
-magnitude, candidate margins, and the value of validation. Top-1 disagreement
-alone does not determine allocation value: validation is useful when the
-fidelity error is consequential for the replacement decision and available HF
-evidence can resolve the resulting uncertainty.
-
+Across \RevisionDecisionRoots{} held-out roots, proxy and deployment optimal sets
+are disjoint in \RevisionDecisionFlips{} cases. Figure~\ref{fig:decision-relevance}
+shows that disagreement alone does not determine validation value: what matters
+is whether the fidelity error is large enough to threaten the replacement
+decision and whether available HF evidence can resolve the resulting margin.
 At the primary long budget, the PIVOT query set intersects the ex-post
 decision-critical pair in \RevisionCriticalQueryRate{}
-\RevisionCriticalQueryRateCI{} of roots, while the mean queried HF noise is
-\RevisionCriticalNoiseMargin{} \RevisionCriticalNoiseMarginCI{} times the
-proxy top-2 margin. Thus identifying a decision-relevant candidate is not
-sufficient when the available evidence is too noisy to resolve its ordering.
+\RevisionCriticalQueryRateCI{} of roots, while the mean model-assumed queried
+observation standard deviation (SD) is \RevisionCriticalNoiseMargin{} \RevisionCriticalNoiseMarginCI{}
+times the proxy top-2 margin. This regularized-model diagnostic does not
+estimate HF observation noise directly; targeting alone need not resolve ordering.
 
-\begin{figure}[H]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=\linewidth]{fig1_decision_relevance.pdf}
-  \caption{Decision relevance and HF resolvability determine validation value.
-  (a) Within-root normalized response gaps.
-  (b) Proxy/deployment top-1 disagreement across sealed roots.
-  (c) Normalized ISR reduction across environments.
-  (d) Correction relative to the deployment margin versus normalized ISR
-  reduction.
-  (e) Queried HF noise relative to the proxy top-2 margin versus normalized
-  ISR reduction; filled markers denote queries intersecting the ex-post
-  decision-critical pair and open diamonds denote misses.}
+  \caption{Decision relevance and HF resolvability. (a) Disjoint optimal sets.
+  (b) Winner-relative correction-to-margin ratio versus
+  normalized ISR reduction. (c) Model-assumed observation SD relative to the
+  proxy top-2 margin versus normalized ISR reduction; filled markers hit the ex-post
+  decision-critical pair.}
   \label{fig:decision-relevance}
 \end{figure}
 
-The sealed analysis therefore isolates the mechanism behind useful validation:
+The held-out analysis isolates the mechanism behind useful validation:
 fidelity error must threaten the replacement decision, and the available HF
 evidence must be informative enough to resolve that uncertainty.
-
 
 \subsection{PIVOT-KG under Limited High-Fidelity Budgets}
 \label{sec:exp-pivot}
 
-Table~\ref{tab:latest-main} reports the sealed fixed-budget comparisons.
-At the primary budget, PIVOT-KG substantially lowers ISR in Leduc, is nearly
-indistinguishable from Uniform in Kuhn, and is unresolved in Melting Pot.
-The secondary Melting Pot conditions further show that allocation value can
-vary with horizon and HF budget. This heterogeneity is consistent with the
-preceding mechanism analysis: deployment response alone does not determine
-the value of targeted validation.
+Table~\ref{tab:latest-main} reports the primary held-out fixed-budget comparison.
+PIVOT-KG substantially lowers ISR in Leduc, the contrast is small in Kuhn, and
+the primary Melting Pot comparison is unresolved. This heterogeneity is
+consistent with the preceding mechanism analysis: deployment response alone
+does not determine the value of targeted validation. Secondary Melting Pot
+conditions are reported in Appendix~\ref{app:pivot-ext}.
+For these cohorts, PIVOT-KG and Uniform share the calibrated posterior,
+observation-update rule, and final selection rule, differing only in query
+allocation; related component diagnostics are reported in
+Appendix~\ref{app:pivot-ext}.
 
-\begin{table}[H]
+\begin{table}[!ht]
   \centering
-  \footnotesize
-  \caption{Sealed fixed-budget PIVOT-KG versus Uniform comparisons
-  ($n=30$ paired roots per row). Uniform $-$ PIVOT is the reduction in mean
-  improvement-selection regret, so positive values favor PIVOT-KG; intervals
-  are root-bootstrap 95\% intervals. Primary and secondary comparisons are
-  shown separately.}
+  \scriptsize
+  \caption{Primary held-out fixed-budget comparisons (30 paired roots per row).
+  Positive Uniform $-$ PIVOT means lower ISR for PIVOT-KG; brackets give 95\%
+  root-bootstrap CIs.}
   \label{tab:latest-main}
   \input{tables/revision_main_results.tex}
 \end{table}
 
-For iterative self-improvement, we report cumulative improvement-selection
-regret, $\mathrm{CISR}=\sum_{t=1}^{T}\mathrm{ISR}_t$. Across
-\ClosedLoopRounds{} rounds, PIVOT-KG reduces paired CISR relative to Proxy
-Only by \ClosedLoopEffect{} \ClosedLoopEffectCI{}.
-Figure~\ref{fig:efficiency} compares PIVOT-KG with Proxy Only, Global-VOI,
-Paired LUCB, and the all-HF reference under matched HF cost, and also reports
-the fixed-budget effect across candidate-set sizes. Closed-loop trajectories
-and numerical robustness analyses are reported in
-Appendix~\ref{app:pivot-ext}.
+We also retain controlled batch-selector diagnostics, distinct from
+Algorithm~\ref{alg:pivot-kg}. Their pooled candidate-only cumulative improvement-selection regret (CISR) contrast for Proxy-Only minus PIVOT-batch under the legacy forced-replacement setting is \ClosedLoopEffect{} \ClosedLoopEffectCI{}
+over \ClosedLoopRounds{} rounds; Figure~\ref{fig:efficiency} compares the
+single-decision batch selectors at matched query counts. A second Leduc
+confirmation cohort yields a prespecified PIVOT-KG versus expected-Uniform
+selected-gain contrast of +0.02989 using a repeated-query, sample-size variant.
+Its component comparisons, the legacy closed-loop target, stopping behavior,
+and numerical diagnostics are specified in Appendix~\ref{app:pivot-ext}.
 
-\begin{figure}[H]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=\linewidth]{fig4_evidence_efficiency.pdf}
-  \caption{Evidence efficiency under limited HF budgets.
-  Panels (a)--(b) report cumulative improvement-selection regret under matched
-  HF cost in Performative Control and Congestion Resource.
-  Panel (c) reports paired CISR reduction at HF budget 4 across candidate-set
-  sizes. The all-HF rule is shown as a reference; intervals bootstrap
-  trajectory seeds.}
+  \caption{Legacy batch-selector diagnostics at matched HF query counts in
+  (a) Performative Control and (b) Congestion Resource. Lower single-decision
+  ISR is better; the all-HF reference uses only fully queried rows.
+  Intervals bootstrap seeds.}
   \label{fig:efficiency}
 \end{figure}
 
-These results show that PIVOT-KG can convert limited HF evidence into lower
-selection regret when that evidence resolves uncertainty that is consequential
-for the replacement decision.
+Together, these results support the central prediction of our analysis:
+decision-aware validation is most useful when the remaining uncertainty is
+both consequential for the replacement decision and resolvable by the
+available HF evidence.
 
-
-\subsection{HighwayEnv Stress Test}
+\subsection{Reactive Driving Stress Test}
 \label{sec:exp-highway}
 
-We finally test PIVOT-KG in a physically reactive setting where HF evaluation
-is scarce relative to the candidate set. The HighwayEnv redesign uses eight
+We evaluate PIVOT-KG through saved-truth replay and fresh reactive-driving
+simulator runs. The HighwayEnv saved-truth replay uses eight
 scheduled candidates formed by crossing four non-idle actions with early and
 late half-horizon windows, fits the correction model on 40 calibration roots,
-and evaluates 120 disjoint test roots. At the registered primary budget
-$B=4$, PIVOT-KG reduces ISR relative to exact Uniform allocation by
+and evaluates 120 disjoint test roots. At the primary budget $B=4$, PIVOT-KG
+reduces ISR relative to the exact Uniform validation rule by
 \HighwayRedesignBudgetFourContrast{} \HighwayRedesignBudgetFourCI{}.
-Uniform averages exactly over all feasible queried subsets, and each PIVOT
-query corresponds to a physical paired actor rollout.
+The Uniform rule averages exactly over all feasible queried subsets. Queries
+in this offline replay use saved deployment values and simulated observations;
+they do not invoke new actor rollouts.
 
-This result extends the evidence beyond the controlled and game-based
-settings: targeted HF validation can substantially reduce selection regret
-when the candidate set creates a nontrivial allocation problem. Earlier
-five-action cohorts and the secondary $B=2$ result are reported in
-Appendix~\ref{app:highway-replication}.
+The HighwayEnv result shows the same decision-aware validation principle in
+a reactive driving candidate-allocation problem. Two fresh HighwayEnv
+simulator cohorts provide targeted-baseline context at $B=4$:
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}p{2.0in}cc@{}}
+\toprule
+Cohort & IVR $-$ PIVOT-KG & Top-Proxy $-$ PIVOT-KG \\
+\midrule
+Fresh simulator (development; frozen calibration) & $-0.0030\ [-0.0073,0.0008]$ & $0.0135\ [0.0024,0.0307]$ \\
+Independent calibration/test cohort & $0.0016\ [-0.0042,0.0071]$ & $-0.0001\ [-0.0050,0.0045]$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Positive values favor PIVOT-KG. IVR is inconclusive in both cohorts, and
+Top-Proxy is positive in the first but null in the independent cohort; these
+are single-decision simulator results. The secondary $B=2$ redesign result
+and the earlier MetaDrive~\citep{li2022metadrive} stress test are reported in
+Appendix~\ref{app:physical-stress}.
+
+\paragraph{Exploratory MetaDrive PGMA boundary.}
+In a 24-root development cohort, PIVOT-KG and IVR selected identical actions
+(KG minus IVR $=0.000$), while all three KG--Top-Proxy disagreements favored
+Top-Proxy (KG minus Top-Proxy $=-8.396448$); the calibration benefit
+(Calibrated-No-HF minus Proxy-Only $=+26.8376$) reflects the calibrated prior,
+not KG allocation. We retain this scripted-IDM, matched-start/common-seed
+result as an exploratory boundary analysis, not confirmatory evidence of KG
+superiority; full diagnostics are in Appendix~\ref{app:physical-stress}.
+
+\subsection{Controlled Multi-round Replacement Loop}
+\label{sec:controlled-multiround}
+
+We also evaluated PIVOT-KG-Loop-v3c, a controlled five-round extension in
+synthetic PerformativeWorld with a fixed proposer, four candidates, two paired
+HF queries per round, and 120 fresh roots per response regime. This protocol
+was selected after exploratory v1--v4a variants, and its six-test Holm
+correction covers only the prespecified v3c contrasts. The paired results
+favor PIVOT-KG-Loop-v3c in this controlled extension, not in submitted static
+Algorithm~\ref{alg:pivot-kg} or general self-improvement; the Appendix reports
+the means, intervals, and calibration/test-shift diagnostics
+(Appendix~\ref{app:pivot-ext}).
 
 
-
-% BEGIN added figure references and existing figures (2026-09-25)
-Additional Leduc figures are provided in Figures~\ref{add20260923:leduc:reversal}--\ref{add20260923:leduc:e1-all}; additional MetaDrive figures are provided in Figures~\ref{add20260923:metadrive:matched_gain}--\ref{add20260923:metadrive:author_gain}.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.84\linewidth]{figures/additional_leduc/01_proxy_deployment_reversal.pdf}
-\caption{Proxy-positive improvement reversal in the second Leduc cohort. Within each root, the rate is the fraction of candidates with positive proxy gain whose deployment gain is negative. Bars show the mean of 30 root-level rates and the saved 95\% root-bootstrap intervals for 1-step and 8-step adaptation. Candidates within a root are not independent experimental units.}
-\label{add20260923:leduc:reversal}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{figures/additional_leduc/02_selection_regret_all_methods.pdf}
-\caption{All 13 reported methods and saved 95\% root-bootstrap intervals at long adaptation. Regret is the best attainable deployment gain, including retaining the incumbent, minus the selected gain. Budget exceptions are labeled. The symmetric-log axis is linear within 0.001 of zero; visual distances are not on a globally linear scale.}
-\label{add20260923:leduc:regret}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.84\linewidth]{figures/additional_leduc/03_stopping_budget.pdf}
-\caption{HF hands consumed by PIVOT-KG menu with and without stopping. Means are shown without invented per-bar intervals; the saved paired difference interval is stated separately. Final selected-gain differences were zero for all 30 observed roots. This measures query-sample use on sealed banks, not end-to-end computational cost.}
-\label{add20260923:leduc:stopping}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{figures/additional_leduc/05_v4_component_contrasts.pdf}
-\caption{All saved top-level gain contrasts, including the menu-versus-fixed null/negative finding. Error bars are saved paired root-bootstrap 95\% intervals; secondary comparisons are unadjusted. The HF-hands contrast is reported separately.}
-\label{add20260923:leduc:components}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{figures/additional_leduc/04_e1_all_seven_settings.pdf}
-\caption{All seven E1 settings, including null and negative results. Frozen and corrected analyses use the same saved worlds and differ in the calibration-noise treatment; they are not independent replications. Error bars are the saved pointwise 95\% root-bootstrap intervals without multiplicity adjustment. The primary budget is 16,384 HF hands in each setting.}
-\label{add20260923:leduc:e1-all}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{figures/additional_metadrive/matched_posterior_selected_audit_gain.pdf}
-\caption{First-cohort MetaDrive confirmation: matched-posterior selectors
-under the long response condition (12 profiles), 30 independent roots.
-Higher independent-audit selected gain is better. The prespecified primary
-budget is two candidate queries. Shading gives marginal 95\% root-bootstrap
-intervals, not the paired contrast interval; significance must not be inferred
-from band overlap. Proxy-only and calibrated no-HF controls cost zero HF
-episodes despite being repeated across the query axis.}
-\label{add20260923:metadrive:matched_gain}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{figures/additional_metadrive/author_E5C_selected_audit_gain.pdf}
-\caption{Separate author E5C implementations on the same first-cohort
-MetaDrive confirmation roots and long response condition. These curves are
-secondary comparisons. At two queries, the paired PIVOT-VOI minus Uniform
-interval includes zero. The shaded marginal intervals have the same
-interpretation as in Figure~\ref{add20260923:metadrive:matched_gain}.}
-\label{add20260923:metadrive:author_gain}
-\end{figure}
-% END added figure references and existing figures (2026-09-25)
-
+\FloatBarrier
 \section{Conclusion}
 
-This paper reframes reliable self-improvement as an update-level evaluation
-problem. Improvement Fidelity asks whether improvements measured by a proxy
-remain improvements after deployment on the updates an agent actually
-proposes. Our analysis shows why strong policy-level evaluation is
-insufficient: operator shift and deployment response can separate proxy from
-deployment improvement, while candidate margins determine whether these errors
-change the replacement decision. PIVOT-KG turns this structure into a
-decision-aware validation rule, allocating limited paired high-fidelity
-evidence according to its expected reduction in selection regret. Across
-controlled response worlds, sealed multi-agent decision roots, and a
-physically reactive HighwayEnv stress test, the results show that useful
-validation depends not on response magnitude alone, but on whether
-decision-critical uncertainty can be resolved.
+Improvement Fidelity is our core contribution: an operator-relative target for
+whether a proposed update remains beneficial after deployment response. Our
+analysis shows that global policy accuracy alone cannot ensure this; operator
+shift and candidate margins determine whether fidelity errors change a
+replacement decision. PIVOT is the paired validation framework, and PIVOT-KG
+applies established KG to allocate HF evidence by replacement regret. Results
+support conditional value in controlled, multi-agent, and driving studies;
+fresh HighwayEnv simulator cohorts show no significant advantage over IVR.
 
-Several limitations define the scope of these results. The direct, actor, and
-strategic response models capture important forms of adaptation but not the
-full range of deployment dynamics, and the strategic fixtures are not
-equilibrium characterizations. PIVOT-KG also relies on informative
-high-fidelity evidence and a calibrated correction model; under very limited
-budgets or noisy observations, decision-relevant uncertainty can remain
-unresolved. Finally, the HighwayEnv result establishes the method in one
-physically reactive candidate-allocation setting rather than across all
-interactive environments.
+Evidence depends on a calibrated correction prior and informative HF queries;
+reported intervals condition on fitted calibration data. The response models
+and virtual driving studies do not span deployment dynamics. The five-round
+v3c result is a controlled post-search extension with calibration/test shift,
+not confirmation of static Algorithm 1 or general self-improvement. Future
+work should study cross-round calibration and intervention-based HF evaluation.
+We make no claim of universal KG superiority, equilibrium convergence, or
+physical-driving performance.
 
-These limitations point to natural extensions: richer and evolving response
-models, repeated self-improvement in which agents and environments co-adapt,
-and intervention-based high-fidelity evidence in more realistic deployment
-systems. More broadly, as agents increasingly modify their own policies, the
-central evaluation question is no longer only whether a candidate scores
-better under a verifier, but whether replacing the incumbent with that
-candidate remains an improvement in the world the replacement creates. When
-better can become worse after deployment, reliable self-improvement requires
-fidelity of improvements, not merely accuracy of policy evaluations.
+\label{sec:conclusion-end}
 
-\section*{AI Use Statement}
-The research questions, conceptual framing, mathematical development, and
-experimental design were developed by the authors. Generative AI tools were
-used only during manuscript revision for language and presentation polishing,
-and were not used to design the research or generate experimental results.
-The authors reviewed the final manuscript and take full responsibility for
-its contents.
 
-\paragraph{Reproducibility Statement.}
-The anonymous supplement provides deterministic configurations, source
-evidence, figure tables, and commands for reproducing the reported results.
+\subsection*{AI use statement}
+The authors developed the problem formulation, theoretical contributions, and
+initial experiments. During the review response, generative AI tools assisted
+with experiment implementation and audit code, research analysis, and language
+polishing. Generative AI tools also assisted with review-stage experimental
+design and protocol refinement. The authors independently reviewed the
+protocols and results,
+verified the reported evidence, and take full responsibility for the research
+and final manuscript.
 
-\paragraph{Ethics Statement.}
-The study uses controlled virtual environments and public data only; it
-involves no human subjects, personal data, live trading, or external
-authorization.
+\subsection*{Ethics statement}
+This study uses controlled virtual environments and publicly available
+benchmark environments and data. It involves no human subjects, personal data,
+live trading, or real-world autonomous-system deployment. The experiments are
+conducted entirely in simulation and do not directly affect users or physical
+systems.
+
+\subsection*{Reproducibility statement}
+The accompanying supplementary material includes an anonymized code archive,
+cohort-specific configurations, figure provenance, and reproduction
+instructions for the reported results, distinguishing legacy batch diagnostics
+from the held-out and driving implementations.
+The anonymized code and reproducibility materials are also available at
+\url{https://anonymous.4open.science/r/pivot-anonymous-review-2E67/}.
 
 \label{refs:start}
 \bibliographystyle{iclr2027_conference}
@@ -733,51 +795,65 @@ authorization.
 
 \clearpage
 \appendix
-
-\appendix
+\label{app:artifact}
 
 \section{Response Mechanism Analyses}
 \label{app:fidelity-response}
 
-Section~\ref{sec:exp-fidelity} reports the headline deployment-response
-result. Figures~\ref{fig:layers}--\ref{fig:strategic} expand this analysis by
-decomposing the direct, actor, and strategic response levels and comparing
-strategic effects across opponent mechanisms. The family-balanced strategic
-reversal rate is the unweighted mean over the three adaptive opponent
-families.
+The operator contrast pools Performative Control, Congestion Resource, and
+frozen Multi-Agent Particle Environment 2 (MPE2)~\citep{lowe2017maddpg}
+with weights $0.4/0.4/0.2$; Figure~\ref{fig:operator-shift} shows the
+first two. Its interval resamples 450 condition/seed cells sharing 30 seeds;
+figure bands resample six condition means. Congestion strengths are duplicated;
+global rank is a fixed zero-shift evolutionary-policy reference. These are
+descriptive shift diagnostics, not measured $\chi^2$ divergence.
+Figure~\ref{fig:layers}'s proxy disables response, unlike the fixed-incumbent-world
+$\Delta_{\mathrm{direct}}$. Strategic reversal averages the three adaptive families.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figA_response_footprint.pdf}
-  \caption{World-response decomposition. Panel (a) traces
-  \StrategicAllFamilySeedTraces{} family-by-seed observations through direct,
-  actor, and strategic worlds. Panel (b) separates mechanical and strategic
-  effects, and panel (c) shows the strategic reversal plane. Summary intervals
-  use the 30 matched seeds.}
+  \caption{Response mechanisms. (a) Response-disabled proxy, actor, and
+  strategic evaluations. (b) Strategic-minus-actor effects by opponent family. (c) Actor
+  versus strategic improvement. Intervals use 30 matched seeds.}
   \label{fig:layers}
 \end{figure}
 
-\begin{figure}[H]
+A separate Leduc confirmation cohort tests the same mechanism along the
+response horizon. Among proxy-positive candidates, the mean root-level
+improvement-reversal rate rises from 2.5\% under one-step response to 51.7\%
+under eight-step adaptation (Figure~\ref{fig:leduc-response-horizon}). This
+supports the main-text conclusion that deployment response can amplify
+update-level failure rather than merely shift policy values uniformly.
+
+\begin{figure}[!htbp]
   \centering
-  \includegraphics[width=\linewidth]{figD_strategic_distribution.pdf}
-  \caption{Strategic effects across opponent mechanisms. Family-specific
-  distributions are reported over 30 matched opponent-seed clusters, with the
-  adaptive-family mean shown in the reversal plane.}
-  \label{fig:strategic}
+  \includegraphics[width=0.70\linewidth]{figures/additional_leduc/01_proxy_deployment_reversal.pdf}
+  \caption{Leduc response-horizon confirmation. Reversal rates are computed
+  among proxy-positive updates within each root, where a reversal means
+  negative deployment gain. Bars show means across 30 roots under one-step
+  and eight-step adaptation, with 95\% root-bootstrap CIs.}
+  \label{fig:leduc-response-horizon}
 \end{figure}
 
-
+\FloatBarrier
 \section{Extended PIVOT-KG Evaluation}
 \label{app:pivot-ext}
 
-For roots with a unique deployment winner
-$j^*=\arg\max_j\Delta_{*,j}$, define
-$G_j=\Delta_{*,j}-\Delta_{V,j}$ and
-$m_k=\Delta_{*,j^*}-\Delta_{*,k}$.
-We use the winner-relative correction-to-margin ratio
-$\max_{k\neq j^*}(G_{j^*}-G_k)/m_k$.
-A value above one means that at least one competitor overtakes the deployment
-winner under proxy evaluation; one is the tie boundary.
+In the calibrated poker, Melting Pot, and driving evaluations, candidate
+coordinates follow the same fixed update slots across calibration and test roots.
+
+\paragraph{Decision diagnostics.}
+Let $T=\arg\max_{C^+}\Delta_*$ and $b\in\arg\max_{j\in T}\Delta_{V,j}$.
+The ratio is $\max_{k\notin T}(G_b-G_k)/(\Delta_{*,b}-\Delta_{*,k})$,
+with $G=\Delta_*-\Delta_V$ and tie tolerance $10^{-12}$.
+The 51 disagreements are disjoint optimal sets; 28 roots have tied optima.
+Above one indicates disjoint optimal sets; one is the tie boundary.
+The query-hit pair uses proxy/deployment top candidates within $C$ (stable index ties);
+top-2 margins exclude no-update. Normalization divides Uniform minus PIVOT ISR
+by the deployment range over $C^+$. The noise ratio uses mean queried $\sqrt{R_j}$,
+a margin floor of $10^{-12}$, and poker's model-variance floor $0.25$;
+it is model-assumed, not directly measured observation noise.
 
 At the primary long budget, the decision-critical query-hit rates are
 \RevisionLeducCriticalQueryRate{} in Leduc,
@@ -786,93 +862,265 @@ At the primary long budget, the decision-critical query-hit rates are
 gain is \RevisionCriticalQueryHitGain{} \RevisionCriticalQueryHitGainCI{}
 among the 87 hit roots and
 \RevisionCriticalQueryMissGain{} \RevisionCriticalQueryMissGainCI{} among the
-three misses. These diagnostics complement the fixed-budget results by
-separating successful targeting from successful resolution.
+three misses. These diagnostics separate successful targeting from successful
+resolution.
 
-For the closed-loop analyses, CTI denotes cumulative true improvement and CISR
-denotes cumulative improvement-selection regret.
+\paragraph{Secondary and confirmation analyses.}
+The first cohorts use 12 calibration/30 test roots and one frozen Uniform
+draw. Poker has nine alpha-mixture candidate slots, including an alpha=0
+incumbent copy, plus a separate no-update action; Melting Pot
+uses eight specialist mixtures on one repeated stag-hunt substrate. Full
+candidate/cost protocols accompany the supplement. The designated allocation
+interaction is the paired long-minus-short contrast
+$(\mathrm{ISR}_{U}-\mathrm{ISR}_{P})_{\rm long}-(\mathrm{ISR}_{U}-\mathrm{ISR}_{P})_{\rm short}$:
+$0.0365\,[0.0145,0.0637]$ (Leduc), $0.0020\,[0,0.0058]$ (Kuhn), and
+$1.4815\,[-0.3930,4.0956]$ (Melting Pot); only Leduc meets the joint
+primary/interaction criterion.
 
-\begin{figure}[H]
+Table~\ref{tab:secondary-sealed} retains the secondary comparisons. The second
+Leduc cohort was designed after the first-cohort results, with fresh confirmation
+roots. This cohort is a mechanism confirmation study rather than a direct replication of the fixed-budget benchmark. Its PIVOT-KG variant queries $(j,n)$ pairs with $n\in\{512,2048,4096\}$,
+permits repeated candidates, and charges $2n$ hands; it extends the once-per-candidate
+Algorithm~\ref{alg:pivot-kg}. At 16,384 hands its prespecified contrast against
+exact-subset expected Uniform is +0.02989 under long adaptation.
+Figure~\ref{fig:leduc-components} retains the component comparisons; its final
+row is $(\mathrm{PIVOT}-\mathrm{Uniform})_{\rm long}-(\mathrm{PIVOT}-\mathrm{Uniform})_{\rm short}$,
+not a direct long-minus-short policy-gain contrast.
+
+\begin{table}[!htbp]
+  \centering
+  \footnotesize
+  \caption{Secondary held-out comparisons. Positive Uniform $-$ PIVOT means
+  lower ISR for PIVOT-KG; brackets give 95\% root-bootstrap CIs.}
+  \label{tab:secondary-sealed}
+  \input{tables/revision_secondary_results.tex}
+\end{table}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=\linewidth]{figures/additional_leduc/05_v4_component_contrasts.pdf}
+  \caption{Leduc confirmation-cohort component contrasts under long response
+  (30 roots; primary budget 16,384 HF hands). Positive values favor the first
+  term. The expected-Uniform comparison is prespecified primary; all others
+  are secondary with unadjusted 95\% CIs.}
+  \label{fig:leduc-components}
+\end{figure}
+
+The secondary stopping rule reduces mean HF use from 16,384 to 12,083.2 hands,
+a 26.25\% reduction, while producing the same selected gain as the full-budget
+rule on all 30 observed roots. The paired difference in HF use is $-4300.8$
+$[-6007.5,-2662.4]$ hands. Thus the stopping variant can save validation
+queries in this cohort without changing the observed replacement decision.
+
+\paragraph{Post-review Poker calibration resampling.}
+We refit the default correction prior in 500 bootstrap resamples of the
+existing 12-root Leduc calibration cohort and replayed the selectors on the
+same 30 held-out roots. Uniform-minus-PIVOT ISR remained positive in all fits
+(median $0.0365$; 2.5th--97.5th calibration-refit percentiles
+$[0.0228,0.1127]$), while the IVR-minus-PIVOT ISR contrast was zero in every
+fit. This resampling range is conditional on the fixed test cohort; it is not
+an independent calibration cohort or a new rollout.
+
+\paragraph{Earlier loop variants.}
+The initial 30-root v1 loop gave cumulative ISR 2.602 for PIVOT-KG versus
+1.986 for IVR and 1.999 for Top-Proxy; paired 95\% intervals crossed zero.
+The v2 confirmation (120 roots per response regime) gave PIVOT/IVR/Top-Proxy
+cumulative ISR of 0.0296/0.0669/0.1331 (low), 0.3497/0.5770/0.1600
+(medium), and 0.2763/0.3548/0.3048 (high): PIVOT beat both at low, beat IVR
+but lost to Top-Proxy at medium, and had inconclusive ISR contrasts and lower
+deployment utility than both baselines at high.
+The initial v3 run is excluded because its implementation treated noisy HF
+observations as exact. Corrected v3b retained a common sentinel and online
+coefficient updates and was mixed against Top-Proxy. The v4a development run
+lost to Top-Proxy in all three response regimes and was not promoted. These
+variants and their ledgers remain in the audit archive and are not pooled with
+the v3c result.
+
+\paragraph{PIVOT-KG-Loop-v3c confirmation.}
+The amended PerformativeWorld study uses five rounds, four candidates, two
+sequential paired HF queries per round, and 120 fresh roots in each low,
+medium, and high response regime. The three methods share the calibration data,
+proposer function and random-seed schedule, contextual linear correction model,
+response operator, terminal posterior-mean selector, and total query budget.
+Their first-round panels match; later panels are generated relative to each
+method's own incumbent and may diverge. The amended protocol removes the
+sentinel: both queries are allocated by each method's own acquisition rule.
+Relative to v3b, v3c changes both the sentinel-query allocation and the
+cross-round correction-model update policy; it is therefore a protocol-level
+extension, not an isolated sentinel ablation. The correction model is reset
+each round; previous-round HF observations do not update its regression. Thus
+the IVR and Top-Proxy \texttt{Online} labels mean
+within-round sequential posterior conditioning, not persistent online
+calibration. The extension is not the submitted static
+Algorithm~\ref{alg:pivot-kg}.
+
+Fresh confirmation roots are conditional on the protocol selected after
+exploratory variants; Holm correction covers the six prespecified within-v3c
+contrasts, not the preceding v1--v4a search. The confirmation means and paired
+intervals are reported in Table~\ref{tab:multiround-confirmation}. The six paired baseline-minus-PIVOT intervals exclude zero. No
+sampled sign flip was as extreme as the observed contrast in 100,000 draws;
+the plus-one estimate is approximately $10^{-5}$ per test and the six-test
+Holm-adjusted value is approximately $6\times10^{-5}$. PIVOT-minus-IVR
+cumulative deployment-return differences are
+$0.0757\,[0.0647,0.0878]$, $0.4530\,[0.3666,0.5606]$, and
+$1.3656\,[0.9790,1.8314]$ in low/medium/high response. The corresponding
+PIVOT-minus-Top-Proxy intervals are
+$0.0643\,[0.0489,0.0798]$, $0.1830\,[0.1429,0.2236]$, and
+$0.1863\,[0.1457,0.2304]$. Thus the deployment-return criterion is also
+positive in all six comparisons.
+
+The correction model's calibration pressure support is $[0.054,0.696]$.
+Outside-support test states occur in 0/1800, 148/1800 (8.2\%), and 423/1800
+(23.5\%) ledger rows under low/medium/high response. At medium response,
+PIVOT-KG-Loop-v3c has 0/600 such states, compared with 76/600 for IVR and 72/600 for
+Top-Proxy; at high response the counts are 83/600, 163/600, and 177/600.
+These distributions arise on method-induced trajectories. The counts describe
+extrapolation on some paths, but do not identify its causal effect on ISR.
+Across test candidate vectors, 80.3\% and 80.0\% exceed the calibration-set
+Mahalanobis distance thresholds at P95 and P99, respectively. The calibration
+feature \texttt{round\_fraction} is fixed at zero while tests span $[0,1]$.
+The calibration feature for round fraction is constant in calibration
+(round zero), so its later-round effect is not identified by training data.
+Five-fold root-held-out calibration gives 93.0\% working 95\% interval
+coverage; this does not establish coverage for OOD deployment states. We report
+these limits with the positive result. The independent replay
+recomputed all 5,400 round records, 10,800 HF observations, 5,400 independent
+evaluation panels, and 5,400 deployment returns; all protocol checks passed.
+The complete source hashes, pressure-support audit, and ledgers are included
+in the supplementary audit record. This result is conditional on the declared
+controlled world, candidate proposer, calibration cohort, and five-round
+horizon; it does not establish physical-driving or universal superiority.
+
+\begin{table}[!htbp]
+  \centering
+  \scriptsize
+  \setlength{\tabcolsep}{4pt}
+  \caption{PIVOT-KG-Loop-v3c five-round confirmation (120 paired roots per
+  response regime). ISR is cumulative improvement-selection regret; lower is
+  better. Contrasts are baseline minus PIVOT-KG-Loop-v3c with paired 95\%
+  root-bootstrap confidence intervals. Holm correction covers the six
+  prespecified contrasts shown here only.}
+  \label{tab:multiround-confirmation}
+  \begin{tabular}{lrrrrr}
+    \toprule
+    Response & PIVOT ISR & IVR ISR & IVR $-$ PIVOT [95\% CI] & Top-Proxy ISR & Top-Proxy $-$ PIVOT [95\% CI] \\
+    \midrule
+    Low    & 0.00888 & 0.05574 & 0.0469 [0.0385, 0.0565] & 0.07095 & 0.0621 [0.0491, 0.0755] \\
+    Medium & 0.00141 & 0.44046 & 0.4391 [0.3706, 0.5168] & 0.23241 & 0.2310 [0.1805, 0.2823] \\
+    High   & 0.08886 & 0.98532 & 0.8965 [0.6449, 1.1897] & 0.33346 & 0.2446 [0.2019, 0.2917] \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Frozen-state matched diagnostic.}
+To isolate query allocation from path divergence, a separate auxiliary study
+held the initial state, incumbent, candidate panel, proxy values, calibration,
+budget, evaluation seeds, and terminal rule fixed across selectors (120 roots
+per response regime). At low response, all methods had zero mean ISR. At
+medium response, mean ISR was 0.00054 for the v3c KG selector, 0.19957 for IVR, and
+0.06443 for Top-Proxy; baseline-minus-PIVOT paired 95\% intervals were
+$[0.1763,0.2214]$ and $[0.0496,0.0788]$. At high response, the KG selector had ISR
+0.03297 versus 0.03051 for IVR (difference $-0.00246$,
+$[-0.0152,0.0105]$, inconclusive) and 0.09510 for Top-Proxy (difference
+$0.06213$, $[0.0497,0.0751]$). Holm-adjusted tests cover these six auxiliary
+contrasts only. This post-review diagnostic is not pooled with v3c and does
+not correct for the preceding variant search; it supports selector benefits
+under some fixed states, not a universal KG advantage. Its preregistration,
+ledger, and independent replay are included in the supplement.
+
+\paragraph{Closed-loop and numerical diagnostics.}
+Figures~\ref{fig:efficiency}, \ref{fig:closed-loop}, and~\ref{fig:robustness}
+use legacy batch selection, not Algorithm~\ref{alg:pivot-kg}: no within-batch
+reacquisition; observed values replace queried estimates; unqueried estimates
+can omit later observations. The closed loop forces replacement and reports
+$\mathrm{CISR}_C=\sum_t[\max_{j\in C_t}\Delta_{*,j}-\Delta_{*,\hat j_t}]$
+without no-update; negative improvement with zero regret is then possible.
+Figure~\ref{fig:efficiency} counts queries and uses VOI/LUCB heuristics.
+Figure~\ref{fig:robustness} compares Monte Carlo draws on 24 Congestion test
+groups ($K=4$): all costs scale equally, query count stays two, and seeds vary.
+With common draws the ranking is invariant, so this does not identify cost misspecification.
+
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{fig5_closed_loop.pdf}
-  \caption{Closed-loop validator outcomes. The top row reports cumulative true
-  improvement (CTI) and the bottom row cumulative improvement-selection regret
-  (CISR). The columns show the frozen external null, Performative Control, and
-  Congestion Resource; thin curves show seed-level trajectories and markers
-  summarize the compared decision rules.}
+  \caption{Legacy forced-replacement trajectories. Top: cumulative true
+  improvement; bottom: candidate-only $\mathrm{CISR}_C$, excluding no-update.
+  Thin curves are seeds; markers summarize batch decision rules.}
   \label{fig:closed-loop}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=\linewidth]{figC_posterior_robustness.pdf}
-  \caption{PIVOT-KG robustness to posterior sample count and HF-cost
-  misspecification. Panels report Monte Carlo query-set stability, regret
-  sensitivity, and query agreement across the registered calibration groups.}
+  \caption{Legacy batch-selector Monte Carlo diagnostics on 24 test groups.
+  Panels show query agreement across sample counts and regret/query variation
+  under common cost scaling with different random draws; this is not an
+  identified cost-misspecification effect.}
   \label{fig:robustness}
 \end{figure}
 
+Additional response-mixture settings yield positive, null, and negative
+allocation effects, consistent with the main-text conclusion that deployment
+response alone does not determine validation value. Full method-by-method and
+response-mixture diagnostics are provided in the supplement.
 
-\section{HighwayEnv Validation and Redesign}
+\FloatBarrier
+\section{Reactive Driving Stress Tests}
+\label{app:physical-stress}
 \label{app:highway-replication}
 
-The original and fresh-seed replication cohorts each use 20 calibration and 60
-test roots, with no overlap between cohorts. Both use the same five-action
-panel; the registered primary budget is $B=2$ and $B=4$ is secondary.
-Intervals use paired root bootstrap and condition on the fitted calibration
-model, so they quantify uncertainty across held-out test roots rather than
-calibration sampling uncertainty. A technical smoke run exposed two
-replication roots; they are retained without subsequent tuning or exclusion.
+\paragraph{HighwayEnv.}
+The original and fresh-seed five-action cohorts, together with their paired
+root-bootstrap intervals, are retained in the supplementary audit. The
+eight-candidate redesign uses 40 calibration roots, 120 disjoint test roots,
+exact-subset Uniform, and saved-truth offline replay; all smoke-exposed roots
+remain included without retuning. This is the source of the 0.0435 to 0.0055
+ISR comparison; it is distinct from the new simulator runs below.
 
-Uniform retains proxy estimates for unqueried candidates, whereas PIVOT-KG
-uses its calibrated posterior. The comparison therefore evaluates the complete
-selection rules rather than acquisition alone. Full execution records and
-physical-evaluation accounting are provided in the supplement.
+The fresh simulator development cohort reuses the frozen calibration model
+and gives IVR-Trace, Top-Proxy, and sampled-Uniform
+baseline-minus-PIVOT ISR contrasts of $-0.0030$, $0.0135$, and $0.0295$;
+the independent calibration/test cohort gives $0.0016$, $-0.0001$, and $0.0167$.
+Their paired intervals and simulator-call accounting are in the supplement.
+Both are single-decision evidence within the same HighwayEnv task, not evidence
+of universal KG superiority or multi-round co-adaptation.
 
-\paragraph{Eight-candidate redesign.}
-The redesign freezes eight scheduled candidates, fits a joint correction model
-on 40 calibration roots, and evaluates 120 disjoint test roots. Its registered
-primary budget is $B=4$ and $B=2$ is secondary. Uniform is the exact average
-over all $\binom{8}{B}$ queried subsets (70 at $B=4$ and 28 at $B=2$), while
-PIVOT-KG applies sequential Gaussian updates. Each query is a physical paired
-actor rollout. Two test roots were exposed during technical smoke and are
-retained without retuning or exclusion. Detailed execution and audit records
-are provided in the supplement.
+\paragraph{Earlier MetaDrive stress cohort.}
+We additionally evaluate an earlier MetaDrive~\citep{li2022metadrive} cohort under
+a long-response condition with 12 profiles and 30 held-out roots. Its
+prespecified $B=2$ PIVOT-KG--Uniform contrast is
+$+1.89\,[-1.29,5.49]$, unresolved; $B=1,4$ are secondary. We retain this
+boundary result and its full cost breakdown in the supplement.
 
-\begin{table}[H]
+\paragraph{Exploratory MetaDrive PGMA allocation-development boundary.}
+The later PGMA allocation-development study retains all 24 declared roots with
+$K=4$ and $B=2$, shared panel/prior/observation model/terminal rule, and an
+independent truth bank. KG and IVR select the same action on every root (KG
+minus IVR $=0.000$). KG and Top-Proxy disagree on three roots, all favoring
+Top-Proxy, giving KG minus Top-Proxy $=-8.396448$. Calibrated-No-HF minus
+Proxy-Only is $+26.8376$; this is calibration value, not KG allocation value.
+The opponents are scripted IDM policies, and pairing is matched-start/
+common-seed rather than strict CRN. This is descriptive development evidence,
+not a confirmatory superiority result; the complete decision and truth ledgers
+are included in the external audit archive.
+
+\paragraph{Evaluator boundary.}
+Improvement Fidelity defines an evaluation target, not a preferred learner
+architecture. In an out-of-distribution comparison, a transition-specific
+learner does not outperform the global learner: the transition-minus-global
+ISC contrast is \OODGain{} \OODGainCI{}. Full ISC and IDE comparisons are
+reported in the supplement.
+
+
+\begin{figure}[!htbp]
   \centering
-  \footnotesize
-  \caption{HighwayEnv original study, fresh-seed replication, and
-  eight-candidate redesign. $B$ is the number of paired HF candidate queries
-  per decision. Uniform $-$ PIVOT is the ISR reduction from targeted
-  validation, so positive values favor PIVOT-KG; intervals are paired 95\%
-  bootstrap intervals. Bold budgets mark the registered primary comparison
-  within each cohort.}
-  \label{tab:highway-budget}
-  \input{tables/highway_results.tex}
-\end{table}
-
-
-\section{OOD Evaluator Boundary Analysis}
-\label{app:boundary}
-
-The OOD comparison asks whether the update-level estimand implies that a
-transition-specific learner must outperform a global learner. It does not:
-the transition-minus-global ISC contrast is \OODGain{} \OODGainCI{}.
-Figure~\ref{fig:ood-null} reports the corresponding ISC and IDE comparisons.
-This separates the evaluation target introduced by Improvement Fidelity from a
-claim about which learner architecture must perform best.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\linewidth]{figB_learned_ood_null.pdf}
-  \caption{OOD evaluator boundary analysis.
-  (a) Transition-minus-global ISC across evaluation splits.
-  (b) Global-minus-transition IDE over the same splits.
-  (c) Paired OOD ISC reports for the global and transition evaluators; the
-  diagonal indicates equal ISC. Ranges in the forest panels are descriptive
-  spans across the two fitted model families.}
-  \label{fig:ood-null}
+  \includegraphics[width=\linewidth]{figures/additional_metadrive/matched_posterior_selected_audit_gain.pdf}
+  \caption{Earlier MetaDrive stress test as a boundary case. The prespecified $B=2$
+  comparison remains unresolved: $+1.89\,[-1.29,5.49]$, with the 95\%
+  root-bootstrap CI crossing zero. (a) Selected deployment gain (12 profiles,
+  30 held-out roots; marginal 95\% root-bootstrap intervals).
+  (b) Paired PIVOT-KG--Uniform selected deployment gain contrasts;
+  $B=1,4$ are secondary.}
+  \label{fig:metadrive-stress}
 \end{figure}
-
 \end{document}

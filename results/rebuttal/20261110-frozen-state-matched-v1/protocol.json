@@ -1,0 +1,37 @@
+{
+  "acquisition": {
+    "IVR-Online-v3c": "integrated variance reduction, sequential posterior",
+    "PIVOT-KG-Loop-v3c": "exact one-step Gaussian KG, sequential posterior",
+    "Top-Proxy-Online-v3c": "descending proxy delta, sequential posterior"
+  },
+  "calibration_roots": 240,
+  "candidate_count": 4,
+  "cross_round_update": "none",
+  "hf_budget_per_root": 2,
+  "initial_pressure": "0.10 + 0.015 * (root_offset mod 7)",
+  "physical_simulator_called": false,
+  "protocol_id": "FROZEN-STATE-V3C-2026-11-10",
+  "response_regimes": {
+    "high": 0.85,
+    "low": 0.35,
+    "medium": 0.6
+  },
+  "root_blocks": {
+    "high": 1010000,
+    "low": 990000,
+    "medium": 1000000
+  },
+  "roots_per_regime": 120,
+  "rounds": 1,
+  "shared_across_methods": [
+    "incumbent",
+    "candidate_panel",
+    "proxy_values",
+    "calibration_model",
+    "seeds",
+    "budget",
+    "terminal_rule"
+  ],
+  "split": "post_review_auxiliary",
+  "state_rule": "fixed initial state and incumbent; no deployment carries between roots"
+}

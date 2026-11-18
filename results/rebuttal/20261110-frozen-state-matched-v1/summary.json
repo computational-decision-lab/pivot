@@ -1,0 +1,127 @@
+{
+  "calibration": {
+    "five_fold_cv": {
+      "bias": 0.0011736408023277707,
+      "by_pressure_bin": {
+        "high_pressure_gt_0_50": {
+          "bias": -0.03085854492825973,
+          "mae": 0.8167455609590061,
+          "n_observations": 300,
+          "rmse": 1.0903506813531372
+        },
+        "low_pressure_le_0_25": {
+          "bias": -0.0011450814238813222,
+          "mae": 0.7529774182997475,
+          "n_observations": 300,
+          "rmse": 1.0253550964150946
+        },
+        "mid_pressure_0_25_to_0_50": {
+          "bias": 0.029799397432991617,
+          "mae": 0.6832964129510188,
+          "n_observations": 360,
+          "rmse": 0.9880025338476414
+        }
+      },
+      "by_response_strength": {
+        "0.35": {
+          "bias": -0.032317993588379515,
+          "mae": 0.4182217224424881,
+          "n_observations": 320,
+          "rmse": 0.6136555128696243
+        },
+        "0.6": {
+          "bias": 0.0621306221320171,
+          "mae": 0.7510336655133522,
+          "n_observations": 320,
+          "rmse": 0.9649231980784201
+        },
+        "0.85": {
+          "bias": -0.02629170613665424,
+          "mae": 1.0710683696691377,
+          "n_observations": 320,
+          "rmse": 1.37503521519543
+        }
+      },
+      "candidate_observations": 960,
+      "folds": 5,
+      "label_noise_variance": 0.00020866806301406,
+      "mae": 0.7467745858749927,
+      "model_residual_variance": 1.065915235167889,
+      "observation_variance": [
+        [
+          0.0010705726622776246,
+          0.0004473318131377916,
+          0.0010096366564656958,
+          0.0010011824441066115
+        ],
+        [
+          0.0018461202334295358,
+          0.0004038407060534798,
+          0.0011705947357846778,
+          0.0019624064957710066
+        ],
+        [
+          0.0029354670402668183,
+          0.0018749015093695008,
+          0.001964117866406439,
+          0.004345961886280576
+        ]
+      ],
+      "rmse": 1.0325327613353985,
+      "roots": 240
+    }
+  },
+  "calibration_model_hash": "1fb7aed96dfa798761a134b3d04739fd0878c0e3c49951f8831875a365b90641",
+  "counts": {
+    "ledger_rows": 1080,
+    "methods": 3,
+    "queries": 2160,
+    "regimes": 3,
+    "roots_per_regime": 120
+  },
+  "ledger_sha256": "28193846a1711264ee152e7788851e7ae88d4076d3caf4b50a7389e39e0e7841",
+  "methods": [
+    "PIVOT-KG-Loop-v3c",
+    "IVR-Online-v3c",
+    "Top-Proxy-Online-v3c"
+  ],
+  "protocol": {
+    "acquisition": {
+      "IVR-Online-v3c": "integrated variance reduction, sequential posterior",
+      "PIVOT-KG-Loop-v3c": "exact one-step Gaussian KG, sequential posterior",
+      "Top-Proxy-Online-v3c": "descending proxy delta, sequential posterior"
+    },
+    "calibration_roots": 240,
+    "candidate_count": 4,
+    "cross_round_update": "none",
+    "hf_budget_per_root": 2,
+    "initial_pressure": "0.10 + 0.015 * (root_offset mod 7)",
+    "physical_simulator_called": false,
+    "protocol_id": "FROZEN-STATE-V3C-2026-11-10",
+    "response_regimes": {
+      "high": 0.85,
+      "low": 0.35,
+      "medium": 0.6
+    },
+    "root_blocks": {
+      "high": 1010000,
+      "low": 990000,
+      "medium": 1000000
+    },
+    "roots_per_regime": 120,
+    "rounds": 1,
+    "shared_across_methods": [
+      "incumbent",
+      "candidate_panel",
+      "proxy_values",
+      "calibration_model",
+      "seeds",
+      "budget",
+      "terminal_rule"
+    ],
+    "split": "post_review_auxiliary",
+    "state_rule": "fixed initial state and incumbent; no deployment carries between roots"
+  },
+  "protocol_sha256": "8a83c6ea2d51b9877c63bb3caef2ae8d75e9b9e7b1fde8008f604d12bc383341",
+  "status": "PASS"
+}

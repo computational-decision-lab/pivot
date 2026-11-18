@@ -1,0 +1,560 @@
+{
+  "analysis_kind": "contextual_online_multiround_selector_comparison",
+  "audit_checks": {
+    "all_pass": true,
+    "common_deployment_seed_across_methods": true,
+    "complete_method_root_round_panel": true,
+    "state_transitions_recorded": true,
+    "terminal_rule_includes_incumbent": true,
+    "two_queries_each_online_round": true,
+    "unique_query_ids_within_round": true
+  },
+  "calibration": {
+    "contextual_model_hash": "1fb7aed96dfa798761a134b3d04739fd0878c0e3c49951f8831875a365b90641",
+    "five_fold_cv": {
+      "bias": 0.0011736408023277707,
+      "by_pressure_bin": {
+        "high_pressure_gt_0_50": {
+          "bias": -0.03085854492825973,
+          "mae": 0.8167455609590061,
+          "n_observations": 300,
+          "rmse": 1.0903506813531372
+        },
+        "low_pressure_le_0_25": {
+          "bias": -0.0011450814238813222,
+          "mae": 0.7529774182997475,
+          "n_observations": 300,
+          "rmse": 1.0253550964150946
+        },
+        "mid_pressure_0_25_to_0_50": {
+          "bias": 0.029799397432991617,
+          "mae": 0.6832964129510188,
+          "n_observations": 360,
+          "rmse": 0.9880025338476414
+        }
+      },
+      "by_response_strength": {
+        "0.35": {
+          "bias": -0.032317993588379515,
+          "mae": 0.4182217224424881,
+          "n_observations": 320,
+          "rmse": 0.6136555128696243
+        },
+        "0.6": {
+          "bias": 0.0621306221320171,
+          "mae": 0.7510336655133522,
+          "n_observations": 320,
+          "rmse": 0.9649231980784201
+        },
+        "0.85": {
+          "bias": -0.02629170613665424,
+          "mae": 1.0710683696691377,
+          "n_observations": 320,
+          "rmse": 1.37503521519543
+        }
+      },
+      "candidate_observations": 960,
+      "folds": 5,
+      "label_noise_variance": 0.00020866806301406,
+      "mae": 0.7467745858749927,
+      "model_residual_variance": 1.065915235167889,
+      "observation_variance": [
+        [
+          0.0010705726622776246,
+          0.0004473318131377916,
+          0.0010096366564656958,
+          0.0010011824441066115
+        ],
+        [
+          0.0018461202334295358,
+          0.0004038407060534798,
+          0.0011705947357846778,
+          0.0019624064957710066
+        ],
+        [
+          0.0029354670402668183,
+          0.0018749015093695008,
+          0.001964117866406439,
+          0.004345961886280576
+        ]
+      ],
+      "rmse": 1.0325327613353985,
+      "roots": 240
+    },
+    "static_model_hash": "12336b9b777ce0d53b7e1c96223c7d4c9e743f49046ff991b35b8fe5495ead87"
+  },
+  "ledger_sha256": "fd216a6bd14a28950dcd3b73dffceaf251586359fd215ffc2ac72cb69275451e",
+  "method_summary": {
+    "high": {
+      "Contextual-KG": {
+        "CISR": {
+          "ci_high": 0.10516529630319153,
+          "ci_low": 0.0528349192470726,
+          "mean": 0.07818314085821347,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.7963621485926989,
+          "ci_low": 0.7452749645616835,
+          "mean": 0.7690622229520326,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.012000000000000002,
+          "ci_low": 0.0,
+          "mean": 0.004,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.628,
+          "ci_low": 0.48800000000000004,
+          "mean": 0.56,
+          "n": 50
+        }
+      },
+      "IVR-Online": {
+        "CISR": {
+          "ci_high": 1.7567304533860795,
+          "ci_low": 1.0273534246517888,
+          "mean": 1.3485836939704339,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.8628312815092478,
+          "ci_low": 0.5490700661286401,
+          "mean": 0.7365790217524834,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.20000000000000004,
+          "ci_low": 0.14800000000000002,
+          "mean": 0.17600000000000002,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.28800000000000003,
+          "ci_low": 0.204,
+          "mean": 0.244,
+          "n": 50
+        }
+      },
+      "PIVOT-KG-Loop-v3b": {
+        "CISR": {
+          "ci_high": 0.26048697641799484,
+          "ci_low": 0.08478672720936797,
+          "mean": 0.15827607815461475,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.7505134791654862,
+          "ci_low": 0.731966086365328,
+          "mean": 0.7407790024238676,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.032,
+          "ci_low": 0.004,
+          "mean": 0.016,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.612,
+          "ci_low": 0.484,
+          "mean": 0.5479999999999999,
+          "n": 50
+        }
+      },
+      "Static-PIVOT-KG-v1": {
+        "CISR": {
+          "ci_high": 2.7880696842381876,
+          "ci_low": 2.0225541164373926,
+          "mean": 2.399657418626548,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.2593224183705056,
+          "ci_low": -0.11552579917013434,
+          "mean": 0.07229440026272504,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.29599999999999993,
+          "ci_low": 0.23199999999999998,
+          "mean": 0.264,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.428,
+          "ci_low": 0.33199999999999996,
+          "mean": 0.37999999999999995,
+          "n": 50
+        }
+      },
+      "Top-Proxy-Online": {
+        "CISR": {
+          "ci_high": 0.17226720239760446,
+          "ci_low": 0.08823605843921781,
+          "mean": 0.12229841039683566,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.7759412448883721,
+          "ci_low": 0.7374553761071735,
+          "mean": 0.7529956395543661,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.032,
+          "ci_low": 0.004,
+          "mean": 0.016,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.512,
+          "ci_low": 0.408,
+          "mean": 0.46,
+          "n": 50
+        }
+      },
+      "n_roots": 50
+    },
+    "low": {
+      "Contextual-KG": {
+        "CISR": {
+          "ci_high": 0.011268243885500054,
+          "ci_low": 0.0066310225152237615,
+          "mean": 0.008855887878173895,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.06187507778230779,
+          "ci_low": 0.05820737051552658,
+          "mean": 0.06001953179800202,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.06,
+          "ci_low": 0.016,
+          "mean": 0.036,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.488,
+          "ci_low": 0.43199999999999994,
+          "mean": 0.4599999999999999,
+          "n": 50
+        }
+      },
+      "IVR-Online": {
+        "CISR": {
+          "ci_high": 0.15101708586753007,
+          "ci_low": 0.10911675727292913,
+          "mean": 0.13013555341737568,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.040451927991745004,
+          "ci_low": 0.027597481722254277,
+          "mean": 0.03416667589312152,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.18,
+          "ci_low": 0.136,
+          "mean": 0.16,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.41999999999999993,
+          "ci_low": 0.3479999999999999,
+          "mean": 0.3839999999999999,
+          "n": 50
+        }
+      },
+      "PIVOT-KG-Loop-v3b": {
+        "CISR": {
+          "ci_high": 0.038620280260811095,
+          "ci_low": 0.013089841630907099,
+          "mean": 0.023650038450386313,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.06143373808840346,
+          "ci_low": 0.057433119291459805,
+          "mean": 0.059454358657441905,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.05200000000000001,
+          "ci_low": 0.012000000000000002,
+          "mean": 0.032,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.4960000000000001,
+          "ci_low": 0.42800000000000005,
+          "mean": 0.4640000000000001,
+          "n": 50
+        }
+      },
+      "Static-PIVOT-KG-v1": {
+        "CISR": {
+          "ci_high": 5.562279204588061,
+          "ci_low": 4.8231636031054235,
+          "mean": 5.185057560928977,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": -1.3529652869947435,
+          "ci_low": -1.807842396268629,
+          "mean": -1.5732320432059692,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.46,
+          "ci_low": 0.412,
+          "mean": 0.436,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.4320999999999914,
+          "ci_low": 0.3439999999999999,
+          "mean": 0.38799999999999996,
+          "n": 50
+        }
+      },
+      "Top-Proxy-Online": {
+        "CISR": {
+          "ci_high": 0.06182634951691232,
+          "ci_low": 0.021735324911922517,
+          "mean": 0.03833182944257926,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.05905373120075651,
+          "ci_low": 0.03900715490543859,
+          "mean": 0.05038095716359216,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.07600000000000001,
+          "ci_low": 0.028000000000000004,
+          "mean": 0.05200000000000001,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.444,
+          "ci_low": 0.368,
+          "mean": 0.408,
+          "n": 50
+        }
+      },
+      "n_roots": 50
+    },
+    "medium": {
+      "Contextual-KG": {
+        "CISR": {
+          "ci_high": 0.0010862768245611535,
+          "ci_low": 0.0002113872679828943,
+          "mean": 0.0005946517226064696,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.17060401777152528,
+          "ci_low": 0.16740744579912764,
+          "mean": 0.16908709542291792,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.036000000000000004,
+          "ci_low": 0.004,
+          "mean": 0.02,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.7279999999999999,
+          "ci_low": 0.6639999999999999,
+          "mean": 0.6960000000000001,
+          "n": 50
+        }
+      },
+      "IVR-Online": {
+        "CISR": {
+          "ci_high": 1.3668272911842159,
+          "ci_low": 0.8781143047642085,
+          "mean": 1.1022642540725405,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": -0.027653918302232683,
+          "ci_low": -0.208045023571908,
+          "mean": -0.10859903566533609,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.376,
+          "ci_low": 0.324,
+          "mean": 0.35199999999999987,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.22,
+          "ci_low": 0.132,
+          "mean": 0.176,
+          "n": 50
+        }
+      },
+      "PIVOT-KG-Loop-v3b": {
+        "CISR": {
+          "ci_high": 0.23625255874578002,
+          "ci_low": 0.07050125025992093,
+          "mean": 0.13987902188719836,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.15495616021791098,
+          "ci_low": 0.12993330849629178,
+          "mean": 0.14355644383427718,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.05200000000000001,
+          "ci_low": 0.008,
+          "mean": 0.027999999999999997,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.7280000000000001,
+          "ci_low": 0.648,
+          "mean": 0.6919999999999998,
+          "n": 50
+        }
+      },
+      "Static-PIVOT-KG-v1": {
+        "CISR": {
+          "ci_high": 3.891524825751896,
+          "ci_low": 3.0099413603790155,
+          "mean": 3.450450696732408,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": -0.8477933658348816,
+          "ci_low": -1.3069547992181472,
+          "mean": -1.075727272587593,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.37599999999999995,
+          "ci_low": 0.31999999999999995,
+          "mean": 0.348,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.364,
+          "ci_low": 0.26799999999999996,
+          "mean": 0.316,
+          "n": 50
+        }
+      },
+      "Top-Proxy-Online": {
+        "CISR": {
+          "ci_high": 0.0845914679368946,
+          "ci_low": 0.04143821112142032,
+          "mean": 0.06260036071294899,
+          "n": 50
+        },
+        "cumulative_utility": {
+          "ci_high": 0.1625044084989728,
+          "ci_low": 0.1529166835510327,
+          "mean": 0.1578065325291225,
+          "n": 50
+        },
+        "harmful_adoption_rate": {
+          "ci_high": 0.02,
+          "ci_low": 0.0,
+          "mean": 0.008,
+          "n": 50
+        },
+        "retention_rate": {
+          "ci_high": 0.7319999999999999,
+          "ci_low": 0.6679999999999999,
+          "mean": 0.6999999999999998,
+          "n": 50
+        }
+      },
+      "n_roots": 50
+    }
+  },
+  "methods": [
+    "Static-PIVOT-KG-v1",
+    "Contextual-KG",
+    "PIVOT-KG-Loop-v3b",
+    "IVR-Online",
+    "Top-Proxy-Online"
+  ],
+  "protocol": {
+    "acquisition": {
+      "IVR-Online": "integrated variance reduction",
+      "PIVOT-KG-Loop-v3b": "exact one-step Gaussian KG",
+      "Top-Proxy-Online": "descending proxy delta"
+    },
+    "calibration_repeats_per_candidate": 8,
+    "calibration_root_start": 510000,
+    "calibration_roots": 240,
+    "candidate_count": 4,
+    "contextual_model": {
+      "cross_round_update": "Gaussian rank-one correction-regression update for the three online methods",
+      "drift_diagnostic": "standardized residuals logged; no test-tuned threshold",
+      "model_residual_variance": "five-fold held-out MSE minus variance of the calibration mean, floored at 1e-6",
+      "observation_variance": "mean within-context variance over eight independent calibration rollouts, by response strength and candidate slot",
+      "type": "Bayesian linear correction model",
+      "within_round_update": "noisy Gaussian conditioning with positive observation variance; coefficient update is kept separate"
+    },
+    "hf_budget_per_round": 2,
+    "initial_test_pressure": "0.10 + 0.015 * (root_offset mod 7)",
+    "method_definitions": {
+      "Contextual-KG": "two KG-selected queries; posterior conditions within each round, but correction regression resets to the calibration fit at each round",
+      "IVR-Online": "common sentinel plus one IVR-selected query; correction regression updates persist across rounds",
+      "PIVOT-KG-Loop-v3b": "common sentinel plus one KG-selected query; correction regression updates persist across rounds",
+      "Static-PIVOT-KG-v1": "two KG-selected queries under the original narrow-state static calibration prior; legacy reference",
+      "Top-Proxy-Online": "common sentinel plus one proxy-ranked query; correction regression updates persist across rounds"
+    },
+    "online_methods": [
+      "PIVOT-KG-Loop-v3b",
+      "IVR-Online",
+      "Top-Proxy-Online"
+    ],
+    "physical_simulator_called": false,
+    "protocol_id": "P1-LOOP-V3B-2026-11-10",
+    "response_regime_order": [
+      "low",
+      "medium",
+      "high"
+    ],
+    "response_regimes": {
+      "high": 0.85,
+      "low": 0.35,
+      "medium": 0.6
+    },
+    "root_start": 830000,
+    "roots_per_regime": 50,
+    "rounds": 5,
+    "sentinel_rule": "candidate_index = round_id mod 4; one common-rule sentinel plus one method-specific query",
+    "shared_random_streams": {
+      "deployment": "root, round",
+      "evaluation": "root, round, candidate index",
+      "queries": "root, round, candidate id"
+    },
+    "split": "development",
+    "terminal_rule": "posterior mean over incumbent plus four candidates"
+  },
+  "protocol_sha256": "0b9a8ce292ab9fee158f6c4e496c8da09e27d83f649ad52630bd7c31f0ffb907",
+  "source_hashes": {
+    "analyzer": "b4a66bf32a1269f71bc67674f5c47caa5d06797385833b9fa454a324934eb515",
+    "calibration_source": "accc2caa16ed82c97d0d68cc0197625b845db4f44ff421c85059e8d213e4e848",
+    "kg_source": "77421d69eaab328f23c7d432401e8aaf6837e47ad581c9501522e9d1fee4765c",
+    "preregistration": "ebfa2761a44dea51f91000475f7f6ecf8f845e91f68a1c54761ca144e6fe858a",
+    "runner": "b13ddf3a1016ec0842faed996dd2e3b30e036a2e3f5424c0b99186ce1333ce8a",
+    "v1_runner": "3d9194fbc377ef07e58044ade0a9745a03f09b0ad21ee1e8f5f6d1be212f6be2"
+  }
+}

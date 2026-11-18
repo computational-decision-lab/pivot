@@ -1,0 +1,112 @@
+{
+  "base_commit": "4a09fc6bd24ffe1253dd9ab481d6fdf50f2fee59",
+  "branch": "codex/iclr2027-submission-20261118",
+  "lint": {
+    "command": "uv tool run ruff check scripts/paper_assets.py scripts/build_iclr_supplement.py scripts/verify_iclr_submission.py tests/unit/test_iclr_submission.py",
+    "exit_code": 0
+  },
+  "machine_checks": {
+    "archive_has_readme": true,
+    "archive_has_snapshot_manifest": true,
+    "archive_no_private_paths": true,
+    "archive_no_raw_archives": true,
+    "archive_no_sealed_inputs": true,
+    "conclusion_within_ten_pages": true,
+    "main_text_within_ten_pages": true,
+    "pdf_ai_use_statement": true,
+    "pdf_anonymous": true,
+    "pdf_exists": true,
+    "pdf_page_count_present": true,
+    "pdf_reproducibility_statement": true,
+    "pdf_text_nonempty": true,
+    "references_before_appendix": true,
+    "revision_evidence_archive": true,
+    "source_ai_use_statement": true,
+    "source_no_final_copy": true,
+    "source_no_identity_leak": true,
+    "source_no_private_path": true,
+    "source_official_style": true,
+    "source_paper_topic_tokens": true,
+    "source_reproducibility_statement": true,
+    "style_files_present": true,
+    "style_hashes_match": true,
+    "supplement_archive": true,
+    "supplement_call_chain_audit": true,
+    "supplement_content_clean": true,
+    "supplement_exists": true,
+    "supplement_manuscript_matches": true
+  },
+  "paper": {
+    "appendix_start_page": 14,
+    "conclusion_end_page": 10,
+    "isolated_supplement_build_passed": true,
+    "main_pages": 10,
+    "pages": 20,
+    "rebuilt_text_matches_audited_pdf": true,
+    "references_start_page": 11,
+    "sha256": "0d784c8db20bb8d8cf7f9b4b55e3c99d442b49d94467d8568f617e3d2a4c56bd",
+    "source_sha256": "ff802dc4efd504dc7152f5565458381948e833a192fb2fad0a754c88b607d7fa",
+    "valid": true
+  },
+  "release": "20261118_v2",
+  "replay": {
+    "fresh_highway_targeted_contrasts_and_cis_reproduced": 4,
+    "poker_bootstrap_refits": 500,
+    "poker_sealed_and_scored_decisions": 75000,
+    "scope": "Frozen evidence replay and verification; no new simulator experiments.",
+    "v3c": {
+      "calibration_model_hash_matches": true,
+      "calibration_model_recomputed": true,
+      "failure_count": 0,
+      "first_failures": [],
+      "replay_counts": {
+        "candidate_panels": 5400,
+        "deployment_returns": 5400,
+        "independent_evaluations": 5400,
+        "posterior_selections": 5400,
+        "queries": 10800,
+        "state_transitions": 5400,
+        "trajectory_aggregates": 1080
+      },
+      "trajectory_replay_all_pass": true
+    },
+    "v3c_protocol_checks_passed": true
+  },
+  "schema_version": "pivot-submission-release-1",
+  "submission_status": {
+    "decision": "CONDITIONAL GO",
+    "manual_gates": {
+      "ai_use_disclosure_in_submission_form": "pending",
+      "author_quota_and_reciprocal_review": "pending",
+      "final_author_metadata_and_conflicts": "pending",
+      "no_parallel_submission_confirmation": "pending",
+      "openreview_profile": "pending"
+    },
+    "openreview_action_performed": false,
+    "scientific_gates": {
+      "confirmatory_update_rule_and_holdout": "pass",
+      "external_interactive_response": "bounded_null",
+      "external_strategic_validation": "scoped_pass"
+    },
+    "submission_ready": false
+  },
+  "supplement": {
+    "crc_passed": true,
+    "embedded_and_checkout_machine_checks_agree": true,
+    "embedded_builder_and_verifier_match_source": true,
+    "files": 1383,
+    "manuscript_archive_checks": {
+      "assets_checked": 18,
+      "mismatched": [],
+      "missing": [],
+      "valid": true
+    },
+    "sha256": "112fcc6ddc3254af15e32e5a00802d90bacc8f66a1cf94674cba92ea24a8ef3d"
+  },
+  "tests": {
+    "command": "PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q tests/unit/test_iclr_submission.py tests/unit/test_verify_paper.py",
+    "environment_note": "A prior system-pytest process ended with exit 135 after reporting 42 passed. The isolated rerun with external pytest plugin autoload disabled completed with exit 0. One non-blocking Matplotlib Axes3D availability warning remains.",
+    "exit_code": 0,
+    "passed": 42
+  }
+}

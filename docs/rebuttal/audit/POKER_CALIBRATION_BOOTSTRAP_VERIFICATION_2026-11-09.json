@@ -1,0 +1,76 @@
+{
+  "aggregate": {
+    "ivr_v2": {
+      "bootstrap_mean_contrast": 0.0,
+      "bootstrap_percentiles_2_5_50_97_5": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "max_pivot_selection_flip_rate": 0.3333333333333333,
+      "mean_pivot_selection_flip_rate": 0.10086666666666667,
+      "negative_fraction": 0.0,
+      "positive_fraction": 0.0,
+      "reference_full_calibration_contrast": 0.0,
+      "zero_fraction": 1.0
+    },
+    "lucb_v2": {
+      "bootstrap_mean_contrast": 0.0005858347621119846,
+      "bootstrap_percentiles_2_5_50_97_5": [
+        0.0,
+        0.0,
+        0.010590760516089608
+      ],
+      "max_pivot_selection_flip_rate": 0.3333333333333333,
+      "mean_pivot_selection_flip_rate": 0.10086666666666667,
+      "negative_fraction": 0.0,
+      "positive_fraction": 0.068,
+      "reference_full_calibration_contrast": 0.0,
+      "zero_fraction": 0.932
+    },
+    "proxy_only": {
+      "bootstrap_mean_contrast": 0.6151878810730824,
+      "bootstrap_percentiles_2_5_50_97_5": [
+        0.5977800224774785,
+        0.6156706034883398,
+        0.6240593522712984
+      ],
+      "max_pivot_selection_flip_rate": 0.3333333333333333,
+      "mean_pivot_selection_flip_rate": 0.10086666666666667,
+      "negative_fraction": 0.0,
+      "positive_fraction": 1.0,
+      "reference_full_calibration_contrast": 0.6240593522712984,
+      "zero_fraction": 0.0
+    },
+    "uniform_v2": {
+      "bootstrap_mean_contrast": 0.050913514661499605,
+      "bootstrap_percentiles_2_5_50_97_5": [
+        0.022780972916038693,
+        0.03648503535433714,
+        0.11266164844768649
+      ],
+      "max_pivot_selection_flip_rate": 0.3333333333333333,
+      "mean_pivot_selection_flip_rate": 0.10086666666666667,
+      "negative_fraction": 0.0,
+      "positive_fraction": 1.0,
+      "reference_full_calibration_contrast": 0.03648503535433714,
+      "zero_fraction": 0.0
+    }
+  },
+  "calibration_roots": 12,
+  "checks": {
+    "all_bootstrap_samples_valid": true,
+    "all_scores_recomputed_from_saved_audits": true,
+    "bootstrap_aggregates_recomputed": true,
+    "decisions_sealed_without_audit_labels": true,
+    "disjoint_root_sets": true,
+    "full_fit_reproduces_prior_sensitivity": true
+  },
+  "content_manifest_files_checked": 6,
+  "fixed_test_roots": 30,
+  "protocol_id": "poker-v2b-calibration-root-bootstrap-v1",
+  "replicates": 500,
+  "scored_decisions": 75000,
+  "sealed_decisions": 75000,
+  "status": "PASS"
+}

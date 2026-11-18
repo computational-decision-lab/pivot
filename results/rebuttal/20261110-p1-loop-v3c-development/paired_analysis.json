@@ -1,0 +1,592 @@
+{
+  "analysis_kind": "paired_root_equal_budget_no_sentinel_v3c",
+  "holm_family": [
+    "low:IVR-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR",
+    "low:Top-Proxy-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR",
+    "medium:IVR-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR",
+    "medium:Top-Proxy-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR",
+    "high:IVR-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR",
+    "high:Top-Proxy-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR"
+  ],
+  "limitations": [
+    "The result is conditional on the declared controlled PerformativeWorld, proposer, candidate generator, calibration cohort, budget, and five-round horizon.",
+    "CISR is a within-state selection-regret estimate based on one independent paired rollout per candidate per round; it is not itself an absolute deployment-return objective.",
+    "Absolute deployment return is reported separately and does not telescope across changing states."
+  ],
+  "method_metrics": {
+    "high": {
+      "IVR-Online-v3c": {
+        "CISR": {
+          "ci95": [
+            0.5221752100290694,
+            1.2689294606406805
+          ],
+          "mean": 0.8532108588712579,
+          "n_roots": 50
+        },
+        "cumulative_deployment_return": {
+          "ci95": [
+            2.675820559151365,
+            3.6926415491866136
+          ],
+          "mean": 3.2422410157549684,
+          "n_roots": 50
+        },
+        "cumulative_utility": {
+          "ci95": [
+            0.33221068366999323,
+            0.7520493864543869
+          ],
+          "mean": 0.5840671240222871,
+          "n_roots": 50
+        },
+        "harmful_adoption_rate": {
+          "ci95": [
+            0.068,
+            0.136
+          ],
+          "mean": 0.10000000000000002,
+          "n_roots": 50
+        },
+        "retention_rate": {
+          "ci95": [
+            0.36800000000000005,
+            0.512
+          ],
+          "mean": 0.44,
+          "n_roots": 50
+        }
+      },
+      "PIVOT-KG-Loop-v3c": {
+        "CISR": {
+          "ci95": [
+            0.05436256770508029,
+            0.1106320161208999
+          ],
+          "mean": 0.0812936564561736,
+          "n_roots": 50
+        },
+        "cumulative_deployment_return": {
+          "ci95": [
+            4.253819835204044,
+            4.325264360003024
+          ],
+          "mean": 4.290213103762806,
+          "n_roots": 50
+        },
+        "cumulative_utility": {
+          "ci95": [
+            0.7431644106968549,
+            0.8019060425940109
+          ],
+          "mean": 0.7708589194054695,
+          "n_roots": 50
+        },
+        "harmful_adoption_rate": {
+          "ci95": [
+            0.004,
+            0.032
+          ],
+          "mean": 0.016,
+          "n_roots": 50
+        },
+        "retention_rate": {
+          "ci95": [
+            0.5,
+            0.64
+          ],
+          "mean": 0.5720000000000001,
+          "n_roots": 50
+        }
+      },
+      "Top-Proxy-Online-v3c": {
+        "CISR": {
+          "ci95": [
+            0.2730618509482605,
+            0.39373054548047226
+          ],
+          "mean": 0.33139024906918846,
+          "n_roots": 50
+        },
+        "cumulative_deployment_return": {
+          "ci95": [
+            4.057954326123476,
+            4.15951632468958
+          ],
+          "mean": 4.108647263874216,
+          "n_roots": 50
+        },
+        "cumulative_utility": {
+          "ci95": [
+            0.7114741798700833,
+            0.7768780879208302
+          ],
+          "mean": 0.7439162086813979,
+          "n_roots": 50
+        },
+        "harmful_adoption_rate": {
+          "ci95": [
+            0.008,
+            0.052000000000000005
+          ],
+          "mean": 0.027999999999999997,
+          "n_roots": 50
+        },
+        "retention_rate": {
+          "ci95": [
+            0.316,
+            0.44799999999999995
+          ],
+          "mean": 0.38,
+          "n_roots": 50
+        }
+      }
+    },
+    "low": {
+      "IVR-Online-v3c": {
+        "CISR": {
+          "ci95": [
+            0.03904360698776556,
+            0.055911188500189724
+          ],
+          "mean": 0.04725178347858831,
+          "n_roots": 50
+        },
+        "cumulative_deployment_return": {
+          "ci95": [
+            9.997337040946102,
+            10.040234877235259
+          ],
+          "mean": 10.018948432402654,
+          "n_roots": 50
+        },
+        "cumulative_utility": {
+          "ci95": [
+            0.04719484754010995,
+            0.05278609319045946
+          ],
+          "mean": 0.04992859213324149,
+          "n_roots": 50
+        },
+        "harmful_adoption_rate": {
+          "ci95": [
+            0.0,
+            0.0
+          ],
+          "mean": 0.0,
+          "n_roots": 50
+        },
+        "retention_rate": {
+          "ci95": [
+            0.644,
+            0.708
+          ],
+          "mean": 0.676,
+          "n_roots": 50
+        }
+      },
+      "PIVOT-KG-Loop-v3c": {
+        "CISR": {
+          "ci95": [
+            0.00704259712460313,
+            0.013182542573970803
+          ],
+          "mean": 0.009964961437965792,
+          "n_roots": 50
+        },
+        "cumulative_deployment_return": {
+          "ci95": [
+            10.06699403632495,
+            10.1019323844549
+          ],
+          "mean": 10.084733547028595,
+          "n_roots": 50
+        },
+        "cumulative_utility": {
+          "ci95": [
+            0.06078489831770007,
+            0.06520009090591601
+          ],
+          "mean": 0.06294439016753771,
+          "n_roots": 50
+        },
+        "harmful_adoption_rate": {
+          "ci95": [
+            0.0,
+            0.02
+          ],
+          "mean": 0.008,
+          "n_roots": 50
+        },
+        "retention_rate": {
+          "ci95": [
+            0.43200000000000005,
+            0.5000000000000001
+          ],
+          "mean": 0.46799999999999997,
+          "n_roots": 50
+        }
+      },
+      "Top-Proxy-Online-v3c": {
+        "CISR": {
+          "ci95": [
+            0.05253883789089239,
+            0.09041500453737739
+          ],
+          "mean": 0.07109180224516386,
+          "n_roots": 50
+        },
+        "cumulative_deployment_return": {
+          "ci95": [
+            9.98791720075549,
+            10.039841529141185
+          ],
+          "mean": 10.013445252869504,
+          "n_roots": 50
+        },
+        "cumulative_utility": {
+          "ci95": [
+            0.005708387120029763,
+            0.03594681367067842
+          ],
+          "mean": 0.021645965979019875,
+          "n_roots": 50
+        },
+        "harmful_adoption_rate": {
+          "ci95": [
+            0.124,
+            0.19599999999999998
+          ],
+          "mean": 0.16,
+          "n_roots": 50
+        },
+        "retention_rate": {
+          "ci95": [
+            0.132,
+            0.252
+          ],
+          "mean": 0.19200000000000003,
+          "n_roots": 50
+        }
+      }
+    },
+    "medium": {
+      "IVR-Online-v3c": {
+        "CISR": {
+          "ci95": [
+            0.3210205122029813,
+            0.6215946789364952
+          ],
+          "mean": 0.43946582400545475,
+          "n_roots": 50
+        },
+        "cumulative_deployment_return": {
+          "ci95": [
+            5.442985758457355,
+            5.902006683732499
+          ],
+          "mean": 5.732356690804676,
+          "n_roots": 50
+        },
+        "cumulative_utility": {
+          "ci95": [
+            -0.09188688051974757,
+            0.05624714331886566
+          ],
+          "mean": -0.006303497206776126,
+          "n_roots": 50
+        },
+        "harmful_adoption_rate": {
+          "ci95": [
+            0.17999999999999997,
+            0.26399999999999996
+          ],
+          "mean": 0.21999999999999997,
+          "n_roots": 50
+        },
+        "retention_rate": {
+          "ci95": [
+            0.42,
+            0.548
+          ],
+          "mean": 0.48400000000000004,
+          "n_roots": 50
+        }
+      },
+      "PIVOT-KG-Loop-v3c": {
+        "CISR": {
+          "ci95": [
+            0.002136403646118103,
+            0.013333641286851558
+          ],
+          "mean": 0.007082941942669714,
+          "n_roots": 50
+        },
+        "cumulative_deployment_return": {
+          "ci95": [
+            6.177830044654382,
+            6.20845956257341
+          ],
+          "mean": 6.1934162896059295,
+          "n_roots": 50
+        },
+        "cumulative_utility": {
+          "ci95": [
+            0.16584532444101444,
+            0.1700158941403195
+          ],
+          "mean": 0.1679986676748239,
+          "n_roots": 50
+        },
+        "harmful_adoption_rate": {
+          "ci95": [
+            0.0,
+            0.012000000000000002
+          ],
+          "mean": 0.004,
+          "n_roots": 50
+        },
+        "retention_rate": {
+          "ci95": [
+            0.66,
+            0.7360000000000001
+          ],
+          "mean": 0.6999999999999998,
+          "n_roots": 50
+        }
+      },
+      "Top-Proxy-Online-v3c": {
+        "CISR": {
+          "ci95": [
+            0.10499746910959402,
+            0.24849662133605088
+          ],
+          "mean": 0.1739965224403813,
+          "n_roots": 50
+        },
+        "cumulative_deployment_return": {
+          "ci95": [
+            5.997773948108714,
+            6.115607673499842
+          ],
+          "mean": 6.058353236235432,
+          "n_roots": 50
+        },
+        "cumulative_utility": {
+          "ci95": [
+            0.11669207872120295,
+            0.15000202957110742
+          ],
+          "mean": 0.13396971362973203,
+          "n_roots": 50
+        },
+        "harmful_adoption_rate": {
+          "ci95": [
+            0.008,
+            0.044000000000000004
+          ],
+          "mean": 0.024000000000000004,
+          "n_roots": 50
+        },
+        "retention_rate": {
+          "ci95": [
+            0.6080000000000001,
+            0.716
+          ],
+          "mean": 0.6639999999999999,
+          "n_roots": 50
+        }
+      }
+    }
+  },
+  "n_roots_per_regime": {
+    "high": 50,
+    "low": 50,
+    "medium": 50
+  },
+  "overall_success": true,
+  "primary_paired_cumulative_isr_contrasts": {
+    "high:IVR-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR": {
+      "deployment_return_primary_minus_baseline": {
+        "ci95": [
+          0.5859824408301156,
+          1.6280616334176785
+        ],
+        "mean": 1.047972088007838,
+        "n_roots": 50
+      },
+      "estimand": "baseline cumulative ISR minus PIVOT cumulative ISR; positive favors PIVOT",
+      "holm_adjusted_p_over_all_regime_baseline_contrasts": 5.999940000599994e-05,
+      "paired_root_bootstrap": {
+        "ci95": [
+          0.4405212645075944,
+          1.1812312975876154
+        ],
+        "mean": 0.7719172024150842,
+        "n_roots": 50
+      },
+      "two_sided_signflip_p": 9.99990000099999e-06
+    },
+    "high:Top-Proxy-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR": {
+      "deployment_return_primary_minus_baseline": {
+        "ci95": [
+          0.1252012300234465,
+          0.23793718138027353
+        ],
+        "mean": 0.18156583988859018,
+        "n_roots": 50
+      },
+      "estimand": "baseline cumulative ISR minus PIVOT cumulative ISR; positive favors PIVOT",
+      "holm_adjusted_p_over_all_regime_baseline_contrasts": 5.999940000599994e-05,
+      "paired_root_bootstrap": {
+        "ci95": [
+          0.18817428789602955,
+          0.3103081476232003
+        ],
+        "mean": 0.250096592613015,
+        "n_roots": 50
+      },
+      "two_sided_signflip_p": 9.99990000099999e-06
+    },
+    "low:IVR-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR": {
+      "deployment_return_primary_minus_baseline": {
+        "ci95": [
+          0.050477840813620105,
+          0.08160346188186171
+        ],
+        "mean": 0.06578511462594455,
+        "n_roots": 50
+      },
+      "estimand": "baseline cumulative ISR minus PIVOT cumulative ISR; positive favors PIVOT",
+      "holm_adjusted_p_over_all_regime_baseline_contrasts": 5.999940000599994e-05,
+      "paired_root_bootstrap": {
+        "ci95": [
+          0.02909219809328544,
+          0.045904869477015976
+        ],
+        "mean": 0.03728682204062252,
+        "n_roots": 50
+      },
+      "two_sided_signflip_p": 9.99990000099999e-06
+    },
+    "low:Top-Proxy-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR": {
+      "deployment_return_primary_minus_baseline": {
+        "ci95": [
+          0.046802758419357736,
+          0.09631295526939863
+        ],
+        "mean": 0.0712882941590938,
+        "n_roots": 50
+      },
+      "estimand": "baseline cumulative ISR minus PIVOT cumulative ISR; positive favors PIVOT",
+      "holm_adjusted_p_over_all_regime_baseline_contrasts": 5.999940000599994e-05,
+      "paired_root_bootstrap": {
+        "ci95": [
+          0.04238023175019393,
+          0.08050273779158805
+        ],
+        "mean": 0.06112684080719807,
+        "n_roots": 50
+      },
+      "two_sided_signflip_p": 9.99990000099999e-06
+    },
+    "medium:IVR-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR": {
+      "deployment_return_primary_minus_baseline": {
+        "ci95": [
+          0.29258886087786296,
+          0.7441765085894426
+        ],
+        "mean": 0.4610595988012545,
+        "n_roots": 50
+      },
+      "estimand": "baseline cumulative ISR minus PIVOT cumulative ISR; positive favors PIVOT",
+      "holm_adjusted_p_over_all_regime_baseline_contrasts": 5.999940000599994e-05,
+      "paired_root_bootstrap": {
+        "ci95": [
+          0.3159793814724943,
+          0.6118107651478111
+        ],
+        "mean": 0.432382882062785,
+        "n_roots": 50
+      },
+      "two_sided_signflip_p": 9.99990000099999e-06
+    },
+    "medium:Top-Proxy-Online-v3c_minus_PIVOT-KG-Loop-v3c_CISR": {
+      "deployment_return_primary_minus_baseline": {
+        "ci95": [
+          0.07943249027087426,
+          0.19493154090144885
+        ],
+        "mean": 0.13506305337049848,
+        "n_roots": 50
+      },
+      "estimand": "baseline cumulative ISR minus PIVOT cumulative ISR; positive favors PIVOT",
+      "holm_adjusted_p_over_all_regime_baseline_contrasts": 5.999940000599994e-05,
+      "paired_root_bootstrap": {
+        "ci95": [
+          0.09837699225302109,
+          0.24196854287780983
+        ],
+        "mean": 0.16691358049771157,
+        "n_roots": 50
+      },
+      "two_sided_signflip_p": 3.999960000399996e-05
+    }
+  },
+  "protocol_audit_checks": {
+    "all_pass": true,
+    "calibration_model_replay": true,
+    "calibration_noise_matrix_recomputed": true,
+    "calibration_noise_rollouts_replay": true,
+    "calibration_root_candidate_panels_complete": true,
+    "calibration_roots_match_declared_block": true,
+    "calibration_samples_complete": true,
+    "deployment_returns_recorded": true,
+    "deployment_seed_replay_and_sharing": true,
+    "evaluation_seed_replay_and_sharing": true,
+    "independent_full_replay": true,
+    "no_sentinel_queries": true,
+    "noisy_posterior_conditioning_retains_latent_variance": true,
+    "query_seed_replay": true,
+    "state_transitions_recorded": true,
+    "terminal_isr_recomputed": true,
+    "terminal_rule_includes_incumbent": true,
+    "test_roots_disjoint_from_calibration": true,
+    "test_roots_match_declared_blocks": true,
+    "two_queries_each_round": true,
+    "unique_ledger_panel": true,
+    "unique_query_ids_within_round": true,
+    "unique_trajectory_panel": true
+  },
+  "protocol_sha256": "1ebcf910a5e30c3210311e29f9dcbf845240729c0a4e3e287e296f7d60e24503",
+  "replay_audit": {
+    "calibration_model_hash_matches": true,
+    "calibration_model_recomputed": true,
+    "failure_count": 0,
+    "first_failures": [],
+    "replay_counts": {
+      "candidate_panels": 2250,
+      "deployment_returns": 2250,
+      "independent_evaluations": 2250,
+      "posterior_selections": 2250,
+      "queries": 4500,
+      "state_transitions": 2250,
+      "trajectory_aggregates": 450
+    },
+    "trajectory_replay_all_pass": true
+  },
+  "source_hashes": {
+    "calibration_model": "072274b7d9120fa2911943e556c68adc79cbb0ccc1529049465f1f24bd178df2",
+    "calibration_training_samples": "f43f1b800641bb026df24ccc35ce7fe2d0269868169dc2cebf3dafc2d585e255",
+    "ledger": "e140f581033006251ce5c1a66faf1a7b7aa109e4602a25e485b757dba114d329",
+    "summary": "6969218650df4e0766e28e60f2ece0d64d67619a9d36bc46ec5c2d49cd4703c8",
+    "trajectories": "5a1ff3d444aaad27ea5292fbec29c904f9b5f80705b565a327ce97b8afacca26"
+  },
+  "split": "development",
+  "success_by_regime": {
+    "high": true,
+    "low": true,
+    "medium": true
+  },
+  "success_rule": "per regime, both baseline-minus-PIVOT ISR 95% CI lower bounds > 0 and both Holm-adjusted sign-flip p-values < 0.05"
+}
